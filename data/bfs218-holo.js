@@ -1,4 +1,4 @@
-/* BFS218 Holo Museum v2 - upgraded topic and activity dioramas.
+/* BFS218 Activity Dioramas v3 - grounded, realistic teaching models.
    Self-contained scene library. app.js passes THREE plus a context and
    receives { tick, dispose, skipDefaultStage }. Every scene is procedural
    Three.js: no external assets, no network calls, palette matches the site
@@ -27,7 +27,7 @@
         var pm = new THREE.PMREMGenerator(ctx.renderer);
         var env = new THREE.Scene();
         var geo = new THREE.BoxGeometry(10, 10, 10);
-        var wall = new THREE.MeshBasicMaterial({ color: 0xf2f5f8, side: THREE.BackSide });
+        var wall = new THREE.MeshBasicMaterial({ color: 0xd6dce1, side: THREE.BackSide });
         env.add(new THREE.Mesh(geo, wall));
         function panel(w, h, c, i, pos, rot) {
           var p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c }));
@@ -36,10 +36,10 @@
           if (rot) p.rotation.set(rot[0], rot[1], rot[2]);
           env.add(p);
         }
-        panel(4, 2.6, 0xffffff, 6.5, [0, 4.2, -3.4], [0.5, 0, 0]);         /* key */
-        panel(3, 2.2, 0xdff3ff, 3.2, [-3.8, 2.6, 1.6], [0, 1.05, 0]);      /* cool fill */
-        panel(2.4, 1.6, 0xffe2bd, 2.4, [3.9, 1.9, 1.2], [0, -1.0, 0]);     /* warm kick */
-        panel(2.2, 1.4, 0xc9fbff, 2.0, [0.4, 1.4, 4.4], [0, Math.PI, 0]);  /* teal bounce */
+        panel(4, 2.6, 0xfff8ef, 1.65, [0, 4.2, -3.4], [0.5, 0, 0]);        /* warm key */
+        panel(3, 2.2, 0xdce8f2, 0.9, [-3.8, 2.6, 1.6], [0, 1.05, 0]);      /* cool fill */
+        panel(2.4, 1.6, 0xe8cfae, 0.72, [3.9, 1.9, 1.2], [0, -1.0, 0]);    /* warm edge */
+        panel(2.2, 1.4, 0xc6d8da, 0.5, [0.4, 1.4, 4.4], [0, Math.PI, 0]);  /* soft bounce */
         var rt = pm.fromScene(env, 0.04);
         ctx.scene.environment = rt.texture;
         K.disposables.push({ dispose: function () { rt.dispose(); pm.dispose(); } });
@@ -67,18 +67,18 @@
 
     /* --- materials --- */
     K.mat = {};
-    K.mat.plastic = function (c, rough) { return K.own(new THREE.MeshStandardMaterial({ color: c, roughness: rough == null ? 0.42 : rough, metalness: 0.04 })); };
-    K.mat.metal = function (c, rough) { return K.own(new THREE.MeshStandardMaterial({ color: c == null ? PAL.steel : c, roughness: rough == null ? 0.28 : rough, metalness: 0.86 })); };
-    K.mat.ink = function () { return K.mat.plastic(PAL.ink, 0.36); };
+    K.mat.plastic = function (c, rough) { return K.own(new THREE.MeshStandardMaterial({ color: c, roughness: rough == null ? 0.68 : rough, metalness: 0.015 })); };
+    K.mat.metal = function (c, rough) { return K.own(new THREE.MeshStandardMaterial({ color: c == null ? PAL.steel : c, roughness: rough == null ? 0.44 : rough, metalness: 0.68 })); };
+    K.mat.ink = function () { return K.mat.plastic(PAL.ink, 0.58); };
     K.mat.glass = function (c, opacity) {
       return K.own(new THREE.MeshPhysicalMaterial({
         color: c == null ? PAL.tealSoft : c, transparent: true, opacity: opacity == null ? 0.34 : opacity,
-        roughness: 0.06, metalness: 0.02, transmission: 0.55, thickness: 0.35,
-        clearcoat: 1, clearcoatRoughness: 0.08, ior: 1.45, side: THREE.DoubleSide
+        roughness: 0.16, metalness: 0.01, transmission: 0.34, thickness: 0.28,
+        clearcoat: 0.5, clearcoatRoughness: 0.18, ior: 1.45, side: THREE.DoubleSide
       }));
     };
     K.mat.neon = function (c, intensity) {
-      return K.own(new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: intensity == null ? 0.85 : intensity, roughness: 0.25, metalness: 0.1 }));
+      return K.own(new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: intensity == null ? 0.32 : Math.min(0.72, intensity * 0.48), roughness: 0.42, metalness: 0.06 }));
     };
     K.mat.holo = function (c, opacity) {
       var mat = new THREE.ShaderMaterial({
@@ -165,7 +165,7 @@
         draw(g, w, h);
         g.restore();
       });
-      var mat = K.own(new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: opts.glow == null ? 0.62 : opts.glow, roughness: 0.32, metalness: 0.02 }));
+      var mat = K.own(new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: opts.glow == null ? 0.22 : Math.min(0.5, opts.glow * 0.55), roughness: 0.46, metalness: 0.01 }));
       return mat;
     };
 
@@ -174,46 +174,64 @@
       opts = opts || {};
       var floorTex = K.texture(512, 512, function (g) {
         var grad = g.createRadialGradient(256, 256, 40, 256, 256, 300);
-        grad.addColorStop(0, '#fdfefe');
-        grad.addColorStop(0.66, '#e9eef4');
-        grad.addColorStop(1, '#ccd7e2');
+        grad.addColorStop(0, '#c8c9c5');
+        grad.addColorStop(0.58, '#9fa5a7');
+        grad.addColorStop(1, '#69737a');
         g.fillStyle = grad; g.fillRect(0, 0, 512, 512);
-        g.strokeStyle = 'rgba(139,160,180,.26)'; g.lineWidth = 1;
+        g.globalAlpha = 0.18;
+        var seed = 218;
+        function noise() { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }
+        for (var n = 0; n < 2600; n++) {
+          var v = 110 + Math.floor(noise() * 70);
+          g.fillStyle = 'rgb(' + v + ',' + v + ',' + Math.max(100, v - 5) + ')';
+          g.fillRect(noise() * 512, noise() * 512, 1.2, 1.2);
+        }
+        g.globalAlpha = 1;
+        g.strokeStyle = 'rgba(38,50,58,.2)'; g.lineWidth = 1;
         for (var i = 0; i <= 16; i++) {
           g.beginPath(); g.moveTo(i * 32, 0); g.lineTo(i * 32, 512); g.stroke();
           g.beginPath(); g.moveTo(0, i * 32); g.lineTo(512, i * 32); g.stroke();
         }
-        g.strokeStyle = 'rgba(0,174,179,.42)'; g.lineWidth = 4;
+        g.strokeStyle = 'rgba(167,188,190,.34)'; g.lineWidth = 3;
         g.beginPath(); g.arc(256, 256, 214, 0, Math.PI * 2); g.stroke();
-        g.strokeStyle = 'rgba(27,42,74,.2)'; g.lineWidth = 2;
+        g.strokeStyle = 'rgba(35,46,54,.28)'; g.lineWidth = 2;
         g.beginPath(); g.arc(256, 256, 246, 0, Math.PI * 2); g.stroke();
-        g.strokeStyle = 'rgba(27,42,74,.1)'; g.lineWidth = 1;
+        g.strokeStyle = 'rgba(235,239,240,.18)'; g.lineWidth = 1;
         g.beginPath(); g.arc(256, 256, 150, 0, Math.PI * 2); g.stroke();
       });
-      var floorMat = K.own(new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.5, metalness: 0.06 }));
+      var floorMat = K.own(new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.82, metalness: 0.015 }));
       var disc = K.add(new THREE.CylinderGeometry(3.6, 3.72, 0.14, 72), floorMat, [0, -0.09, 0]);
       disc.receiveShadow = true;
-      K.cyl(3.72, 3.86, 0.1, K.mat.metal(0xcfd8e0, 0.4), [0, -0.2, 0]);
-      var lip = K.torus(3.62, 0.018, K.mat.neon(opts.lip == null ? PAL.teal : opts.lip, 0.9), [0, -0.015, 0], [Math.PI / 2, 0, 0], { shadow: false });
-      K.onTick(function (t) { lip.material.emissiveIntensity = 0.7 + 0.25 * Math.sin(t * 1.4); });
+      K.cyl(3.72, 3.86, 0.1, K.mat.metal(0x4e5a61, 0.56), [0, -0.2, 0]);
+      K.torus(3.62, 0.016, K.mat.metal(opts.lip == null ? 0x6d888a : opts.lip, 0.58), [0, -0.015, 0], [Math.PI / 2, 0, 0], { shadow: false });
       return disc;
     };
 
-    /* --- humans: capsule-body figures with pose --- */
+    /* --- humans: compact neutral mannequins with believable proportions --- */
     K.person = function (opts) {
       opts = opts || {};
       var g = new THREE.Group();
       (opts.parent || root).add(g);
-      var tone = opts.tone || 0x8a5a3b;
+      var tone = opts.tone || 0x81543d;
       var cloth = opts.color == null ? PAL.ink : opts.color;
-      var bodyMat = K.mat.plastic(cloth, 0.55);
-      var skin = K.mat.plastic(tone, 0.45);
-      K.capsule(0.115, 0.3, bodyMat, [0, 0.42, 0], null, { parent: g });         /* torso */
-      K.sph(0.093, skin, [0, 0.74, 0], { parent: g });                            /* head */
-      K.capsule(0.037, 0.2, bodyMat, [-0.13, 0.47, 0], [0, 0, 0.28], { parent: g });
-      K.capsule(0.037, 0.2, bodyMat, [0.13, 0.47, 0], [0, 0, -0.28], { parent: g });
-      K.capsule(0.045, 0.22, K.mat.plastic(0x25324e, 0.6), [-0.06, 0.14, 0], null, { parent: g });
-      K.capsule(0.045, 0.22, K.mat.plastic(0x25324e, 0.6), [0.06, 0.14, 0], null, { parent: g });
+      var bodyMat = K.mat.plastic(cloth, 0.76);
+      var skin = K.mat.plastic(tone, 0.66);
+      var pants = K.mat.plastic(opts.pants || 0x252b35, 0.82);
+      var shoe = K.mat.plastic(0x17191d, 0.72);
+      K.cyl(0.13, 0.17, 0.32, bodyMat, [0, 0.51, 0], null, { parent: g });
+      K.cyl(0.045, 0.05, 0.07, skin, [0, 0.705, 0], null, { parent: g });
+      var head = K.sph(0.09, skin, [0, 0.81, 0], { parent: g });
+      head.scale.set(0.88, 1.08, 0.94);
+      var hair = K.sph(0.091, K.mat.plastic(opts.hair || 0x2a201d, 0.88), [0, 0.842, -0.006], { parent: g });
+      hair.scale.set(0.9, 0.52, 0.96);
+      K.capsule(0.031, 0.2, bodyMat, [-0.145, 0.49, 0], [0, 0, 0.16], { parent: g });
+      K.capsule(0.031, 0.2, bodyMat, [0.145, 0.49, 0], [0, 0, -0.16], { parent: g });
+      K.sph(0.035, skin, [-0.175, 0.34, 0], { parent: g });
+      K.sph(0.035, skin, [0.175, 0.34, 0], { parent: g });
+      K.capsule(0.041, 0.24, pants, [-0.065, 0.19, 0], [0, 0, 0.015], { parent: g });
+      K.capsule(0.041, 0.24, pants, [0.065, 0.19, 0], [0, 0, -0.015], { parent: g });
+      K.rbox(0.08, 0.045, 0.13, shoe, [-0.065, 0.025, 0.035], null, { parent: g, r: 0.018 });
+      K.rbox(0.08, 0.045, 0.13, shoe, [0.065, 0.025, 0.035], null, { parent: g, r: 0.018 });
       if (opts.pos) g.position.set(opts.pos[0], opts.pos[1] || 0, opts.pos[2]);
       if (opts.face != null) g.rotation.y = opts.face;
       if (opts.scale) g.scale.setScalar(opts.scale);
@@ -1312,8 +1330,8 @@
     K.add(new K.THREE.ConeGeometry(0.9, 1.5, 4, 1, true), projMat, [-0.35, 1.15, -0.1], [0, Math.PI / 4, -Math.PI / 2], { shadow: false });
     var story = K.screen(52, 34, function (g, w, h) {
       g.fillStyle = 'rgba(16,35,63,.94)'; g.fillRect(0, 0, w, h);
-      g.fillStyle = hot ? '#ff8d80' : '#7ef0f2'; g.font = 'bold 5.4px sans-serif';
-      g.fillText(hot ? '"HIGH RISK COMMUNITY"' : '"COMMUNITY PROFILE"', w * 0.08, h * 0.24);
+      g.fillStyle = hot ? '#ff8d80' : '#7ef0f2'; g.font = 'bold 4.7px sans-serif';
+      g.fillText(hot ? '"COMMUNITY PROGRAMS: HIGH RISK"' : '"COMMUNITY PROGRAMS"', w * 0.08, h * 0.24, w * 0.84);
       g.strokeStyle = '#37507a'; g.strokeRect(w * 0.08, h * 0.36, w * 0.36, h * 0.5);
       g.beginPath(); g.arc(w * 0.26, h * 0.52, w * 0.06, 0, 7); g.stroke();
       g.fillStyle = '#8ba0b4'; g.fillRect(w * 0.52, h * 0.42, w * 0.4, h * 0.08); g.fillRect(w * 0.52, h * 0.58, w * 0.4, h * 0.08); g.fillRect(w * 0.52, h * 0.74, w * 0.28, h * 0.08);
@@ -1737,12 +1755,14 @@
     defaultboard: { scale: 1.06, cam: [3.5, 2.6, 4.8], look: [0, 0.7, 0] }
   };
   window.BFS218_HOLO = {
-    version: 2,
+    version: 4,
     anchors: ANCHORS,
     frame: function (kind, narrow) {
       var f = FRAMES[kind] || FRAMES._default;
-      if (!narrow) return f;
-      return { scale: f.scale * 0.88, cam: [f.cam[0] * 1.16, f.cam[1] * 1.16, f.cam[2] * 1.16], look: f.look };
+      /* Default to a wider, fully readable scene. Reset returns here. */
+      var wide = { scale: f.scale * 0.88, cam: [f.cam[0] * 1.15, f.cam[1] * 1.15, f.cam[2] * 1.15], look: f.look, swingRisk: f.swingRisk };
+      if (!narrow) return wide;
+      return { scale: wide.scale * 0.9, cam: [wide.cam[0] * 1.1, wide.cam[1] * 1.1, wide.cam[2] * 1.1], look: wide.look, swingRisk: wide.swingRisk };
     },
     supports: function (kind) { return !!SCENES[kind]; },
     build: function (THREE, ctx) {
@@ -1751,17 +1771,26 @@
       var K = makeKit(THREE, ctx);
       K.environment();
       if (ctx.sun) K.shadows(ctx.sun);
-      /* cinematography: tighter framing, deeper grade, fog pushed back */
+      /* Grounded studio lighting: readable contrast without the toy-like glow. */
       try {
         ctx.camera.position.set(3.02, 2.08, 4.18);
         ctx.camera.lookAt(0, 0.55, 0);
         ctx.root.scale.setScalar(1.17);
-        ctx.scene.fog = new THREE.Fog(0xf8fbfd, 12, 26);
+        ctx.scene.fog = new THREE.Fog(0xd8dee2, 15, 30);
+        var directionalIndex = 0;
         ctx.scene.traverse(function (o) {
-          if (o.isHemisphereLight) { o.intensity = 1.12; if (o.groundColor) o.groundColor.setHex(0x8d9cb0); }
-          else if (o.isDirectionalLight && o.intensity > 2) { o.intensity = 2.75; o.color.setHex(0xffedd6); }
+          if (o.isHemisphereLight) {
+            o.intensity = 0.72;
+            o.color.setHex(0xf4f1ea);
+            if (o.groundColor) o.groundColor.setHex(0x4f5962);
+          } else if (o.isDirectionalLight) {
+            directionalIndex++;
+            if (directionalIndex === 1) { o.intensity = 1.85; o.color.setHex(0xfff0dc); }
+            else if (directionalIndex === 2) { o.intensity = 0.52; o.color.setHex(0xdbe8f3); }
+            else { o.intensity = 0.34; o.color.setHex(0xc8d7dc); }
+          }
         });
-        ctx.renderer.toneMappingExposure = 1.22;
+        ctx.renderer.toneMappingExposure = 0.98;
       } catch (e) {}
       scene(K, ctx);
       /* in-scene prediction pads for activity experiments */
@@ -1773,11 +1802,9 @@
           var pos = padPos[i] || padPos[0];
           var chosen = ctx.expPick === i;
           var dim = ctx.expRan && !chosen;
-          var padMat = chosen ? K.mat.neon(0x1c7a43, 1.0) : dim ? K.mat.plastic(0xd8dee6, 0.6) : K.mat.neon(PAL.teal, 0.55);
+          var padMat = chosen ? K.mat.plastic(0x2f6f52, 0.56) : dim ? K.mat.plastic(0x8e969b, 0.78) : K.mat.plastic(0xb7c3c3, 0.7);
           var pad = K.cyl(0.52, 0.58, 0.09, padMat, [pos[0], pos[1] + 0.045, pos[2]]);
-          if (!dim) {
-            K.halo(0.66, chosen ? 0x1c7a43 : PAL.teal, [pos[0], pos[1] + 0.1, pos[2]], { spin: chosen ? 0.9 : 0.35 });
-          }
+          K.torus(0.62, chosen ? 0.024 : 0.016, K.mat.metal(chosen ? 0x82a993 : 0x637579, 0.58), [pos[0], pos[1] + 0.1, pos[2]], [Math.PI / 2, 0, 0], { shadow: false });
           K.tag(letters[i] + '. ' + (o.tag || 'OPTION ' + letters[i]), [pos[0], i === 1 ? 0.9 : 0.6, pos[2]], { warn: false });
           if (chosen) K.tag('YOUR PREDICTION', [pos[0], 0.95, pos[2]], { warn: false });
           var hit = new THREE.Mesh(new THREE.SphereGeometry(0.85, 8, 6), K.own(new THREE.MeshBasicMaterial({ visible: false })));
