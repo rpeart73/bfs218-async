@@ -1587,7 +1587,7 @@
       var lastW = visited[visited.length - 1], lastTs = 0;
       visited.forEach(function (w) { if (vweeks[w].last && vweeks[w].last > lastTs) lastTs = vweeks[w].last; });
       if (lastTs && (Date.now() - lastTs) > 7 * 86400000) {
-        recs.push({ t: 'Ease back in', b: 'It has been more than a week since your last visit. Ten minutes back in your most recent week rebuilds momentum faster than starting something new.', go: 'SOC.station(' + lastW + ')', gl: 'Reopen Week ' + lastW });
+        recs.push({ t: 'Ease back in', b: 'It has been more than a week since your last visit. Reopening your most recent week can rebuild momentum without asking you to start something new.', go: 'SOC.station(' + lastW + ')', gl: 'Reopen Week ' + lastW });
       }
       if (window.BFS218_EXPERIMENTS) {
         for (var i = visited.length - 1; i >= 0; i--) {
@@ -1611,7 +1611,7 @@
       }
       var refl = state.wkReflect && String(state.wkReflect[lastW] || '').trim();
       if (!refl && recs.length < 3) {
-        recs.push({ t: 'Close the loop on Week ' + lastW, b: 'A one-minute written reflection is the difference between having seen an idea and being able to use it.', go: 'SOC.jumpWeek(' + lastW + ', \'reflect\')', gl: 'Write it' });
+        recs.push({ t: 'Close the loop on Week ' + lastW, b: 'A short written reflection helps turn an idea you have seen into one you can use.', go: 'SOC.jumpWeek(' + lastW + ', \'reflect\')', gl: 'Write it' });
       }
       if (!recs.length) {
         var nextW = null;
