@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Accountability as a stack</text>
+  <text x="40" y="74" font-size="16" fill="#666">A fix at the bottom does not last if the rules above still permit the harm</text>
+
+  <!-- Layer 4 (top): International human rights -->
+  <rect x="180" y="104" width="420" height="58" rx="10" fill="#DA291C"/>
+  <text x="390" y="130" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">International human rights</text>
+  <text x="390" y="151" text-anchor="middle" font-size="13" fill="#ffffff">UN 2020 report: techno-racism as a rights matter</text>
+
+  <!-- Layer 3: National law -->
+  <rect x="180" y="172" width="420" height="58" rx="10" fill="#f5f7f9" stroke="#DA291C" stroke-width="1.5"/>
+  <text x="390" y="198" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">National law</text>
+  <text x="390" y="219" text-anchor="middle" font-size="13" fill="#474C57">Canada's proposed AIDA, with the gaps Attard-Frost found</text>
+
+  <!-- Layer 2: Institutions and frameworks -->
+  <rect x="180" y="240" width="420" height="58" rx="10" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="390" y="266" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">Institutions and frameworks</text>
+  <text x="390" y="287" text-anchor="middle" font-size="13" fill="#474C57">Build justice in from the start</text>
+
+  <!-- Layer 1 (bottom): The single system -->
+  <rect x="180" y="308" width="420" height="58" rx="10" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="390" y="334" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">The single system</text>
+  <text x="390" y="355" text-anchor="middle" font-size="13" fill="#474C57">An individual fix, the bottom of the stack</text>
+
+  <!-- Work-the-top-three bracket -->
+  <line x1="166" y1="106" x2="166" y2="296" stroke="#DA291C" stroke-width="3"/>
+  <line x1="166" y1="106" x2="174" y2="106" stroke="#DA291C" stroke-width="3"/>
+  <line x1="166" y1="296" x2="174" y2="296" stroke="#DA291C" stroke-width="3"/>
+  <text x="150" y="205" text-anchor="middle" font-size="13" font-weight="600" fill="#DA291C" transform="rotate(-90 150 205)">Work the top three</text>
+
+  <!-- Upward arrow showing where lasting change comes from -->
+  <line x1="630" y1="350" x2="630" y2="130" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="623,138 630,122 637,138" fill="#8a909c"/>
+  <text x="648" y="245" text-anchor="middle" font-size="13" fill="#666" transform="rotate(90 648 245)">Where lasting change comes from</text>
+
+  <text x="40" y="406" font-size="13" fill="#666">Attard-Frost (2023); United Nations (2020).</text>
+</svg>

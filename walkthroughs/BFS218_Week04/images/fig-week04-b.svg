@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">When the default reads the world</text>
+  <text x="40" y="74" font-size="16" fill="#666">Malcolm X Boulevard, read aloud by a map voice</text>
+
+  <!-- Box 1: the input -->
+  <rect x="30" y="140" width="190" height="120" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="125" y="190" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">Malcolm X</text>
+  <text x="125" y="216" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">Boulevard</text>
+  <text x="125" y="242" text-anchor="middle" font-size="13" fill="#666">the street name</text>
+
+  <!-- Arrow 1 -->
+  <line x1="226" y1="200" x2="256" y2="200" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="256,192 272,200 256,208" fill="#8a909c"/>
+
+  <!-- Box 2: the default -->
+  <rect x="280" y="140" width="190" height="120" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="375" y="184" text-anchor="middle" font-size="16" font-weight="700" fill="#15171C">Default rule</text>
+  <text x="375" y="210" text-anchor="middle" font-size="14" fill="#474C57">read X as a</text>
+  <text x="375" y="230" text-anchor="middle" font-size="14" fill="#474C57">Roman numeral</text>
+
+  <!-- Arrow 2 -->
+  <line x1="476" y1="200" x2="506" y2="200" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="506,192 522,200 506,208" fill="#8a909c"/>
+
+  <!-- Box 3: the glitch -->
+  <rect x="500" y="140" width="160" height="120" rx="12" fill="#DA291C"/>
+  <text x="580" y="190" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">Malcolm Ten</text>
+  <text x="580" y="220" text-anchor="middle" font-size="13" fill="#ffffff">whose knowledge is</text>
+  <text x="580" y="238" text-anchor="middle" font-size="13" fill="#ffffff">the exception</text>
+
+  <text x="40" y="330" font-size="16" font-weight="600" fill="#15171C">Database design is an exercise in worldbuilding.</text>
+  <text x="40" y="358" font-size="15" fill="#474C57">The default decides whose world is normal and whose has to be the exception.</text>
+  <text x="40" y="398" font-size="13" fill="#666">Benjamin (2019), default discrimination.</text>
+</svg>

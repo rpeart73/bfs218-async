@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">The whole anatomy on one screen</text>
+  <text x="40" y="74" font-size="16" fill="#666">Three dimensions, three questions</text>
+
+  <!-- Dimension 1: Engineered inequity -->
+  <rect x="22" y="108" width="200" height="196" rx="14" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <rect x="22" y="108" width="200" height="40" rx="14" fill="#DA291C"/>
+  <rect x="22" y="134" width="200" height="14" fill="#DA291C"/>
+  <text x="122" y="135" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Dimension one</text>
+  <text x="122" y="180" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">Engineered</text>
+  <text x="122" y="202" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">inequity</text>
+  <text x="122" y="234" text-anchor="middle" font-size="13" fill="#474C57">Amplifies a gap</text>
+  <text x="122" y="252" text-anchor="middle" font-size="13" fill="#474C57">on purpose</text>
+  <text x="122" y="284" text-anchor="middle" font-size="13" font-style="italic" fill="#DA291C">Amplify, not create</text>
+
+  <!-- Dimension 2: Default discrimination -->
+  <rect x="240" y="108" width="200" height="196" rx="14" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <rect x="240" y="108" width="200" height="40" rx="14" fill="#DA291C"/>
+  <rect x="240" y="134" width="200" height="14" fill="#DA291C"/>
+  <text x="340" y="135" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Dimension two</text>
+  <text x="340" y="180" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">Default</text>
+  <text x="340" y="202" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">discrimination</text>
+  <text x="340" y="234" text-anchor="middle" font-size="13" fill="#474C57">Harm carried by</text>
+  <text x="340" y="252" text-anchor="middle" font-size="13" fill="#474C57">the defaults</text>
+  <text x="340" y="284" text-anchor="middle" font-size="13" font-style="italic" fill="#DA291C">Is the glitch systemic?</text>
+
+  <!-- Dimension 3: Coded exposure -->
+  <rect x="458" y="108" width="200" height="196" rx="14" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <rect x="458" y="108" width="200" height="40" rx="14" fill="#DA291C"/>
+  <rect x="458" y="134" width="200" height="14" fill="#DA291C"/>
+  <text x="558" y="135" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Dimension three</text>
+  <text x="558" y="180" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">Coded</text>
+  <text x="558" y="202" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">exposure</text>
+  <text x="558" y="234" text-anchor="middle" font-size="13" fill="#474C57">Visibility handed</text>
+  <text x="558" y="252" text-anchor="middle" font-size="13" fill="#474C57">out unevenly</text>
+  <text x="558" y="284" text-anchor="middle" font-size="13" font-style="italic" fill="#DA291C">Is visibility a trap?</text>
+
+  <!-- Fourth dimension still ahead -->
+  <rect x="22" y="328" width="636" height="48" rx="12" fill="#ffffff" stroke="#cfd4db" stroke-width="1.5" stroke-dasharray="6 5"/>
+  <text x="340" y="358" text-anchor="middle" font-size="15" fill="#15171C">Fourth dimension still ahead: technological benevolence, opens Part III</text>
+
+  <text x="40" y="412" font-size="13" fill="#666">One system can show all three at once. Benjamin (2019), the New Jim Code.</text>
+</svg>

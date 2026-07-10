@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">OCAP: four First Nations principles</text>
+  <text x="40" y="74" font-size="16" fill="#666">A community governs the data about itself. All four are needed.</text>
+
+  <!-- Ownership -->
+  <rect x="40" y="104" width="280" height="132" rx="12" fill="#f5f7f9" stroke="#DA291C" stroke-width="2"/>
+  <text x="62" y="138" font-size="19" font-weight="700" fill="#DA291C">Ownership</text>
+  <text x="62" y="168" font-size="14" fill="#15171C">The community collectively</text>
+  <text x="62" y="188" font-size="14" fill="#15171C">owns its information.</text>
+
+  <!-- Control -->
+  <rect x="360" y="104" width="280" height="132" rx="12" fill="#f5f7f9" stroke="#DA291C" stroke-width="2"/>
+  <text x="382" y="138" font-size="19" font-weight="700" fill="#DA291C">Control</text>
+  <text x="382" y="168" font-size="14" fill="#15171C">The community controls how</text>
+  <text x="382" y="188" font-size="14" fill="#15171C">data about it is collected</text>
+  <text x="382" y="208" font-size="14" fill="#15171C">and used.</text>
+
+  <!-- Access -->
+  <rect x="40" y="252" width="280" height="132" rx="12" fill="#f5f7f9" stroke="#DA291C" stroke-width="2"/>
+  <text x="62" y="286" font-size="19" font-weight="700" fill="#DA291C">Access</text>
+  <text x="62" y="316" font-size="14" fill="#15171C">The community can reach</text>
+  <text x="62" y="336" font-size="14" fill="#15171C">data about itself.</text>
+
+  <!-- Possession -->
+  <rect x="360" y="252" width="280" height="132" rx="12" fill="#f5f7f9" stroke="#DA291C" stroke-width="2"/>
+  <text x="382" y="286" font-size="19" font-weight="700" fill="#DA291C">Possession</text>
+  <text x="382" y="316" font-size="14" fill="#15171C">The community physically</text>
+  <text x="382" y="336" font-size="14" fill="#15171C">holds and stewards</text>
+  <text x="382" y="356" font-size="14" fill="#15171C">that data.</text>
+
+  <text x="40" y="418" font-size="13" fill="#666">Stewarded by the First Nations Information Governance Centre. We study it with respect.</text>
+</svg>

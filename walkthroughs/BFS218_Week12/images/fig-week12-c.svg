@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Three questions to ask of any technology</text>
+  <text x="40" y="74" font-size="16" fill="#666">The accountability lens you carry out of this week</text>
+
+  <!-- Question 1 -->
+  <rect x="40" y="110" width="600" height="80" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <circle cx="82" cy="150" r="22" fill="#DA291C"/>
+  <text x="82" y="157" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">1</text>
+  <text x="124" y="146" font-size="18" font-weight="700" fill="#15171C">What rule governs it?</text>
+  <text x="124" y="172" font-size="14" fill="#474C57">Which law, framework, or institution is supposed to hold it to account.</text>
+
+  <!-- Question 2 -->
+  <rect x="40" y="202" width="600" height="80" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <circle cx="82" cy="242" r="22" fill="#DA291C"/>
+  <text x="82" y="249" text-anchor="middle" font-size="20" font-weight="700" fill="#ffffff">2</text>
+  <text x="124" y="238" font-size="18" font-weight="700" fill="#15171C">Where is the gap?</text>
+  <text x="124" y="264" font-size="14" fill="#474C57">Who the rule leaves exposed, the way AIDA leaves artists and creators.</text>
+
+  <!-- Question 3 -->
+  <rect x="40" y="294" width="600" height="80" rx="12" fill="#DA291C"/>
+  <circle cx="82" cy="334" r="22" fill="#ffffff"/>
+  <text x="82" y="341" text-anchor="middle" font-size="20" font-weight="700" fill="#DA291C">3</text>
+  <text x="124" y="330" font-size="18" font-weight="700" fill="#ffffff">Who was at the table?</text>
+  <text x="124" y="356" font-size="14" fill="#ffffff">And who was not there when the rule was written.</text>
+
+  <text x="40" y="412" font-size="13" fill="#666">Attard-Frost (2023); United Nations (2020).</text>
+</svg>

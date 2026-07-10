@@ -1,0 +1,58 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:06.320
+We trust algorithms to make fair decisions about who gets a job or extra help in school.
+
+00:00:06.320 --> 00:00:11.040
+So how does an objective machine develop algorithmic bias?
+
+00:00:11.040 --> 00:00:17.120
+Take a community college, using a model to predict which incoming students need targeted support.
+
+00:00:17.120 --> 00:00:22.000
+To work, this algorithm first has to learn what success looks like.
+
+00:00:22.000 --> 00:00:27.760
+It ingests years of historical data, finding patterns in past grades and enrollment.
+
+00:00:27.840 --> 00:00:33.440
+But there's a hidden flaw in those records. Due to long-standing societal inequities,
+
+00:00:33.440 --> 00:00:37.840
+marginalized groups often show lower historical success rates in these systems.
+
+00:00:38.400 --> 00:00:42.000
+The algorithm can't see the societal context behind those numbers.
+
+00:00:42.560 --> 00:00:46.640
+It just turns that historical inequality into a rigid rule,
+
+00:00:46.640 --> 00:00:50.000
+equating the historically dominant group with the ideal baseline.
+
+00:00:50.640 --> 00:00:54.480
+Turning past disparities into mathematical rules for the future
+
+00:00:54.480 --> 00:00:56.960
+is exactly how algorithmic bias operates.
+
+00:00:57.680 --> 00:01:00.800
+What happens when this model evaluates a new cohort?
+
+00:01:00.800 --> 00:01:06.000
+By applying that flawed baseline, the model quietly underestimates Black students.
+
+00:01:06.000 --> 00:01:09.760
+It incorrectly predicts they are more likely to succeed than they actually are.
+
+00:01:10.400 --> 00:01:16.640
+As a result, they receive fewer resources than peers with the exact same actual level of need.
+
+00:01:16.640 --> 00:01:19.200
+And that incoming community college student?
+
+00:01:19.200 --> 00:01:23.760
+The algorithm quietly locks the gate, denying them support based on historical
+
+00:01:23.760 --> 00:01:33.280
+disparities they had no part in.

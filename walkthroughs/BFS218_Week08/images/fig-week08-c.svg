@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Who governs the data?</text>
+  <text x="40" y="74" font-size="16" fill="#666">Three moves toward data a community governs itself</text>
+
+  <!-- FNIGC / OCAP -->
+  <rect x="14" y="110" width="210" height="220" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <rect x="14" y="110" width="210" height="42" rx="12" fill="#2E6B4F"/>
+  <text x="119" y="138" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">FNIGC and OCAP</text>
+  <text x="119" y="186" text-anchor="middle" font-size="14" fill="#15171C">Data stays with</text>
+  <text x="119" y="208" text-anchor="middle" font-size="14" fill="#15171C">the community</text>
+  <text x="119" y="246" text-anchor="middle" font-size="14" fill="#474C57">Ownership, Control,</text>
+  <text x="119" y="268" text-anchor="middle" font-size="14" fill="#474C57">Access, and</text>
+  <text x="119" y="290" text-anchor="middle" font-size="14" fill="#474C57">Possession</text>
+
+  <!-- Mohamed, Png, Isaac -->
+  <rect x="235" y="110" width="210" height="220" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <rect x="235" y="110" width="210" height="42" rx="12" fill="#2E6B4F"/>
+  <text x="340" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Mohamed, Png, Isaac</text>
+  <text x="340" y="186" text-anchor="middle" font-size="14" fill="#15171C">Decolonial theory</text>
+  <text x="340" y="208" text-anchor="middle" font-size="14" fill="#15171C">should guide AI</text>
+  <text x="340" y="246" text-anchor="middle" font-size="14" fill="#474C57">Warn against</text>
+  <text x="340" y="268" text-anchor="middle" font-size="14" fill="#474C57">algorithmic colonialism;</text>
+  <text x="340" y="290" text-anchor="middle" font-size="14" fill="#474C57">centre those affected</text>
+
+  <!-- Smillie-Adjarkwa -->
+  <rect x="456" y="110" width="210" height="220" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <rect x="456" y="110" width="210" height="42" rx="12" fill="#2E6B4F"/>
+  <text x="561" y="138" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Smillie-Adjarkwa</text>
+  <text x="561" y="186" text-anchor="middle" font-size="14" fill="#15171C">Sovereignty</text>
+  <text x="561" y="208" text-anchor="middle" font-size="14" fill="#15171C">assumes access</text>
+  <text x="561" y="246" text-anchor="middle" font-size="14" fill="#474C57">Access is not equal</text>
+  <text x="561" y="268" text-anchor="middle" font-size="14" fill="#474C57">in remote</text>
+  <text x="561" y="290" text-anchor="middle" font-size="14" fill="#474C57">communities</text>
+
+  <text x="40" y="372" font-size="15" fill="#474C57">The sharp question is who governs the data, and on whose terms.</text>
+  <text x="40" y="408" font-size="13" fill="#666">FNIGC (2014); Mohamed, Png, and Isaac (2020); Smillie-Adjarkwa (2005).</text>
+</svg>

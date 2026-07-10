@@ -1,0 +1,35 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Same anatomy, new address</text>
+  <text x="40" y="74" font-size="16" fill="#666">The three dimensions, now in Canadian institutions</text>
+
+  <!-- Row 1: Border tech -->
+  <rect x="40" y="110" width="240" height="70" rx="10" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="60" y="142" font-size="16" font-weight="600" fill="#15171C">Border technology</text>
+  <text x="60" y="166" font-size="13" fill="#666">Molnar: logics of exclusion</text>
+  <line x1="284" y1="145" x2="356" y2="145" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="356,138 370,145 356,152" fill="#8a909c"/>
+  <rect x="378" y="110" width="262" height="70" rx="10" fill="#DA291C"/>
+  <text x="398" y="151" font-size="16" font-weight="700" fill="#ffffff">Engineered inequity</text>
+
+  <!-- Row 2: Clearview -->
+  <rect x="40" y="200" width="240" height="70" rx="10" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="60" y="232" font-size="16" font-weight="600" fill="#15171C">Clearview AI</text>
+  <text x="60" y="256" font-size="13" fill="#666">Scraped images, RCMP use</text>
+  <line x1="284" y1="235" x2="356" y2="235" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="356,228 370,235 356,242" fill="#8a909c"/>
+  <rect x="378" y="200" width="262" height="70" rx="10" fill="#DA291C"/>
+  <text x="398" y="241" font-size="16" font-weight="700" fill="#ffffff">Coded exposure</text>
+
+  <!-- Row 3: Ewert -->
+  <rect x="40" y="290" width="240" height="70" rx="10" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="60" y="322" font-size="16" font-weight="600" fill="#15171C">Ewert v Canada</text>
+  <text x="60" y="346" font-size="13" fill="#666">Risk tools, not validated</text>
+  <line x1="284" y1="325" x2="356" y2="325" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="356,318 370,325 356,332" fill="#8a909c"/>
+  <rect x="378" y="290" width="262" height="70" rx="10" fill="#DA291C"/>
+  <text x="398" y="331" font-size="16" font-weight="700" fill="#ffffff">Default discrimination</text>
+
+  <text x="40" y="396" font-size="13" fill="#666">When you meet a Canadian system, ask which dimension is at work,</text>
+  <text x="40" y="416" font-size="13" fill="#666">who is harmed, and whether any law holds it accountable.</text>
+</svg>

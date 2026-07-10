@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Flagged early, flagged wrongly</text>
+  <text x="40" y="74" font-size="16" fill="#666">A model sorts students before the term is run</text>
+
+  <!-- Box 1: predictive model -->
+  <rect x="22" y="150" width="190" height="130" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="117" y="200" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">Predictive</text>
+  <text x="117" y="226" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">model</text>
+  <text x="117" y="252" text-anchor="middle" font-size="14" fill="#474C57">colleges flag students</text>
+
+  <!-- Arrow -->
+  <line x1="218" y1="215" x2="244" y2="215" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="244,208 258,215 244,222" fill="#8a909c"/>
+
+  <!-- Box 2: likely to succeed -->
+  <rect x="264" y="96" width="180" height="100" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="354" y="140" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Likely to succeed</text>
+  <text x="354" y="166" text-anchor="middle" font-size="14" fill="#474C57">support flows here</text>
+
+  <!-- Box 3: likely to fail (red, the harm) -->
+  <rect x="264" y="234" width="180" height="100" rx="12" fill="#DA291C"/>
+  <text x="354" y="278" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">Likely to fail</text>
+  <text x="354" y="304" text-anchor="middle" font-size="14" fill="#ffffff">written off early</text>
+
+  <!-- Arrow down from model split -->
+  <line x1="246" y1="180" x2="262" y2="146" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="256,142 262,146 264,154" fill="#8a909c"/>
+  <line x1="246" y1="250" x2="262" y2="284" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="256,288 262,284 264,276" fill="#8a909c"/>
+
+  <!-- Bias box -->
+  <rect x="480" y="234" width="178" height="100" rx="12" fill="#fbe9e7" stroke="#DA291C" stroke-width="1.5"/>
+  <text x="569" y="272" text-anchor="middle" font-size="15" font-weight="700" fill="#DA291C">Bias reinforces</text>
+  <text x="569" y="296" text-anchor="middle" font-size="15" font-weight="700" fill="#DA291C">racial inequities</text>
+  <line x1="446" y1="284" x2="476" y2="284" stroke="#DA291C" stroke-width="3"/>
+  <polygon points="476,277 490,284 476,291" fill="#DA291C"/>
+
+  <text x="40" y="392" font-size="13" fill="#666">Bird, Castleman, and Song (2023), bias in predicting community college student success.</text>
+</svg>

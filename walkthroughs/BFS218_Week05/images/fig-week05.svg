@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="44" font-size="25" font-weight="700" fill="#15171C">Is visibility a trap?</text>
+  <text x="40" y="70" font-size="16" fill="#666">Coded exposure: being seen and being unseen can both be harms</text>
+
+  <!-- central node: the racialized person before a system -->
+  <rect x="255" y="100" width="170" height="62" rx="12" fill="#fdeceb" stroke="#DA291C" stroke-width="2"/>
+  <text x="340" y="128" text-anchor="middle" font-size="16" font-weight="700" fill="#15171C">A racialized person</text>
+  <text x="340" y="149" text-anchor="middle" font-size="14" fill="#474C57">meets a camera or system</text>
+
+  <!-- connector lines to the two branches -->
+  <line x1="300" y1="162" x2="180" y2="214" stroke="#9aa0aa" stroke-width="2"/>
+  <line x1="380" y1="162" x2="500" y2="214" stroke="#9aa0aa" stroke-width="2"/>
+
+  <!-- left branch: over-exposed -->
+  <rect x="40" y="214" width="280" height="74" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="64" y="245" font-size="17" font-weight="700" fill="#DA291C">Too visible</text>
+  <text x="64" y="269" font-size="14" fill="#474C57">watched, scanned, tracked,</text>
+  <text x="64" y="287" font-size="14" fill="#474C57">put on display and at risk</text>
+
+  <!-- right branch: invisible -->
+  <rect x="360" y="214" width="280" height="74" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="384" y="245" font-size="17" font-weight="700" fill="#DA291C">Too invisible</text>
+  <text x="384" y="269" font-size="14" fill="#474C57">not recognized, not served,</text>
+  <text x="384" y="287" font-size="14" fill="#474C57">unseen by the system</text>
+
+  <!-- both arrows point down to the same harm -->
+  <line x1="180" y1="288" x2="300" y2="330" stroke="#DA291C" stroke-width="2"/>
+  <line x1="500" y1="288" x2="380" y2="330" stroke="#DA291C" stroke-width="2"/>
+
+  <!-- shared harm node -->
+  <rect x="210" y="330" width="260" height="50" rx="25" fill="#DA291C"/>
+  <text x="340" y="361" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Both sides are a harm</text>
+
+  <!-- the coded gaze label, anchoring the cause -->
+  <text x="40" y="412" font-size="14" fill="#15171C">The coded gaze decides whose face a system is built to see. Accuracy is not the same as safety.</text>
+  <text x="40" y="432" font-size="13" fill="#666">Benjamin (2019); Buolamwini (2018).</text>
+</svg>

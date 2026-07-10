@@ -1,0 +1,67 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:04.560
+How does default discrimination happen in a computer system that doesn't even know a
+
+00:00:04.560 --> 00:00:06.080
+person's race?
+
+00:00:06.080 --> 00:00:10.700
+We usually treat automation as the ultimate solution to human bias, replacing prejudice
+
+00:00:10.700 --> 00:00:12.480
+with objective math.
+
+00:00:12.480 --> 00:00:16.640
+Take the automated risk assessment tools that judges use to predict if a prospective parolee
+
+00:00:16.640 --> 00:00:18.200
+will re-offend.
+
+00:00:18.200 --> 00:00:23.760
+The algorithm collects standard, neutral-sounding inputs, like financial history, education,
+
+00:00:23.760 --> 00:00:27.560
+and neighborhood characteristics, to generate a numerical risk score.
+
+00:00:27.560 --> 00:00:32.440
+The formula explicitly excludes race to stay perfectly colorblind, yet real-world studies
+
+00:00:32.440 --> 00:00:37.760
+show these tools falsely flag black defendants as high risk at almost twice the rate of white
+
+00:00:37.760 --> 00:00:38.760
+defendants.
+
+00:00:38.760 --> 00:00:39.760
+Why?
+
+00:00:39.760 --> 00:00:43.360
+Because the calculation relies on a neutral data point that secretly carries the weight
+
+00:00:43.360 --> 00:00:47.200
+of historical inequality, a stand-in called a proxy.
+
+00:00:47.200 --> 00:00:49.240
+Take neighborhood data, for instance.
+
+00:00:49.240 --> 00:00:53.640
+Because certain areas are historically segregated and heavily over-patrolled by police, the
+
+00:00:53.640 --> 00:00:57.320
+geographic data itself is already deeply skewed.
+
+00:00:57.320 --> 00:01:01.000
+Researchers don't have to write malicious code to automate anti-Blackness, they just
+
+00:01:01.000 --> 00:01:04.880
+have to build their tool on top of an already unequal society.
+
+00:01:04.880 --> 00:01:07.240
+And that perspective parolee from the beginning?
+
+00:01:07.240 --> 00:01:11.480
+The algorithm denies them release, not by predicting their future, but by mathematically
+
+00:01:11.480 --> 00:01:14.080
+scoring the historical inequalities of their neighborhood.

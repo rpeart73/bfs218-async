@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="44" font-size="25" font-weight="700" fill="#15171C">Whose face is the system built to see?</text>
+  <text x="40" y="70" font-size="16" fill="#666">The coded gaze: a facial-analysis system reads some faces well and others badly</text>
+
+  <!-- the system node -->
+  <rect x="270" y="98" width="140" height="56" rx="12" fill="#fdeceb" stroke="#DA291C" stroke-width="2"/>
+  <text x="340" y="124" text-anchor="middle" font-size="15" font-weight="700" fill="#15171C">Facial-analysis</text>
+  <text x="340" y="144" text-anchor="middle" font-size="15" font-weight="700" fill="#15171C">system</text>
+
+  <!-- connectors to two outcomes -->
+  <line x1="300" y1="154" x2="180" y2="206" stroke="#9aa0aa" stroke-width="2"/>
+  <line x1="380" y1="154" x2="500" y2="206" stroke="#9aa0aa" stroke-width="2"/>
+
+  <!-- left: near-perfect -->
+  <rect x="40" y="206" width="280" height="84" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="64" y="236" font-size="16" font-weight="700" fill="#15171C">Near-perfect</text>
+  <text x="64" y="260" font-size="14" fill="#474C57">on lighter-skinned men:</text>
+  <text x="64" y="280" font-size="14" fill="#474C57">the face the system was built to see</text>
+
+  <!-- right: far worse -->
+  <rect x="360" y="206" width="280" height="84" rx="10" fill="#fdeceb" stroke="#DA291C" stroke-width="2"/>
+  <text x="384" y="236" font-size="16" font-weight="700" fill="#DA291C">Far worse</text>
+  <text x="384" y="260" font-size="14" fill="#474C57">on darker-skinned women:</text>
+  <text x="384" y="280" font-size="14" fill="#474C57">the error falls hardest here</text>
+
+  <!-- intersection callout -->
+  <rect x="160" y="322" width="360" height="50" rx="25" fill="#DA291C"/>
+  <text x="340" y="353" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Hardest at the intersection of race and gender</text>
+
+  <text x="40" y="412" font-size="14" fill="#15171C">Accuracy is not the same as safety. The gaze decides whose face counts.</text>
+  <text x="40" y="432" font-size="13" fill="#666">Buolamwini and Gebru (2018), Gender shades.</text>
+</svg>

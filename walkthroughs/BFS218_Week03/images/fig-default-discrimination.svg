@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Bias without a race variable</text>
+  <text x="40" y="74" font-size="16" fill="#666">How discrimination operates with no race data at all</text>
+
+  <!-- Box 1 -->
+  <rect x="22" y="150" width="186" height="130" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="115" y="208" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">No race field</text>
+  <text x="115" y="234" text-anchor="middle" font-size="18" font-weight="600" fill="#15171C">in the system</text>
+
+  <!-- Arrow 1 -->
+  <line x1="214" y1="215" x2="240" y2="215" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="240,208 254,215 240,222" fill="#8a909c"/>
+
+  <!-- Box 2 -->
+  <rect x="260" y="150" width="186" height="130" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="353" y="196" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Proxies stand in</text>
+  <text x="353" y="224" text-anchor="middle" font-size="15" fill="#474C57">zip code, name,</text>
+  <text x="353" y="246" text-anchor="middle" font-size="15" fill="#474C57">browsing history</text>
+
+  <!-- Arrow 2 -->
+  <line x1="452" y1="215" x2="478" y2="215" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="478,208 492,215 478,222" fill="#8a909c"/>
+
+  <!-- Box 3 -->
+  <rect x="498" y="150" width="160" height="130" rx="12" fill="#DA291C"/>
+  <text x="578" y="208" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">Racialized</text>
+  <text x="578" y="234" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">outcome</text>
+
+  <text x="40" y="350" font-size="15" fill="#474C57">Take race out as a variable and it returns through proxies that track it.</text>
+  <text x="40" y="392" font-size="13" fill="#666">Benjamin (2019), default discrimination.</text>
+</svg>

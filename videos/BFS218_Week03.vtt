@@ -1,0 +1,61 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:06.640
+Algorithmic bias encodes prejudice into machines, a phenomenon known as the New Jim Code.
+
+00:00:06.640 --> 00:00:09.960
+But how does math actually learn to be racist?
+
+00:00:09.960 --> 00:00:14.760
+People assume technology is objective, but designers quietly bake human blind spots into
+
+00:00:14.760 --> 00:00:16.320
+the architecture.
+
+00:00:16.320 --> 00:00:21.000
+Take the commercial facial analysis software developed by major companies like IBM and
+
+00:00:21.000 --> 00:00:22.120
+Microsoft.
+
+00:00:22.120 --> 00:00:27.560
+To learn what a human face looks like, an AI ingests a massive library of reference photos,
+
+00:00:27.560 --> 00:00:29.600
+called a benchmark data set.
+
+00:00:29.600 --> 00:00:33.000
+The system has no independent concept of a human face.
+
+00:00:33.000 --> 00:00:37.880
+It can only recognize the specific mathematical patterns present in the photos it was fed.
+
+00:00:37.880 --> 00:00:40.600
+And researchers uncovered a critical flaw.
+
+00:00:40.600 --> 00:00:44.960
+These standard data sets were overwhelmingly composed of lighter-skinned subjects.
+
+00:00:44.960 --> 00:00:49.960
+In fact, up to 86% of the reference images featured lighter-skinned people.
+
+00:00:49.960 --> 00:00:54.800
+Because of this skewed data, the trained AI effortlessly and accurately identifies lighter-skinned
+
+00:00:54.800 --> 00:00:59.560
+males, but it struggles to find a mathematical match for darker-skinned females, resulting
+
+00:00:59.560 --> 00:01:02.480
+in error rates of nearly 35%.
+
+00:01:02.480 --> 00:01:07.840
+Sociologist Ruha Benjamin calls this the New Jim Code, when discriminatory design hides
+
+00:01:07.840 --> 00:01:10.620
+behind a cloak of algorithmic objectivity.
+
+00:01:10.620 --> 00:01:15.080
+So when a commercial facial recognition system misidentifies a person in the real world,
+
+00:01:15.080 --> 00:01:19.840
+and flags them as a risk, it isn't an accidental glitch, it's engineered in equity.

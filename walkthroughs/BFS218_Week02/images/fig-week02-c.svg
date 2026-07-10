@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Two lenses on the same system</text>
+  <text x="40" y="74" font-size="16" fill="#666">The shift this week is from intentions to outcomes</text>
+
+  <!-- Intentions lens -->
+  <rect x="40" y="108" width="270" height="230" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="175" y="146" text-anchor="middle" font-size="19" font-weight="700" fill="#15171C">Intentions lens</text>
+  <text x="64" y="184" font-size="15" fill="#474C57">Asks: did the system</text>
+  <text x="64" y="206" font-size="15" fill="#474C57">mean to cause harm?</text>
+  <text x="64" y="246" font-size="15" fill="#474C57">Looks for a hateful</text>
+  <text x="64" y="268" font-size="15" fill="#474C57">designer or motive.</text>
+  <text x="64" y="308" font-size="15" font-weight="600" fill="#15171C">Misses harm when</text>
+  <text x="64" y="330" font-size="15" font-weight="600" fill="#15171C">no one intended it.</text>
+
+  <!-- arrow -->
+  <line x1="322" y1="223" x2="352" y2="223" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="352,214 368,223 352,232" fill="#8a909c"/>
+
+  <!-- Outcomes lens -->
+  <rect x="380" y="108" width="270" height="230" rx="12" fill="#DA291C"/>
+  <text x="515" y="146" text-anchor="middle" font-size="19" font-weight="700" fill="#ffffff">Outcomes lens</text>
+  <text x="404" y="184" font-size="15" fill="#ffffff">Asks: what does it do,</text>
+  <text x="404" y="206" font-size="15" fill="#ffffff">to whom, and who pays?</text>
+  <text x="404" y="246" font-size="15" fill="#ffffff">Looks at who is sorted</text>
+  <text x="404" y="268" font-size="15" fill="#ffffff">and who carries the cost.</text>
+  <text x="404" y="308" font-size="15" font-weight="700" fill="#ffffff">Reveals racial harm even</text>
+  <text x="404" y="330" font-size="15" font-weight="700" fill="#ffffff">with no intent to harm.</text>
+
+  <text x="40" y="388" font-size="13" fill="#666">Benjamin (2019); key analytic shift, Week 2.</text>
+</svg>

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Same anatomy, new address</text>
+  <text x="40" y="74" font-size="16" fill="#666">Three Canadian domains, a documented case in each</text>
+
+  <!-- Column 1: Borders -->
+  <rect x="24" y="110" width="200" height="44" rx="10" fill="#DA291C"/>
+  <text x="124" y="138" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">Borders</text>
+  <rect x="24" y="166" width="200" height="180" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="124" y="198" text-anchor="middle" font-size="15" font-weight="600" fill="#15171C">Digital border tech</text>
+  <text x="124" y="224" text-anchor="middle" font-size="13" fill="#474C57">Logics of exclusion;</text>
+  <text x="124" y="242" text-anchor="middle" font-size="13" fill="#474C57">migrants as the</text>
+  <text x="124" y="260" text-anchor="middle" font-size="13" fill="#474C57">testing ground</text>
+  <line x1="48" y1="284" x2="200" y2="284" stroke="#cfd4db" stroke-width="1"/>
+  <text x="124" y="310" text-anchor="middle" font-size="13" font-weight="600" fill="#DA291C">Engineered inequity</text>
+  <text x="124" y="332" text-anchor="middle" font-size="12" fill="#666">Molnar (2023)</text>
+
+  <!-- Column 2: Policing -->
+  <rect x="240" y="110" width="200" height="44" rx="10" fill="#DA291C"/>
+  <text x="340" y="138" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">Policing</text>
+  <rect x="240" y="166" width="200" height="180" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="340" y="198" text-anchor="middle" font-size="15" font-weight="600" fill="#15171C">Clearview AI, RCMP</text>
+  <text x="340" y="224" text-anchor="middle" font-size="13" fill="#474C57">Scraped billions of</text>
+  <text x="340" y="242" text-anchor="middle" font-size="13" fill="#474C57">images; OPC found a</text>
+  <text x="340" y="260" text-anchor="middle" font-size="13" fill="#474C57">privacy-law breach</text>
+  <line x1="264" y1="284" x2="416" y2="284" stroke="#cfd4db" stroke-width="1"/>
+  <text x="340" y="310" text-anchor="middle" font-size="13" font-weight="600" fill="#DA291C">Coded exposure</text>
+  <text x="340" y="332" text-anchor="middle" font-size="12" fill="#666">OPC (2021)</text>
+
+  <!-- Column 3: Corrections -->
+  <rect x="456" y="110" width="200" height="44" rx="10" fill="#DA291C"/>
+  <text x="556" y="138" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">Corrections</text>
+  <rect x="456" y="166" width="200" height="180" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="556" y="198" text-anchor="middle" font-size="15" font-weight="600" fill="#15171C">Ewert v Canada</text>
+  <text x="556" y="224" text-anchor="middle" font-size="13" fill="#474C57">Risk tools never</text>
+  <text x="556" y="242" text-anchor="middle" font-size="13" fill="#474C57">validated for</text>
+  <text x="556" y="260" text-anchor="middle" font-size="13" fill="#474C57">Indigenous people</text>
+  <line x1="480" y1="284" x2="632" y2="284" stroke="#cfd4db" stroke-width="1"/>
+  <text x="556" y="310" text-anchor="middle" font-size="13" font-weight="600" fill="#DA291C">Default discrimination</text>
+  <text x="556" y="332" text-anchor="middle" font-size="12" fill="#666">SCC (2018)</text>
+
+  <text x="40" y="394" font-size="15" fill="#15171C">Same anatomy, new address: the New Jim Code in Canadian institutions.</text>
+  <text x="40" y="418" font-size="13" fill="#666">Ask which dimension is at work, who is harmed, and whether any law holds it accountable.</text>
+</svg>

@@ -1,0 +1,67 @@
+WEBVTT
+
+00:00:00.000 --> 00:00:05.680
+Digital border walls and facial recognition aren't just American issues, they're already
+
+00:00:05.680 --> 00:00:07.840
+active across Canada.
+
+00:00:07.840 --> 00:00:12.800
+Police are using big data to shift from reacting to crimes to predicting them.
+
+00:00:12.800 --> 00:00:16.960
+But this triggers a fatal flaw, algorithmic bias.
+
+00:00:16.960 --> 00:00:22.280
+Take the Saskatchewan Police Predictive Analytics Lab, which is developing algorithms to forecast
+
+00:00:22.280 --> 00:00:23.880
+repeat offenders.
+
+00:00:23.880 --> 00:00:28.760
+To learn what a high-risk offender looks like, the algorithm trains on massive datasets
+
+00:00:28.760 --> 00:00:31.480
+of historical Canadian arrest records.
+
+00:00:31.480 --> 00:00:36.600
+But independent legal reviews reveal this data isn't a neutral map of crime, it's a map
+
+00:00:36.600 --> 00:00:42.440
+of past police behavior, skewed by a legacy of systemic racism and over-policing.
+
+00:00:42.440 --> 00:00:47.400
+Lacking social context, the algorithm blindly accepts these records as ground truth.
+
+00:00:47.400 --> 00:00:52.320
+It mathematically links marginalized identities to higher crime rates, outputting a high-risk
+
+00:00:52.320 --> 00:00:53.320
+score.
+
+00:00:53.320 --> 00:00:57.720
+Officers are deployed based on these objective scores, leading to new arrests in those exact
+
+00:00:57.720 --> 00:00:59.320
+same communities.
+
+00:00:59.320 --> 00:01:03.840
+These new arrests feed directly back into the database, confirming the prediction and creating
+
+00:01:03.840 --> 00:01:06.160
+a self-fulfilling feedback loop.
+
+00:01:06.160 --> 00:01:10.320
+Experts warn this mechanism likely violates the Canadian Charter of Rights and Freedoms,
+
+00:01:10.320 --> 00:01:14.000
+disguising adverse impact discrimination as neutral science.
+
+00:01:14.000 --> 00:01:16.960
+So what about that Saskatchewan Risk Forecasting Lab?
+
+00:01:16.960 --> 00:01:21.400
+Unless it rejects this flawed historical data, it won't predict a new future.
+
+00:01:21.400 --> 00:01:23.480
+It will just mathematically enforce the past.

@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">A law with a gap still leaves people exposed</text>
+  <text x="40" y="74" font-size="16" fill="#666">Canada's proposed AIDA, and who it does not yet cover</text>
+
+  <!-- The law, drawn as a protective wall with a missing section -->
+  <rect x="40" y="150" width="180" height="120" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="130" y="200" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Covered</text>
+  <text x="130" y="226" text-anchor="middle" font-size="13" fill="#474C57">some uses fall</text>
+  <text x="130" y="244" text-anchor="middle" font-size="13" fill="#474C57">inside the rules</text>
+
+  <!-- The gap -->
+  <rect x="250" y="150" width="180" height="120" rx="12" fill="#ffffff" stroke="#DA291C" stroke-width="2.5" stroke-dasharray="9 7"/>
+  <text x="340" y="200" text-anchor="middle" font-size="18" font-weight="700" fill="#DA291C">The gap</text>
+  <text x="340" y="226" text-anchor="middle" font-size="13" fill="#474C57">artists and creators</text>
+  <text x="340" y="244" text-anchor="middle" font-size="13" fill="#474C57">facing generative AI</text>
+
+  <!-- Still covered -->
+  <rect x="460" y="150" width="180" height="120" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="550" y="200" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Covered</text>
+  <text x="550" y="226" text-anchor="middle" font-size="13" fill="#474C57">other uses fall</text>
+  <text x="550" y="244" text-anchor="middle" font-size="13" fill="#474C57">inside the rules</text>
+
+  <!-- Arrow pointing into the gap -->
+  <line x1="340" y1="300" x2="340" y2="276" stroke="#DA291C" stroke-width="3"/>
+  <polygon points="333,282 340,270 347,282" fill="#DA291C"/>
+  <text x="340" y="324" text-anchor="middle" font-size="15" font-weight="600" fill="#15171C">People here are left unprotected</text>
+
+  <text x="40" y="368" font-size="15" fill="#474C57">AIDA is the leading attempt to govern AI in Canada, but it is not yet complete.</text>
+  <text x="40" y="404" font-size="13" fill="#666">Attard-Frost (2023), submission to the Standing Committee on Industry and Technology.</text>
+</svg>

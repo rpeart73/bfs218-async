@@ -1,0 +1,51 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="44" font-size="25" font-weight="700" fill="#15171C">Every meaning of exposure</text>
+  <text x="40" y="70" font-size="16" fill="#666">Benjamin uses all of these senses at once, decided unevenly across race</text>
+
+  <!-- central node: the one word -->
+  <rect x="270" y="100" width="140" height="56" rx="12" fill="#fdeceb" stroke="#DA291C" stroke-width="2"/>
+  <text x="340" y="134" text-anchor="middle" font-size="18" font-weight="700" fill="#15171C">Exposure</text>
+
+  <!-- connectors to five senses -->
+  <line x1="300" y1="156" x2="120" y2="200" stroke="#9aa0aa" stroke-width="2"/>
+  <line x1="320" y1="156" x2="270" y2="200" stroke="#9aa0aa" stroke-width="2"/>
+  <line x1="340" y1="156" x2="340" y2="200" stroke="#9aa0aa" stroke-width="2"/>
+  <line x1="360" y1="156" x2="410" y2="200" stroke="#9aa0aa" stroke-width="2"/>
+  <line x1="380" y1="156" x2="560" y2="200" stroke="#9aa0aa" stroke-width="2"/>
+
+  <!-- five sense boxes -->
+  <rect x="36" y="200" width="118" height="62" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="95" y="226" text-anchor="middle" font-size="14" font-weight="700" fill="#DA291C">Light</text>
+  <text x="95" y="246" text-anchor="middle" font-size="13" fill="#474C57">on a sensor</text>
+
+  <rect x="166" y="200" width="118" height="62" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="225" y="226" text-anchor="middle" font-size="14" font-weight="700" fill="#DA291C">Disclosure</text>
+  <text x="225" y="246" text-anchor="middle" font-size="13" fill="#474C57">a secret revealed</text>
+
+  <rect x="296" y="200" width="118" height="62" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="355" y="226" text-anchor="middle" font-size="14" font-weight="700" fill="#DA291C">Unprotected</text>
+  <text x="355" y="246" text-anchor="middle" font-size="13" fill="#474C57">left uncovered</text>
+
+  <rect x="426" y="200" width="118" height="62" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="485" y="226" text-anchor="middle" font-size="14" font-weight="700" fill="#DA291C">At risk</text>
+  <text x="485" y="246" text-anchor="middle" font-size="13" fill="#474C57">vulnerable to harm</text>
+
+  <rect x="556" y="200" width="118" height="62" rx="10" fill="#f5f7f9" stroke="#e3e7ec" stroke-width="1.5"/>
+  <text x="615" y="226" text-anchor="middle" font-size="14" font-weight="700" fill="#DA291C">On display</text>
+  <text x="615" y="246" text-anchor="middle" font-size="13" fill="#474C57">put on show</text>
+
+  <!-- arrows down to the shared point -->
+  <line x1="95" y1="262" x2="320" y2="320" stroke="#DA291C" stroke-width="1.5"/>
+  <line x1="225" y1="262" x2="330" y2="320" stroke="#DA291C" stroke-width="1.5"/>
+  <line x1="355" y1="262" x2="345" y2="320" stroke="#DA291C" stroke-width="1.5"/>
+  <line x1="485" y1="262" x2="360" y2="320" stroke="#DA291C" stroke-width="1.5"/>
+  <line x1="615" y1="262" x2="370" y2="320" stroke="#DA291C" stroke-width="1.5"/>
+
+  <!-- shared node -->
+  <rect x="200" y="320" width="280" height="50" rx="25" fill="#DA291C"/>
+  <text x="340" y="351" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">Coded exposure is all of them</text>
+
+  <text x="40" y="412" font-size="14" fill="#15171C">One word carries every sense at once, and visibility is distributed by design.</text>
+  <text x="40" y="432" font-size="13" fill="#666">Benjamin (2019), coded exposure.</text>
+</svg>

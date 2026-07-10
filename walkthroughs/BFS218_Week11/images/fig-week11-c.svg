@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">A patch, or an abolitionist tool?</text>
+  <text x="40" y="74" font-size="16" fill="#666">Two questions you can ask of a harmful gate</text>
+
+  <!-- The gate -->
+  <rect x="270" y="116" width="140" height="64" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="340" y="155" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">A harmful gate</text>
+
+  <!-- branch lines -->
+  <line x1="300" y1="180" x2="170" y2="232" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="170,232 184,228 178,242" fill="#8a909c"/>
+  <line x1="380" y1="180" x2="510" y2="232" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="510,232 502,242 496,228" fill="#8a909c"/>
+
+  <!-- Patch box -->
+  <rect x="36" y="244" width="252" height="150" rx="14" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="162" y="282" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Patch</text>
+  <text x="162" y="316" text-anchor="middle" font-size="15" fill="#474C57">How do we fix</text>
+  <text x="162" y="338" text-anchor="middle" font-size="15" fill="#474C57">the gate's edges?</text>
+  <text x="162" y="372" text-anchor="middle" font-size="14" fill="#666">The gate still stands.</text>
+
+  <!-- Abolitionist tool box -->
+  <rect x="392" y="244" width="252" height="150" rx="14" fill="#DA291C"/>
+  <text x="518" y="282" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">Abolitionist tool</text>
+  <text x="518" y="316" text-anchor="middle" font-size="15" fill="#ffffff">Should the gate</text>
+  <text x="518" y="338" text-anchor="middle" font-size="15" fill="#ffffff">exist at all?</text>
+  <text x="518" y="372" text-anchor="middle" font-size="14" fill="#ffffff">Refuse it; build something just.</text>
+
+  <text x="40" y="426" font-size="13" fill="#666">Benjamin (2019); Tanksley (2023).</text>
+</svg>

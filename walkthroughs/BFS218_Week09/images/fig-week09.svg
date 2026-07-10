@@ -1,0 +1,38 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Will the fix fix it?</text>
+  <text x="40" y="74" font-size="16" fill="#666">A test for any technology sold as help</text>
+
+  <!-- Start: proposed fix -->
+  <rect x="40" y="106" width="600" height="52" rx="12" fill="#DA291C"/>
+  <text x="340" y="138" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">A proposed fix, sold as help</text>
+  <line x1="340" y1="158" x2="340" y2="178" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="333,178 340,190 347,178" fill="#8a909c"/>
+
+  <!-- Ask box -->
+  <rect x="170" y="190" width="340" height="58" rx="12" fill="#f5f7f9" stroke="#DA291C" stroke-width="2"/>
+  <text x="340" y="216" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">Ask: what does it actually change,</text>
+  <text x="340" y="238" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">and for whom?</text>
+
+  <!-- Split arrows -->
+  <line x1="200" y1="248" x2="150" y2="294" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="145,285 148,300 158,290" fill="#8a909c"/>
+  <line x1="480" y1="248" x2="530" y2="294" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="535,290 532,300 522,285" fill="#8a909c"/>
+
+  <!-- Left outcome: comfortable story -->
+  <rect x="22" y="300" width="290" height="104" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="167" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#15171C">A comfortable story</text>
+  <text x="167" y="354" text-anchor="middle" font-size="14" fill="#474C57">Harm looks solved, but who</text>
+  <text x="167" y="374" text-anchor="middle" font-size="14" fill="#474C57">carries the cost has not changed.</text>
+  <text x="167" y="394" text-anchor="middle" font-size="13" fill="#666">The benevolence trap.</text>
+
+  <!-- Right outcome: real repair -->
+  <rect x="368" y="300" width="290" height="104" rx="12" fill="#DA291C"/>
+  <text x="513" y="328" text-anchor="middle" font-size="16" font-weight="700" fill="#ffffff">A real repair</text>
+  <text x="513" y="354" text-anchor="middle" font-size="14" fill="#ffffff">It changes who pays.</text>
+  <text x="513" y="374" text-anchor="middle" font-size="14" fill="#ffffff">The harm is addressed,</text>
+  <text x="513" y="394" text-anchor="middle" font-size="14" fill="#ffffff">not just reframed.</text>
+
+  <text x="40" y="430" font-size="12" fill="#666">Benjamin (2019), technological benevolence; the chapter section Raising Robots.</text>
+</svg>

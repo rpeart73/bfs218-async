@@ -1,0 +1,6 @@
+tools/
+data/*.json
+vendor/
+__pycache__/
+*.pyc
+_extracted/

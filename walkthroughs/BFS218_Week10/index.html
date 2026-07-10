@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex">
+<title>BFS218 Week 10 : Weekly Walkthrough</title>
+<link rel="stylesheet" href="assets/reset.css?v=20260627000000">
+<link rel="stylesheet" href="assets/reveal.css?v=20260627000000">
+<link rel="stylesheet" href="assets/seneca-deck.css?v=202607061905">
+</head>
+<body>
+<div class="deck-topbar"></div>
+<img class="deck-logo" src="assets/logo.png" alt="Seneca Polytechnic">
+<div class="deck-footer">
+  <span>BFS218&nbsp;&nbsp;|&nbsp;&nbsp;Week 10&nbsp;&nbsp;|&nbsp;&nbsp;Weekly Walkthrough</span>
+  <span class="deck-count" aria-live="polite"></span>
+</div>
+<nav class="deck-nav" aria-label="Slide navigation">
+  <button class="nav-prev" type="button" aria-label="Previous slide">&#8592;&nbsp;Back</button>
+  <button class="nav-next" type="button" aria-label="Next slide">Next&nbsp;&#8594;</button>
+</nav>
+
+<div class="reveal"><div class="slides">
+<section class="title-slide" data-background-color="#ffffff">
+  <div class="course">BFS218</div>
+  <h1 class="wt">Weekly Walkthrough</h1>
+  <hr class="rule">
+  <div class="wk">Week 10: Algorithmic Gatekeeping</div>
+  <div class="term">Fall 2026</div>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp">
+    <figure class="media">
+      <img class="media-img diagram" src="images/fig-week10.svg" alt="An algorithmic gate sorts applicants for jobs and credit into let through and kept out">
+      <figcaption>An algorithmic gate sorts applicants for jobs and credit into let through and kept out<span class="credit">Bird, Castleman, and Song (2023); Devlin (2023)</span></figcaption>
+    </figure>
+    <div class="body">
+      <h2>Picture a gate</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>Picture a gate. Many applicants on one side, an automated decision in the middle, two streams on the other: let through, and kept out. The gate decides at scale and in an instant. And every gate an algorithm now guards was once guarded by a person you could at least ask to explain.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>An algorithmic gate decides at scale and in an instant. The same decision that once passed through a person you could ask now passes through a system that answers no one.</p>
+      </div>
+      <div class="think fragment">
+        <div class="eyebrow">Think about it</div><p>When an algorithm decides who is let through a gate, who can the person who is kept out actually ask?</p>
+      </div>
+      <div class="concepts"><span class="chip">Algorithmic gatekeeping</span><span class="chip">Let through, kept out</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Picture a gate. Many applicants on one side, an automated decision in the middle, two streams on the other: let through, and kept out. The gate decides at scale and in an instant. And every gate an algorithm now guards was once guarded by a person you could at least ask to explain.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp no-media">
+    <div class="body">
+      <h2>What algorithmic gatekeeping means</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>Algorithmic gatekeeping is the use of automated systems to decide who is granted access: who is hired, who is approved for credit, who is admitted or flagged in education. The gate operates at scale and at speed. And the person kept out often has no one to ask and no decision to appeal.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>A gate that runs in software does not slow down for a hard case. It sorts thousands of people on the same rule, and the person it keeps out is often left with no one to ask and nothing to appeal.</p>
+      </div>
+      <div class="concepts"><span class="chip">Algorithmic gatekeeping</span><span class="chip">No one to appeal</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Algorithmic gatekeeping is the use of automated systems to decide who is granted access: who is hired, who is approved for credit, who is admitted or flagged in education. The gate operates at scale and at speed, and the person kept out often has no one to ask and no decision to appeal.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp no-media">
+    <div class="body">
+      <h2>The gate sits at three real doors</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>This is not abstract. The same logic runs through three doors that govern real opportunity: hiring, where a tool screens resumes before a person sees them; lending, where a credit score decides who is trusted with money; and education, where a model flags who is likely to succeed or fail. Gatekeeping is where the dimensions you have learned this term meet a person&#x27;s life chances.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>Hiring, lending, and education are where these systems touch a person&#x27;s life chances directly. A gate is not a metaphor here, it is the job you do not get, the loan you are refused, the support you are never offered.</p>
+      </div>
+      <div class="think fragment">
+        <div class="eyebrow">Think about it</div><p>Which gate in your own life, a job portal, a loan, an admission, a benefit, was decided in part by a system?</p>
+      </div>
+      <div class="concepts"><span class="chip">Hiring, lending, education</span><span class="chip">Life chances</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Hiring, lending, and education are three doors governed by automated decisions. Gatekeeping is where the dimensions learned this term meet a person&#x27;s life chances.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp">
+    <figure class="media">
+      <img class="media-img diagram" src="images/fig-week10-b.svg" alt="How a predictive model sorts students before the term is run">
+      <figcaption>How a predictive model sorts students before the term is run<span class="credit">Bird, Castleman, and Song (2023)</span></figcaption>
+    </figure>
+    <div class="body">
+      <h2>A tool sold as help can still harm</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>Bird, Castleman, and Song, in 2023, studied predictive models that colleges use to flag students likely to succeed or fail. They found that algorithmic bias can reinforce racial inequities. So a tool sold as help can label some students, early and wrongly, as poor bets, shaping who gets support and who is quietly written off.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>The model is meant to point support toward students who need it. Bird, Castleman, and Song found that bias in the model can do the opposite: mark some students as poor bets before the term even runs.</p>
+      </div>
+      <div class="concepts"><span class="chip">Bias in predicting success</span><span class="chip">Flagged early and wrongly</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Bird, Castleman, and Song (2023) studied predictive models that colleges use to flag students likely to succeed or fail. They found algorithmic bias can reinforce racial inequities, so a tool sold as help can label some students, early and wrongly, as poor bets.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp no-media">
+    <div class="body">
+      <h2>What it means to be flagged early</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>Hold on to what a wrong flag costs. A student marked early as likely to fail may be steered away from a program, watched more closely, or simply not offered the help that goes to the students the model trusts. The label arrives before the student has done anything, and it can become true precisely because the system acted on it. The harm is not abstract; it shapes who gets support and who is written off.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>A prediction is not a neutral guess when a system acts on it. Steer support away from a student you flagged, and you help make the flag come true.</p>
+      </div>
+      <div class="think fragment">
+        <div class="eyebrow">Think about it</div><p>What is the harm in being flagged, early and wrongly, as likely to fail?</p>
+      </div>
+      <div class="concepts"><span class="chip">Bias in predicting success</span><span class="chip">Self-fulfilling flag</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>A wrong early flag steers support away from a student and can become self-fulfilling. Bird, Castleman, and Song: the harm shapes who gets support and who is written off.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp">
+    <figure class="media">
+      <img class="media-img diagram" src="images/fig-week10-c.svg" alt="Inequality within the algorithm and without it">
+      <figcaption>Inequality within the algorithm and without it<span class="credit">Devlin (2023); Noble (2018)</span></figcaption>
+    </figure>
+    <div class="body">
+      <h2>Where the inequality lives</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>Kate Devlin, in 2023, names where the inequality lives. Within the algorithm, in its data and design. And without it, in who builds these systems and who is subject to them. Both matter, because fixing the data does not fix who holds the power, and changing who builds it does not fix biased data on its own.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>Devlin names two homes for inequality: within the algorithm, in its data and design, and without it, in who builds these systems and who is subject to them. Both matter, because changing one does not fix the other.</p>
+      </div>
+      <div class="think fragment">
+        <div class="eyebrow">Think about it</div><p>Devlin distinguishes inequality within and without the algorithm. What does each mean, and why do both matter?</p>
+      </div>
+      <div class="concepts"><span class="chip">Within the algorithm</span><span class="chip">Without the algorithm</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Devlin (2023): inequality lives within the algorithm, in its data and design, and without it, in who builds these systems and who is subject to them. Both matter; changing one does not fix the other.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp no-media">
+    <div class="body">
+      <h2>A ranking is a gate too</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>Safiya Umoja Noble shows that search and ranking systems can reproduce racism and sexism, often against Black women, while presenting as neutral utilities. A ranking is a gate too: what is pushed to the top is let through, what is buried is kept out. We treat Noble&#x27;s argument carefully and point you to her book, Algorithms of oppression, for the primary text.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>The gate does not always look like a yes or no. A search result that ranks one group up and buries another is sorting people too, while looking like a neutral tool.</p>
+      </div>
+      <div class="concepts"><span class="chip">Ranking as a gate</span><span class="chip">Presenting as neutral</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Noble (2018), Algorithms of oppression: search and ranking systems reproduce racism and sexism, often against Black women, while presenting as neutral. A ranking is a gate. Point to the book for the primary text.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp no-media">
+    <div class="body">
+      <h2>The promise of neutral, tested</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>These systems are sold on a promise: that automating a decision makes it fairer and more objective than a person would be. This week tests that promise against the gates the systems now guard. When the same bias shows up in education, in hiring, and in search, the neutrality is the selling point, not the reality. That is the New Jim Code at work: old inequity carried forward by a tool that looks fair.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>The claim is that a machine removes human bias. The evidence is that it can launder bias instead, making an unequal outcome look like an objective one.</p>
+      </div>
+      <div class="concepts"><span class="chip">The New Jim Code</span><span class="chip">Objectivity as cover</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>The selling point is neutrality and objectivity; the week tests that promise. Bias across education, hiring, and search shows the neutrality is cover. This is the New Jim Code: old inequity in a tool that looks fair.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp no-media">
+    <div class="body">
+      <h2>Who answers for the gate</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>So when you meet a gate, ask who it lets through, who it keeps out, whether the harm falls along race, gender, or class, and who can be asked to answer for it. Accountability is the hard part. A person at a gate can be asked to explain a decision. A model at scale answers no one, unless the institutions that build, buy, and deploy it are held responsible.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>Meeting a gate is a set of questions: who it lets through, who it keeps out, whether the harm falls along race, gender, or class, and who can be asked to answer for it.</p>
+      </div>
+      <div class="think fragment">
+        <div class="eyebrow">Think about it</div><p>When the gatekeeper is a model, who do you ask, and who is accountable when the gate keeps people out quietly, at scale?</p>
+      </div>
+      <div class="concepts"><span class="chip">Accountability</span><span class="chip">Who answers for the gate</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>When you meet a gate, ask who it lets through, who it keeps out, whether the harm falls along race, gender, or class, and who can be asked to answer for it. Accountability sits with the institutions that build, buy, and deploy the system, not one programmer.</p></aside>
+</section>
+<section data-background-color="#ffffff">
+  <div class="cp no-media">
+    <div class="body">
+      <h2>Your turn: adjust the gate yourself</h2>
+      <div class="narration" tabindex="0" role="region" aria-label="Slide narration"><p>You do not have to take this on faith. This week you will step up to an automated screening system and adjust it yourself. Move a threshold, switch a criterion on or off, and watch who is filtered out. Then add one real gate from your own life to your Personal Cartography, naming who it let through, who it kept out, and who you could ask to explain.</p></div>
+      <div class="insight fragment">
+        <div class="eyebrow">Insight</div><p>You see the gate most clearly when your own hand is on the dial. Change one setting, watch who falls out, and the design choice stops being invisible.</p>
+      </div>
+      <div class="concepts"><span class="chip">At the gate</span><span class="chip">Personal Cartography</span></div>
+    </div>
+  </div>
+  <aside class="notes"><p>Hand-off to the week interactive: At the gate. Adjust an automated screening system and reveal who is filtered out, then add a real gate to the Personal Cartography.</p></aside>
+</section>
+<section class="closing" data-background-color="#ffffff">
+  <h2>What You Are Learning This Week</h2>
+  <div class="subtitle">Key takeaways from this module</div>
+  <div class="numbered"><div class="row fragment">
+        <div class="n">1</div>
+        <div><h3>Gates Decide at Scale and in an Instant</h3><p>Algorithmic gatekeeping is the use of automated systems to decide who is granted access: who is hired, who is approved for credit, who is admitted. The gate operates at scale and at speed, and the person kept out often has no one to ask and no decision to appeal.</p></div>
+      </div><div class="row fragment">
+        <div class="n">2</div>
+        <div><h3>A Tool Sold as Help Can Still Harm</h3><p>Bird, Castleman, and Song (2023) found that algorithmic bias in predictive models can reinforce racial inequities. A model meant to flag students who need support can instead label some, early and wrongly, as likely to fail, shaping who gets help and who is written off.</p></div>
+      </div><div class="row fragment">
+        <div class="n">3</div>
+        <div><h3>Inequality Lives Within and Without the Algorithm</h3><p>Devlin (2023) shows the inequality is not only in the data and design inside the system. It is also in who builds these systems and who is subject to them. A ranking, as Noble argues, is a gate that can reproduce racism and sexism while presenting as neutral.</p></div>
+      </div><div class="row fragment">
+        <div class="n">4</div>
+        <div><h3>Ask Who Answers for the Gate</h3><p>Every gate an algorithm now guards was once guarded by a person you could ask to explain. When you meet a gate, ask who it lets through, who it keeps out, whether the harm falls along race, gender, or class, and who can be asked to answer for it.</p></div>
+      </div></div>
+</section>
+</div></div>
+
+<script src="assets/reveal.js?v=20260627000000"></script>
+<script src="assets/notes.js?v=20260627000000"></script>
+<script>
+  const DECK_COURSE = "BFS218", DECK_WEEK = "10", DECK_VER = "20260627100000";
+  // self-update: if this cached page is older than the deployed build, reload fresh.
+  // Ends the "I do not see my changes" caching problem without a manual hard refresh.
+  fetch("version.json?cb=" + Math.random()).then(r => r.json()).then(j => {
+    if (j && j.v && j.v !== DECK_VER && location.search.indexOf("v=" + j.v) < 0)
+      location.replace(location.pathname + "?v=" + j.v + location.hash);
+  }).catch(() => {});
+  const deck = new Reveal({
+    width: 1280, height: 720, margin: 0,
+    center: false, hash: true, slideNumber: false, progress: true,
+    controls: false, transition: "slide", controlsTutorial: false,
+    plugins: [ RevealNotes ]
+  });
+  deck.initialize().then(() => {
+    // ?reveal-all shows every fragment at once (useful for review + PDF export)
+    if (location.search.includes("reveal-all")) deck.configure({ fragments: false });
+    const count = document.querySelector(".deck-count");
+    const prevBtn = document.querySelector(".nav-prev");
+    const nextBtn = document.querySelector(".nav-next");
+    prevBtn.addEventListener("click", () => deck.prev());
+    nextBtn.addEventListener("click", () => deck.next());
+    const update = () => {
+      const i = deck.getIndices().h + 1, total = deck.getTotalSlides();
+      count.textContent = "Slide " + i + " of " + total;
+      const r = deck.availableRoutes();
+      prevBtn.disabled = !r.left;
+      nextBtn.disabled = !r.right;
+    };
+    deck.on("slidechanged", update);
+    deck.on("fragmentshown", update);
+    deck.on("fragmenthidden", update);
+    update();
+  });
+
+</script>
+<script src="assets/deck-menu.js?v=202607061905"></script>
+<script defer src="../../assets/img-viewer.js?v=1"></script>
+</body>
+</html>

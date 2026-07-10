@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">From structural racism to the New Jim Code</text>
+  <text x="40" y="74" font-size="16" fill="#666">CRT applied to code: the same racism, now carried by technology</text>
+
+  <!-- Box 1: CRT premise -->
+  <rect x="22" y="150" width="190" height="120" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="117" y="192" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Structural racism</text>
+  <text x="117" y="216" text-anchor="middle" font-size="14" fill="#474C57">built into laws,</text>
+  <text x="117" y="236" text-anchor="middle" font-size="14" fill="#474C57">institutions, systems,</text>
+  <text x="117" y="256" text-anchor="middle" font-size="14" fill="#474C57">not only attitudes</text>
+
+  <!-- Arrow 1 -->
+  <line x1="216" y1="210" x2="248" y2="210" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="248,203 262,210 248,217" fill="#8a909c"/>
+
+  <!-- Box 2: neutral-looking technology -->
+  <rect x="268" y="150" width="190" height="120" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="363" y="192" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Neutral-looking tech</text>
+  <text x="363" y="216" text-anchor="middle" font-size="14" fill="#474C57">just math, just a form,</text>
+  <text x="363" y="236" text-anchor="middle" font-size="14" fill="#474C57">objective, efficient,</text>
+  <text x="363" y="256" text-anchor="middle" font-size="14" fill="#474C57">progressive</text>
+
+  <!-- Arrow 2 -->
+  <line x1="462" y1="210" x2="494" y2="210" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="494,203 508,210 494,217" fill="#8a909c"/>
+
+  <!-- Box 3: New Jim Code outcome -->
+  <rect x="514" y="150" width="146" height="120" rx="12" fill="#DA291C"/>
+  <text x="587" y="192" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">New Jim Code</text>
+  <text x="587" y="218" text-anchor="middle" font-size="14" fill="#ffffff">old inequity</text>
+  <text x="587" y="238" text-anchor="middle" font-size="14" fill="#ffffff">reproduced,</text>
+  <text x="587" y="258" text-anchor="middle" font-size="14" fill="#ffffff">looking new</text>
+
+  <!-- The analytic shift band -->
+  <rect x="22" y="298" width="638" height="74" rx="10" fill="#fbeceb" stroke="#DA291C" stroke-width="1.5"/>
+  <text x="40" y="320" font-size="15" font-weight="700" fill="#DA291C">The shift CRT trains:</text>
+  <text x="186" y="320" font-size="15" fill="#15171C">stop asking if the system intends harm;</text>
+  <text x="40" y="342" font-size="15" fill="#15171C">ask what it does, to whom, and who pays. A system with no</text>
+  <text x="40" y="364" font-size="15" fill="#15171C">intent can still produce a racial harm (intentions versus outcomes).</text>
+
+  <text x="40" y="392" font-size="13" fill="#666">Benjamin (2019); Crenshaw (1991), critical race theory applied to code.</text>
+</svg>

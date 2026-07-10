@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Three of four, one still ahead</text>
+  <text x="40" y="74" font-size="16" fill="#666">Consolidate the three; the fourth opens Part III after Study Week</text>
+
+  <!-- Dimension 1 -->
+  <rect x="40" y="150" width="180" height="110" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="130" y="196" text-anchor="middle" font-size="16" font-weight="600" fill="#15171C">Engineered</text>
+  <text x="130" y="218" text-anchor="middle" font-size="16" font-weight="600" fill="#15171C">inequity</text>
+  <text x="130" y="244" text-anchor="middle" font-size="13" fill="#474C57">dimension one</text>
+
+  <!-- Dimension 2 -->
+  <rect x="240" y="150" width="180" height="110" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="330" y="196" text-anchor="middle" font-size="16" font-weight="600" fill="#15171C">Default</text>
+  <text x="330" y="218" text-anchor="middle" font-size="16" font-weight="600" fill="#15171C">discrimination</text>
+  <text x="330" y="244" text-anchor="middle" font-size="13" fill="#474C57">dimension two</text>
+
+  <!-- Dimension 3 -->
+  <rect x="440" y="150" width="180" height="110" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="530" y="196" text-anchor="middle" font-size="16" font-weight="600" fill="#15171C">Coded</text>
+  <text x="530" y="218" text-anchor="middle" font-size="16" font-weight="600" fill="#15171C">exposure</text>
+  <text x="530" y="244" text-anchor="middle" font-size="13" fill="#474C57">dimension three</text>
+
+  <!-- Brace label for the three you have -->
+  <line x1="40" y1="284" x2="620" y2="284" stroke="#cfd4db" stroke-width="2"/>
+  <text x="330" y="308" text-anchor="middle" font-size="14" font-weight="600" fill="#15171C">The three you have, consolidate now</text>
+
+  <!-- Arrow ahead -->
+  <line x1="330" y1="328" x2="330" y2="350" stroke="#DA291C" stroke-width="3"/>
+  <polygon points="322,350 338,350 330,364" fill="#DA291C"/>
+
+  <!-- Dimension 4: ahead -->
+  <rect x="190" y="372" width="300" height="54" rx="12" fill="#DA291C"/>
+  <text x="340" y="396" text-anchor="middle" font-size="15" font-weight="700" fill="#ffffff">Technological benevolence</text>
+  <text x="340" y="416" text-anchor="middle" font-size="13" fill="#ffffff">still ahead, opens Part III after Study Week</text>
+</svg>

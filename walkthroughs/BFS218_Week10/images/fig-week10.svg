@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Picture a gate</text>
+  <text x="40" y="74" font-size="16" fill="#666">An automated decision sorts applicants for jobs and credit</text>
+
+  <!-- Applicants on one side -->
+  <rect x="22" y="150" width="170" height="150" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="107" y="186" text-anchor="middle" font-size="17" font-weight="700" fill="#15171C">Applicants</text>
+  <text x="107" y="212" text-anchor="middle" font-size="14" fill="#474C57">jobs, credit,</text>
+  <text x="107" y="232" text-anchor="middle" font-size="14" fill="#474C57">admission, benefits</text>
+  <circle cx="72" cy="262" r="9" fill="#8a909c"/>
+  <circle cx="100" cy="262" r="9" fill="#8a909c"/>
+  <circle cx="128" cy="262" r="9" fill="#8a909c"/>
+  <circle cx="86" cy="284" r="9" fill="#8a909c"/>
+  <circle cx="114" cy="284" r="9" fill="#8a909c"/>
+
+  <!-- Arrow into the gate -->
+  <line x1="196" y1="225" x2="226" y2="225" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="226,218 240,225 226,232" fill="#8a909c"/>
+
+  <!-- The gate: automated decision -->
+  <rect x="246" y="150" width="150" height="150" rx="12" fill="#DA291C"/>
+  <text x="321" y="206" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">Algorithmic</text>
+  <text x="321" y="230" text-anchor="middle" font-size="17" font-weight="700" fill="#ffffff">gate</text>
+  <text x="321" y="262" text-anchor="middle" font-size="13" fill="#ffffff">decides at scale,</text>
+  <text x="321" y="280" text-anchor="middle" font-size="13" fill="#ffffff">in an instant</text>
+
+  <!-- Two streams out -->
+  <line x1="400" y1="200" x2="438" y2="190" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="438,183 452,189 437,197" fill="#8a909c"/>
+  <line x1="400" y1="250" x2="438" y2="262" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="438,255 452,263 437,269" fill="#8a909c"/>
+
+  <!-- Let through -->
+  <rect x="458" y="146" width="200" height="80" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="558" y="180" text-anchor="middle" font-size="18" font-weight="700" fill="#15171C">Let through</text>
+  <text x="558" y="204" text-anchor="middle" font-size="13" fill="#474C57">granted access</text>
+
+  <!-- Kept out -->
+  <rect x="458" y="234" width="200" height="80" rx="12" fill="#fbeceb" stroke="#DA291C" stroke-width="1.5"/>
+  <text x="558" y="268" text-anchor="middle" font-size="18" font-weight="700" fill="#15171C">Kept out</text>
+  <text x="558" y="292" text-anchor="middle" font-size="13" fill="#474C57">no one to ask, no appeal</text>
+
+  <text x="40" y="372" font-size="15" fill="#474C57">Every gate an algorithm guards was once guarded by a person you could ask to explain.</text>
+  <text x="40" y="404" font-size="13" fill="#666">Bird (2023); Devlin (2023).</text>
+</svg>

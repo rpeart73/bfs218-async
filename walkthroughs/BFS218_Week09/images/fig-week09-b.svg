@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">The benevolence trap</text>
+  <text x="40" y="74" font-size="16" fill="#666">Help is hard to argue with, so the framing disarms criticism</text>
+
+  <!-- Outer wrapper: the framing of care -->
+  <rect x="60" y="120" width="560" height="220" rx="16" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="84" y="152" font-size="17" font-weight="600" fill="#15171C">Sold as help: a fix, an upgrade, an act of care</text>
+
+  <!-- Inner core: the harm that survives -->
+  <rect x="220" y="186" width="240" height="120" rx="12" fill="#DA291C"/>
+  <text x="340" y="236" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">The old harm</text>
+  <text x="340" y="262" text-anchor="middle" font-size="14" fill="#ffffff">still carried</text>
+  <text x="340" y="282" text-anchor="middle" font-size="14" fill="#ffffff">underneath</text>
+
+  <!-- Left label: questioning feels like opposing progress -->
+  <text x="84" y="216" font-size="14" fill="#474C57">To question it</text>
+  <text x="84" y="236" font-size="14" fill="#474C57">can feel like</text>
+  <text x="84" y="256" font-size="14" fill="#474C57">opposing progress</text>
+  <text x="84" y="276" font-size="14" fill="#474C57">or refusing help</text>
+
+  <!-- Right label -->
+  <text x="596" y="246" text-anchor="end" font-size="14" fill="#474C57">The framing is</text>
+  <text x="596" y="266" text-anchor="end" font-size="14" fill="#474C57">how the harm</text>
+  <text x="596" y="286" text-anchor="end" font-size="14" fill="#474C57">survives</text>
+
+  <text x="40" y="380" font-size="15" fill="#474C57">A tool sold as the solution is harder to question than one that is openly harmful.</text>
+  <text x="40" y="412" font-size="13" fill="#666">Benjamin (2019), technological benevolence.</text>
+</svg>

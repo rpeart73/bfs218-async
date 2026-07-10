@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
+  <rect width="680" height="440" fill="#ffffff"/>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Reform or real repair?</text>
+  <text x="40" y="74" font-size="16" fill="#666">The working test for any response</text>
+
+  <!-- Reform column -->
+  <rect x="36" y="104" width="280" height="280" rx="14" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="176" y="142" text-anchor="middle" font-size="19" font-weight="700" fill="#15171C">Reform</text>
+  <line x1="72" y1="160" x2="280" y2="160" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="72" y="196" font-size="15" fill="#474C57">Patch the worst edges</text>
+  <text x="72" y="228" font-size="15" fill="#474C57">Keep the structure</text>
+  <text x="72" y="260" font-size="15" fill="#474C57">Ease harm</text>
+  <text x="72" y="318" font-size="16" font-weight="600" fill="#15171C">Power stays in place</text>
+
+  <!-- Real repair column -->
+  <rect x="364" y="104" width="280" height="280" rx="14" fill="#DA291C"/>
+  <text x="504" y="142" text-anchor="middle" font-size="19" font-weight="700" fill="#ffffff">Real repair</text>
+  <line x1="400" y1="160" x2="608" y2="160" stroke="#ffffff" stroke-opacity="0.4" stroke-width="1.5"/>
+  <text x="400" y="196" font-size="15" fill="#ffffff">Refuse the unjust system</text>
+  <text x="400" y="228" font-size="15" fill="#ffffff">Build a just alternative</text>
+  <text x="400" y="260" font-size="15" fill="#ffffff">Those most affected lead</text>
+  <text x="400" y="318" font-size="16" font-weight="700" fill="#ffffff">Changes who holds power</text>
+  <text x="400" y="344" font-size="16" font-weight="700" fill="#ffffff">and who carries the cost</text>
+
+  <text x="40" y="426" font-size="13" fill="#666">Costanza-Chock (2020); Benjamin (2019).</text>
+</svg>
