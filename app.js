@@ -2245,11 +2245,42 @@
       return '<button type="button" class="ap-dot' + (dv ? ' on' : '') + (isCur ? ' cur' : '') + '" onclick="SOC.station(' + w + ')" title="Week ' + w + ': ' + esc(weekTitle(w)) + '" aria-label="Week ' + w + (dv ? ', driven' : '') + '">' + (dv ? '&#10003;' : w) + '</button>';
     }).join('');
     var pct = Math.round(100 * driven / (ws.length || 1));
+    var pace = '';
+    if (cw.phase === 'during') {
+      var expected = ws.filter(function (x) { return x < cw.week; }).length;
+      var firstOpen = null, wi;
+      for (wi = 0; wi < ws.length; wi++) { if (ws[wi] <= cw.week && !weekDriven(ws[wi])) { firstOpen = ws[wi]; break; } }
+      if (firstOpen === null) firstOpen = cw.week;
+      if (driven >= expected && expected > 0) {
+        pace = '<div class="ap-pace ap-pace-on"><b>You are on pace.</b> The calendar sits in Week ' + cw.week + ' territory and your driving matches it. Keep the rhythm.</div>';
+      } else if (expected - driven === 1) {
+        pace = '<div class="ap-pace"><b>One week of breathing room used.</b> The calendar sits in Week ' + cw.week + ' territory. No penalty, the pace is yours: the next unfinished week is <button type="button" class="ap-pace-go" onclick="SOC.station(' + firstOpen + ')">Week ' + firstOpen + '</button>.</div>';
+      } else if (expected - driven > 1) {
+        pace = '<div class="ap-pace"><b>The calendar has moved ahead of your map.</b> It sits in Week ' + cw.week + ' territory. That is allowed here; the shortest way back is one week at a time, starting with <button type="button" class="ap-pace-go" onclick="SOC.station(' + firstOpen + ')">Week ' + firstOpen + '</button>.</div>';
+      }
+    }
+    var WINDOWS = [
+      { name: 'Window 1', opens: '2026-09-21', due: '2026-10-25', dueTxt: 'due Sunday, October 25', items: 'Compass Check, Map Exchange checkpoint, Canadian Case File' },
+      { name: 'Window 2', opens: '2026-11-02', due: '2026-12-11', dueTxt: 'due Friday, December 11', items: 'Design the Repair, Personal Cartography, Map Exchange close' }
+    ];
+    var arcs = WINDOWS.map(function (wd) {
+      var toOpen = kdDaysUntil(wd.opens), toDue = kdDaysUntil(wd.due);
+      var span = Math.max(1, Math.round((new Date(wd.due + 'T12:00:00') - new Date(wd.opens + 'T12:00:00')) / 86400000));
+      var st, bar = 0;
+      if (toOpen > 0) st = '<span class="aw-chip">Opens in ' + toOpen + (toOpen === 1 ? ' day' : ' days') + '</span>';
+      else if (toDue >= 0) { bar = Math.min(100, Math.round(100 * (span - toDue) / span)); st = '<span class="aw-chip aw-open">OPEN, ' + toDue + (toDue === 1 ? ' day' : ' days') + ' left</span>'; }
+      else { st = '<span class="aw-chip aw-done">Closed</span>'; bar = 100; }
+      return '<div class="aw-card"><div class="aw-head"><b>' + wd.name + '</b>' + st + '</div>'
+        + '<div class="aw-track"><span style="width:' + bar + '%"></span></div>'
+        + '<div class="aw-items">' + wd.items + ' <em>' + wd.dueTxt + '</em></div></div>';
+    }).join('');
     return '<section class="node async-progress">'
       + '<div class="ap-head"><div><div class="mono" style="font-size:.72rem;letter-spacing:.08em;color:var(--amode);font-weight:700;margin-bottom:6px">YOUR PROGRESS, YOUR PACE</div>'
       + '<h2 style="font-size:1.5rem;font-weight:600;margin:0;color:var(--ink)">You have driven <span style="color:var(--amode)">' + driven + '</span> of ' + ws.length + ' weeks</h2></div>'
       + '<div class="ap-pct">' + pct + '%</div></div>'
       + '<div class="ap-dots">' + dots + '</div>'
+      + pace
+      + '<div class="aw-row">' + arcs + '</div>'
       + '<p class="ap-note">A week counts as driven once you have checked off its four steps. No one marks this for you. The pace is yours, and the only fixed points are the two due dates.</p>'
       + '</section>';
   }

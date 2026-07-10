@@ -113,6 +113,21 @@
   .ap-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap}
   .ap-pct{font-family:var(--mono);font-size:2rem;font-weight:700;color:var(--amode);line-height:1}
   .ap-dots{display:flex;flex-wrap:wrap;gap:8px;margin:16px 0 12px}
+  .ap-pace{margin:4px 0 14px;padding:12px 15px;border:1px solid #F0C8C3;border-left:4px solid var(--amode);border-radius:0 10px 10px 0;background:#FBF4F3;font-size:.92rem;line-height:1.55;color:var(--ink)}
+  .ap-pace-on{border-left-color:#1B2A4A;background:#F5F7FB;border-color:#D9E2EA}
+  .ap-pace-go{border:none;background:none;padding:0;color:var(--amode);font-weight:700;font-size:.92rem;cursor:pointer;text-decoration:underline}
+  .aw-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:2px 0 14px}
+  @media (max-width:640px){.aw-row{grid-template-columns:1fr}}
+  .aw-card{border:1px solid var(--border);border-radius:12px;padding:13px 15px;background:#fff}
+  .aw-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:9px}
+  .aw-head b{font-size:.95rem;color:var(--ink)}
+  .aw-chip{font-family:var(--mono);font-size:.66rem;font-weight:700;letter-spacing:.05em;color:var(--ink-dim);background:var(--soft);border-radius:999px;padding:3px 10px;white-space:nowrap}
+  .aw-open{color:#fff;background:var(--amode)}
+  .aw-done{color:var(--ink-faint);background:#EEF1F5}
+  .aw-track{height:6px;border-radius:999px;background:#EEF1F4;overflow:hidden;margin-bottom:9px}
+  .aw-track span{display:block;height:100%;border-radius:999px;background:var(--amode)}
+  .aw-items{font-size:.8rem;line-height:1.5;color:var(--ink-dim)}
+  .aw-items em{color:var(--ink-faint);font-style:normal}
   .ap-dot{width:38px;height:38px;border-radius:10px;border:1.5px solid var(--border);background:#fff;color:var(--ink-dim);font-family:var(--mono);font-size:.9rem;font-weight:700;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:.12s}
   .ap-dot:hover{border-color:var(--amode)}
   .ap-dot.on{background:var(--amode);border-color:var(--amode);color:#fff}
@@ -573,7 +588,7 @@
 <script src="./data/bfs218-holo.js?v=6"></script>
 <script src="./data/videos.js?v=3"></script>
 <script src="./data/bfs218-walkfigs.js?v=1"></script>
-<script src="./app.js?v=270"></script>
+<script src="./app.js?v=271"></script>
 <script defer src="assets/img-viewer.js?v=1"></script>
 </body>
 </html>
