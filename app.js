@@ -5977,7 +5977,7 @@
     if (e.kind === 'open') { label = 'Assignment released'; m = title.match(/^(.*?)\s+(?:opens|begins)(?:\s+(.*))?$/i); if (m) { name = m[1]; if (!note && m[2]) note = m[2]; } }
     else if (e.kind === 'due') { label = 'Assignment due'; name = title.replace(/\s+(?:due|close|closes)$/i, ''); note = note.replace(/^due,?\s*/i, ''); }
     else if (/study week/i.test(title)) label = 'Study Week';
-    else if (e.kind === 'class') label = 'Live class';
+    else if (e.kind === 'class') label = /^(?:First|Last) day of classes$/i.test(title) ? 'Term marker' : 'Live class';
     else if (e.kind === 'async') label = 'Asynchronous week';
     return { label: label, name: name, note: note, date: kdMonthDay(e.date) };
   }
