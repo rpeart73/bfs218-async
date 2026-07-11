@@ -1,4 +1,4 @@
-/* BFS218 Activity Dioramas v3 - grounded, realistic teaching models.
+/* BFS218 Visual Worlds v5 - distinct, grounded teaching models.
    Self-contained scene library. app.js passes THREE plus a context and
    receives { tick, dispose, skipDefaultStage }. Every scene is procedural
    Three.js: no external assets, no network calls, palette matches the site
@@ -13,6 +13,19 @@
     steel: 0xb9c4cf, floor: 0xe9eef2, line: 0x8ba0b4
   };
 
+  /* One quality bar, several visual languages. The week chooses the style. */
+  var STYLE_KINDS = {
+    technical: ['pipeline', 'switches', 'audit', 'gate', 'sorting', 'mechanismatch', 'decisionpath', 'defaultboard', 'surveillanceflow', 'detector', 'thresholdaudit'],
+    civic: ['outcomelens', 'benevolence', 'promisefunnel', 'policy', 'policydeck'],
+    cartographic: ['map', 'vault', 'datastory', 'return', 'capstonemap', 'compass', 'futurecompass'],
+    workshop: ['review', 'repair', 'startermap', 'matchwork', 'toolkit', 'repairtable']
+  };
+  function styleFor(kind) {
+    var names = Object.keys(STYLE_KINDS);
+    for (var i = 0; i < names.length; i++) if (STYLE_KINDS[names[i]].indexOf(kind) >= 0) return names[i];
+    return 'diorama';
+  }
+
   /* ------------------------------------------------------------------ kit */
   function makeKit(THREE, ctx) {
     var K = { THREE: THREE, ctx: ctx, ticks: [], disposables: [], textures: [] };
@@ -24,10 +37,19 @@
     /* --- environment reflections (hand-rolled room, PMREM) --- */
     K.environment = function () {
       try {
+        var style = ctx.style || styleFor(ctx.kind);
+        var rooms = {
+          technical: { wall: 0xd7dcde, key: 0xfff7eb, fill: 0xd8e5ec, edge: 0xd8c6ad, bounce: 0xc7d2d5 },
+          civic: { wall: 0xd8d4cd, key: 0xfff1dc, fill: 0xd8e2ea, edge: 0xd8bfa3, bounce: 0xc8d2d0 },
+          cartographic: { wall: 0xd5d0c5, key: 0xffefd2, fill: 0xd2e0e4, edge: 0xcbb28f, bounce: 0xbfcac8 },
+          workshop: { wall: 0xd4d0c8, key: 0xffe8c8, fill: 0xd4e0e5, edge: 0xd0ad83, bounce: 0xc3cecc },
+          diorama: { wall: 0xd6dce1, key: 0xfff8ef, fill: 0xdce8f2, edge: 0xe8cfae, bounce: 0xc6d8da }
+        };
+        var room = rooms[style] || rooms.diorama;
         var pm = new THREE.PMREMGenerator(ctx.renderer);
         var env = new THREE.Scene();
         var geo = new THREE.BoxGeometry(10, 10, 10);
-        var wall = new THREE.MeshBasicMaterial({ color: 0xd6dce1, side: THREE.BackSide });
+        var wall = new THREE.MeshBasicMaterial({ color: room.wall, side: THREE.BackSide });
         env.add(new THREE.Mesh(geo, wall));
         function panel(w, h, c, i, pos, rot) {
           var p = new THREE.Mesh(new THREE.PlaneGeometry(w, h), new THREE.MeshBasicMaterial({ color: c }));
@@ -36,10 +58,10 @@
           if (rot) p.rotation.set(rot[0], rot[1], rot[2]);
           env.add(p);
         }
-        panel(4, 2.6, 0xfff8ef, 1.65, [0, 4.2, -3.4], [0.5, 0, 0]);        /* warm key */
-        panel(3, 2.2, 0xdce8f2, 0.9, [-3.8, 2.6, 1.6], [0, 1.05, 0]);      /* cool fill */
-        panel(2.4, 1.6, 0xe8cfae, 0.72, [3.9, 1.9, 1.2], [0, -1.0, 0]);    /* warm edge */
-        panel(2.2, 1.4, 0xc6d8da, 0.5, [0.4, 1.4, 4.4], [0, Math.PI, 0]);  /* soft bounce */
+        panel(4, 2.6, room.key, 1.65, [0, 4.2, -3.4], [0.5, 0, 0]);
+        panel(3, 2.2, room.fill, 0.9, [-3.8, 2.6, 1.6], [0, 1.05, 0]);
+        panel(2.4, 1.6, room.edge, 0.72, [3.9, 1.9, 1.2], [0, -1.0, 0]);
+        panel(2.2, 1.4, room.bounce, 0.5, [0.4, 1.4, 4.4], [0, Math.PI, 0]);
         var rt = pm.fromScene(env, 0.04);
         ctx.scene.environment = rt.texture;
         K.disposables.push({ dispose: function () { rt.dispose(); pm.dispose(); } });
@@ -67,8 +89,8 @@
 
     /* --- materials --- */
     K.mat = {};
-    K.mat.plastic = function (c, rough) { return K.own(new THREE.MeshStandardMaterial({ color: c, roughness: rough == null ? 0.68 : rough, metalness: 0.015 })); };
-    K.mat.metal = function (c, rough) { return K.own(new THREE.MeshStandardMaterial({ color: c == null ? PAL.steel : c, roughness: rough == null ? 0.44 : rough, metalness: 0.68 })); };
+    K.mat.plastic = function (c, rough) { return K.own(new THREE.MeshPhysicalMaterial({ color: c, roughness: rough == null ? 0.72 : rough, metalness: 0.01, clearcoat: 0.08, clearcoatRoughness: 0.72 })); };
+    K.mat.metal = function (c, rough) { return K.own(new THREE.MeshPhysicalMaterial({ color: c == null ? PAL.steel : c, roughness: rough == null ? 0.5 : rough, metalness: 0.62, clearcoat: 0.06, clearcoatRoughness: 0.62 })); };
     K.mat.ink = function () { return K.mat.plastic(PAL.ink, 0.58); };
     K.mat.glass = function (c, opacity) {
       return K.own(new THREE.MeshPhysicalMaterial({
@@ -78,7 +100,7 @@
       }));
     };
     K.mat.neon = function (c, intensity) {
-      return K.own(new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: intensity == null ? 0.32 : Math.min(0.72, intensity * 0.48), roughness: 0.42, metalness: 0.06 }));
+      return K.own(new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: intensity == null ? 0.18 : Math.min(0.38, intensity * 0.24), roughness: 0.58, metalness: 0.04 }));
     };
     K.mat.holo = function (c, opacity) {
       var mat = new THREE.ShaderMaterial({
@@ -99,10 +121,10 @@
           'varying vec3 vN; varying vec3 vV; varying vec2 vUv;',
           'void main(){',
           ' float fres=pow(1.0-abs(dot(normalize(vN),normalize(vV))),2.0);',
-          ' float scan=0.5+0.5*sin(vUv.y*90.0+uTime*2.6);',
+          ' float scan=0.5+0.5*sin(vUv.y*72.0+uTime*1.8);',
           ' float band=smoothstep(0.985,1.0,fract(vUv.y*1.0-uTime*0.06));',
-          ' float a=uOpacity*(0.38+0.5*fres+0.14*scan+0.45*band);',
-          ' gl_FragColor=vec4(uColor*(0.85+0.5*fres),a); }'
+          ' float a=uOpacity*(0.28+0.42*fres+0.08*scan+0.24*band);',
+          ' gl_FragColor=vec4(uColor*(0.78+0.35*fres),a); }'
         ].join('\n')
       });
       K.own(mat);
@@ -169,16 +191,25 @@
       return mat;
     };
 
-    /* --- museum stage --- */
+    /* --- stage language: technical board, civic forum, map table, or workshop --- */
     K.stage = function (opts) {
       opts = opts || {};
+      var style = opts.style || ctx.style || styleFor(ctx.kind);
       var floorTex = K.texture(512, 512, function (g) {
-        var grad = g.createRadialGradient(256, 256, 40, 256, 256, 300);
-        grad.addColorStop(0, '#c8c9c5');
-        grad.addColorStop(0.58, '#9fa5a7');
-        grad.addColorStop(1, '#69737a');
+        var palettes = {
+          technical: ['#eef0ef', '#cbd0d1', '#9ba3a6'],
+          civic: ['#ddd7cc', '#aaa79f', '#747a7b'],
+          cartographic: ['#e1d7c3', '#b9ad95', '#777d79'],
+          workshop: ['#c7a987', '#987b5c', '#5d5c58'],
+          diorama: ['#c8c9c5', '#9fa5a7', '#69737a']
+        };
+        var pc = palettes[style] || palettes.diorama;
+        var grad = style === 'technical' ? g.createLinearGradient(0, 0, 512, 512) : g.createRadialGradient(256, 256, 40, 256, 256, 300);
+        grad.addColorStop(0, pc[0]);
+        grad.addColorStop(0.58, pc[1]);
+        grad.addColorStop(1, pc[2]);
         g.fillStyle = grad; g.fillRect(0, 0, 512, 512);
-        g.globalAlpha = 0.18;
+        g.globalAlpha = style === 'technical' ? 0.08 : 0.14;
         var seed = 218;
         function noise() { seed = (seed * 1664525 + 1013904223) >>> 0; return seed / 4294967296; }
         for (var n = 0; n < 2600; n++) {
@@ -187,27 +218,67 @@
           g.fillRect(noise() * 512, noise() * 512, 1.2, 1.2);
         }
         g.globalAlpha = 1;
-        g.strokeStyle = 'rgba(38,50,58,.2)'; g.lineWidth = 1;
-        for (var i = 0; i <= 16; i++) {
-          g.beginPath(); g.moveTo(i * 32, 0); g.lineTo(i * 32, 512); g.stroke();
-          g.beginPath(); g.moveTo(0, i * 32); g.lineTo(512, i * 32); g.stroke();
+        if (style === 'technical') {
+          g.globalAlpha = 1; g.strokeStyle = 'rgba(42,55,63,.18)'; g.lineWidth = 1;
+          for (var i = 0; i <= 20; i++) {
+            g.beginPath(); g.moveTo(i * 25.6, 0); g.lineTo(i * 25.6, 512); g.stroke();
+            g.beginPath(); g.moveTo(0, i * 25.6); g.lineTo(512, i * 25.6); g.stroke();
+          }
+          g.strokeStyle = 'rgba(150,26,19,.52)'; g.lineWidth = 3;
+          g.strokeRect(34, 34, 444, 444);
+          for (var t = 0; t < 18; t++) {
+            var o = 44 + t * 24;
+            g.beginPath(); g.moveTo(o, 34); g.lineTo(o, t % 2 ? 45 : 52); g.stroke();
+            g.beginPath(); g.moveTo(34, o); g.lineTo(t % 2 ? 45 : 52, o); g.stroke();
+          }
+        } else if (style === 'cartographic') {
+          g.globalAlpha = 1;
+          for (var c = 0; c < 7; c++) {
+            g.strokeStyle = 'rgba(27,42,74,' + (0.11 + c * 0.012) + ')'; g.lineWidth = 1.4;
+            g.beginPath();
+            for (var a = 0; a <= 120; a++) {
+              var ang = a / 120 * Math.PI * 2;
+              var rr = 58 + c * 26 + Math.sin(ang * 3 + c) * 8 + Math.cos(ang * 5 - c) * 5;
+              var xx = 256 + Math.cos(ang) * rr, yy = 256 + Math.sin(ang) * rr;
+              if (!a) g.moveTo(xx, yy); else g.lineTo(xx, yy);
+            }
+            g.closePath(); g.stroke();
+          }
+        } else if (style === 'workshop') {
+          g.globalAlpha = 1;
+          for (var y = 32; y < 512; y += 42) {
+            g.strokeStyle = 'rgba(62,42,26,.16)'; g.lineWidth = 1.4;
+            g.beginPath(); g.moveTo(0, y + Math.sin(y) * 3); g.bezierCurveTo(130, y - 5, 340, y + 7, 512, y - 2); g.stroke();
+          }
+        } else {
+          g.globalAlpha = 1; g.strokeStyle = 'rgba(167,188,190,.32)'; g.lineWidth = 3;
+          g.beginPath(); g.arc(256, 256, 214, 0, Math.PI * 2); g.stroke();
+          g.strokeStyle = 'rgba(35,46,54,.22)'; g.lineWidth = 2;
+          g.beginPath(); g.arc(256, 256, 246, 0, Math.PI * 2); g.stroke();
         }
-        g.strokeStyle = 'rgba(167,188,190,.34)'; g.lineWidth = 3;
-        g.beginPath(); g.arc(256, 256, 214, 0, Math.PI * 2); g.stroke();
-        g.strokeStyle = 'rgba(35,46,54,.28)'; g.lineWidth = 2;
-        g.beginPath(); g.arc(256, 256, 246, 0, Math.PI * 2); g.stroke();
-        g.strokeStyle = 'rgba(235,239,240,.18)'; g.lineWidth = 1;
-        g.beginPath(); g.arc(256, 256, 150, 0, Math.PI * 2); g.stroke();
       });
-      var floorMat = K.own(new THREE.MeshStandardMaterial({ map: floorTex, roughness: 0.82, metalness: 0.015 }));
-      var disc = K.add(new THREE.CylinderGeometry(3.6, 3.72, 0.14, 72), floorMat, [0, -0.09, 0]);
-      disc.receiveShadow = true;
-      K.cyl(3.72, 3.86, 0.1, K.mat.metal(0x4e5a61, 0.56), [0, -0.2, 0]);
-      K.torus(3.62, 0.016, K.mat.metal(opts.lip == null ? 0x6d888a : opts.lip, 0.58), [0, -0.015, 0], [Math.PI / 2, 0, 0], { shadow: false });
-      return disc;
+      var floorMat = K.own(new THREE.MeshPhysicalMaterial({ map: floorTex, roughness: style === 'technical' ? 0.64 : 0.84, metalness: style === 'technical' ? 0.08 : 0.015, clearcoat: style === 'workshop' ? 0.1 : 0.03, clearcoatRoughness: 0.76 }));
+      var stage;
+      if (style === 'technical') {
+        stage = K.rbox(7.25, 0.14, 5.25, floorMat, [0, -0.09, 0], null, { r: 0.12 });
+        K.rbox(7.38, 0.09, 5.38, K.mat.metal(0x566168, 0.6), [0, -0.2, 0], null, { r: 0.13 });
+      } else if (style === 'workshop') {
+        stage = K.rbox(7.05, 0.18, 5.05, floorMat, [0, -0.08, 0], null, { r: 0.16 });
+        K.rbox(7.18, 0.1, 5.18, K.mat.metal(0x5d6467, 0.66), [0, -0.22, 0], null, { r: 0.17 });
+      } else if (style === 'cartographic') {
+        stage = K.add(new THREE.CylinderGeometry(3.58, 3.7, 0.13, 72), floorMat, [0, -0.08, 0]);
+        K.cyl(3.7, 3.84, 0.09, K.mat.metal(0x59666a, 0.64), [0, -0.19, 0]);
+        K.torus(3.59, 0.013, K.mat.metal(opts.lip == null ? 0xa7895f : opts.lip, 0.68), [0, -0.005, 0], [Math.PI / 2, 0, 0], { shadow: false });
+      } else {
+        stage = K.add(new THREE.CylinderGeometry(3.6, 3.72, 0.14, style === 'civic' ? 10 : 72), floorMat, [0, -0.09, 0]);
+        K.cyl(3.72, 3.86, 0.1, K.mat.metal(style === 'civic' ? 0x555d60 : 0x4e5a61, 0.62), [0, -0.2, 0], null, { seg: style === 'civic' ? 10 : 72 });
+        K.torus(3.62, 0.014, K.mat.metal(opts.lip == null ? (style === 'civic' ? 0x9d7757 : 0x6d888a) : opts.lip, 0.64), [0, -0.015, 0], [Math.PI / 2, 0, 0], { shadow: false });
+      }
+      stage.receiveShadow = true;
+      return stage;
     };
 
-    /* --- humans: compact neutral mannequins with believable proportions --- */
+    /* --- neutral museum-scale people: restrained, non-caricature proportions --- */
     K.person = function (opts) {
       opts = opts || {};
       var g = new THREE.Group();
@@ -218,18 +289,18 @@
       var skin = K.mat.plastic(tone, 0.66);
       var pants = K.mat.plastic(opts.pants || 0x252b35, 0.82);
       var shoe = K.mat.plastic(0x17191d, 0.72);
-      K.cyl(0.13, 0.17, 0.32, bodyMat, [0, 0.51, 0], null, { parent: g });
+      K.cyl(0.115, 0.165, 0.34, bodyMat, [0, 0.515, 0], null, { parent: g });
       K.cyl(0.045, 0.05, 0.07, skin, [0, 0.705, 0], null, { parent: g });
-      var head = K.sph(0.09, skin, [0, 0.81, 0], { parent: g });
-      head.scale.set(0.88, 1.08, 0.94);
-      var hair = K.sph(0.091, K.mat.plastic(opts.hair || 0x2a201d, 0.88), [0, 0.842, -0.006], { parent: g });
+      var head = K.sph(0.082, skin, [0, 0.82, 0], { parent: g });
+      head.scale.set(0.86, 1.12, 0.92);
+      var hair = K.sph(0.083, K.mat.plastic(opts.hair || 0x2a201d, 0.9), [0, 0.852, -0.006], { parent: g });
       hair.scale.set(0.9, 0.52, 0.96);
       K.capsule(0.031, 0.2, bodyMat, [-0.145, 0.49, 0], [0, 0, 0.16], { parent: g });
       K.capsule(0.031, 0.2, bodyMat, [0.145, 0.49, 0], [0, 0, -0.16], { parent: g });
       K.sph(0.035, skin, [-0.175, 0.34, 0], { parent: g });
       K.sph(0.035, skin, [0.175, 0.34, 0], { parent: g });
-      K.capsule(0.041, 0.24, pants, [-0.065, 0.19, 0], [0, 0, 0.015], { parent: g });
-      K.capsule(0.041, 0.24, pants, [0.065, 0.19, 0], [0, 0, -0.015], { parent: g });
+      K.capsule(0.038, 0.27, pants, [-0.062, 0.18, 0], [0, 0, 0.012], { parent: g });
+      K.capsule(0.038, 0.27, pants, [0.062, 0.18, 0], [0, 0, -0.012], { parent: g });
       K.rbox(0.08, 0.045, 0.13, shoe, [-0.065, 0.025, 0.035], null, { parent: g, r: 0.018 });
       K.rbox(0.08, 0.045, 0.13, shoe, [0.065, 0.025, 0.035], null, { parent: g, r: 0.018 });
       if (opts.pos) g.position.set(opts.pos[0], opts.pos[1] || 0, opts.pos[2]);
@@ -244,13 +315,13 @@
       var curve = new THREE.CatmullRomCurve3(points.map(function (p) { return new THREE.Vector3(p[0], p[1], p[2]); }));
       var tubeMat = K.own(new THREE.MeshStandardMaterial({
         color: opts.color == null ? PAL.line : opts.color, transparent: true, opacity: opts.opacity == null ? 0.5 : opts.opacity,
-        roughness: 0.4, metalness: 0.1, emissive: opts.color == null ? PAL.line : opts.color, emissiveIntensity: 0.12
+        roughness: 0.58, metalness: 0.05, emissive: opts.color == null ? PAL.line : opts.color, emissiveIntensity: 0.045
       }));
       K.add(new THREE.TubeGeometry(curve, 40, opts.radius == null ? 0.017 : opts.radius, 10, false), tubeMat, null, null, { shadow: false, parent: opts.parent });
       var n = opts.pulses == null ? 3 : opts.pulses;
       if (n > 0) {
-        var pulseGeo = new THREE.SphereGeometry(opts.pulseSize == null ? 0.045 : opts.pulseSize, 12, 8);
-        var pulseMat = K.own(new THREE.MeshStandardMaterial({ color: opts.pulseColor == null ? PAL.teal : opts.pulseColor, emissive: opts.pulseColor == null ? PAL.teal : opts.pulseColor, emissiveIntensity: 1.4, roughness: 0.2 }));
+        var pulseGeo = new THREE.SphereGeometry(opts.pulseSize == null ? 0.034 : opts.pulseSize, 12, 8);
+        var pulseMat = K.own(new THREE.MeshStandardMaterial({ color: opts.pulseColor == null ? PAL.teal : opts.pulseColor, emissive: opts.pulseColor == null ? PAL.teal : opts.pulseColor, emissiveIntensity: 0.58, roughness: 0.44 }));
         var inst = new THREE.InstancedMesh(pulseGeo, pulseMat, n);
         inst.castShadow = false; inst.receiveShadow = false;
         (opts.parent || root).add(inst);
@@ -276,10 +347,10 @@
     /* --- holographic ring halo --- */
     K.halo = function (r, color, pos, opts) {
       opts = opts || {};
-      var ring = K.torus(r, opts.tube == null ? 0.014 : opts.tube, K.mat.neon(color, 1.1), pos, [Math.PI / 2, 0, 0], { shadow: false, parent: opts.parent });
+      var ring = K.torus(r, opts.tube == null ? 0.009 : opts.tube, K.mat.neon(color, 0.62), pos, [Math.PI / 2, 0, 0], { shadow: false, parent: opts.parent });
       K.onTick(function (t) {
         ring.rotation.z = t * (opts.spin == null ? 0.4 : opts.spin);
-        ring.material.emissiveIntensity = 0.85 + 0.35 * Math.sin(t * 2.2 + r * 9);
+        ring.material.emissiveIntensity = 0.22 + 0.09 * Math.sin(t * 1.6 + r * 9);
       });
       return ring;
     };
@@ -294,15 +365,17 @@
       var w = Math.ceil(g.measureText(text).width) + 44;
       c.width = w; c.height = 62;
       g = c.getContext('2d');
-      g.fillStyle = warn ? 'rgba(150,26,19,.95)' : 'rgba(16,35,63,.93)';
+      var style = ctx.style || styleFor(ctx.kind);
+      var bg = style === 'cartographic' ? 'rgba(244,239,226,.97)' : style === 'civic' ? 'rgba(245,242,235,.97)' : 'rgba(248,249,248,.97)';
+      g.fillStyle = warn ? 'rgba(250,231,227,.98)' : bg;
       g.beginPath();
       if (g.roundRect) { g.roundRect(1, 1, w - 2, 60, 14); } else { g.rect(1, 1, w - 2, 60); }
       g.fill();
-      g.strokeStyle = warn ? '#FFD3CC' : '#7EF0F2';
-      g.lineWidth = 2.5;
+      g.strokeStyle = warn ? '#B3261E' : (style === 'cartographic' ? '#8A6E47' : '#8B98A3');
+      g.lineWidth = 2;
       g.stroke();
       g.font = '700 34px "Segoe UI", Verdana, sans-serif';
-      g.fillStyle = '#FFFFFF';
+      g.fillStyle = warn ? '#8E1D17' : '#17202B';
       g.textBaseline = 'middle';
       g.fillText(text, 22, 33);
       var tex = new THREE.CanvasTexture(c);
@@ -310,8 +383,8 @@
       K.textures.push(tex);
       var mat = K.own(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
       var sp = new THREE.Sprite(mat);
-      var hgt = 0.19;
-      var wid = Math.min(1.7, hgt * w / 62);
+      var hgt = 0.15;
+      var wid = Math.min(1.34, hgt * w / 62);
       sp.scale.set(wid, hgt, 1);
       sp.position.set(pos[0], pos[1], pos[2]);
       sp.renderOrder = 60;
@@ -1750,12 +1823,13 @@
     promisefunnel: { scale: 1.08, cam: [3.45, 2.55, 4.7], look: [0, 0.7, 0] },
     detector: { scale: 1.02, cam: [3.55, 2.6, 4.9], look: [0, 0.75, 0], swingRisk: [-0.24, -0.3] },
     switches: { scale: 1.06, cam: [3.5, 2.6, 4.8], look: [0, 0.65, 0] },
-    audit: { scale: 1.1, cam: [3.35, 2.6, 4.6], look: [0, 0.6, 0] },
+    audit: { scale: 1.25, cam: [3.0, 2.3, 4.1], look: [0, 0.6, 0] },
     matchwork: { scale: 1.08, cam: [3.45, 2.55, 4.7], look: [0, 0.55, 0] },
     defaultboard: { scale: 1.06, cam: [3.5, 2.6, 4.8], look: [0, 0.7, 0] }
   };
   window.BFS218_HOLO = {
-    version: 4,
+    version: 5,
+    styleFor: styleFor,
     anchors: ANCHORS,
     frame: function (kind, narrow) {
       var f = FRAMES[kind] || FRAMES._default;
@@ -1768,29 +1842,37 @@
     build: function (THREE, ctx) {
       var scene = SCENES[ctx.kind];
       if (!scene) return null;
+      ctx.style = styleFor(ctx.kind);
       var K = makeKit(THREE, ctx);
       K.environment();
       if (ctx.sun) K.shadows(ctx.sun);
-      /* Grounded studio lighting: readable contrast without the toy-like glow. */
+      /* Each family gets its own lens, light, and atmosphere. */
       try {
-        ctx.camera.position.set(3.02, 2.08, 4.18);
-        ctx.camera.lookAt(0, 0.55, 0);
-        ctx.root.scale.setScalar(1.17);
-        ctx.scene.fog = new THREE.Fog(0xd8dee2, 15, 30);
+        var looks = {
+          technical: { fov: 31, fog: 0xd9ddde, near: 17, far: 34, exposure: 0.96, hemi: [0xf4f2eb, 0x596064, 0.82], key: [0xfff5e6, 2.05], fill: [0xdce8ef, 0.68], rim: [0xe2cfb6, 0.3] },
+          civic: { fov: 38, fog: 0xd8d3ca, near: 14, far: 29, exposure: 0.94, hemi: [0xfff4df, 0x4d5559, 0.76], key: [0xffe9cb, 1.82], fill: [0xd7e3eb, 0.54], rim: [0xd4b28f, 0.36] },
+          cartographic: { fov: 36, fog: 0xd5d0c4, near: 13, far: 28, exposure: 0.93, hemi: [0xffefd4, 0x505c5c, 0.72], key: [0xffdfad, 1.68], fill: [0xd5e3e6, 0.5], rim: [0xc49f70, 0.42] },
+          workshop: { fov: 35, fog: 0xd3cec5, near: 14, far: 29, exposure: 0.91, hemi: [0xffead0, 0x4a5153, 0.7], key: [0xffd9a6, 1.75], fill: [0xd5e2e8, 0.46], rim: [0xc79966, 0.38] },
+          diorama: { fov: 37, fog: 0xd8dee2, near: 15, far: 30, exposure: 0.96, hemi: [0xf4f1ea, 0x4f5962, 0.72], key: [0xfff0dc, 1.85], fill: [0xdbe8f3, 0.52], rim: [0xc8d7dc, 0.34] }
+        };
+        var look = looks[ctx.style] || looks.diorama;
+        ctx.camera.fov = look.fov;
+        ctx.camera.updateProjectionMatrix();
+        ctx.scene.fog = new THREE.Fog(look.fog, look.near, look.far);
         var directionalIndex = 0;
         ctx.scene.traverse(function (o) {
           if (o.isHemisphereLight) {
-            o.intensity = 0.72;
-            o.color.setHex(0xf4f1ea);
-            if (o.groundColor) o.groundColor.setHex(0x4f5962);
+            o.intensity = look.hemi[2];
+            o.color.setHex(look.hemi[0]);
+            if (o.groundColor) o.groundColor.setHex(look.hemi[1]);
           } else if (o.isDirectionalLight) {
             directionalIndex++;
-            if (directionalIndex === 1) { o.intensity = 1.85; o.color.setHex(0xfff0dc); }
-            else if (directionalIndex === 2) { o.intensity = 0.52; o.color.setHex(0xdbe8f3); }
-            else { o.intensity = 0.34; o.color.setHex(0xc8d7dc); }
+            if (directionalIndex === 1) { o.intensity = look.key[1]; o.color.setHex(look.key[0]); }
+            else if (directionalIndex === 2) { o.intensity = look.fill[1]; o.color.setHex(look.fill[0]); }
+            else { o.intensity = look.rim[1]; o.color.setHex(look.rim[0]); }
           }
         });
-        ctx.renderer.toneMappingExposure = 0.98;
+        ctx.renderer.toneMappingExposure = look.exposure;
       } catch (e) {}
       scene(K, ctx);
       /* in-scene prediction pads for activity experiments */
@@ -1805,7 +1887,8 @@
           var padMat = chosen ? K.mat.plastic(0x2f6f52, 0.56) : dim ? K.mat.plastic(0x8e969b, 0.78) : K.mat.plastic(0xb7c3c3, 0.7);
           var pad = K.cyl(0.52, 0.58, 0.09, padMat, [pos[0], pos[1] + 0.045, pos[2]]);
           K.torus(0.62, chosen ? 0.024 : 0.016, K.mat.metal(chosen ? 0x82a993 : 0x637579, 0.58), [pos[0], pos[1] + 0.1, pos[2]], [Math.PI / 2, 0, 0], { shadow: false });
-          K.tag(letters[i] + '. ' + (o.tag || 'OPTION ' + letters[i]), [pos[0], i === 1 ? 0.9 : 0.6, pos[2]], { warn: false });
+          /* Full choice wording remains in the accessible controls below. */
+          K.tag(letters[i], [pos[0], i === 1 ? 0.72 : 0.52, pos[2]], { warn: false });
           if (chosen) K.tag('YOUR PREDICTION', [pos[0], 0.95, pos[2]], { warn: false });
           var hit = new THREE.Mesh(new THREE.SphereGeometry(0.85, 8, 6), K.own(new THREE.MeshBasicMaterial({ visible: false })));
           hit.position.set(pos[0], 0.35, pos[2]);
@@ -1813,6 +1896,21 @@
           K.own(hit.geometry);
           pickMeshes.push({ mesh: hit, idx: i });
         });
+      }
+      /* A physical result beacon changes with the student's latest simulation. */
+      if (ctx.context === 'activity' && ctx.simOutcome) {
+        var beacon = new THREE.Group(); ctx.root.add(beacon); beacon.position.set(3.05, 0, 2.0);
+        K.rbox(0.28, 0.86, 0.24, K.mat.metal(0x4e5960, 0.62), [0, 0.43, 0], null, { parent: beacon, r: 0.05 });
+        var signal = [
+          { id: 'positive', c: PAL.green, y: 0.65 },
+          { id: 'neutral', c: PAL.amber, y: 0.43 },
+          { id: 'burden', c: PAL.red, y: 0.21 }
+        ];
+        signal.forEach(function (s) {
+          var active = ctx.simOutcome === s.id;
+          K.sph(0.07, active ? K.mat.neon(s.c, 0.8) : K.mat.plastic(0x737d81, 0.82), [0, s.y, 0.13], { parent: beacon, shadow: false });
+        });
+        K.box(0.34, 0.04, 0.32, K.mat.metal(0x3d464b, 0.7), [0, 0.02, 0], null, { parent: beacon });
       }
       var tags = TAGS[ctx.kind] || [];
       for (var tgi = 0; tgi < tags.length; tgi++) {

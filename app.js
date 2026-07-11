@@ -15,7 +15,7 @@
   var HKEY = SKEY + '.hardResetNext';
   var WKKEY = SKEY + '.walk.v1';
   function load() { try { var o = JSON.parse(localStorage.getItem(SKEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
-  function persist() { try { localStorage.setItem(SKEY, JSON.stringify({ saved: state.saved, cmpNotes: state.cmpNotes, rcNotes: state.rcNotes, sgNotes: state.sgNotes, sgTick: state.sgTick, wkCheck: state.wkCheck, wkReflect: state.wkReflect, wkNotes: state.wkNotes, wkSteps: state.wkSteps, actResult: state.actResult, mcSel: state.mcSel, mcConf: state.mcConf, kcVersion: state.kcVersion, kcShort: state.kcShort, kcShortRate: state.kcShortRate, kcHist: state.kcHist, careerReflect: state.careerReflect, mediaNotes: state.mediaNotes, assignmentStarter: state.assignmentStarter, rl: state.rl, exp: state.exp, studentName: state.studentName, visits: state.visits, careerField: state.careerField, programViewField: state.programViewField })); } catch (e) {} }
+  function persist() { try { localStorage.setItem(SKEY, JSON.stringify({ saved: state.saved, cmpNotes: state.cmpNotes, rcNotes: state.rcNotes, sgNotes: state.sgNotes, sgTick: state.sgTick, wkCheck: state.wkCheck, wkReflect: state.wkReflect, wkNotes: state.wkNotes, wkSteps: state.wkSteps, actResult: state.actResult, mcSel: state.mcSel, mcConf: state.mcConf, kcVersion: state.kcVersion, kcShort: state.kcShort, kcShortRate: state.kcShortRate, kcHist: state.kcHist, careerReflect: state.careerReflect, mediaNotes: state.mediaNotes, assignmentStarter: state.assignmentStarter, rl: state.rl, exp: state.exp, simLab: state.simLab, studentName: state.studentName, visits: state.visits, careerField: state.careerField, programViewField: state.programViewField })); } catch (e) {} }
   function loadView() { try { var o = JSON.parse(sessionStorage.getItem(VKEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
   function clearView() { try { sessionStorage.removeItem(VKEY); sessionStorage.removeItem(HKEY); } catch (e) {} }
   function shouldResumeView(v) {
@@ -60,7 +60,6 @@
   }
   /* Term shell URL: replace with the exact Blackboard course link once the Fall shell is published. */
   var BB_URL = 'https://learn.senecapolytechnic.ca';
-  var ICS_PATH = './calendar/BFS218_key_dates.ics';
   var saved0 = load();
   var view0 = loadView();
   var route0 = initialRoute();
@@ -124,6 +123,7 @@
     mediaNotes: (saved0.mediaNotes && typeof saved0.mediaNotes === 'object') ? saved0.mediaNotes : {},
     libScroll: 0,
     toast: null,
+    tickerPaused: false,
     cardWeek: resumeView0 ? cleanWeek(view0.cardWeek) : null,
     glossWeek: 'all',
     glossSearch: '',
@@ -134,6 +134,7 @@
     assignmentFaq: resumeView0 ? (view0.assignmentFaq == null ? null : Number(view0.assignmentFaq)) : null,
     assignmentStarter: (saved0.assignmentStarter && typeof saved0.assignmentStarter === 'object') ? saved0.assignmentStarter : {},
     exp: (saved0.exp && typeof saved0.exp === 'object') ? saved0.exp : {},
+    simLab: (saved0.simLab && typeof saved0.simLab === 'object') ? saved0.simLab : {},
     assignmentChecks: {},
     videoWeek: resumeView0 ? (view0.videoWeek || 'all') : 'all',
     mediaKind: resumeView0 ? (view0.mediaKind || 'all') : 'all',
@@ -1368,9 +1369,9 @@
       + svg
       + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">'
       + '<a href="' + BB_URL + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none;display:inline-flex;align-items:center;gap:6px">Open Blackboard <span aria-hidden="true">&#8599;</span></a>'
-      + (typeof ICS_PATH === 'string' && ICS_PATH ? '<a href="' + ICS_PATH + '" download class="wk-cta" style="text-decoration:none;background:#fff;color:#1B2A4A;border:1px solid #1B2A4A;display:inline-flex;align-items:center;gap:6px">Add the key dates to your calendar</a>' : '')
+      + '<button type="button" onclick="SOC.go(\'calendar\')" class="wk-cta" style="background:#fff;color:#1B2A4A;border:1px solid #1B2A4A">Open course calendar</button>'
       + '</div>'
-      + (typeof ICS_PATH === 'string' && ICS_PATH ? '<p style="margin:8px 0 0;font-size:.78rem;color:var(--ink-faint)">The calendar file adds every assessment open and due date to Outlook, Google Calendar, or Apple Calendar. Blackboard remains the official word on dates.</p>' : '')
+      + '<p style="margin:8px 0 0;font-size:.78rem;color:var(--ink-faint)">The banner and course calendar update with this site. Blackboard remains the official word on dates and carries announcements about material changes.</p>'
       + '</section>';
   }
   function asyncSuccessGuide() {
@@ -1410,6 +1411,7 @@
       + howToUseSiteHtml()
       + bbDiagramHtml()
       + '<section style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:16px 0">' + cards.map(function (c) { return siteCard(c[0], c[1], c[2]); }).join('') + '</section>'
+      + mobileAccessPanel()
       + reportBlock()
       + '<section class="exp-card" style="border-left-color:#1B2A4A" aria-label="Clear saved work"><div class="mono" style="font-size:.68rem;letter-spacing:.08em;color:#1B2A4A;font-weight:700">SHARED OR LAB COMPUTER?</div><h2 style="margin:4px 0 8px;font-size:1.1rem">Clear my saved work on this device</h2><p style="font-size:.9rem;line-height:1.55;margin:0 0 12px">Removes every note, check answer, and setting this site has saved in this browser. Download your weekly notes first if you want to keep them.</p><button type="button" class="wk-cta" style="margin:0" onclick="SOC.clearMyWork()">Clear everything saved here</button></section>'
       + '</div>';
@@ -1438,7 +1440,7 @@
       + '<p style="margin:0 0 12px;font-size:.95rem;line-height:1.6;color:var(--ink-dim)">If a video will not load, a link is broken, or anything looks wrong, tell the instructor so it can be fixed. The button opens your own email with the page details filled in; you just add what happened and press send. Nothing is collected by this site.</p>'
       + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">'
       + '<button type="button" class="wk-cta" style="margin:0" onclick="SOC.reportProblem()">Report a problem by email</button>'
-      + '<span style="font-size:.85rem;color:var(--ink-dim)">or call or text <a href="tel:+14162779174" style="color:#1B2A4A;font-weight:600">416-277-9174</a></span>'
+      + '<span style="font-size:.85rem;color:var(--ink-dim)">Use Seneca email or Blackboard messages for course support.</span>'
       + '</div></section>';
   }
   function siteFooter() {
@@ -1811,13 +1813,13 @@
   function auditModelHtml(run, slice, sys) {
     var idx = Math.max(0, GS.systems.map(function (s) { return s.id; }).indexOf(sys.id));
     var view = state.auditView || 'errors';
-    var aria = 'Semi-manipulable 3D model of the Gender Shades audit for ' + sys.name + '. It shows a scanner, four benchmark trays, and red failure pins concentrated in the darker-skinned women tray after the audit runs.';
-    return '<div class="audit-model-stack"><div class="audit-model-shell">'
+    var aria = 'Interactive technical model of the Gender Shades audit for ' + sys.name + '. A calibrated inspection rig connects a camera station, a system station, and four benchmark trays containing varied skin-tone references. After the audit runs, red error pins concentrate in the darker-skinned women tray. Rotate the model or use the view controls to inspect the evidence.';
+    return '<div class="audit-model-stack"><div class="audit-model-shell audit-model-style-technical">'
       + '<canvas class="audit-model-canvas" role="img" aria-label="' + esc(aria) + '" data-audit-model="week5" data-run="' + (run ? '1' : '0') + '" data-slice="' + esc(slice) + '" data-system-index="' + idx + '" data-view="' + esc(view) + '"></canvas>'
-      + '<div class="audit-model-hint"><b>How to read the model</b><span>Each tray is 25 benchmark faces. Red pins are errors. Rotate the model, then use the slice buttons to test what the average hides.</span></div>'
       + auditModelControls(view)
       + '<div class="audit-model-fallback" hidden>The 3D model could not load. The data table below still shows the audit results.</div>'
-      + '</div><div class="audit-model-guide"><b>Use it in order</b><ol><li>Run the audit: red pins appear where the system misclassifies benchmark faces.</li><li>Switch systems: IBM, Microsoft, and Face++ repeat the same pattern at different levels.</li><li>Change the slice: overall looks safe; intersectional shows who is carrying the error.</li></ol></div></div>';
+      + '</div><div class="audit-model-description"><b>What this model shows</b><span>This is a functional audit station shown from an elevated technical view. A camera station and a system station feed four benchmark trays. Each tray holds 25 benchmark faces across the Gender Shades comparison groups. Red pins mark errors, and their concentration reveals what the overall average hides.</span></div>'
+      + '<div class="audit-model-guide"><b>Use it in order</b><ol><li>Run the audit: red pins appear where the system misclassifies benchmark faces.</li><li>Switch systems: IBM, Microsoft, and Face++ repeat the same pattern at different levels.</li><li>Change the slice: overall looks safe; intersectional shows who is carrying the error.</li></ol></div></div>';
   }
   function loadThree() {
     if (!threePromise) threePromise = import('./assets/lib/three.module.min.js');
@@ -1883,6 +1885,12 @@
       cable: new THREE.MeshStandardMaterial({ color: 0x222831, roughness: 0.6, metalness: 0.12 }),
       beam: new THREE.MeshBasicMaterial({ color: 0xffdda0, transparent: true, opacity: 0.13, side: THREE.DoubleSide, depthWrite: false })
     };
+    mats.skinLightA = new THREE.MeshStandardMaterial({ color: 0xd8b493, roughness: 0.72, metalness: 0.01 });
+    mats.skinLightB = new THREE.MeshStandardMaterial({ color: 0xb98562, roughness: 0.72, metalness: 0.01 });
+    mats.skinDarkA = new THREE.MeshStandardMaterial({ color: 0x72482f, roughness: 0.74, metalness: 0.01 });
+    mats.skinDarkB = new THREE.MeshStandardMaterial({ color: 0x3f291d, roughness: 0.75, metalness: 0.01 });
+    mats.hairA = new THREE.MeshStandardMaterial({ color: 0x201b18, roughness: 0.9, metalness: 0 });
+    mats.hairB = new THREE.MeshStandardMaterial({ color: 0x3c2c25, roughness: 0.9, metalness: 0 });
     function addMesh(parent, geo, mat, pos, rot, scale) {
       var m = new THREE.Mesh(geo, mat);
       if (pos) m.position.set(pos[0], pos[1], pos[2]);
@@ -1902,16 +1910,33 @@
     grid.material.transparent = true; grid.material.opacity = 0.15; root.add(grid);
     var floor = addMesh(root, new THREE.BoxGeometry(7.3, 0.12, 5.3), mats.floor, [0, -0.09, 0], null, null);
     floor.receiveShadow = true; floor.castShadow = false;
-    var dataCube = addMesh(root, new THREE.BoxGeometry(1.35, 1.35, 1.35), mats.teal, [-2.25, 0.72, -1.18]);
-    var sysCube = addMesh(root, new THREE.BoxGeometry(1.35, 1.35, 1.35), mats.orange, [2.25, 0.72, -1.18]);
-    edges(root, dataCube, 0xb8c8c8, 0.32); edges(root, sysCube, 0xd8c4ad, 0.34);
-    addMesh(root, new THREE.BoxGeometry(0.96, 0.7, 0.035), mats.screen, [-2.25, 0.75, -0.49]);
-    addMesh(root, new THREE.BoxGeometry(0.96, 0.7, 0.035), mats.screen, [2.25, 0.75, -0.49]);
-    for (var chip = 0; chip < 9; chip++) {
-      var ledMat = chip % 4 === 3 ? mats.red : (chip % 2 ? mats.steel : mats.token);
-      addMesh(root, new THREE.BoxGeometry(0.13 + (chip % 3) * 0.035, 0.028, 0.025), ledMat, [-2.56 + (chip % 3) * 0.3, 0.57 + Math.floor(chip / 3) * 0.19, -0.465]);
-      addMesh(root, new THREE.BoxGeometry(0.13 + (chip % 2) * 0.03, 0.028, 0.025), ledMat, [1.95 + (chip % 3) * 0.3, 0.57 + Math.floor(chip / 3) * 0.19, -0.465]);
+    /* Capture station: camera optics and a small calibration wall of varied faces. */
+    var capture = new THREE.Group(); root.add(capture); capture.position.set(-2.28, 0, -1.28);
+    addMesh(capture, new THREE.BoxGeometry(1.5, 0.12, 1.15), mats.dark, [0, 0.06, 0]);
+    addMesh(capture, new THREE.CylinderGeometry(0.06, 0.075, 1.38, 24), mats.steel, [-0.56, 0.75, -0.34]);
+    addMesh(capture, new THREE.BoxGeometry(0.58, 0.34, 0.34), mats.dark, [-0.56, 1.38, -0.34]);
+    addMesh(capture, new THREE.CylinderGeometry(0.13, 0.13, 0.16, 32), mats.screen, [-0.56, 1.38, -0.1], [Math.PI / 2, 0, 0]);
+    addMesh(capture, new THREE.TorusGeometry(0.14, 0.018, 12, 48), mats.steel, [-0.56, 1.38, -0.015], [Math.PI / 2, 0, 0]);
+    var faceTones = [mats.skinLightA, mats.skinLightB, mats.skinDarkA, mats.skinDarkB, mats.skinLightB, mats.skinDarkA];
+    for (var fp = 0; fp < 6; fp++) {
+      var fx = 0.05 + (fp % 3) * 0.32, fy = 1.15 - Math.floor(fp / 3) * 0.45;
+      addMesh(capture, new THREE.BoxGeometry(0.27, 0.36, 0.035), mats.tray, [fx, fy, -0.38]);
+      addMesh(capture, new THREE.SphereGeometry(0.072, 18, 14), faceTones[fp], [fx, fy + 0.035, -0.345], null, [0.84, 1.08, 0.9]);
+      addMesh(capture, new THREE.SphereGeometry(0.073, 16, 10, 0, Math.PI * 2, 0, Math.PI * 0.52), fp % 2 ? mats.hairB : mats.hairA, [fx, fy + 0.068, -0.348], null, [0.86, 0.64, 0.92]);
     }
+    addMesh(capture, new THREE.BoxGeometry(0.96, 0.16, 0.04), mats.screen, [0.35, 0.42, -0.38]);
+
+    /* System under test: a restrained equipment rack with visible processing stages. */
+    var systemRig = new THREE.Group(); root.add(systemRig); systemRig.position.set(2.28, 0, -1.28);
+    addMesh(systemRig, new THREE.BoxGeometry(1.48, 0.12, 1.15), mats.dark, [0, 0.06, 0]);
+    addMesh(systemRig, new THREE.BoxGeometry(1.18, 1.45, 0.78), mats.orange, [0, 0.8, -0.12]);
+    addMesh(systemRig, new THREE.BoxGeometry(0.86, 0.42, 0.035), mats.screen, [0, 1.14, 0.29]);
+    for (var rack = 0; rack < 5; rack++) {
+      addMesh(systemRig, new THREE.BoxGeometry(0.88, 0.035, 0.035), mats.dark, [0, 0.35 + rack * 0.15, 0.3]);
+      addMesh(systemRig, new THREE.SphereGeometry(0.025, 12, 8), rack === 3 ? mats.red : mats.steel, [0.34, 0.35 + rack * 0.15, 0.34]);
+    }
+    addMesh(systemRig, new THREE.CylinderGeometry(0.34, 0.34, 0.1, 40), mats.steel, [0.48, 0.27, 0.12], [Math.PI / 2, 0, 0]);
+    addMesh(systemRig, new THREE.CylinderGeometry(0.035, 0.035, 0.36, 18), mats.red, [0.48, 0.27, 0.22], [0, 0, -0.78]);
     function cable(a, b, c) {
       var curve = new THREE.CatmullRomCurve3([new THREE.Vector3(a[0], a[1], a[2]), new THREE.Vector3(c[0], c[1], c[2]), new THREE.Vector3(b[0], b[1], b[2])]);
       addMesh(root, new THREE.TubeGeometry(curve, 28, 0.025, 8, false), mats.cable);
@@ -1940,8 +1965,11 @@
       for (var i = 0; i < GS.perGroup; i++) {
         var col = i % 5, row = Math.floor(i / 5);
         var x = p[0] - 0.43 + col * 0.215, z = p[2] - 0.32 + row * 0.16;
-        addMesh(root, neckGeo, mats.token, [x, 0.19, z]);
-        addMesh(root, headGeo, mats.token, [x, 0.27, z]);
+        var toneSet = g.skin === 'darker' ? [mats.skinDarkA, mats.skinDarkB] : [mats.skinLightA, mats.skinLightB];
+        var toneMat = toneSet[(i + row) % toneSet.length];
+        addMesh(root, neckGeo, toneMat, [x, 0.19, z]);
+        addMesh(root, headGeo, toneMat, [x, 0.27, z], null, [0.84, 1.08, 0.92]);
+        addMesh(root, new THREE.SphereGeometry(0.056, 12, 8, 0, Math.PI * 2, 0, Math.PI * 0.52), (i % 3) ? mats.hairA : mats.hairB, [x, 0.292, z - 0.004], null, [0.86, 0.58, 0.92]);
         if (i < fail) {
           addMesh(root, pinGeo, mats.red, [x, 0.5, z]);
           addMesh(root, pinTopGeo, mats.red, [x, 0.73, z]);
@@ -2442,6 +2470,20 @@
     }
   };
   function weekData(w) { var c = (D.course && D.course.code) || ''; return (WEEKPAGE[c] && WEEKPAGE[c][w]) || null; }
+  (function addFeaturedWeeklySources() {
+    var byWeek = window.BFS218_FEATURED_SOURCES_BY_WEEK || {}, records = {};
+    (D.records || []).forEach(function (r) { records[r.id] = r; });
+    Object.keys(byWeek).forEach(function (wk) {
+      var d = WEEKPAGE.BFS218 && WEEKPAGE.BFS218[Number(wk)];
+      if (!d) return;
+      d.readings = d.readings || [];
+      byWeek[wk].forEach(function (id) {
+        if (d.readings.some(function (x) { return x.id === id; })) return;
+        var r = records[id]; if (!r) return;
+        d.readings.push({ id: id, apa: r.authors + '. (' + r.year + '). ' + r.title + '. ' + (r.publisher || r.type || 'Public source') + '.', scope: 'Optional public case source; open on the publisher site' });
+      });
+    });
+  })();
   (function strengthenWeek2Terms() {
     var c = (D.course && D.course.code) || '', w2 = WEEKPAGE[c] && WEEKPAGE[c][2];
     if (!w2 || !Array.isArray(w2.terms)) return;
@@ -2953,6 +2995,11 @@
   }
   function enrichVisualSpec(spec) {
     spec = Object.assign({}, spec || {});
+    var V = window.BFS218_VISUALS || {};
+    var descriptions = V.modelDescriptions || {};
+    var styles = V.modelStyles || {};
+    spec.visualDescription = descriptions[spec.kind] || spec.modelNote || spec.scene || '';
+    spec.visualStyle = styles[spec.kind] || ((window.BFS218_HOLO && window.BFS218_HOLO.styleFor) ? window.BFS218_HOLO.styleFor(spec.kind) : 'diorama');
     var steps = (spec.steps || []).slice(0, 3);
     var anchors = visualKindLabelAnchors(spec.kind || 'pipeline');
     var coords = visualKindLabelPositions(spec.kind || 'pipeline');
@@ -3137,13 +3184,15 @@
     var view = visualViewFor(w, context);
     var rotateHelp = 'Click or touch and drag any open space in this 3D picture to turn the scene; there is no drag-and-drop here. The numbered labels below the model explain what to inspect without covering the scene.';
     var labelList = (spec.labels || []).map(function (l) { return (l.t || '') + ': ' + (l.sub || ''); }).join('. ');
-    var label = (context === 'activity' ? 'Activity model for Week ' : 'Visual overview for Week ') + w + ': ' + spec.title + '. ' + spec.scene + ' Labels: ' + labelList + '. ' + rotateHelp;
-    var noteText = spec.modelNote || spec.scene;
+    var description = spec.visualDescription || spec.modelNote || spec.scene;
+    var label = (context === 'activity' ? 'Activity model for Week ' : 'Visual overview for Week ') + w + ': ' + spec.title + '. ' + description + ' Labels: ' + labelList + '. ' + rotateHelp;
+    var noteText = description;
     var shellKind = String(spec.kind || 'pipeline').replace(/[^a-z0-9_-]/gi, '').toLowerCase() || 'pipeline';
+    var shellStyle = String(spec.visualStyle || 'diorama').replace(/[^a-z0-9_-]/gi, '').toLowerCase() || 'diorama';
     var holoDriven = !!(window.BFS218_HOLO && window.BFS218_HOLO.supports && window.BFS218_HOLO.supports(spec.kind));
     return '<div class="wk-model-frame">'
       + (holoDriven ? '' : visualControls(w, spec, context, view))
-      + '<div class="wk-model-shell wk-model-kind-' + esc(shellKind) + '">'
+      + '<div class="wk-model-shell wk-model-kind-' + esc(shellKind) + ' wk-model-style-' + esc(shellStyle) + '">'
       + '<canvas class="wk-model-canvas" role="img" aria-label="' + esc(label) + '" data-topic-model="' + esc(context) + '" data-week="' + w + '" data-kind="' + esc(spec.kind || 'pipeline') + '" data-view="' + esc(view) + '"></canvas>'
       + '<div class="wk-cam-ctl" role="group" aria-label="3D view controls">'
       + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',-1)" aria-label="Rotate left" title="Rotate left">&#8634;</button>'
@@ -3209,7 +3258,17 @@
   function audioPackSection(w) {
     var AU = window.BFS218_AUDIO || {};
     var ep = AU[w];
-    if (!ep || !ep.file) return '';
+    if (!ep || !ep.file) {
+      var source = (window.BFS218_FEATURED_SOURCES || []).filter(function (r) { return Number(r.week) === Number(w) && r.audio && r.audio.url; })[0];
+      if (!source) return '';
+      return '<section id="wk-audio" class="node"><h2 class="wk-sec">Listen to this week</h2>'
+        + '<p class="wk-hint">An optional official-source audio route into this week. Listen while travelling if that works for you, then return to the reading for the evidence and citation.</p>'
+        + '<div class="wk-read"><div class="ref"><b>' + esc(source.audio.title || source.title) + '</b><br>' + esc(source.audio.source || source.publisher || source.authors) + '</div>'
+        + '<p style="margin:8px 0 0;font-size:.86rem;line-height:1.55;color:var(--ink-dim)">' + esc(source.audio.synopsis || source.abstract || '') + '</p></div>'
+        + '<div style="display:flex;gap:10px;flex-wrap:wrap"><a href="' + esc(source.audio.url) + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none">Listen on the official site</a>'
+        + '<a href="' + esc(source.transcriptUrl || source.url) + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none;background:#fff;color:#15171C;border:1px solid #15171C">Read the text version</a></div>'
+        + '<p style="margin:10px 0 0;font-size:.78rem;color:var(--ink-faint)">Playback stays with the publisher. This site does not track what you play, and the audio does not replace the assigned reading.</p></section>';
+    }
     return '<section id="wk-audio" class="node"><h2 class="wk-sec">Listen to this week</h2>'
       + '<p class="wk-hint">Made for your ears: about ' + (ep.minutes || 10) + ' minutes covering this week\'s question, core concept, and readings. ' + esc(ep.blurb || '') + '</p>'
       + '<audio controls preload="none" style="width:100%" src="' + esc(ep.file) + '">Your browser cannot play this audio. Use the download link below.</audio>'
@@ -3641,6 +3700,8 @@
       if (!labelEls.length || !shell || !canvas.isConnected) return;
       var mobile = false;
       try { mobile = window.matchMedia && window.matchMedia('(max-width: 760px)').matches; } catch (e) {}
+      /* Explanatory labels stay in the readable grid below the scene. */
+      mobile = true;
       if (mobile) {
         labelEls.forEach(function (el) {
           el.style.left = '';
@@ -3824,7 +3885,10 @@
             expCtx = { options: EXH[week].options, pick: typeof est.pick === 'number' ? est.pick : null, ran: !!est.ran };
           }
         } catch (e2) {}
-        holo = window.BFS218_HOLO.build(THREE, { kind: kind, week: week, view: view, riskOn: riskOn, pathOn: pathOn, root: root, scene: scene, camera: camera, renderer: renderer, canvas: canvas, sun: sun, context: canvas.getAttribute('data-topic-model'), expOptions: expCtx && expCtx.options, expPick: expCtx && expCtx.pick, expRan: expCtx && expCtx.ran });
+        var simCtx = state.simLab && state.simLab[week];
+        var simLast = simCtx && simCtx.history && simCtx.history.length ? simCtx.history[simCtx.history.length - 1] : null;
+        var simOutcome = simLast && simLast.dominant;
+        holo = window.BFS218_HOLO.build(THREE, { kind: kind, week: week, view: view, riskOn: riskOn || simOutcome === 'burden', pathOn: pathOn || simOutcome === 'positive', root: root, scene: scene, camera: camera, renderer: renderer, canvas: canvas, sun: sun, context: canvas.getAttribute('data-topic-model'), expOptions: expCtx && expCtx.options, expPick: expCtx && expCtx.pick, expRan: expCtx && expCtx.ran, simOutcome: simOutcome, simTotal: simLast && simLast.total });
       } catch (e) {
         holo = null;
         try { (window.__HOLO_ERRS = window.__HOLO_ERRS || []).push(kind + ': ' + (e && (e.message || e))); } catch (e2) {}
@@ -4404,7 +4468,7 @@
       }).join('')
       + '<div style="display:flex;gap:9px;flex-wrap:wrap;align-items:center"><button type="button" onclick="SOC.go(\'assignments\')">Open Assignments Guide</button>'
       + '<a href="' + BB_URL + '" target="_blank" rel="noopener" style="font-size:.8125rem;font-weight:700;color:#fff;background:#1B2A4A;border-radius:9px;padding:9px 14px;text-decoration:none">Open Blackboard <span aria-hidden="true">&#8599;</span></a>'
-      + '<a href="' + ICS_PATH + '" download style="font-size:.8125rem;font-weight:700;color:#1B2A4A;background:#fff;border:1px solid #1B2A4A;border-radius:9px;padding:8px 14px;text-decoration:none">Add dates to calendar</a></div>'
+      + '<button type="button" onclick="SOC.go(\'calendar\')" style="font-size:.8125rem;font-weight:700;color:#1B2A4A;background:#fff;border:1px solid #1B2A4A;border-radius:9px;padding:8px 14px">Open course calendar</button></div>'
       + '</section>';
   }
 
@@ -4637,6 +4701,63 @@
       + body
       + '</section>';
   }
+  function simLabState(w) {
+    state.simLab = state.simLab || {};
+    state.simLab[w] = state.simLab[w] || { caseIndex: 0, systemIndex: 0, safeguardIndex: 0, history: [] };
+    if (!Array.isArray(state.simLab[w].history)) state.simLab[w].history = [];
+    return state.simLab[w];
+  }
+  function simChoiceOptions(items, selected) {
+    return (items || []).map(function (x, i) {
+      return '<option value="' + i + '"' + (selected === i ? ' selected' : '') + '>' + esc(x[0]) + '</option>';
+    }).join('');
+  }
+  function simOutcomeCopy(kind) {
+    if (kind === 'positive') return 'The person moves through without added burden in this run.';
+    if (kind === 'neutral') return 'The case pauses for review. The outcome remains open.';
+    return 'The system adds delay, denial, exposure, or extra proof in this run.';
+  }
+  function simulationSection(w) {
+    var SIM = window.BFS218_SIMULATIONS || {};
+    var spec = SIM[w];
+    if (!spec) return '';
+    var st = simLabState(w);
+    var hist = st.history || [];
+    var last = hist.length ? hist[hist.length - 1] : null;
+    var result = '';
+    if (last) {
+      var total = last.total || 1;
+      var pos = Math.round((last.positive || 0) / total * 100);
+      var neu = Math.round((last.neutral || 0) / total * 100);
+      var bur = Math.max(0, 100 - pos - neu);
+      result = '<div class="sim-result" role="status" aria-live="polite">'
+        + '<div class="sim-result-head"><span>Most recent run</span><b>' + total + (total === 1 ? ' case' : ' cases') + '</b></div>'
+        + '<div class="sim-bars" aria-label="Simulation outcome distribution">'
+        + '<div><b>Moved through</b><span><i style="width:' + pos + '%"></i></span><strong>' + pos + '%</strong></div>'
+        + '<div><b>Held for review</b><span><i style="width:' + neu + '%"></i></span><strong>' + neu + '%</strong></div>'
+        + '<div class="risk"><b>Added burden</b><span><i style="width:' + bur + '%"></i></span><strong>' + bur + '%</strong></div>'
+        + '</div>'
+        + (total === 1 ? '<p>' + esc(simOutcomeCopy(last.dominant)) + ' One case can surprise. Run a larger batch before you make a claim about the pattern.</p>' : '<p>The batch shows the pattern created by the settings you chose. Change one condition, run it again, and compare the distributions.</p>')
+        + '</div>';
+    }
+    var history = hist.slice(-4).reverse().map(function (h) {
+      var t = h.total || 1;
+      return '<li><b>' + t + (t === 1 ? ' case' : ' cases') + '</b><span>' + Math.round((h.positive || 0) / t * 100) + '% moved through, ' + Math.round((h.neutral || 0) / t * 100) + '% reviewed, ' + Math.round((h.burden || 0) / t * 100) + '% added burden</span></li>';
+    }).join('');
+    return '<section class="sim-lab" aria-label="Interactive systems simulation">'
+      + '<div class="sim-head"><div><span class="mono">SYSTEMS SIMULATION</span><h2>' + esc(spec.title) + '</h2></div><p>You are changing a fictional institution, not predicting a person\'s life. The percentages are produced by this teaching model and are not real-world population estimates.</p></div>'
+      + '<div class="sim-controls">'
+      + '<label><b>' + esc(spec.caseLabel) + '</b><select onchange="SOC.simChoose(' + w + ',\'caseIndex\',Number(this.value))">' + simChoiceOptions(spec.cases, st.caseIndex) + '</select></label>'
+      + '<label><b>' + esc(spec.systemLabel) + '</b><select onchange="SOC.simChoose(' + w + ',\'systemIndex\',Number(this.value))">' + simChoiceOptions(spec.systems, st.systemIndex) + '</select></label>'
+      + '<label><b>' + esc(spec.safeguardLabel) + '</b><select onchange="SOC.simChoose(' + w + ',\'safeguardIndex\',Number(this.value))">' + simChoiceOptions(spec.safeguards, st.safeguardIndex) + '</select></label>'
+      + '</div>'
+      + '<div class="sim-actions"><button type="button" onclick="SOC.simRun(' + w + ',1)">Run one case</button><button type="button" class="primary" onclick="SOC.simRun(' + w + ',100)">Run 100 cases</button><button type="button" onclick="SOC.simReset(' + w + ')">Clear comparison</button></div>'
+      + '<p class="sim-principle"><b>What to look for:</b> one run contains uncertainty. Repeated runs reveal what the system makes more likely. A safeguard can reduce risk without making every outcome identical.</p>'
+      + result
+      + (history ? '<details class="sim-history"><summary>Compare recent runs</summary><ol>' + history + '</ol></details>' : '')
+      + weekNoteBox(w, 'simulation', 'Simulation note', 'Change one condition. What changed across the larger batch, and which institutional choice caused the shift?')
+      + '</section>';
+  }
   function activityScreen() {
     var w = state.activityReturn, d = weekData(w);
     if (!d || !d.activity) return '<div style="padding:30px 0;color:var(--ink-dim)">No activity here. <button onclick="SOC.go(\'journey\')" style="background:none;border:none;color:var(--red);font-weight:600;cursor:pointer">Back to your journey</button></div>';
@@ -4645,7 +4766,7 @@
     var inner = '';
     switch (a.archetype) { case 'match': inner = actMatch(w, a); break; case 'scenario': inner = actScenario(w, a); break; case 'toggle': inner = actToggle(w, a); break; case 'assemble': inner = actAssemble(w, a); break; case 'lab': inner = actLab(w, a); break; case 'capstone': inner = actCapstone(w, a); break; default: inner = '<p style="color:var(--ink-dim)">This activity is not set up yet.</p>'; }
     var foot = '<div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div style="font-size:.86rem;color:var(--ink-dim)">When you are done, go back to the week to answer the reflection and save your work.</div><button onclick="SOC.station(' + w + ')" class="wk-cta" style="margin:0">Back to Week ' + w + ' ' + ic('chevron', 16, 2.4) + '</button></div>';
-    return '<div class="rise" style="margin:0 auto">' + mobileActivityActions(w, d) + head + experimentSection(w) + '<div class="exp-workbench-head"><span class="mono">THE WORKBENCH</span><b>Now practise the idea the experiment just showed you</b></div>' + activityInteractionGuide(w, a) + activityOutputGuide(w, a) + inner + weekNoteBox(w, 'activity', 'Activity Notes', 'What did this activity make you notice about the week\'s idea?') + foot + '</div>';
+    return '<div class="rise" style="margin:0 auto">' + mobileActivityActions(w, d) + head + experimentSection(w) + simulationSection(w) + '<div class="exp-workbench-head"><span class="mono">THE WORKBENCH</span><b>Now practise the idea the experiment and simulation showed you</b></div>' + activityInteractionGuide(w, a) + activityOutputGuide(w, a) + inner + weekNoteBox(w, 'activity', 'Activity Notes', 'What did this activity make you notice about the week\'s idea?') + foot + '</div>';
   }
   function activitySummary(w, d) {
     var a = d.activity || {};
@@ -5848,44 +5969,80 @@
     try { var t = new Date(); var a0 = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()); var p = iso.split('-'); var b0 = Date.UTC(+p[0], +p[1] - 1, +p[2]); return Math.round((b0 - a0) / 86400000); } catch (e) { return 999; }
   }
   function kdMonthDay(iso) { var p = iso.split('-'); return KD_MON[+p[1] - 1] + ' ' + (+p[2]); }
-  function nextDue() {
-    var K = keyDatesList(), byDate = {};
-    K.forEach(function (row) { row.it.forEach(function (x) { if (x[2] === 'due') { (byDate[row.d] = byDate[row.d] || []).push(x[0]); } }); });
-    var dates = Object.keys(byDate).sort().filter(function (d) { return kdDaysUntil(d) >= 0; });
-    if (!dates.length) return null;
-    return { d: dates[0], names: byDate[dates[0]], days: kdDaysUntil(dates[0]) };
+  function deadlineRule() { return '<aside class="deadline-rule" role="note" style="border:1px solid #E7C3BF;border-left:5px solid #DA291C;border-radius:0 11px 11px 0;background:#fff;padding:12px 14px;margin:0 0 16px;color:#15171C"><strong style="color:#961A13">Submission time:</strong> All assignments are due by 11:59 p.m. Eastern Time, EDT or EST as applicable, on the date shown. Blackboard remains the official submission record.</aside>'; }
+  function mobileCalendarSubscription() { var code = courseCode(), base = location.protocol + '//' + location.host + location.pathname.replace(/[^\/]*$/, ''), feed = (base + 'calendar/' + code + '_key_dates.ics').replace(/^https?:/i, 'webcal:'); return '<section class="mobile-cal-sub" aria-labelledby="mobile-cal-title"><div class="mono">MOBILE CALENDAR</div><h2 id="mobile-cal-title">Keep these dates on your phone</h2><p>This is a live calendar subscription, not a downloaded copy. Your calendar app can refresh it when the course schedule changes. Blackboard remains the official source.</p><a href="' + esc(feed) + '">Subscribe on this phone <span aria-hidden="true">&#8594;</span></a></section>'; }
+  function mobileAccessPanel() { var url = (location.origin + location.pathname).replace(/index\.html$/i, ''); return '<section class="mobile-access-panel" aria-labelledby="mobile-access-title"><div class="mono">PHONE OR TABLET</div><h2 id="mobile-access-title">Use the same site on any device</h2><p>There is no separate app. This responsive site is the mobile version too. Share or copy the link, then open it on your phone or tablet.</p><div><a href="' + esc(url) + '">Open the site link</a><button type="button" onclick="SOC.shareMobileSite()">Share or copy the link</button></div><small>Your saved notes stay on the device and browser where you typed them.</small></section>'; }
+  function upcomingParts(e) {
+    var title = String(e.title || ''), note = String(e.note || ''), label = 'Course date', name = title, m;
+    if (e.kind === 'open') { label = 'Assignment released'; m = title.match(/^(.*?)\s+(?:opens|begins)(?:\s+(.*))?$/i); if (m) { name = m[1]; if (!note && m[2]) note = m[2]; } }
+    else if (e.kind === 'due') { label = 'Assignment due'; name = title.replace(/\s+(?:due|close|closes)$/i, ''); note = note.replace(/^due,?\s*/i, ''); }
+    else if (/study week/i.test(title)) label = 'Study Week';
+    else if (e.kind === 'class') label = 'Live class';
+    else if (e.kind === 'async') label = 'Asynchronous week';
+    return { label: label, name: name, note: note, date: kdMonthDay(e.date) };
   }
-  function dueReminderStrip() {
-    if (state.screen === 'calendar') return '';
-    var nd = nextDue(); if (!nd) return '';
-    var lead = nd.days <= 0 ? 'Due today' : nd.days === 1 ? 'Due tomorrow' : nd.days <= 21 ? ('Due in ' + nd.days + ' days') : 'Next due';
-    var urgent = nd.days <= 7 ? ' due-strip-urgent' : '';
-    return '<div class="due-wrap"><button type="button" class="due-strip' + urgent + '" onclick="SOC.go(\'calendar\')" aria-label="Next due date. Opens the calendar page.">'
-      + '<span class="due-strip-dot" aria-hidden="true"></span>'
-      + '<span class="due-strip-main"><strong>' + esc(lead) + ':</strong> ' + esc(nd.names.join(', ')) + '</span>'
-      + '<span class="due-strip-date">' + esc(kdMonthDay(nd.d)) + '</span>'
-      + '<span class="due-strip-cta">See all dates <span aria-hidden="true">&#8594;</span></span>'
-      + '</button></div>';
-  }
-  var WEBCAL = 'webcal://' + location.host + location.pathname.replace(/[^\/]*$/, '') + 'calendar/BFS218_key_dates.ics';
-  function kdPad2(n) { return (n < 10 ? '0' : '') + n; }
-  function kdIsoPlus1(iso) { var p = iso.split('-'); var dt = new Date(Date.UTC(+p[0], +p[1] - 1, +p[2] + 1)); return dt.getUTCFullYear() + '-' + kdPad2(dt.getUTCMonth() + 1) + '-' + kdPad2(dt.getUTCDate()); }
-  function kdIcsEsc(s) { return String(s).replace(/([,;\\])/g, '\\$1').replace(/\n/g, '\\n'); }
-  function addCalUrls(iso, title, details) {
-    var d0 = iso.replace(/-/g, ''), d1 = kdIsoPlus1(iso).replace(/-/g, '');
-    var g = 'https://calendar.google.com/calendar/render?action=TEMPLATE&text=' + encodeURIComponent(title) + '&dates=' + d0 + '/' + d1 + '&details=' + encodeURIComponent(details);
-    var o = 'https://outlook.office.com/calendar/0/deeplink/compose?path=/calendar/action/compose&rru=addevent&subject=' + encodeURIComponent(title) + '&startdt=' + iso + '&enddt=' + kdIsoPlus1(iso) + '&allday=true&body=' + encodeURIComponent(details);
-    var ics = 'BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//BFS218//Companion//EN\r\nCALSCALE:GREGORIAN\r\nBEGIN:VEVENT\r\nUID:' + d0 + '-bfs218-async@rpeart73.github.io\r\nDTSTART;VALUE=DATE:' + d0 + '\r\nDTEND;VALUE=DATE:' + d1 + '\r\nSUMMARY:' + kdIcsEsc(title) + '\r\nDESCRIPTION:' + kdIcsEsc(details) + '\r\nBEGIN:VALARM\r\nTRIGGER:-P2D\r\nACTION:DISPLAY\r\nDESCRIPTION:' + kdIcsEsc(title) + '\r\nEND:VALARM\r\nEND:VEVENT\r\nEND:VCALENDAR';
-    return { g: g, o: o, a: 'data:text/calendar;charset=utf-8,' + encodeURIComponent(ics) };
-  }
-  function phoneReminders() {
-    return '<section class="node phone-rem">'
-      + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">REMINDERS</div>'
-      + '<h2 class="wk-sec" style="margin:0 0 4px">Get these on your phone</h2>'
-      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">One tap adds the deadlines to your own phone calendar, with a reminder two days before. Nothing is downloaded, and nothing about you is stored here.</p>'
-      + '<a href="' + WEBCAL + '" class="phone-sub">Subscribe on your phone <span aria-hidden="true">&#8594;</span></a>'
-      + '<p style="font-size:.8rem;color:var(--ink-faint);margin:9px 0 0;line-height:1.5">This adds every deadline at once and keeps them updated if a date ever changes. It works with Apple Calendar and Google Calendar. You can also add one date at a time with the Google, Apple, or Outlook links beside each due date below.</p>'
+  function upcomingBanner() {
+    var rows = keyDatesList ? keyDatesList() : [];
+    var todayIso = '';
+    try { var now = new Date(); todayIso = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2); } catch (e) {}
+    var entries = [];
+    rows.forEach(function (row) {
+      if (todayIso && row.d < todayIso) return;
+      (row.it || []).forEach(function (it) {
+        if (entries.length < 10) entries.push({ date: row.d, title: it[0], note: it[1] || '', kind: it[2] || 'event' });
+      });
+    });
+    if (!entries.length) return '';
+    function item(e, hidden) {
+      var p = upcomingParts(e);
+      return '<span class="upcoming-item upcoming-' + esc(e.kind) + '"' + (hidden ? ' aria-hidden="true"' : '') + '><i aria-hidden="true"></i><b>' + esc(p.label) + ' (' + esc(p.date) + '):</b><span>' + esc(p.name) + (p.note ? ' <small>' + esc(p.note) + '</small>' : '') + '</span></span>';
+    }
+    var first = entries.map(function (e) { return item(e, false); }).join('');
+    var repeat = entries.map(function (e) { return item(e, true); }).join('');
+    var paused = !!state.tickerPaused;
+    return '<section class="upcoming-banner' + (paused ? ' paused' : '') + '" aria-label="Coming up in BFS218">'
+      + '<button type="button" class="upcoming-label" onclick="SOC.go(\'calendar\')"><span>Coming up</span><small>Open calendar</small></button>'
+      + '<div class="upcoming-window" tabindex="0"><div class="upcoming-track"><div class="upcoming-loop">' + first + '</div><div class="upcoming-loop" aria-hidden="true">' + repeat + '</div></div></div>'
+      + '<button type="button" class="upcoming-pause" onclick="SOC.tickerPause()" aria-pressed="' + paused + '">' + (paused ? 'Resume' : 'Pause') + '</button>'
       + '</section>';
+  }
+  var upcomingReminderFocus = null;
+  function showUpcomingReminder() {
+    var key = SKEY + '.upcomingReminder.session.v1';
+    try { if (sessionStorage.getItem(key) === '1') return; sessionStorage.setItem(key, '1'); } catch (e) {}
+    if (document.getElementById('upcoming-reminder')) return;
+    var rows = keyDatesList ? keyDatesList() : [], todayIso = '', entries = [];
+    try { var now = new Date(); todayIso = now.getFullYear() + '-' + ('0' + (now.getMonth() + 1)).slice(-2) + '-' + ('0' + now.getDate()).slice(-2); } catch (e2) {}
+    rows.forEach(function (row) {
+      if (todayIso && row.d < todayIso) return;
+      (row.it || []).forEach(function (it) {
+        if (entries.length < 4) entries.push({ date: row.d, title: it[0], note: it[1] || '' });
+      });
+    });
+    if (!entries.length) return;
+    upcomingReminderFocus = document.activeElement;
+    var box = document.createElement('div');
+    box.id = 'upcoming-reminder';
+    box.className = 'upcoming-reminder';
+    box.setAttribute('role', 'dialog');
+    box.setAttribute('aria-modal', 'true');
+    box.setAttribute('aria-labelledby', 'upcoming-reminder-title');
+    box.innerHTML = '<div class="upcoming-reminder-card"><button type="button" class="upcoming-reminder-close" onclick="SOC.closeUpcomingReminder()" aria-label="Close coming-up reminder">&times;</button>'
+      + '<div class="mono">BEFORE YOU BEGIN</div><h2 id="upcoming-reminder-title">Here is what is coming up</h2>'
+      + '<ul>' + entries.map(function (e) { var p = upcomingParts(e); return '<li><b>' + esc(p.label) + '<small>(' + esc(p.date) + ')</small></b><span>' + esc(p.name) + (p.note ? ' <small>' + esc(p.note) + '</small>' : '') + '</span></li>'; }).join('') + '</ul>'
+      + '<p>The banner at the top of every page stays current. Blackboard remains the official source for announcements and changed dates.</p>'
+      + '<div><button type="button" onclick="SOC.closeUpcomingReminder();SOC.go(\'calendar\')">Open full calendar</button><button type="button" class="secondary" onclick="SOC.closeUpcomingReminder()">Continue to the site</button></div></div>';
+    document.body.appendChild(box);
+    box.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') { e.preventDefault(); SOC.closeUpcomingReminder(); return; }
+      if (e.key !== 'Tab') return;
+      var focusable = box.querySelectorAll('button:not([disabled]),a[href],[tabindex]:not([tabindex="-1"])');
+      if (!focusable.length) return;
+      var first = focusable[0], last = focusable[focusable.length - 1];
+      if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); }
+      else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+    });
+    setTimeout(function () { var b = box.querySelector('.upcoming-reminder-close'); if (b) b.focus(); }, 0);
   }
   function keyDatesRows(cats) {
     var K = keyDatesList(), out = '', curMon = '';
@@ -5903,15 +6060,7 @@
         if (x[3] != null) return '<a href="?screen=assignment-details&asg=' + x[3] + '" target="_blank" rel="noopener" class="kd-item kd-' + x[2] + ' kd-link" aria-label="Open the ' + esc(x[0]) + ' assignment in a new tab">' + inner + '<span class="kd-go" aria-hidden="true">&#8599;</span></a>';
         return '<div class="kd-item kd-' + x[2] + '">' + inner + '</div>';
       }).join('');
-      var dueItems = rowItems.filter(function (x) { return x[2] === 'due'; });
-      var add = '';
-      if (dueItems.length) {
-        var names = dueItems.map(function (x) { return x[0]; }).join(', ');
-        var title = 'BFS218: ' + (dueItems.length > 1 ? (dueItems.length + ' assignments due') : (dueItems[0][0] + ' due'));
-        var u = addCalUrls(row.d, title, names + '. Details on Blackboard and the BFS218 companion site.');
-        add = '<div class="kd-add"><span class="kd-add-lbl">Remind me:</span> <a href="' + u.g + '" target="_blank" rel="noopener">Google</a> <a href="' + u.a + '">Apple</a> <a href="' + u.o + '" target="_blank" rel="noopener">Outlook</a></div>';
-      }
-      out += '<div class="kd-row' + (past ? ' kd-rowpast' : '') + '">' + badge + '<div class="kd-items">' + items + add + '</div></div>';
+      out += '<div class="kd-row' + (past ? ' kd-rowpast' : '') + '">' + badge + '<div class="kd-items">' + items + '</div></div>';
     });
     return out;
   }
@@ -5942,7 +6091,7 @@
       else if (cls.length) map[row.d] = { kind: 'class', label: cls[0][0], idx: null };
       else if (ops.length) map[row.d] = { kind: 'open', label: ops[0][0], idx: idx };
     });
-    ['2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29'].forEach(function (d) { map[d] = { kind: 'study', label: 'Study Week' }; });
+    ['2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30'].forEach(function (d) { map[d] = { kind: 'study', label: 'Study Week' }; });
     return map;
   }
   function calMonthGrid(year, m) {
@@ -5985,8 +6134,9 @@
     return '<div class="rise cal-page">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">CALENDAR</div>'
       + '<h1 style="font-size:1.9rem;line-height:1.15;font-weight:600;margin:0 0 8px;color:var(--ink)">Every date that matters</h1>'
-      + '<p style="font-size:1rem;line-height:1.6;color:var(--ink-dim);margin:0 0 20px">This calendar keeps two things clearly apart: the red days when you hand something in, and the class schedule in navy (first day of classes, Study Week, and last day of classes). These are your due dates. Click any assignment to open its page in a new tab. Blackboard remains the official word on dates, and nothing here should ever be a surprise.</p>'
-      + phoneReminders()
+      + '<p style="font-size:1rem;line-height:1.6;color:var(--ink-dim);margin:0 0 20px">This calendar keeps two things clearly apart: Seneca red marks the days when you hand something in, and black and neutral greys mark the term schedule. Click any assignment to open its page in a new tab. Blackboard remains the official word on dates, and nothing here should ever be a surprise.</p>'
+      + deadlineRule()
+      + mobileCalendarSubscription()
       + calendarBody()
       + '</div>';
   }
@@ -7101,7 +7251,8 @@
   function assignmentsPage() {
     return '<div class="rise asg-page asg-story-route">'
       + assignmentJumpNav()
-      + assignmentPageHero('OVERVIEW', 'Understanding the Assignments', 'The five assignments build one map across the term. This page explains the arc before you enter the specific assignment rooms.')
+      + assignmentPageHero('OVERVIEW', 'Understanding Your Assignment', 'The five assignments build one map across the term. This page explains the arc before you enter the specific assignment rooms.')
+      + deadlineRule()
       + '<div class="asg-tabpanel">' + assignmentStorySection(assignmentSummaryPanel()) + '</div>'
       + '</div>';
   }
@@ -7207,8 +7358,9 @@
     };
     var out = [];
     function addMedia(r, source, kind) {
-      if (!source || !meta[r.id]) return;
-      var m = meta[r.id];
+      if (!source) return;
+      var m = meta[r.id] || source;
+      if (!m.synopsis) return;
       var isYouTube = !!source.yt;
       var mediaId = String(source.yt || source.platform || source.kind || kind || 'media').replace(/[^A-Za-z0-9_-]/g, '');
       out.push({
@@ -7394,14 +7546,16 @@
       var sp = visualSpec(s.week, md);
       var vw = visualViewFor(s.week, 'overview');
       var mt = esc(sp.title || weekTitle(s.week));
+      var modelDescription = sp.visualDescription || sp.modelNote || sp.scene || 'A three-dimensional model of the core idea for this week.';
+      var modelStyle = String(sp.visualStyle || 'diorama').replace(/[^a-z0-9_-]/gi, '').toLowerCase() || 'diorama';
       return '<div class="walk-figwrap">'
         + '<div class="walk-figtext">'
         + '<div class="walk-kicker">EXAMINE IN 3D</div>'
         + '<h2 class="walk-fighead">' + mt + '</h2>'
-        + '<p class="walk-figcap">A 3D model of the core idea for this week. Drag the scene to turn it, and use the buttons to zoom or reset.</p>'
+        + '<p class="walk-figcap">' + esc(modelDescription) + ' Drag the scene to turn it, and use the buttons to zoom or reset.</p>'
         + '</div>'
-        + '<div class="walk-figview walk-modelview"><div class="wk-model-shell walk-modelshell">'
-        + '<canvas class="wk-model-canvas" role="img" aria-label="Interactive 3D model for ' + mt + '" data-topic-model="overview" data-week="' + s.week + '" data-kind="' + esc(sp.kind || 'pipeline') + '" data-view="' + esc(vw) + '"></canvas>'
+        + '<div class="walk-figview walk-modelview"><div class="wk-model-shell walk-modelshell wk-model-style-' + esc(modelStyle) + '">'
+        + '<canvas class="wk-model-canvas" role="img" aria-label="Interactive 3D model for ' + mt + '. ' + esc(modelDescription) + '" data-topic-model="overview" data-week="' + s.week + '" data-kind="' + esc(sp.kind || 'pipeline') + '" data-view="' + esc(vw) + '"></canvas>'
         + '<div class="wk-cam-ctl" role="group" aria-label="3D view controls">'
         + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',-1)" aria-label="Rotate left">&#8634;</button>'
         + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',1)" aria-label="Rotate right">&#8635;</button>'
@@ -7802,7 +7956,7 @@
       '<div style="min-height:100vh;display:flex;flex-direction:column;background:#F7F8FA">' + header()
       + (state.navOpen ? '<button class="soc-mobile-scrim" onclick="SOC.closeNav()" aria-label="Close course navigation"></button>' : '')
       + '<div style="display:flex;flex:1;min-height:0">' + sidebar()
-      + '<main id="soc-main" tabindex="-1" class="scrollarea" style="flex:1;min-width:0;overflow:auto;height:calc(100vh - 62px)"><div style="margin:0 auto;padding:30px 30px 110px">' + (['journey','library','station','videos'].indexOf(state.screen) >= 0 ? lensChip() : '') + dueReminderStrip() + body() + siteFooter() + '</div></main>'
+      + '<main id="soc-main" tabindex="-1" class="scrollarea" style="flex:1;min-width:0;overflow:auto;height:calc(100vh - 62px)"><div style="margin:0 auto;padding:30px 30px 110px">' + (['journey','library','station','videos'].indexOf(state.screen) >= 0 ? lensChip() : '') + upcomingBanner() + body() + siteFooter() + '</div></main>'
       + '</div>' + readerLensOverlay() + rlPanelOverlay() + listenOverlay() + toast + '</div>';
     if (refocusSearch) {
       var el = document.getElementById('soc-search');
@@ -7825,6 +7979,7 @@
     initAuditModels();
     wkEnhanceSections();
     initTopicModels();
+    setTimeout(showUpcomingReminder, 80);
     navHistorySync();
   }
   function topScroll() { var m = document.getElementById('soc-main'); if (m) m.scrollTop = 0; }
@@ -8276,6 +8431,12 @@
     readerLensPointerDown: function () {},
     readerLensKey: function () {},
     prev: goPrevious,
+    shareMobileSite: function () {
+      var url = (location.origin + location.pathname).replace(/index\.html$/i, '');
+      if (navigator.share) { navigator.share({ title: courseCode() + ' companion website', url: url }).then(function () { announce('Site link shared.'); }).catch(function () {}); return; }
+      if (navigator.clipboard && navigator.clipboard.writeText) { navigator.clipboard.writeText(url).then(function () { announce('Site link copied.'); }).catch(function () { announce('Copy the address from your browser to use this site on another device.'); }); return; }
+      announce('Copy the address from your browser to use this site on another device.');
+    },
     reportProblem: function () {
       var scr = screenAnnounceText ? screenAnnounceText() : (state.screen || 'a page');
       var wk = state.screen === 'station' ? (' (Week ' + state.stationWeek + ')') : '';
@@ -8433,6 +8594,23 @@
       } catch (e) {}
       location.reload();
     },
+    tickerPause: function () {
+      state.tickerPaused = !state.tickerPaused;
+      var banner = document.querySelector('.upcoming-banner');
+      var button = banner ? banner.querySelector('.upcoming-pause') : null;
+      if (banner) banner.classList.toggle('paused', state.tickerPaused);
+      if (button) {
+        button.textContent = state.tickerPaused ? 'Resume' : 'Pause';
+        button.setAttribute('aria-pressed', String(state.tickerPaused));
+      }
+      announce(state.tickerPaused ? 'Coming-up banner paused.' : 'Coming-up banner resumed.');
+    },
+    closeUpcomingReminder: function () {
+      var box = document.getElementById('upcoming-reminder');
+      if (box) box.remove();
+      if (upcomingReminderFocus && upcomingReminderFocus.focus) { try { upcomingReminderFocus.focus(); } catch (e) {} }
+      upcomingReminderFocus = null;
+    },
     expPick: function (w, i) {
       state.exp[w] = state.exp[w] || {};
       if (state.exp[w].ran) return;
@@ -8465,6 +8643,50 @@
       state.exp[w] = {};
       persist(); renderKeepScroll();
       announce('Experiment reset. Choose a new prediction.');
+    },
+    simChoose: function (w, key, value) {
+      var SIM = window.BFS218_SIMULATIONS || {}, spec = SIM[w];
+      if (!spec || ['caseIndex', 'systemIndex', 'safeguardIndex'].indexOf(key) < 0) return;
+      var st = simLabState(w);
+      var max = key === 'caseIndex' ? spec.cases.length : key === 'systemIndex' ? spec.systems.length : spec.safeguards.length;
+      st[key] = Math.max(0, Math.min(max - 1, Number(value) || 0));
+      persist(); renderKeepScroll();
+      announce('Simulation setting changed. Run the system to observe a new outcome.');
+    },
+    simRun: function (w, total) {
+      var SIM = window.BFS218_SIMULATIONS || {}, spec = SIM[w];
+      if (!spec) return;
+      var st = simLabState(w);
+      total = total === 100 ? 100 : 1;
+      var c = spec.cases[st.caseIndex] || spec.cases[0];
+      var s = spec.systems[st.systemIndex] || spec.systems[0];
+      var g = spec.safeguards[st.safeguardIndex] || spec.safeguards[0];
+      var burdenChance = Math.max(0.04, Math.min(0.74, 0.22 + Number(c[1] || 0) + Number(s[1] || 0) + Number(g[1] || 0)));
+      var reviewChance = Math.max(0.1, Math.min(0.32, 0.16 + Math.max(0, -Number(g[1] || 0)) * 0.45));
+      if (burdenChance + reviewChance > 0.88) reviewChance = 0.88 - burdenChance;
+      function randomUnit() {
+        try { var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); }
+      }
+      var counts = { positive: 0, neutral: 0, burden: 0 };
+      for (var i = 0; i < total; i++) {
+        var r = randomUnit();
+        if (r < burdenChance) counts.burden++;
+        else if (r < burdenChance + reviewChance) counts.neutral++;
+        else counts.positive++;
+      }
+      var dominant = counts.positive >= counts.neutral && counts.positive >= counts.burden ? 'positive' : counts.neutral >= counts.burden ? 'neutral' : 'burden';
+      st.history.push({ total: total, positive: counts.positive, neutral: counts.neutral, burden: counts.burden, dominant: dominant, caseIndex: st.caseIndex, systemIndex: st.systemIndex, safeguardIndex: st.safeguardIndex });
+      st.history = st.history.slice(-8);
+      state.visualView = state.visualView || {};
+      state.visualView['activity|' + w] = dominant === 'burden' ? 'explain' : dominant === 'positive' ? 'try' : 'predict';
+      persist(); renderKeepScroll();
+      announce(total === 1 ? 'One simulated case complete. Run a larger batch to inspect the pattern.' : 'One hundred simulated cases complete. Compare the outcome distribution with another setting.');
+    },
+    simReset: function (w) {
+      var st = simLabState(w);
+      st.history = [];
+      persist(); renderKeepScroll();
+      announce('Simulation comparison cleared. Your selected settings remain.');
     },
     wkColl: function (id) {
       var nowColl = wkOpenHas(id);

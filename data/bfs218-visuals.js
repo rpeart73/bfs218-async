@@ -1,4 +1,43 @@
 window.BFS218_VISUALS = {
+  modelStyles: {
+    map: 'cartographic', outcomelens: 'civic', pipeline: 'technical', switches: 'technical', audit: 'technical', gate: 'technical',
+    review: 'workshop', vault: 'cartographic', benevolence: 'civic', sorting: 'technical', repair: 'workshop', policy: 'civic',
+    return: 'cartographic', compass: 'cartographic', startermap: 'workshop', matchwork: 'workshop', mechanismmatch: 'technical',
+    decisionpath: 'technical', defaultboard: 'technical', surveillanceflow: 'technical', toolkit: 'workshop', datastory: 'cartographic',
+    promisefunnel: 'civic', detector: 'technical', thresholdaudit: 'technical', repairtable: 'workshop', policydeck: 'civic',
+    capstonemap: 'cartographic', futurecompass: 'cartographic'
+  },
+  modelDescriptions: {
+    map: 'A warm cartographic diorama places one learner inside an ordinary field of cameras, phones, payment tools, and identity checks. Fine data paths connect the devices to a noticing table, showing how hidden sorting rules can travel through daily life.',
+    outcomelens: 'A civic outcomes installation sends people through the same rule gate and into two sharply different lanes. One remains open. The other narrows, meets a barrier, and accumulates burden, making unequal results visible without reducing the people to statistics.',
+    pipeline: 'An elevated technical cutaway traces old records through a conveyor, scoring unit, and two decision exits. The equipment-board view makes each component and transfer point easy to inspect, while a red evidence path shows where inherited inequity enters the process.',
+    switches: 'A functional control console presents defaults as physical switches connected to an output doorway. The technical layout makes the preset rule, the fitted user, and the person forced to adapt visible in one view.',
+    audit: 'An orthographic audit station places four benchmark groups on a calibrated inspection table. A neutral equipment layout, restrained materials, and red error markers reveal how a strong average can conceal a concentrated failure pattern.',
+    gate: 'A surveillance checkpoint uses cameras, a scanning gate, database racks, and a blocked appeal route. People with varied skin tones move through the same space while the system turns observation into a flag and sends it forward.',
+    review: 'A quiet workshop table gathers the first half of the course into labelled pieces that can be revisited, compared, and set aside. The calmer materials and slower movement make Study Week feel like review and recovery, not another test.',
+    vault: 'A layered map table combines a secure record vault, story cards, a governance key, and community space. The cartographic design separates possession of data from authority over how the data is interpreted, corrected, and shared.',
+    benevolence: 'A civic service kiosk appears polished and helpful at the front, while a cutaway view exposes the sorting funnel and data route behind it. The installation asks students to compare the public promise with the power the system gains.',
+    sorting: 'A precise systems model moves student records toward a visible cutoff and two support outcomes. The clean technical layout shows the score, threshold, waiting path, and missing human context without making the student look like the problem.',
+    repair: 'A working repair studio places a damaged system beside patch tools, redesign tools, and seats for people affected by the harm. The scene distinguishes a surface fix from a change in who has authority to decide.',
+    policy: 'A civic accountability model stacks product, institution, law, and rights as separate but connected levels. A visible gap and an exposed person show why one lever cannot carry the whole response.',
+    return: 'A topographic spiral rises from early notes to later evidence. The cartographic path makes rereading visible as movement in understanding rather than a return to the same point.',
+    compass: 'A restrained navigation installation links the course question, the student map, response tools, and a forward commitment. The compass is treated as a thinking instrument, not a decorative symbol.',
+    startermap: 'A practical mapping bench lets one everyday tool pass through an assumptions lens and into a first evidence card. The workshop style turns noticing into a concrete sequence students can repeat.',
+    matchwork: 'A comparison workbench moves one case card toward course-concept trays and a feedback station. The parts stay separate so students can see the difference between reading the evidence, choosing a concept, and checking the explanation.',
+    mechanismmatch: 'A technical diagnostic board routes a case outcome through an outcomes lens and into mechanism bins. The orthographic arrangement keeps the task focused on what produced the result, not on guessing a person\'s intention.',
+    decisionpath: 'A decision schematic begins with one input, passes through a visible institutional choice, and branches toward help or harm. The plan-view layout supports counterfactual thinking because one rule can be changed while the rest stays fixed.',
+    defaultboard: 'A technical control board exposes preset rules before the user arrives. Switching one setting changes the path and reveals who fits the default and who must carry the cost.',
+    surveillanceflow: 'A systems cutaway follows a person from checkpoint to flag, database, and next decision. Varied human figures remain ordinary and dignified while scan paths, data transfers, and the missing appeal route make institutional surveillance visible.',
+    toolkit: 'A repair workshop organizes concepts, sources, and questions into a review kit. Students can see which piece they are choosing, what it connects to, and what clearer claim they can build from it.',
+    datastory: 'A layered governance map separates the stored record, the story told about people, the people themselves, and the authority to correct the record. The key moves toward community control rather than remaining with the database.',
+    promisefunnel: 'A civic cutaway places a welcoming service promise beside a transparent collection funnel and a power meter. Students can compare what the service says with what it takes, predicts, and transfers.',
+    detector: 'A technical evidence station sends three writing samples through one detector and onto a verdict board. The orthographic layout keeps the essays, claimed accuracy, and unequal false flags visible at the same time.',
+    thresholdaudit: 'A functional decision laboratory combines a score dial, movable cutoff, support doors, and a human-review lens. The instrument view is designed for repeated trials so students can change one rule and compare the distribution of outcomes.',
+    repairtable: 'A community repair table places the documented harm at the centre, with a patch tray, a power-shifting repair tray, and seats around the work. The scene makes participation and authority part of the mechanism, not background decoration.',
+    policydeck: 'A civic policy studio layers four accountability levels beneath a set of levers and a trade-off balance. The scene shows where each intervention acts and leaves the remaining gap visible.',
+    capstonemap: 'A layered evidence table places an early entry, a later entry, the change between them, and a final plan in one cartographic field. The design turns reflection into a traceable evidence path.',
+    futurecompass: 'A quiet field installation connects evidence, response, commitment, and the student\'s future professional context. The stepping-stone layout keeps the final model grounded in action rather than ending with a symbol alone.'
+  },
   weeks: {
     1: {
       kind: 'map',
@@ -150,7 +189,7 @@ window.BFS218_VISUALS = {
     5: {
       kind: 'audit',
       title: 'The average hides the group carrying the error.',
-      scene: 'A benchmark table is split into four trays. Red pins cluster in one tray to show why Gender Shades had to cut the results intersectionally.',
+      scene: 'A calibrated inspection rig connects a camera station, a system station, and four benchmark trays. Red error pins concentrate in the darker-skinned women tray, showing why Gender Shades had to cut the results intersectionally instead of trusting the overall average.',
       steps: [
         ['Run the test', 'The system is not trusted because it looks technical. It has to be tested.'],
         ['Slice the result', 'Overall accuracy is not enough. Cut by gender, skin type, and then both together.'],
