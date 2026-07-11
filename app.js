@@ -1519,7 +1519,7 @@
       var secs = document.querySelectorAll('#soc-main section[id^="wk-"]');
       var open = [];
       Array.prototype.forEach.call(secs, function (sec) {
-        if (sec.id === 'wk-ov' || sec.id === keepId || !sec.querySelector('h2.wk-sec')) return;
+        if (sec.id === 'wk-ov' || sec.id === 'wk-audio' || sec.id === keepId || !sec.querySelector('h2.wk-sec')) return;
         if (!sec.querySelector('.wk-coll-btn')) return;
         if (sec.classList.contains('wk-collapsed')) return;
         open.push({ id: sec.id, seq: +((state.wkOpen || {})[wkOpenKey(sec.id)]) || 0 });
@@ -1562,7 +1562,7 @@
         h = sec.querySelector('h2');
         if (h) h.classList.add('wk-sec');
       }
-      if (!h || h.parentElement !== sec || h.querySelector('.wk-coll-btn')) return;
+      if (!h || sec.id === 'wk-audio' || h.parentElement !== sec || h.querySelector('.wk-coll-btn')) return;
       var id = sec.id;
       if (id === 'wk-path') return;
       var collapsed = !wkOpenHas(id);
