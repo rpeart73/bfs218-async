@@ -7319,7 +7319,7 @@
     var man = (typeof window !== 'undefined' && window[code + '_WALKFIGS']) || {};
     var list = man[w] || man[String(w)];
     if (!list || !list[idx]) return null;
-    return 'walkthroughs/' + d.deck + '/images/' + list[idx];
+    return 'walkthroughs/' + d.deck + '/images/' + list[idx] + '?v=20260711b';
   }
   function walkPrefs() {
     var r = rlState();
