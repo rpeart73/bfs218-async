@@ -737,6 +737,7 @@
       + '<button class="soc-mobile-menu" onclick="SOC.toggleNav()" aria-label="' + (state.navOpen ? 'Close course navigation' : 'Open course navigation') + '" aria-expanded="' + (state.navOpen ? 'true' : 'false') + '" style="align-items:center;justify-content:center;width:38px;height:38px;border:1px solid #DEE3EA;border-radius:10px;background:#fff;color:#474C57;flex:none">' + ic(state.navOpen ? 'x' : 'list', 18) + '</button>'
       + '<div class="soc-head-brand" style="display:flex;align-items:center;gap:10px;flex:none;min-width:0"><img src="./seneca-logo.png" alt="Seneca Polytechnic" style="height:34px;width:auto;display:block"><span class="soc-head-title" style="font-weight:600;font-size:1.0625rem;color:var(--ink);letter-spacing:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">BFS218 Companion</span></div>'
       + readerLensButton()
+      + '<button type="button" class="reader-lens-btn" onclick="SOC.switchSectionPrompt()" aria-label="Switch to the other BFS218 section" title="Switch section: go back and choose the synchronous or asynchronous site">' + ic('columns', 17, 2) + '<span class="reader-lens-label">Switch section</span></button>'
       + (D.course.mode ? '<span class="mono soc-head-mode" style="font-size:.75rem;font-weight:700;color:#fff;background:var(--amode);padding:6px 12px;border-radius:6px;letter-spacing:.05em;flex:none">' + esc(D.course.mode).toUpperCase() + '</span>' : '')
       + (String(state.programViewField || state.careerField || '').trim() ? '<button type="button" class="mono soc-head-term" onclick="SOC.go(\'career\')" title="Change your program lens" style="font-size:.72rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;padding:5px 10px;border-radius:6px;flex:none;cursor:pointer;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">VIEWING AS: ' + esc(selLabel(state.programViewField || state.careerField)) + '</button>' : '')
       + '<span class="mono soc-head-term" style="font-size:.75rem;font-weight:600;color:#B02318;background:#F6E3E1;padding:5px 10px;border-radius:6px;flex:none">FALL 2026</span>'
@@ -762,8 +763,7 @@
     var cal = '<button onclick="SOC.go(\'calendar\')" aria-current="' + (calActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (calActive ? '600' : '500') + ';background:' + (calActive ? '#EEF1F5' : 'transparent') + ';color:' + (calActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (calActive ? 'var(--red)' : '#6B7280') + '">' + ic('calendar', 19) + '</span><span style="flex:1;text-align:left">Calendar and Due Dates</span></button>';
     var lbl = function (t) { return '<div class="mono" style="font-size:.6875rem;letter-spacing:.06em;color:#6B7280;padding:16px 12px 6px">' + t + '</div>'; };
     var nav = btns[0] + btns[1] + cal + lbl('LEARN EACH WEEK') + walk + btns[2];
-    var switchSec = '<a href="https://rpeart73.github.io/bfs218/?choose" onclick="try{localStorage.removeItem(\'bfs218.section\')}catch(e){}" style="display:flex;align-items:center;gap:11px;width:100%;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:500;background:transparent;color:#474C57;text-align:left;text-decoration:none"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:#6B7280">' + ic('columns', 19) + '</span><span style="flex:1;text-align:left">Switch section</span></a>';
-    var study = lbl('STUDY THE SOURCES') + btns[3] + btns[5] + btns[4] + btns[6] + btns[7] + btns[8] + lbl('DO THE WORK') + btns[9] + lbl('MORE') + btns[10] + guide + report + switchSec;
+    var study = lbl('STUDY THE SOURCES') + btns[3] + btns[5] + btns[4] + btns[6] + btns[7] + btns[8] + lbl('DO THE WORK') + btns[9] + lbl('MORE') + btns[10] + guide + report;
     var counts = {}; D.records.forEach(function (r) { counts[r.week] = (counts[r.week] || 0) + 1; });
     var navWeeks = [];
     for (var nw = 1; nw <= 14; nw++) navWeeks.push(nw);
@@ -6036,6 +6036,7 @@
   }
   var upcomingReminderFocus = null;
   function showUpcomingReminder() {
+    try { if (localStorage.getItem('bfs218.dev') === '1') return; } catch (e) {}
     var key = SKEY + '.upcomingReminder.session.v1';
     try { if (sessionStorage.getItem(key) === '1') return; sessionStorage.setItem(key, '1'); } catch (e) {}
     if (document.getElementById('upcoming-reminder')) return;
@@ -8526,6 +8527,22 @@
     galTopic: function (t) { var m = document.getElementById('soc-main'); var y = m ? m.scrollTop : 0; state.galTopic = (state.galTopic === t) ? null : t; render(); var m2 = document.getElementById('soc-main'); if (m2) m2.scrollTop = y; },
     galClear: function () { state.galWeek = null; state.galTopic = null; render(); },
     playVideo: function (el, id, t) { var box = el.closest ? el.closest('.rgvideo, .vid-frame, .wk-rec-frame') : el.parentNode; if (box) { box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&cc_load_policy=1&cc_lang_pref=en" referrerpolicy="strict-origin-when-cross-origin" title="' + (t ? esc(t) : 'Scholar talk') + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>'; } },
+    switchSectionPrompt: function () {
+      if (document.getElementById('switch-section-modal')) return;
+      var box = document.createElement('div');
+      box.id = 'switch-section-modal'; box.className = 'upcoming-reminder';
+      box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'switch-section-title');
+      box.innerHTML = '<div class="upcoming-reminder-card"><div class="mono">Before you switch</div>'
+        + '<h2 id="switch-section-title">Make sure you are in the right section</h2>'
+        + '<p>BFS218 runs in two sections, synchronous and asynchronous, on two separate sites. <b>The assignments and the due dates are different between them.</b> You are responsible for following the requirements of the section you are actually enrolled in. If you are not sure which one that is, check your timetable or Blackboard before you switch.</p>'
+        + '<div><button type="button" onclick="SOC.switchSectionGo()">Switch section</button><button type="button" class="secondary" onclick="SOC.switchSectionClose()">Stay on this site</button></div></div>';
+      document.body.appendChild(box);
+      box.addEventListener('click', function (e) { if (e.target === box) SOC.switchSectionClose(); });
+      box.addEventListener('keydown', function (e) { if (e.key === 'Escape') SOC.switchSectionClose(); });
+      setTimeout(function () { var s = box.querySelector('button.secondary'); if (s) s.focus(); }, 0);
+    },
+    switchSectionGo: function () { try { localStorage.removeItem('bfs218.section'); } catch (e) {} location.assign('https://rpeart73.github.io/bfs218/?choose'); },
+    switchSectionClose: function () { var box = document.getElementById('switch-section-modal'); if (box) box.remove(); },
     auEl: function (id) { return document.getElementById('au-el-' + id); },
     auFmt: function (t) { t = Math.max(0, Math.floor(t || 0)); var m = Math.floor(t / 60), s = t % 60; return m + ':' + (s < 10 ? '0' : '') + s; },
     auIcon: function (id, playing) { var b = document.getElementById('au-play-' + id); if (b) { b.classList.toggle('is-playing', !!playing); b.setAttribute('aria-label', playing ? 'Pause the lecture' : 'Play the lecture'); } },
