@@ -1487,6 +1487,9 @@
       ['J. MILLER', 'AI-assisted draft', 'native speaker'],
       ['T. NGUYEN', 'human written', 'bilingual writer']
     ];
+    /* Side-mounted evidence rack: the support stays behind the cards so no
+       structural element can cover the student names or writing profiles. */
+    var essayY = [1.78, 1.08, 0.38];
     essays.forEach(function (es, ei) {
       var pn = K.add(new K.THREE.PlaneGeometry(1.0, 0.62), K.screen(56, 34, function (g, w, h) {
         g.fillStyle = '#fdfdfb'; g.fillRect(0, 0, w, h);
@@ -1496,11 +1499,14 @@
         g.fillText(es[2], w * 0.07, h * 0.62);
         g.strokeStyle = '#b9c4cf'; g.lineWidth = Math.max(2, w * 0.006);
         for (var li = 0; li < 3; li++) { g.beginPath(); g.moveTo(w * 0.07, h * (0.74 + li * 0.09)); g.lineTo(w * 0.9, h * (0.74 + li * 0.09)); g.stroke(); }
-      }, { glow: 0.34 }), [-2.15, 1.72 - ei * 0.62, 0.1], [0, 0.55, 0], { shadow: false });
+      }, { glow: 0.34 }), [-2.08, essayY[ei], 0.18], [0, 0.42, 0], { shadow: false });
       K.float(pn, 0.03, 0.9 + ei * 0.15);
-      K.flow([[-1.7, 1.62 - ei * 0.58, 0.1], [-0.7, 1.0, 0], [0.12, 0.9, -0.1]], { color: hot ? PAL.red : PAL.line, pulseColor: hot ? PAL.red : PAL.teal, pulses: 2, speed: 0.1 + ei * 0.02 });
+      K.flow([[-1.58, essayY[ei], 0.16], [-0.7, 1.0, 0], [0.12, 0.9, -0.1]], { color: hot ? PAL.red : PAL.line, pulseColor: hot ? PAL.red : PAL.teal, pulses: 2, speed: 0.1 + ei * 0.02 });
     });
-    K.cyl(0.04, 0.055, 1.35, K.mat.metal(), [-2.15, 0.65, 0.1]);
+    K.cyl(0.04, 0.055, 1.75, K.mat.metal(), [-2.78, 0.88, -0.18]);
+    essayY.forEach(function (y) {
+      K.box(0.52, 0.025, 0.025, K.mat.metal(), [-2.52, y, -0.16]);
+    });
     K.archGate([0.12, 0, -0.1], { w: 1.5, h: 1.85, light: hot ? PAL.red : PAL.teal, beamColor: hot ? PAL.red : PAL.teal, beamSpeed: 1.5 });
     var badge = K.add(new K.THREE.PlaneGeometry(0.9, 0.3), K.screen(52, 18, function (g, w, h) {
       g.fillStyle = '#0d1526'; g.fillRect(0, 0, w, h);
