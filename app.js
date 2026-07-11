@@ -3278,14 +3278,32 @@
         + '<a href="' + esc(source.transcriptUrl || source.url) + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none;background:#fff;color:#15171C;border:1px solid #15171C">Read the text version</a></div>'
         + '<p style="margin:10px 0 0;font-size:.78rem;color:var(--ink-faint)">Playback stays with the publisher. This site does not track what you play, and the audio does not replace the assigned reading.</p></section>';
     }
-    return '<section id="wk-audio" class="node"><h2 class="wk-sec">Listen to this week</h2>'
-      + '<p class="wk-hint">Made for your ears: about ' + (ep.minutes || 10) + ' minutes covering this week\'s question, core concept, and readings. ' + esc(ep.blurb || '') + '</p>'
-      + '<audio controls preload="none" style="width:100%" src="' + esc(ep.file) + '">Your browser cannot play this audio. Use the download link below.</audio>'
-      + '<div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:10px">'
-      + '<a href="' + esc(ep.file) + '" download class="wk-cta" style="text-decoration:none">Download for offline listening</a>'
-      + (ep.transcript ? '<a href="' + esc(ep.transcript) + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none;background:#fff;color:#1B2A4A;border:1px solid #1B2A4A">Read the transcript</a>' : '')
+    var aid = String(w);
+    var amin = ep.minutes || 10;
+    var atitle = ep.title || ((window.BFS218 && window.BFS218.weeks && window.BFS218.weeks[w]) ? ('Week ' + w + ': ' + window.BFS218.weeks[w]) : ('Week ' + w));
+    return '<section id="wk-audio" class="node">'
+      + '<div class="au-kicker mono">The professor\'s lecture</div>'
+      + '<h2 class="wk-sec">Listen to this week</h2>'
+      + '<p class="wk-hint">This is the whole week in your professor\'s own voice, about ' + amin + ' minutes: the week\'s question, the core idea, and how the readings fit together. Play it to catch up if you missed the week, or if you take things in better by ear. It does not replace the readings; those still carry the citations and evidence your graded work needs. ' + esc(ep.blurb || '') + '</p>'
+      + '<div class="au-player">'
+      + '<audio id="au-el-' + aid + '" preload="metadata" src="' + esc(ep.file) + '"></audio>'
+      + '<div class="au-head">'
+      + '<button type="button" class="au-play" id="au-play-' + aid + '" onclick="SOC.auToggle(\'' + aid + '\')" aria-label="Play the lecture">'
+      + '<svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
+      + '<svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>'
+      + '</button>'
+      + '<div class="au-headmeta"><div class="au-title">' + esc(atitle) + '</div><div class="au-by">In your professor\'s voice, about ' + amin + ' min</div></div>'
       + '</div>'
-      + '<p style="margin:10px 0 0;font-size:.78rem;color:var(--ink-faint)">Download before you travel; the subway has no signal. This episode teaches the week\'s ideas in audio form, and the readings still carry the citations and evidence your graded work needs.</p>'
+      + '<div class="au-scrub"><span class="au-time" id="au-cur-' + aid + '">0:00</span>'
+      + '<input class="au-seek" id="au-seek-' + aid + '" type="range" min="0" max="1000" value="0" step="1" oninput="SOC.auSeek(\'' + aid + '\',this.value)" aria-label="Seek through the lecture">'
+      + '<span class="au-time au-time-dur" id="au-dur-' + aid + '">--:--</span></div>'
+      + '<div class="au-ctrls">'
+      + '<button type="button" class="au-btn" onclick="SOC.auSkip(\'' + aid + '\',-15)" aria-label="Back 15 seconds"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 6 5 12l6 6z"/><path d="M19 6l-6 6 6 6z"/></svg>15s</button>'
+      + '<button type="button" class="au-btn au-spd" id="au-spd-' + aid + '" onclick="SOC.auSpeed(\'' + aid + '\')" aria-label="Change playback speed">1×</button>'
+      + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
+      + (ep.transcript ? '<a class="au-btn au-btn-ghost" href="' + esc(ep.transcript) + '" target="_blank" rel="noopener">Transcript</a>' : '')
+      + '</div></div>'
+      + '<p class="au-foot">Download it before you travel; the subway has no signal. This is a teaching companion, not a substitute for the assigned readings.</p>'
       + '</section>';
   }
   function visualOverviewSection(w, d) {
@@ -8507,6 +8525,14 @@
     galTopic: function (t) { var m = document.getElementById('soc-main'); var y = m ? m.scrollTop : 0; state.galTopic = (state.galTopic === t) ? null : t; render(); var m2 = document.getElementById('soc-main'); if (m2) m2.scrollTop = y; },
     galClear: function () { state.galWeek = null; state.galTopic = null; render(); },
     playVideo: function (el, id, t) { var box = el.closest ? el.closest('.rgvideo, .vid-frame, .wk-rec-frame') : el.parentNode; if (box) { box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&cc_load_policy=1&cc_lang_pref=en" referrerpolicy="strict-origin-when-cross-origin" title="' + (t ? esc(t) : 'Scholar talk') + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>'; } },
+    auEl: function (id) { return document.getElementById('au-el-' + id); },
+    auFmt: function (t) { t = Math.max(0, Math.floor(t || 0)); var m = Math.floor(t / 60), s = t % 60; return m + ':' + (s < 10 ? '0' : '') + s; },
+    auIcon: function (id, playing) { var b = document.getElementById('au-play-' + id); if (b) { b.classList.toggle('is-playing', !!playing); b.setAttribute('aria-label', playing ? 'Pause the lecture' : 'Play the lecture'); } },
+    auBind: function (id) { var a = this.auEl(id); if (!a || a.dataset.auBound) return; a.dataset.auBound = '1'; var self = this; var seek = document.getElementById('au-seek-' + id), cur = document.getElementById('au-cur-' + id), dur = document.getElementById('au-dur-' + id); function setDur() { if (dur && a.duration && isFinite(a.duration)) dur.textContent = self.auFmt(a.duration); } a.addEventListener('loadedmetadata', setDur); setDur(); a.addEventListener('timeupdate', function () { if (cur) cur.textContent = self.auFmt(a.currentTime); if (seek && a.duration) { var pc = (a.currentTime / a.duration) * 100; seek.value = String(Math.round(pc * 10)); seek.style.background = 'linear-gradient(90deg,#DA291C ' + pc + '%,#E7D3D0 ' + pc + '%)'; } }); a.addEventListener('ended', function () { self.auIcon(id, false); if (seek) { seek.value = '0'; seek.style.background = ''; } if (cur) cur.textContent = '0:00'; }); },
+    auToggle: function (id) { var a = this.auEl(id); if (!a) return; this.auBind(id); if (a.paused) { var p = a.play(); if (p && p.catch) p.catch(function () {}); this.auIcon(id, true); } else { a.pause(); this.auIcon(id, false); } },
+    auSeek: function (id, v) { var a = this.auEl(id); if (!a || !a.duration) return; a.currentTime = (Number(v) / 1000) * a.duration; },
+    auSkip: function (id, d) { var a = this.auEl(id); if (!a) return; this.auBind(id); var t = a.currentTime + d; a.currentTime = Math.min(Math.max(0, t), a.duration || t); },
+    auSpeed: function (id) { var a = this.auEl(id); if (!a) return; var steps = [1, 1.25, 1.5, 1.75, 2]; var i = steps.indexOf(a.playbackRate); i = (i + 1) % steps.length; a.playbackRate = steps[i]; var l = document.getElementById('au-spd-' + id); if (l) l.textContent = steps[i] + '×'; },
     back: function () { if (state.screen !== 'library') rememberPrevious(); state.screen = 'library'; focusTarget = 'soc-main'; render(); var m = document.getElementById('soc-main'); if (m) m.scrollTop = state.libScroll || 0; },
     open: function (id) { rememberPrevious(); var m = document.getElementById('soc-main'); if (m) state.libScroll = m.scrollTop; state.screen = 'detail'; state.detailId = id; focusTarget = 'soc-main'; render(); topScroll(); },
     layout: function (l) { state.layout = l; persist(); render(); },
