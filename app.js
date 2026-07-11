@@ -8551,7 +8551,7 @@
     auToggle: function (id) { var a = this.auEl(id); if (!a) return; this.auBind(id); if (a.paused) { var p = a.play(); if (p && p.catch) p.catch(function () {}); this.auIcon(id, true); } else { a.pause(); this.auIcon(id, false); } },
     auSeek: function (id, v) { var a = this.auEl(id); if (!a || !a.duration) return; a.currentTime = (Number(v) / 1000) * a.duration; },
     auSkip: function (id, d) { var a = this.auEl(id); if (!a) return; this.auBind(id); var t = a.currentTime + d; a.currentTime = Math.min(Math.max(0, t), a.duration || t); },
-    auSpeed: function (id) { var a = this.auEl(id); if (!a) return; var steps = [1, 1.25, 1.5, 1.75, 2]; var i = steps.indexOf(a.playbackRate); i = (i + 1) % steps.length; a.playbackRate = steps[i]; var l = document.getElementById('au-spd-' + id); if (l) l.textContent = steps[i] + '×'; },
+    auSpeed: function (id) { var a = this.auEl(id); if (!a) return; var steps = [1, 1.25, 1.5, 1.75, 2]; var i = steps.indexOf(a.playbackRate); i = (i + 1) % steps.length; a.playbackRate = steps[i]; var l = document.getElementById('au-spd-' + id); if (l) l.textContent = steps[i] + '×'; var l2 = document.getElementById('au-tr-spd'); if (l2) l2.textContent = steps[i] + '×'; },
     auTranscript: function (id) {
       var self = this, a = this.auEl(id);
       var ep = (window.BFS218_AUDIO || {})[id] || {};
@@ -8570,24 +8570,41 @@
         box.innerHTML = '<div class="au-modal-card"><div class="au-modal-head"><div><div class="au-kicker mono">Transcript, follow along</div><b>' + esc(ep.title || 'This week') + '</b></div>'
           + '<button type="button" class="au-modal-x" onclick="SOC.auTrClose()" aria-label="Close transcript">×</button></div>'
           + '<div class="au-modal-body" id="au-tr-body">' + body + '</div>'
-          + '<div class="au-modal-foot"><button type="button" class="au-play au-tr-play" id="au-tr-play" onclick="SOC.auToggle(\'' + id + '\')" aria-label="Play or pause"><svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><span class="au-tr-hint">Press play and the words follow along as you read.</span></div></div>';
+          + '<div class="au-modal-foot"><button type="button" class="au-play au-tr-play" id="au-tr-play" onclick="SOC.auToggle(\'' + id + '\')" aria-label="Play or pause"><svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button>'
+          + '<button type="button" class="au-tr-ctrl" id="au-tr-spd" onclick="SOC.auSpeed(\'' + id + '\')" aria-label="Playback speed">1×</button>'
+          + '<button type="button" class="au-tr-ctrl" onclick="SOC.auTrFont()" aria-label="Change text size">A+</button>'
+          + (ep.transcript ? '<a class="au-tr-ctrl" href="' + esc(ep.transcript) + '" download>Download</a>' : '')
+          + '<span class="au-tr-hint">Play and the words follow along. Click a word to jump. Space plays or pauses.</span></div></div>';
         document.body.appendChild(box);
         box.addEventListener('click', function (e) { if (e.target === box) SOC.auTrClose(); });
-        box.addEventListener('keydown', function (e) { if (e.key === 'Escape') SOC.auTrClose(); });
         var cur = -1;
+        var T = ((window.BFS218_AUDIO_TIMINGS || {})[id]) || null, useT = !!(T && T.length === wi);
         function tick() {
-          if (!a || !a.duration || !starts.length) return;
-          var target = (a.currentTime / a.duration) * chars, lo = 0;
-          for (var i = 0; i < starts.length; i++) { if (starts[i] <= target) lo = i; else break; }
+          if (!a) return;
+          var lo = 0, t = a.currentTime;
+          if (useT) { for (var i = 0; i < T.length; i++) { if (T[i] <= t) lo = i; else break; } }
+          else { if (!a.duration || !starts.length) return; var target = (t / a.duration) * chars; for (var i = 0; i < starts.length; i++) { if (starts[i] <= target) lo = i; else break; } }
           if (lo !== cur) {
             var pv = document.getElementById('au-w-' + cur); if (pv) pv.classList.remove('au-word-on');
-            var el = document.getElementById('au-w-' + lo); if (el) { el.classList.add('au-word-on'); el.scrollIntoView({ block: 'center' }); }
+            var k, e2;
+            if (lo > cur) { for (k = Math.max(0, cur); k < lo; k++) { e2 = document.getElementById('au-w-' + k); if (e2) e2.classList.add('au-word-read'); } }
+            else { for (k = lo; k <= cur; k++) { e2 = document.getElementById('au-w-' + k); if (e2) e2.classList.remove('au-word-read'); } }
+            var el = document.getElementById('au-w-' + lo);
+            if (el) { el.classList.add('au-word-on'); el.classList.remove('au-word-read'); var bd = document.getElementById('au-tr-body'); if (bd) { var br = el.getBoundingClientRect(), pr = bd.getBoundingClientRect(); bd.scrollTop += (br.top - pr.top) - bd.clientHeight / 2 + br.height / 2; } }
             cur = lo;
           }
         }
         function pico() { var b = document.getElementById('au-tr-play'); if (b) b.classList.toggle('is-playing', !!(a && !a.paused)); }
-        self._tr = { a: a, tick: tick, pico: pico };
-        if (a) { self.auBind(id); a.addEventListener('timeupdate', tick); a.addEventListener('play', pico); a.addEventListener('pause', pico); }
+        var raf = 0;
+        function loop() { tick(); raf = (a && !a.paused) ? requestAnimationFrame(loop) : 0; }
+        function onPlay() { pico(); if (!raf) raf = requestAnimationFrame(loop); }
+        function onKey(e) { if (!document.getElementById('au-tr-modal')) return; if (e.key === ' ' || e.key === 'Spacebar' || e.keyCode === 32) { e.preventDefault(); SOC.auToggle(id); } else if (e.key === 'Escape') { SOC.auTrClose(); } }
+        self._tr = { a: a, tick: tick, pico: pico, onPlay: onPlay, onKey: onKey, stop: function () { if (raf) cancelAnimationFrame(raf); raf = 0; } };
+        document.addEventListener('keydown', onKey);
+        var spl = document.getElementById('au-tr-spd'); if (spl && a) spl.textContent = (a.playbackRate || 1) + '×';
+        var trbody = document.getElementById('au-tr-body');
+        if (trbody) trbody.addEventListener('click', function (e) { var w = e.target.closest ? e.target.closest('.au-word') : null; if (!w || !a) return; var idx = +w.id.replace('au-w-', ''); var nt = useT ? T[idx] : (a.duration ? (starts[idx] / chars) * a.duration : null); if (nt != null && isFinite(nt)) { a.currentTime = nt; tick(); } });
+        if (a) { self.auBind(id); a.addEventListener('timeupdate', tick); a.addEventListener('play', onPlay); a.addEventListener('pause', pico); if (!a.paused) onPlay(); }
         pico(); tick();
         setTimeout(function () { var x = box.querySelector('.au-modal-x'); if (x) x.focus(); }, 0);
       }
@@ -8603,9 +8620,10 @@
     },
     auTrClose: function () {
       var box = document.getElementById('au-tr-modal'); if (box) box.remove();
-      var tr = this._tr; if (tr && tr.a) { tr.a.removeEventListener('timeupdate', tr.tick); tr.a.removeEventListener('play', tr.pico); tr.a.removeEventListener('pause', tr.pico); }
+      var tr = this._tr; if (tr) { if (tr.stop) tr.stop(); if (tr.onKey) document.removeEventListener('keydown', tr.onKey); if (tr.a) { tr.a.removeEventListener('timeupdate', tr.tick); tr.a.removeEventListener('play', tr.onPlay); tr.a.removeEventListener('pause', tr.pico); } }
       this._tr = null;
     },
+    auTrFont: function () { var b = document.getElementById('au-tr-body'); if (!b) return; var n = ((+b.getAttribute('data-fs') || 0) + 1) % 3; b.setAttribute('data-fs', n); b.classList.remove('au-fs1', 'au-fs2'); if (n === 1) b.classList.add('au-fs1'); else if (n === 2) b.classList.add('au-fs2'); },
     back: function () { if (state.screen !== 'library') rememberPrevious(); state.screen = 'library'; focusTarget = 'soc-main'; render(); var m = document.getElementById('soc-main'); if (m) m.scrollTop = state.libScroll || 0; },
     open: function (id) { rememberPrevious(); var m = document.getElementById('soc-main'); if (m) state.libScroll = m.scrollTop; state.screen = 'detail'; state.detailId = id; focusTarget = 'soc-main'; render(); topScroll(); },
     layout: function (l) { state.layout = l; persist(); render(); },
