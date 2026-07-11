@@ -3302,7 +3302,7 @@
       + '<button type="button" class="au-btn" onclick="SOC.auSkip(\'' + aid + '\',-15)" aria-label="Back 15 seconds"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 6 5 12l6 6z"/><path d="M19 6l-6 6 6 6z"/></svg>15s</button>'
       + '<button type="button" class="au-btn au-spd" id="au-spd-' + aid + '" onclick="SOC.auSpeed(\'' + aid + '\')" aria-label="Change playback speed">1×</button>'
       + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
-      + (ep.transcript ? '<a class="au-btn au-btn-ghost" href="' + esc(ep.transcript) + '" target="_blank" rel="noopener">Transcript</a>' : '')
+      + (ep.transcript ? '<button type="button" class="au-btn au-btn-ghost" onclick="SOC.auTranscript(\'' + aid + '\')">Transcript</button>' : '')
       + '</div></div>'
       + '<p class="au-foot">Download it before you travel; the subway has no signal. This is a teaching companion, not a substitute for the assigned readings.</p>'
       + '</section>';
@@ -8552,6 +8552,60 @@
     auSeek: function (id, v) { var a = this.auEl(id); if (!a || !a.duration) return; a.currentTime = (Number(v) / 1000) * a.duration; },
     auSkip: function (id, d) { var a = this.auEl(id); if (!a) return; this.auBind(id); var t = a.currentTime + d; a.currentTime = Math.min(Math.max(0, t), a.duration || t); },
     auSpeed: function (id) { var a = this.auEl(id); if (!a) return; var steps = [1, 1.25, 1.5, 1.75, 2]; var i = steps.indexOf(a.playbackRate); i = (i + 1) % steps.length; a.playbackRate = steps[i]; var l = document.getElementById('au-spd-' + id); if (l) l.textContent = steps[i] + '×'; },
+    auTranscript: function (id) {
+      var self = this, a = this.auEl(id);
+      var ep = (window.BFS218_AUDIO || {})[id] || {};
+      function build(paras) {
+        if (document.getElementById('au-tr-modal')) return;
+        var chars = 0, wi = 0, starts = [];
+        var body = paras.map(function (para) {
+          return '<p>' + para.split(/\s+/).filter(Boolean).map(function (w) {
+            starts.push(chars); chars += w.length + 1;
+            return '<span class="au-word" id="au-w-' + (wi++) + '">' + esc(w) + '</span>';
+          }).join(' ') + '</p>';
+        }).join('');
+        var box = document.createElement('div');
+        box.id = 'au-tr-modal'; box.className = 'au-modal';
+        box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Lecture transcript');
+        box.innerHTML = '<div class="au-modal-card"><div class="au-modal-head"><div><div class="au-kicker mono">Transcript, follow along</div><b>' + esc(ep.title || 'This week') + '</b></div>'
+          + '<button type="button" class="au-modal-x" onclick="SOC.auTrClose()" aria-label="Close transcript">×</button></div>'
+          + '<div class="au-modal-body" id="au-tr-body">' + body + '</div>'
+          + '<div class="au-modal-foot"><button type="button" class="au-play au-tr-play" id="au-tr-play" onclick="SOC.auToggle(\'' + id + '\')" aria-label="Play or pause"><svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><span class="au-tr-hint">Press play and the words follow along as you read.</span></div></div>';
+        document.body.appendChild(box);
+        box.addEventListener('click', function (e) { if (e.target === box) SOC.auTrClose(); });
+        box.addEventListener('keydown', function (e) { if (e.key === 'Escape') SOC.auTrClose(); });
+        var cur = -1;
+        function tick() {
+          if (!a || !a.duration || !starts.length) return;
+          var target = (a.currentTime / a.duration) * chars, lo = 0;
+          for (var i = 0; i < starts.length; i++) { if (starts[i] <= target) lo = i; else break; }
+          if (lo !== cur) {
+            var pv = document.getElementById('au-w-' + cur); if (pv) pv.classList.remove('au-word-on');
+            var el = document.getElementById('au-w-' + lo); if (el) { el.classList.add('au-word-on'); el.scrollIntoView({ block: 'center' }); }
+            cur = lo;
+          }
+        }
+        function pico() { var b = document.getElementById('au-tr-play'); if (b) b.classList.toggle('is-playing', !!(a && !a.paused)); }
+        self._tr = { a: a, tick: tick, pico: pico };
+        if (a) { self.auBind(id); a.addEventListener('timeupdate', tick); a.addEventListener('play', pico); a.addEventListener('pause', pico); }
+        pico(); tick();
+        setTimeout(function () { var x = box.querySelector('.au-modal-x'); if (x) x.focus(); }, 0);
+      }
+      self._trCache = self._trCache || {};
+      if (self._trCache[id]) { build(self._trCache[id]); return; }
+      if (!ep.transcript) return;
+      fetch(ep.transcript).then(function (r) { return r.text(); }).then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var ps = Array.prototype.map.call(doc.querySelectorAll('main p'), function (p) { return p.textContent.trim(); }).filter(function (t) { return t.length > 30; });
+        if (!ps.length) ps = Array.prototype.map.call(doc.querySelectorAll('p'), function (p) { return p.textContent.trim(); }).filter(function (t) { return t.length > 30; });
+        self._trCache[id] = ps; build(ps);
+      }).catch(function () { window.open(ep.transcript, '_blank'); });
+    },
+    auTrClose: function () {
+      var box = document.getElementById('au-tr-modal'); if (box) box.remove();
+      var tr = this._tr; if (tr && tr.a) { tr.a.removeEventListener('timeupdate', tr.tick); tr.a.removeEventListener('play', tr.pico); tr.a.removeEventListener('pause', tr.pico); }
+      this._tr = null;
+    },
     back: function () { if (state.screen !== 'library') rememberPrevious(); state.screen = 'library'; focusTarget = 'soc-main'; render(); var m = document.getElementById('soc-main'); if (m) m.scrollTop = state.libScroll || 0; },
     open: function (id) { rememberPrevious(); var m = document.getElementById('soc-main'); if (m) state.libScroll = m.scrollTop; state.screen = 'detail'; state.detailId = id; focusTarget = 'soc-main'; render(); topScroll(); },
     layout: function (l) { state.layout = l; persist(); render(); },

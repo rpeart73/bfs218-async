@@ -541,6 +541,21 @@
   .au-btn svg{width:15px;height:15px;flex:none}
   .au-spd{font-variant-numeric:tabular-nums;min-width:54px;justify-content:center}
   .au-foot{margin:11px 0 0;font-size:.78rem;color:var(--ink-faint);line-height:1.5}
+  .au-modal{position:fixed;inset:0;z-index:300;display:flex;align-items:center;justify-content:center;padding:18px;background:rgba(0,0,0,.55);backdrop-filter:blur(4px)}
+  .au-modal-card{width:min(720px,100%);max-height:calc(100vh - 40px);display:flex;flex-direction:column;background:#fff;border-radius:16px;border:1px solid var(--border);border-left:6px solid var(--red);box-shadow:0 30px 80px rgba(0,0,0,.4);overflow:hidden}
+  .au-modal-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:17px 20px;border-bottom:1px solid var(--border)}
+  .au-modal-head b{display:block;font-size:1.08rem;color:var(--ink);margin-top:2px}
+  .au-modal-x{flex:none;width:34px;height:34px;border:1px solid var(--border);border-radius:9px;background:#fff;color:var(--ink-dim);font-size:1.2rem;line-height:1;cursor:pointer}
+  .au-modal-x:hover{border-color:var(--red);color:var(--red)}
+  .au-modal-body{overflow:auto;padding:18px 20px;font-size:1.02rem;line-height:1.85;color:var(--ink)}
+  .au-modal-body p{margin:0 0 15px}
+  .au-word{border-radius:4px;padding:0 1px;transition:background .12s,color .12s}
+  .au-word-on{background:var(--red);color:#fff}
+  .au-modal-foot{display:flex;align-items:center;gap:13px;padding:13px 20px;border-top:1px solid var(--border);background:var(--surface-alt)}
+  .au-tr-play{width:44px;height:44px;flex:none}
+  .au-tr-play svg{width:20px;height:20px}
+  .au-tr-hint{font-size:.83rem;color:var(--ink-faint);line-height:1.4}
+  @media(max-width:480px){.au-modal{padding:10px}.au-modal-card{max-height:calc(100vh - 20px)}.au-modal-body{font-size:.98rem}}
   @media(max-width:480px){.au-player{padding:14px}.au-play{width:52px;height:52px}.au-btn{flex:1 1 auto;justify-content:center}}
   .wk-ocheck{background:var(--soft);border-radius:11px;padding:14px 16px;margin:0 0 6px}.wk-row{display:flex;gap:9px;align-items:center;font-size:.9rem;color:var(--ink);margin:6px 0}.wk-row .t{color:#1B2A4A;display:inline-flex}
   .wk-q{margin:12px 0;font-size:.95rem;color:var(--ink)}
@@ -665,7 +680,7 @@
 <script src="./data/bfs218-walkfigs.js?v=1"></script>
 <script src="./data/bfs218-recordings.js?v=2"></script>
 <script src="./dev.js?v=3"></script>
-<script src="./app.js?v=292"></script>
+<script src="./app.js?v=293"></script>
 <script defer src="assets/img-viewer.js?v=1"></script>
 </body>
 </html>
