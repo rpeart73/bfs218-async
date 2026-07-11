@@ -266,6 +266,14 @@
   }
   function eyeLabel(r) { return r.eye === 'indigenous' ? 'Indigenous-scholar reading' : 'Western reading'; }
   function weekTitle(n) { return (D.weeks && D.weeks[n]) ? D.weeks[n] : ''; }
+  function weekHeroAlt(n) {
+    if (n === 8) return 'Two Inuit Elders point to locations on a digital map during a community mapping session in Sanikiluaq, Nunavut.';
+    return weekTitle(n);
+  }
+  function weekHeroCredit(n) {
+    if (n !== 8) return '';
+    return '<p class="wk-hero-credit">Real photograph: Inuit Elders correcting a community map in Sanikiluaq, Nunavut. Source: <a href="https://blog.google/intl/en-au/products/explore-get-answers/using-maps-to-preserve-indigenous/" target="_blank" rel="noopener noreferrer">Google Earth Outreach</a>.</p>';
+  }
   function weeksWithReadings() { var set = {}; D.records.forEach(function (r) { set[r.week] = (set[r.week] || 0) + 1; }); return Object.keys(set).map(Number).sort(function (a, b) { return a - b; }); }
   function templatedSynthesis(recs) {
     function who(r) { return r.authors.indexOf('OpenStax') >= 0 ? 'OpenStax' : r.authors; }
@@ -4545,7 +4553,7 @@
     var sub = opt.sub || d.overview || '';
     var q = opt.question === false ? '' : (opt.question || journeyQ(w));
     return '<section id="wk-ov" class="node jhero jfade wk-hero2">'
-      + '<img class="wk-hero-img" src="images/weeks/week' + (w < 10 ? '0' : '') + w + '.jpg" alt="' + esc(weekTitle(w)) + '" loading="lazy" onerror="this.remove()">'
+      + '<img class="wk-hero-img" src="images/weeks/week' + (w < 10 ? '0' : '') + w + '.jpg" alt="' + esc(weekHeroAlt(w)) + '" loading="lazy" onerror="this.remove()">' + weekHeroCredit(w)
       + '<div class="wk-hero-main"><div class="mono wk-hero-kicker">WEEK ' + w + ' | ' + esc(weekDate(w)) + ' | ' + esc(opt.label || 'WEEKLY MODULE') + '</div>'
       + '<h1>' + esc(opt.title || weekTitle(w)) + '</h1>'
       + (sub ? '<p>' + esc(sub) + '</p>' : '')
@@ -4803,7 +4811,7 @@
     var d = weekData(w) || {};
     var ws = journeyWeeks(), idx = ws.indexOf(w), prev = idx > 0 ? ws[idx - 1] : null, next = idx < ws.length - 1 ? ws[idx + 1] : null;
     var isFinal = (next == null);
-    var hero = '<section id="wk-ov" class="node jhero jfade" style="margin:0 0 16px">' + '<img class="wk-hero-img" src="images/weeks/week' + (w < 10 ? '0' : '') + w + '.jpg" alt="' + esc(weekTitle(w)) + '" loading="lazy" onerror="this.remove()">' + '<div style="position:relative">'
+    var hero = '<section id="wk-ov" class="node jhero jfade" style="margin:0 0 16px">' + '<img class="wk-hero-img" src="images/weeks/week' + (w < 10 ? '0' : '') + w + '.jpg" alt="' + esc(weekHeroAlt(w)) + '" loading="lazy" onerror="this.remove()">' + '<div style="position:relative">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:8px">WEEK ' + w + ' · ' + esc(weekDate(w)) + ' · ' + (isFinal ? 'FINAL WEEK' : 'FINAL PROJECT WEEK') + '</div>'
       + '<h1 style="font-size:2rem;line-height:1.12;font-weight:700;margin:0 0 12px;color:var(--ink)">' + esc(weekTitle(w)) + '</h1>'
       + (d.overview ? '<p style="font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0 0 4px;">' + esc(d.overview) + '</p>' : '')
