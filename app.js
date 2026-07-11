@@ -2279,8 +2279,8 @@
     var hero = '<section class="jhero jfade" style="margin-bottom:26px;border-top:5px solid var(--amode)">' + heroArt()
       + '<img class="home-hero-img" src="images/hero.jpg" alt="' + esc(title) + '" loading="lazy" onerror="this.remove()">'
       + '<div style="position:relative;">'
-      + '<div class="mono" style="font-size:.78rem;letter-spacing:.09em;color:var(--amode);font-weight:700;margin-bottom:14px">FULLY ASYNCHRONOUS &middot; YOU SET THE PACE</div>'
-      + '<h1 class="jhero-title" style="font-size:3rem;line-height:1.04;font-weight:700;margin:0 0 16px;letter-spacing:-.01em;color:var(--ink)">You run this course.</h1>'
+      + '<div class="mono" style="font-size:.78rem;letter-spacing:.09em;color:var(--amode);font-weight:700;margin-bottom:14px">FULLY ASYNCHRONOUS &middot; SELF-PACED</div>'
+      + '<h1 class="jhero-title" style="font-size:3rem;line-height:1.04;font-weight:700;margin:0 0 16px;letter-spacing:-.01em;color:var(--ink)">You set the pace, within the deadlines.</h1>'
       + '<p style="font-size:1.18rem;line-height:1.55;color:var(--ink);margin:0 0 20px;font-weight:500">No live class carries you along, and nothing waits somewhere else. Every reading, walkthrough, activity, and check is right here, and the pace between the two due dates is yours to set. That is not a lighter class. It is the harder skill that outlasts any single course: learning to direct yourself.</p>'
       + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px">' + ['No live classes', 'You set the pace', 'Two fixed due dates', 'Complete by design'].map(function (t) { return '<span class="mono" style="font-size:.72rem;font-weight:700;letter-spacing:.03em;color:var(--amode);background:#FBF4F3;border:1px solid #F0C8C3;border-radius:999px;padding:5px 12px">' + esc(t) + '</span>'; }).join('') + '</div>'
       + '<div class="mono" style="font-size:.72rem;letter-spacing:.06em;color:var(--ink-faint);font-weight:600">SENECA POLYTECHNIC &middot; FALL 2026 &middot; <span style="color:var(--ink-dim)">' + esc(title) + '</span></div>'
