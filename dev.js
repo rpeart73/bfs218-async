@@ -48,12 +48,12 @@
     el.id = 'bfs218-devbar';
     el.setAttribute('role', 'region');
     el.setAttribute('aria-label', 'Developer mode');
-    el.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:center;background:#111318;color:#fff;font:600 12px/1.3 ui-monospace,Consolas,monospace;letter-spacing:.04em;padding:7px 12px;box-shadow:0 -6px 20px rgba(0,0,0,.3)';
+    el.style.cssText = 'position:fixed;left:0;right:0;bottom:0;z-index:2147483000;display:flex;align-items:center;gap:9px;flex-wrap:wrap;justify-content:center;background:#111318;color:#fff;font:600 12px/1.3 ui-monospace,Consolas,monospace;letter-spacing:.04em;padding:7px 12px calc(7px + env(safe-area-inset-bottom,0px));box-shadow:0 -6px 20px rgba(0,0,0,.3)';
     function link(label, href) {
       var current = href.replace(/[?#].*$/, '') === here;
       return '<a href="' + href + '"' + (current ? ' aria-current="true"' : '') + ' style="color:' + (current ? '#fff' : '#cdd3dc') + ';text-decoration:none;border:1px solid ' + (current ? '#DA291C' : '#333a45') + ';border-radius:6px;padding:3px 9px;background:' + (current ? '#2a1210' : 'transparent') + '">' + label + '</a>';
     }
-    el.innerHTML = '<span style="background:#DA291C;color:#fff;border-radius:5px;padding:2px 8px;font-weight:700;letter-spacing:.1em">DEV MODE</span>'
+    el.innerHTML = '<span style="background:#DA291C;color:#fff;border-radius:5px;padding:2px 8px;font-weight:700;letter-spacing:.1em">DEV PORTAL</span>'
       + '<span style="color:#8b93a1">selector and popups bypassed</span>'
       + link('Signpost', SITES.signpost)
       + link('Async', SITES.async)
