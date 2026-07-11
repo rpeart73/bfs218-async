@@ -25,7 +25,7 @@
     return !!(v && v.screen);
   }
   function cleanScreen(s) {
-    return ['journey', 'site', 'library', 'station', 'detail', 'pathways', 'assignments', 'assignment-program', 'assignment-details', 'assignment-rubric', 'assignment-release', 'assignment-ai', 'assignment-faq', 'starter', 'videos', 'readings', 'compare', 'reading', 'glossary', 'career', 'cards', 'walkthroughs', 'sandbox', 'activity', 'calendar'].indexOf(s) >= 0 ? s : 'journey';
+    return ['journey', 'site', 'library', 'station', 'detail', 'pathways', 'assignments', 'assignment-program', 'assignment-details', 'assignment-rubric', 'assignment-release', 'assignment-ai', 'assignment-faq', 'starter', 'videos', 'readings', 'compare', 'reading', 'glossary', 'career', 'cards', 'walkthroughs', 'sandbox', 'activity', 'calendar', 'recportal'].indexOf(s) >= 0 ? s : 'journey';
   }
   function cleanWeek(w) {
     w = Number(w);
@@ -33,7 +33,7 @@
   }
   function cleanWeekPart(part) {
     part = String(part || '');
-    return ['ov', 'path', 'vid', 'pre', 'learn', 'out', 'gq', 'lens', 'con', 'term', 'read', 'rescue', 'visual', 'watch', 'case', 'do', 'reflect', 'sg', 'kc', 'notes', 'how', 'catch'].indexOf(part) >= 0 ? part : null;
+    return ['ov', 'path', 'vid', 'pre', 'learn', 'out', 'gq', 'lens', 'con', 'term', 'read', 'rescue', 'visual', 'watch', 'case', 'do', 'reflect', 'sg', 'kc', 'notes', 'how', 'catch', 'rec'].indexOf(part) >= 0 ? part : null;
   }
   function cleanAssignmentTab(t) {
     t = String(t || '').toLowerCase();
@@ -1426,6 +1426,7 @@
     if (state.screen === 'glossary') return 'Glossary';
     if (state.screen === 'cards') return 'Concept Flashcards';
     if (state.screen === 'calendar') return 'Calendar and Due Dates';
+    if (state.screen === 'recportal') return 'Recording Portal';
     if (state.screen === 'assignments' || state.screen === 'starter') return 'Understanding Your Assignment';
     if (state.screen === 'career') return 'Career Choices';
     if (state.screen === 'activity') return 'Activity';
@@ -2185,6 +2186,87 @@
       + '</svg>';
   }
   function journeyIntro() { return 'Follow one question through the whole course, week by week. Each week sets up what to read, why it matters, and one thing to do with it. Start at the top, or pick up where you left off.'; }
+  var recUI = { week: null, id: '', raw: '', busy: false };
+  var REC_PAT_KEY = 'seneca.recportal.pat';
+  var REC_REPO = 'rpeart73/' + ((location.hostname.indexOf('github.io') >= 0 && location.pathname.split('/')[1]) || 'bfs218-async');
+  var REC_PATH = 'data/bfs218-recordings.js';
+  function recFor(w) {
+    var reg = window.BFS218_RECORDINGS || {};
+    var e = reg[w] || reg[String(w)];
+    return (e && typeof e.yt === 'string' && /^[A-Za-z0-9_-]{6,20}$/.test(e.yt)) ? e : null;
+  }
+  function recExtractId(s) {
+    s = String(s || '').trim();
+    var m = s.match(/(?:youtu\.be\/|watch\?v=|[?&]v=|\/embed\/|\/live\/|\/shorts\/)([A-Za-z0-9_-]{6,20})/);
+    if (m) return m[1];
+    if (/^[A-Za-z0-9_-]{6,20}$/.test(s) && s.indexOf('.') < 0) return s;
+    return '';
+  }
+  function recTodayIso() { return new Date().toISOString().slice(0, 10); }
+  function recPreviewHtml(id) {
+    return '<div class="rp-preview"><iframe src="https://www.youtube-nocookie.com/embed/' + id + '?rel=0&modestbranding=1" title="Recording preview" referrerpolicy="strict-origin-when-cross-origin" allow="encrypted-media; picture-in-picture; fullscreen" allowfullscreen></iframe></div>';
+  }
+  function recSnippet() {
+    return '"' + recUI.week + '": { "yt": "' + recUI.id + '", "posted": "' + recTodayIso() + '" }';
+  }
+  function classRecordingSection(w) {
+    var e = recFor(w);
+    if (!e) return '';
+    return '<section id="wk-rec" class="node wk-rec"><div class="wk-rec-inner">'
+      + '<div class="mono wk-rec-kick">FROM YOUR PROFESSOR &middot; WEEK ' + w + (e.posted ? ' &middot; POSTED ' + esc(e.posted) : '') + '</div>'
+      + '<h2>A word from your professor.</h2>'
+      + '<p>A recorded talk for this week: what matters most here, where students usually get stuck, and how to work through it. Nothing loads or plays until you press play.</p>'
+      + '</div><div class="wk-rec-frame">'
+      + '<button type="button" class="wk-rec-play" onclick="SOC.playVideo(this,\'' + e.yt + '\',\'Week ' + w + ' video from your professor\')" aria-label="Play the Week ' + w + ' video from your professor">'
+      + '<i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></i>'
+      + '<span>PLAY THE WEEK ' + w + ' VIDEO</span></button>'
+      + '</div></section>';
+  }
+  function recPortalPage() {
+    if (!recUI.week) recUI.week = currentJourneyWeek();
+    var ws = journeyWeeks();
+    var pat = '';
+    try { pat = localStorage.getItem(REC_PAT_KEY) || ''; } catch (e0) {}
+    var opts = ws.map(function (x) {
+      return '<option value="' + x + '"' + (x === recUI.week ? ' selected' : '') + '>Week ' + x + ': ' + esc(weekTitle(x)) + (recFor(x) ? ' (published)' : '') + '</option>';
+    }).join('');
+    var published = ws.filter(function (x) { return !!recFor(x); });
+    var pubList = published.length
+      ? '<div class="rp-step"><div class="rp-n">&#10003;</div><div style="flex:1;min-width:0"><b>Published so far</b>'
+        + published.map(function (x) { var e = recFor(x); return '<p style="margin:0 0 4px"><span class="mono" style="font-size:.72rem;font-weight:700">WEEK ' + x + '</span> &middot; ' + esc(e.yt) + (e.posted ? ' &middot; posted ' + esc(e.posted) : '') + ' &middot; <a href="#" onclick="SOC.station(' + x + ');return false">view the week page</a></p>'; }).join('')
+        + '</div></div>'
+      : '';
+    return '<div class="rise recportal">'
+      + '<section class="node wk-rec" style="margin-bottom:18px"><div class="wk-rec-inner">'
+      + '<div class="mono wk-rec-kick">RECORDING PORTAL &middot; INSTRUCTOR ONLY</div>'
+      + '<h2>Publish a weekly video.</h2>'
+      + '<p>Three steps: upload the recording to YouTube as an unlisted video, paste its link here, publish. The video then appears on the week page as an embedded player. This screen is not linked anywhere on the student site; reach it by adding <span class="mono">?screen=recportal</span> to the site address.</p>'
+      + '</div></section>'
+      + '<div class="rp-step"><div class="rp-n">1</div><div style="flex:1;min-width:0"><b>Upload the recording to YouTube as unlisted</b>'
+      + '<p>Unlisted means the video never appears in search or on a channel page; only this site links to it. Upload the recording file, set Visibility to Unlisted, then copy the video link.</p>'
+      + '<a class="rp-btn ghost" href="https://www.youtube.com/upload" target="_blank" rel="noopener">Open YouTube upload</a></div></div>'
+      + '<div class="rp-step"><div class="rp-n">2</div><div style="flex:1;min-width:0"><b>Choose the week and paste the link</b>'
+      + '<p>Paste the full YouTube link or just the video id. The preview confirms you have the right video before anything publishes.</p>'
+      + '<div style="margin:0 0 10px"><select onchange="SOC.recWeek(this.value)" aria-label="Week">' + opts + '</select></div>'
+      + '<input type="text" value="' + esc(recUI.raw || '') + '" oninput="SOC.recInput(this.value)" placeholder="https://youtu.be/..." aria-label="YouTube link or video id" autocomplete="off" spellcheck="false">'
+      + '<div id="rp-parse" class="mono" style="font-size:.74rem;font-weight:700;color:var(--ink-dim);margin-top:8px">' + (recUI.id ? 'Video found: ' + esc(recUI.id) : '') + '</div>'
+      + '<div id="rp-pvslot">' + (recUI.id ? recPreviewHtml(recUI.id) : '') + '</div></div></div>'
+      + '<div class="rp-step"><div class="rp-n">3</div><div style="flex:1;min-width:0"><b>Publish to the site</b>'
+      + '<p>Publishing writes one line into the site registry through the GitHub API, using a token saved only in this browser on this computer. The token needs contents write access to <span class="mono">' + esc(REC_REPO) + '</span> and nothing else. It is never stored in the site or the repo.</p>'
+      + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin:0 0 10px">'
+      + '<input id="rp-pat" type="password" placeholder="' + (pat ? 'Token saved. Paste a new one to replace it.' : 'Paste your GitHub token') + '" aria-label="GitHub token" autocomplete="off">'
+      + '<button type="button" class="rp-btn ghost" onclick="SOC.recPatSave()">Save token</button>'
+      + (pat ? '<button type="button" class="rp-btn ghost" onclick="SOC.recPatForget()">Forget token</button>' : '')
+      + '</div>'
+      + '<div id="rp-patstate" class="mono" style="font-size:.72rem;font-weight:700;color:var(--ink-dim);margin:0 0 12px">' + (pat ? 'A token is saved on this computer.' : 'No token saved yet.') + '</div>'
+      + '<button id="rp-publish" type="button" class="rp-btn" onclick="SOC.recPublish()"' + (recUI.id ? '' : ' disabled') + '>Publish Week ' + recUI.week + '</button>'
+      + '<div id="rp-status" class="rp-status" role="status">' + (recUI.id ? 'Ready to publish.' : 'Waiting for a video link.') + '</div>'
+      + '<p style="margin:14px 0 6px;font-size:.9rem"><b>No token, or publish failed?</b> Add this line inside the braces in <span class="mono">' + esc(REC_PATH) + '</span> in the repo by hand:</p>'
+      + '<div id="rp-snippet" class="rp-status" style="user-select:all;word-break:break-all">' + (recUI.id ? recSnippet() : '') + '</div>'
+      + '</div></div>'
+      + pubList
+      + '</div>';
+  }
   function journeyHome() {
     var ws = journeyWeeks(), cur = currentJourneyWeek(), started = !!state.journeyWeek;
     var title = (D.course && (D.course.name || D.course.code)) || 'Your course';
@@ -4397,6 +4479,7 @@
     var audioPk = audioPackSection(w);
     var visual = visualOverviewSection(w, d);
     var watch = d.deck ? '<section id="wk-watch" class="node"><h2 class="wk-sec">Walkthrough</h2><p style="margin:0 0 12px;font-size:.92rem">A short, immersive walk through this week\'s core idea, with its diagrams. Step through it right here at your own pace.</p><button type="button" class="wk-cta" style="margin:0 0 4px" onclick="SOC.playWalk(' + w + ')">Play the walkthrough</button>' + weekNoteBox(w, 'walkthrough', 'Walkthrough Notes', 'Write one thing the walkthrough made clearer, or one question you still have.') + '</section>' : '';
+    var classRec = classRecordingSection(w);
     var act = '<section id="wk-do" class="node interactive"><h2 class="wk-sec">The activity: ' + esc(d.activity.title) + '</h2><div class="wk-whatwhy"><b>What this is:</b> ' + esc(d.activity.what) + '<br><br><b>Why you are doing it:</b> ' + esc(d.activity.why) + '</div>' + activityStartGuide(w) + lensActivityBlock(w, d.activity, false) + '<button onclick="SOC.startActivity(\'' + d.activity.screen + '\',' + w + ')" class="wk-cta">Start the activity' + ic('chevron', 17, 2.4) + '</button><p style="margin:10px 0 0;font-size:.74rem;color:var(--ink-faint)">Each activity gives you a guided model first, then a specific set of choices or checks. Read the short guide before you click.</p>' + weekNoteBox(w, 'activity', 'Activity Notes', 'After trying the activity, write what the model or feedback helped you notice.') + '</section>';
     var reflect = '<section id="wk-reflect" class="node"><h2 class="wk-sec">Reflection</h2>'
       + '<div class="wk-ocheck"><div class="mono" style="font-size:.78rem;font-weight:700;color:var(--ink-faint);margin-bottom:7px">YOU CAN NOW</div>' + d.youcan.map(function (y) { return '<div class="wk-row"><span class="t">' + ic('check', 14, 2.6) + '</span>' + esc(y) + '</div>'; }).join('') + '</div>'
@@ -4416,10 +4499,10 @@
     var kcR = kcSection(w);
     var kc = kcR.html, kcItems = kcR.items;
     var rail = '<aside class="wk-rail"><div class="wk-railbox"><div class="wk-railh">IN THIS WEEK</div>'
-      + [['ov', 'Overview'], ['path', 'Your learning path']].concat(assignmentTiming ? [['asg', 'Assignment dates']] : []).concat([['vid', 'This week in 80 seconds']]).concat([['pre', 'Before you begin'], ['learn', 'Purpose'], ['out', 'Learning outcomes'], ['gq', 'Guiding questions']]).concat(audioPk ? [['audio', 'Listen to this week']] : []).concat(programLens ? [['lens', 'For your program']] : []).concat([['con', 'Key concepts'], ['term', 'Key terms'], ['read', 'Readings']]).concat(visual ? [['visual', 'A Visual Overview']] : []).concat(d.deck ? [['watch', 'Walkthrough']] : []).concat(programCase ? [['case', 'Case study']] : []).concat([['do', 'The activity'], ['reflect', 'Reflection']]).concat(sg ? [['sg', 'Study Guide']] : []).concat(kcItems.length ? [['kc', 'Knowledge Check']] : []).concat([['notes', 'Generate notes']]).map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
+      + [['ov', 'Overview'], ['path', 'Your learning path']].concat(assignmentTiming ? [['asg', 'Assignment dates']] : []).concat([['vid', 'This week in 80 seconds']]).concat(classRec ? [['rec', 'From your professor']] : []).concat([['pre', 'Before you begin'], ['learn', 'Purpose'], ['out', 'Learning outcomes'], ['gq', 'Guiding questions']]).concat(audioPk ? [['audio', 'Listen to this week']] : []).concat(programLens ? [['lens', 'For your program']] : []).concat([['con', 'Key concepts'], ['term', 'Key terms'], ['read', 'Readings']]).concat(visual ? [['visual', 'A Visual Overview']] : []).concat(d.deck ? [['watch', 'Walkthrough']] : []).concat(programCase ? [['case', 'Case study']] : []).concat([['do', 'The activity'], ['reflect', 'Reflection']]).concat(sg ? [['sg', 'Study Guide']] : []).concat(kcItems.length ? [['kc', 'Knowledge Check']] : []).concat([['notes', 'Generate notes']]).map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
       + '<div class="wk-railt">Flexible pacing</div></div></aside>';
     var collBar = '<div class="wk-coll-bar" role="group" aria-label="Section display controls"><button type="button" onclick="SOC.wkCollAll(' + w + ',1)">Collapse all sections</button><span>Weeks start folded so you can see the whole map. Up to two sections stay open at once; opening a third closes the earliest one. Sections fold again when you leave the week.</span></div>';
-    return '<div class="rise wk-page">' + mobileWeekActions(w, d) + hero + path + '<div class="wk-grid"><section>' + collBar + assignmentTiming + vid + pre + purpose + outcomes + guiding + audioPk + programLens + concepts + terms + readings + visual + watch + programCase + act + reflect + sg + kc + notes + navRow + '</section>' + rail + '</div></div>';
+    return '<div class="rise wk-page">' + mobileWeekActions(w, d) + hero + path + '<div class="wk-grid"><section>' + collBar + assignmentTiming + vid + classRec + pre + purpose + outcomes + guiding + audioPk + programLens + concepts + terms + readings + visual + watch + programCase + act + reflect + sg + kc + notes + navRow + '</section>' + rail + '</div></div>';
   }
   function weekHero(w, d, opt) {
     d = d || {};
@@ -4655,10 +4738,11 @@
       + (prev != null ? '<button onclick="SOC.station(' + prev + ')" style="flex:1;min-width:180px;text-align:left;border:1px solid var(--border);background:#fff;border-radius:12px;padding:13px 16px;cursor:pointer"><div class="mono" style="font-size:.66rem;color:var(--ink-faint)">&larr; PREVIOUS</div><div style="font-size:.92rem;font-weight:700;color:var(--ink);margin-top:2px">Week ' + prev + ': ' + esc(weekTitle(prev)) + '</div></button>' : '')
       + (next != null ? '<button onclick="SOC.station(' + next + ')" style="flex:1;min-width:180px;text-align:right;border:1px solid var(--border);background:#fff;border-radius:12px;padding:13px 16px;cursor:pointer"><div class="mono" style="font-size:.66rem;color:var(--red)">NEXT &rarr;</div><div style="font-size:.92rem;font-weight:700;color:var(--ink);margin-top:2px">Week ' + next + ': ' + esc(weekTitle(next)) + '</div></button>' : '')
       + '</div>';
+    var classRec = classRecordingSection(w);
     var rail = '<aside class="wk-rail"><div class="wk-railbox"><div class="wk-railh">IN THIS WEEK</div>'
-      + [['ov', 'This week'], ['path', 'Your learning path'], ['vid', 'This week in 80 seconds'], ['visual', 'A Visual Overview']].concat(d.activity ? [['do', 'Your final project']] : []).concat([['reflect', 'Reflection'], ['notes', 'Generate notes']]).map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
+      + (classRec ? [['rec', 'From your professor']] : []).concat([['ov', 'This week'], ['path', 'Your learning path'], ['vid', 'This week in 80 seconds'], ['visual', 'A Visual Overview']]).concat(d.activity ? [['do', 'Your final project']] : []).concat([['reflect', 'Reflection'], ['notes', 'Generate notes']]).map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
       + '<div class="wk-railt">' + ic('clock', 12) + ' No new material</div></div></aside>';
-    return '<div class="rise">' + mobileWeekActions(w, d, { activityLabel: 'Final Project' }) + hero + path + '<div class="wk-grid"><section>' + audioPk + conceptsSectionFor(w, d) + termsSectionFor(w, d) + vid + visual + act + reflect + notes + navRow + '</section>' + rail + '</div></div>';
+    return '<div class="rise">' + mobileWeekActions(w, d, { activityLabel: 'Final Project' }) + hero + path + '<div class="wk-grid"><section>' + classRec + audioPk + conceptsSectionFor(w, d) + termsSectionFor(w, d) + vid + visual + act + reflect + notes + navRow + '</section>' + rail + '</div></div>';
   }
   var OVERVIEW_WEEK = 1;
   function overviewPage(w) {
@@ -4677,10 +4761,11 @@
     var visual = visualOverviewSection(w, d);
     var path = overviewLearningPath(w, d);
     var beginRow = (next != null) ? '<div style="margin-top:18px"><button onclick="SOC.station(' + next + ')" style="border:1px solid var(--border);background:#fff;border-radius:12px;padding:13px 18px;cursor:pointer;text-align:left;min-width:220px"><div class="mono" style="font-size:.66rem;color:var(--red)">BEGIN &rarr;</div><div style="font-size:.95rem;font-weight:700;color:var(--ink);margin-top:2px">Week ' + next + ': ' + esc(weekTitle(next)) + '</div></button></div>' : '';
+    var classRec = classRecordingSection(w);
     var rail = '<aside class="wk-rail"><div class="wk-railbox"><div class="wk-railh">IN THIS WEEK</div>'
-      + [['ov', 'Overview'], ['path', 'Your learning path'], ['how', 'How this course works'], ['visual', 'A Visual Overview']].map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
+      + (classRec ? [['rec', 'From your professor']] : []).concat([['ov', 'Overview'], ['path', 'Your learning path'], ['how', 'How this course works'], ['visual', 'A Visual Overview']]).map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
       + '<div class="wk-railt">' + ic('clock', 12) + ' Overview, no readings</div></div></aside>';
-    return '<div class="rise">' + mobileWeekActions(w, d, { reflect: false }) + hero + path + '<div class="wk-grid"><section>' + audioPk + conceptsSectionFor(w, d) + termsSectionFor(w, d) + how + visual + beginRow + '</section>' + rail + '</div></div>';
+    return '<div class="rise">' + mobileWeekActions(w, d, { reflect: false }) + hero + path + '<div class="wk-grid"><section>' + classRec + audioPk + conceptsSectionFor(w, d) + termsSectionFor(w, d) + how + visual + beginRow + '</section>' + rail + '</div></div>';
   }
   var STUDY_WEEK = 7;
   function studyWeekPage(w) {
@@ -7616,6 +7701,7 @@
     if (state.screen === 'site') return homeBar() + siteInfoPage();
     if (state.screen === 'assignments') return homeBar() + assignmentsPage();
     if (state.screen === 'calendar') return '<div class="page-return-row" aria-label="Page navigation"><button type="button" onclick="SOC.prev()">&#8592; Hide All Dates</button><button type="button" onclick="SOC.go(\'journey\')">Home</button></div>' + calendarPage();
+    if (state.screen === 'recportal') return homeBar() + recPortalPage();
     if (state.screen === 'assignment-program') return homeBar() + assignmentProgramPage();
     if (state.screen === 'assignment-details') return homeBar() + assignmentDetailsPage();
     if (state.screen === 'assignment-rubric') return homeBar() + assignmentRubricPage();
@@ -8286,7 +8372,75 @@
     galWeek: function (w) { var m = document.getElementById('soc-main'); var y = m ? m.scrollTop : 0; state.galWeek = (state.galWeek === w) ? null : w; render(); var m2 = document.getElementById('soc-main'); if (m2) m2.scrollTop = y; },
     galTopic: function (t) { var m = document.getElementById('soc-main'); var y = m ? m.scrollTop : 0; state.galTopic = (state.galTopic === t) ? null : t; render(); var m2 = document.getElementById('soc-main'); if (m2) m2.scrollTop = y; },
     galClear: function () { state.galWeek = null; state.galTopic = null; render(); },
-    playVideo: function (el, id) { var box = el.closest ? el.closest('.rgvideo, .vid-frame') : el.parentNode; if (box) { box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1" referrerpolicy="strict-origin-when-cross-origin" title="Scholar talk" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>'; } },
+    recWeek: function (v) { var w = cleanWeek(v); if (w) { recUI.week = w; render(); } },
+    recInput: function (v) {
+      recUI.raw = String(v || '');
+      recUI.id = recExtractId(v);
+      var pr = document.getElementById('rp-parse');
+      if (pr) pr.textContent = recUI.id ? ('Video found: ' + recUI.id) : (recUI.raw.trim() ? 'That does not look like a YouTube link or video id yet.' : '');
+      var pv = document.getElementById('rp-pvslot');
+      if (pv) pv.innerHTML = recUI.id ? recPreviewHtml(recUI.id) : '';
+      var pub = document.getElementById('rp-publish');
+      if (pub) pub.disabled = !recUI.id;
+      var sn = document.getElementById('rp-snippet');
+      if (sn) sn.textContent = recUI.id ? recSnippet() : '';
+      var st = document.getElementById('rp-status');
+      if (st) st.textContent = recUI.id ? 'Ready to publish.' : 'Waiting for a video link.';
+    },
+    recPatSave: function () {
+      var el = document.getElementById('rp-pat');
+      var v = el ? String(el.value || '').trim() : '';
+      if (!v) { var ps0 = document.getElementById('rp-patstate'); if (ps0) ps0.textContent = 'Paste a token first, then save.'; return; }
+      try { localStorage.setItem(REC_PAT_KEY, v); } catch (e) {}
+      if (el) el.value = '';
+      render();
+    },
+    recPatForget: function () { try { localStorage.removeItem(REC_PAT_KEY); } catch (e) {} render(); },
+    recPublish: function () {
+      if (recUI.busy) return;
+      var id = recUI.id, w = recUI.week;
+      var st = document.getElementById('rp-status');
+      function say(m) { if (st) st.textContent = m; }
+      if (!id || !w) { say('Choose a week and paste a valid video link first.'); return; }
+      var pat = '';
+      try { pat = localStorage.getItem(REC_PAT_KEY) || ''; } catch (e) {}
+      if (!pat) { say('No token saved. Save a GitHub token in step 3, or add the manual line below to the registry by hand.'); return; }
+      recUI.busy = true;
+      say('Publishing: reading the current registry...');
+      var api = 'https://api.github.com/repos/' + REC_REPO + '/contents/' + REC_PATH;
+      var headers = { 'Authorization': 'Bearer ' + pat, 'Accept': 'application/vnd.github+json' };
+      fetch(api + '?ref=main&t=' + Date.now(), { headers: headers, cache: 'no-store' }).then(function (r) {
+        if (r.status === 404) return null;
+        if (!r.ok) throw new Error('read failed (' + r.status + ')');
+        return r.json();
+      }).then(function (f) {
+        var reg = {};
+        if (f) {
+          var txt = '';
+          try { txt = decodeURIComponent(escape(atob(String(f.content || '').replace(/\s/g, '')))); } catch (e) { throw new Error('could not decode the registry'); }
+          var m = txt.match(/window\.BFS218_RECORDINGS\s*=\s*(\{[\s\S]*?\})\s*;/);
+          if (m) { try { reg = JSON.parse(m[1]); } catch (e) { throw new Error('the registry did not parse; publish by hand with the line below'); } }
+        }
+        reg[String(w)] = { yt: id, posted: recTodayIso() };
+        var body = '/* Weekly instructor videos: week -> unlisted YouTube id, published through the instructor portal. */\nwindow.BFS218_RECORDINGS = ' + JSON.stringify(reg, null, 2) + ';\n';
+        say('Publishing: writing Week ' + w + '...');
+        var put = { message: 'Publish Week ' + w + ' video', content: btoa(unescape(encodeURIComponent(body))), branch: 'main' };
+        if (f && f.sha) put.sha = f.sha;
+        return fetch(api, { method: 'PUT', headers: headers, body: JSON.stringify(put) });
+      }).then(function (r) {
+        if (!r.ok) throw new Error('write failed (' + r.status + ')');
+        recUI.busy = false;
+        window.BFS218_RECORDINGS = window.BFS218_RECORDINGS || {};
+        window.BFS218_RECORDINGS[String(w)] = { yt: id, posted: recTodayIso() };
+        recUI.raw = ''; recUI.id = '';
+        say('Published. Week ' + w + ' now shows the video. Students see it once the site cache refreshes, usually within ten minutes.');
+        render();
+      }).catch(function (e) {
+        recUI.busy = false;
+        say('Publish did not go through: ' + (e && e.message ? e.message : 'unknown error') + '. Check that the token has contents write access to ' + REC_REPO + ', or use the manual line below.');
+      });
+    },
+    playVideo: function (el, id, t) { var box = el.closest ? el.closest('.rgvideo, .vid-frame, .wk-rec-frame, .rp-preview') : el.parentNode; if (box) { box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1" referrerpolicy="strict-origin-when-cross-origin" title="' + (t ? esc(t) : 'Scholar talk') + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>'; } },
     back: function () { if (state.screen !== 'library') rememberPrevious(); state.screen = 'library'; focusTarget = 'soc-main'; render(); var m = document.getElementById('soc-main'); if (m) m.scrollTop = state.libScroll || 0; },
     open: function (id) { rememberPrevious(); var m = document.getElementById('soc-main'); if (m) state.libScroll = m.scrollTop; state.screen = 'detail'; state.detailId = id; focusTarget = 'soc-main'; render(); topScroll(); },
     layout: function (l) { state.layout = l; persist(); render(); },
