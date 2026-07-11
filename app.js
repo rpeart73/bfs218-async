@@ -1848,34 +1848,49 @@
     canvas.__auditGL = renderer.getContext ? renderer.getContext() : null;
     renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
     if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
+    if (THREE.ACESFilmicToneMapping) renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 0.9;
+    if ('useLegacyLights' in renderer) renderer.useLegacyLights = false;
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     var scene = new THREE.Scene();
-    var camera = new THREE.PerspectiveCamera(40, 16 / 9, 0.1, 80);
-    camera.position.set(4.9, 3.5, 6.5);
+    scene.fog = new THREE.Fog(0xc7cbca, 11, 25);
+    var camera = new THREE.PerspectiveCamera(34, 16 / 9, 0.1, 80);
+    camera.position.set(5.8, 4.25, 7.55);
     camera.lookAt(0, 0.45, 0.35);
-    scene.add(new THREE.HemisphereLight(0xffffff, 0xb8c4d0, 2.6));
-    var sun = new THREE.DirectionalLight(0xffffff, 3.1); sun.position.set(3.6, 6.5, 4.8); scene.add(sun);
-    var fill = new THREE.DirectionalLight(0xe7f7ff, 1.1); fill.position.set(-4, 3, -3); scene.add(fill);
-    var root = new THREE.Group(); root.scale.set(0.82, 0.82, 0.82); root.position.set(0, -0.02, 0.02); scene.add(root);
+    scene.add(new THREE.HemisphereLight(0xf5f1e8, 0x4d5559, 0.88));
+    var sun = new THREE.DirectionalLight(0xfff0dc, 2.05); sun.position.set(3.8, 7.2, 5.4); scene.add(sun);
+    sun.castShadow = true;
+    sun.shadow.mapSize.set(1024, 1024);
+    sun.shadow.camera.near = 1; sun.shadow.camera.far = 24;
+    sun.shadow.camera.left = -5; sun.shadow.camera.right = 5;
+    sun.shadow.camera.top = 6; sun.shadow.camera.bottom = -4;
+    sun.shadow.bias = -0.0005; sun.shadow.radius = 4;
+    var fill = new THREE.DirectionalLight(0xdce7ee, 0.58); fill.position.set(-4.5, 3.2, -3.5); scene.add(fill);
+    var rim = new THREE.DirectionalLight(0xe8cfae, 0.34); rim.position.set(-3.5, 4.8, 4.5); scene.add(rim);
+    var root = new THREE.Group(); root.scale.set(0.76, 0.76, 0.76); root.position.set(0, -0.02, 0.02); scene.add(root);
     var mats = {
-      floor: new THREE.MeshStandardMaterial({ color: 0xe9eef2, roughness: 0.72, metalness: 0.02 }),
-      teal: new THREE.MeshPhysicalMaterial({ color: 0x00aeb3, transparent: true, opacity: 0.36, roughness: 0.18, metalness: 0.05, transmission: 0.18 }),
-      orange: new THREE.MeshPhysicalMaterial({ color: 0xff8a1d, transparent: true, opacity: 0.38, roughness: 0.16, metalness: 0.05, transmission: 0.18 }),
-      tray: new THREE.MeshPhysicalMaterial({ color: 0x9fdde0, transparent: true, opacity: 0.28, roughness: 0.22, metalness: 0.03, transmission: 0.18 }),
-      trayHot: new THREE.MeshPhysicalMaterial({ color: 0xff9d80, transparent: true, opacity: 0.46, roughness: 0.2, metalness: 0.03, transmission: 0.16 }),
-      token: new THREE.MeshStandardMaterial({ color: 0xe9dfcc, roughness: 0.55, metalness: 0.02 }),
-      red: new THREE.MeshStandardMaterial({ color: 0xda291c, emissive: 0x8f120b, emissiveIntensity: 0.35, roughness: 0.35 }),
-      dark: new THREE.MeshStandardMaterial({ color: 0x1b2a4a, roughness: 0.38, metalness: 0.25 }),
-      suit: new THREE.MeshStandardMaterial({ color: 0xff7a18, roughness: 0.42, metalness: 0.05 }),
-      suit2: new THREE.MeshStandardMaterial({ color: 0x00aeb3, roughness: 0.42, metalness: 0.05 }),
-      glassLine: new THREE.LineBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.52 }),
+      floor: new THREE.MeshStandardMaterial({ color: 0x727a7d, roughness: 0.9, metalness: 0.02 }),
+      teal: new THREE.MeshPhysicalMaterial({ color: 0x41696a, roughness: 0.48, metalness: 0.38, clearcoat: 0.18, clearcoatRoughness: 0.42 }),
+      orange: new THREE.MeshPhysicalMaterial({ color: 0x8a6547, roughness: 0.5, metalness: 0.32, clearcoat: 0.16, clearcoatRoughness: 0.44 }),
+      tray: new THREE.MeshPhysicalMaterial({ color: 0xd9dddc, transparent: true, opacity: 0.94, roughness: 0.56, metalness: 0.12, clearcoat: 0.12 }),
+      trayHot: new THREE.MeshPhysicalMaterial({ color: 0xcdb9b3, transparent: true, opacity: 0.97, roughness: 0.53, metalness: 0.1, clearcoat: 0.12 }),
+      token: new THREE.MeshStandardMaterial({ color: 0xc7ae93, roughness: 0.66, metalness: 0.01 }),
+      red: new THREE.MeshStandardMaterial({ color: 0xb3261e, emissive: 0x4d0805, emissiveIntensity: 0.1, roughness: 0.48, metalness: 0.08 }),
+      dark: new THREE.MeshStandardMaterial({ color: 0x26323a, roughness: 0.38, metalness: 0.58 }),
+      steel: new THREE.MeshStandardMaterial({ color: 0x859097, roughness: 0.36, metalness: 0.72 }),
+      screen: new THREE.MeshStandardMaterial({ color: 0x17242a, emissive: 0x24484b, emissiveIntensity: 0.28, roughness: 0.3, metalness: 0.08 }),
+      glassLine: new THREE.LineBasicMaterial({ color: 0xcbd5d9, transparent: true, opacity: 0.34 }),
       cable: new THREE.MeshStandardMaterial({ color: 0x222831, roughness: 0.6, metalness: 0.12 }),
-      beam: new THREE.MeshBasicMaterial({ color: 0xffcc66, transparent: true, opacity: 0.22, side: THREE.DoubleSide })
+      beam: new THREE.MeshBasicMaterial({ color: 0xffdda0, transparent: true, opacity: 0.13, side: THREE.DoubleSide, depthWrite: false })
     };
     function addMesh(parent, geo, mat, pos, rot, scale) {
       var m = new THREE.Mesh(geo, mat);
       if (pos) m.position.set(pos[0], pos[1], pos[2]);
       if (rot) m.rotation.set(rot[0], rot[1], rot[2]);
       if (scale) m.scale.set(scale[0], scale[1], scale[2]);
+      m.castShadow = true;
+      m.receiveShadow = true;
       parent.add(m);
       return m;
     }
@@ -1884,14 +1899,19 @@
       var l = new THREE.LineSegments(e, new THREE.LineBasicMaterial({ color: color || 0xffffff, transparent: true, opacity: opacity == null ? 0.48 : opacity }));
       l.position.copy(mesh.position); l.rotation.copy(mesh.rotation); l.scale.copy(mesh.scale); parent.add(l); return l;
     }
-    root.add(new THREE.GridHelper(7, 10, 0xd6dde5, 0xd6dde5));
-    addMesh(root, new THREE.BoxGeometry(7.3, 0.08, 5.3), mats.floor, [0, -0.07, 0], null, null);
+    var grid = new THREE.GridHelper(7, 10, 0xb3bbbd, 0xb3bbbd);
+    grid.material.transparent = true; grid.material.opacity = 0.15; root.add(grid);
+    var floor = addMesh(root, new THREE.BoxGeometry(7.3, 0.12, 5.3), mats.floor, [0, -0.09, 0], null, null);
+    floor.receiveShadow = true; floor.castShadow = false;
     var dataCube = addMesh(root, new THREE.BoxGeometry(1.35, 1.35, 1.35), mats.teal, [-2.25, 0.72, -1.18]);
     var sysCube = addMesh(root, new THREE.BoxGeometry(1.35, 1.35, 1.35), mats.orange, [2.25, 0.72, -1.18]);
-    edges(root, dataCube, 0x00f2ff, 0.68); edges(root, sysCube, 0xffbd69, 0.74);
+    edges(root, dataCube, 0xb8c8c8, 0.32); edges(root, sysCube, 0xd8c4ad, 0.34);
+    addMesh(root, new THREE.BoxGeometry(0.96, 0.7, 0.035), mats.screen, [-2.25, 0.75, -0.49]);
+    addMesh(root, new THREE.BoxGeometry(0.96, 0.7, 0.035), mats.screen, [2.25, 0.75, -0.49]);
     for (var chip = 0; chip < 9; chip++) {
-      addMesh(root, new THREE.BoxGeometry(0.08 + (chip % 3) * 0.025, 0.02, 0.42), mats.dark, [-2.58 + (chip % 3) * 0.25, 0.75 + Math.floor(chip / 3) * 0.15, -1.86 + (chip % 2) * 0.16]);
-      addMesh(root, new THREE.BoxGeometry(0.08 + (chip % 2) * 0.02, 0.02, 0.36), mats.dark, [2.02 + (chip % 3) * 0.2, 0.75 + Math.floor(chip / 3) * 0.13, -1.85 + (chip % 2) * 0.18]);
+      var ledMat = chip % 4 === 3 ? mats.red : (chip % 2 ? mats.steel : mats.token);
+      addMesh(root, new THREE.BoxGeometry(0.13 + (chip % 3) * 0.035, 0.028, 0.025), ledMat, [-2.56 + (chip % 3) * 0.3, 0.57 + Math.floor(chip / 3) * 0.19, -0.465]);
+      addMesh(root, new THREE.BoxGeometry(0.13 + (chip % 2) * 0.03, 0.028, 0.025), ledMat, [1.95 + (chip % 3) * 0.3, 0.57 + Math.floor(chip / 3) * 0.19, -0.465]);
     }
     function cable(a, b, c) {
       var curve = new THREE.CatmullRomCurve3([new THREE.Vector3(a[0], a[1], a[2]), new THREE.Vector3(c[0], c[1], c[2]), new THREE.Vector3(b[0], b[1], b[2])]);
@@ -1935,13 +1955,15 @@
     if (slice === 'overall') {
       addMesh(root, new THREE.BoxGeometry(3.25, 0.04, 2.55), new THREE.MeshPhysicalMaterial({ color: 0xffffff, transparent: true, opacity: 0.22, roughness: 0.08, transmission: 0.1 }), [0, 0.88, 0.68]);
     }
-    var person = new THREE.Group(); root.add(person); person.position.set(-0.25, 0.05, -0.45); person.rotation.y = -0.7;
-    addMesh(person, new THREE.CylinderGeometry(0.11, 0.14, 0.38, 14), mats.suit, [0, 0.38, 0]);
-    addMesh(person, new THREE.SphereGeometry(0.12, 16, 10), mats.suit2, [0, 0.66, 0]);
-    addMesh(person, new THREE.CylinderGeometry(0.035, 0.035, 0.34, 10), mats.suit, [-0.12, 0.22, 0.05], [0.85, 0.1, 0.2]);
-    addMesh(person, new THREE.CylinderGeometry(0.035, 0.035, 0.34, 10), mats.suit, [0.12, 0.22, -0.02], [0.9, -0.2, -0.2]);
-    addMesh(person, new THREE.BoxGeometry(0.18, 0.11, 0.12), mats.dark, [0.19, 0.42, 0.18], [0, 0.3, 0]);
-    addMesh(person, new THREE.ConeGeometry(0.18, 0.8, 24, 1, true), mats.beam, [0.38, 0.4, 0.48], [Math.PI / 2, 0.2, 0]);
+    /* Object-centred inspection rig: more credible than a symbolic cartoon auditor. */
+    var scanner = new THREE.Group(); root.add(scanner); scanner.position.set(-0.25, 0.03, -0.42); scanner.rotation.y = -0.68;
+    addMesh(scanner, new THREE.BoxGeometry(0.76, 0.12, 0.58), mats.dark, [0, 0.08, 0]);
+    addMesh(scanner, new THREE.CylinderGeometry(0.045, 0.055, 1.05, 24), mats.steel, [-0.24, 0.62, 0]);
+    addMesh(scanner, new THREE.BoxGeometry(0.72, 0.07, 0.08), mats.steel, [0.08, 1.11, 0]);
+    addMesh(scanner, new THREE.BoxGeometry(0.34, 0.24, 0.28), mats.dark, [0.48, 0.99, 0]);
+    addMesh(scanner, new THREE.CylinderGeometry(0.085, 0.085, 0.13, 28), mats.screen, [0.48, 0.82, 0], null);
+    addMesh(scanner, new THREE.BoxGeometry(0.34, 0.2, 0.025), mats.screen, [-0.02, 0.2, 0.305], [-0.55, 0, 0]);
+    addMesh(scanner, new THREE.ConeGeometry(0.22, 0.9, 32, 1, true), mats.beam, [0.48, 0.39, 0.12], [Math.PI, 0, 0]);
     var target = { x: view === 'pipeline' ? -0.08 : -0.2, y: view === 'pipeline' ? -0.82 : -0.45 };
     if (view === 'orbit') target.y = -0.55;
     var cur = { x: target.x, y: target.y }, dragging = false, last = null;
@@ -1982,6 +2004,9 @@
     function resize() {
       var w = Math.max(320, shell.clientWidth || canvas.clientWidth || 720);
       var h = Math.max(300, Math.round(w * 0.58));
+      if (w <= 520) camera.position.set(6.45, 4.75, 8.55);
+      else camera.position.set(5.8, 4.25, 7.55);
+      camera.lookAt(0, 0.45, 0.35);
       renderer.setSize(w, h, false);
       camera.aspect = w / h;
       camera.updateProjectionMatrix();
