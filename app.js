@@ -737,7 +737,7 @@
       + '<button class="soc-mobile-menu" onclick="SOC.toggleNav()" aria-label="' + (state.navOpen ? 'Close course navigation' : 'Open course navigation') + '" aria-expanded="' + (state.navOpen ? 'true' : 'false') + '" style="align-items:center;justify-content:center;width:38px;height:38px;border:1px solid #DEE3EA;border-radius:10px;background:#fff;color:#474C57;flex:none">' + ic(state.navOpen ? 'x' : 'list', 18) + '</button>'
       + '<div class="soc-head-brand" style="display:flex;align-items:center;gap:10px;flex:none;min-width:0"><img src="./seneca-logo.png" alt="Seneca Polytechnic" style="height:34px;width:auto;display:block"><span class="soc-head-title" style="font-weight:600;font-size:1.0625rem;color:var(--ink);letter-spacing:0;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">BFS218 Companion</span></div>'
       + readerLensButton()
-      + '<button type="button" class="reader-lens-btn" onclick="SOC.switchSectionPrompt()" aria-label="Switch to the other BFS218 section" title="Switch section: go back and choose the synchronous or asynchronous site">' + ic('columns', 17, 2) + '<span class="reader-lens-label">Switch section</span></button>'
+      + '<button type="button" class="reader-lens-btn section-switch-btn" onclick="SOC.switchSectionPrompt()" aria-label="Switch to the other BFS218 section" title="Switch section: go back and choose the synchronous or asynchronous site">' + ic('columns', 17, 2) + '<span class="section-switch-label">Switch section</span></button>'
       + (D.course.mode ? '<span class="mono soc-head-mode" style="font-size:.75rem;font-weight:700;color:#fff;background:var(--amode);padding:6px 12px;border-radius:6px;letter-spacing:.05em;flex:none">' + esc(D.course.mode).toUpperCase() + '</span>' : '')
       + (String(state.programViewField || state.careerField || '').trim() ? '<button type="button" class="mono soc-head-term" onclick="SOC.go(\'career\')" title="Change your program lens" style="font-size:.72rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;padding:5px 10px;border-radius:6px;flex:none;cursor:pointer;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">VIEWING AS: ' + esc(selLabel(state.programViewField || state.careerField)) + '</button>' : '')
       + '<span class="mono soc-head-term" style="font-size:.75rem;font-weight:600;color:#B02318;background:#F6E3E1;padding:5px 10px;border-radius:6px;flex:none">FALL 2026</span>'
@@ -6035,8 +6035,9 @@
       + '</section>';
   }
   var upcomingReminderFocus = null;
+  var switchSectionFocus = null;
   function showUpcomingReminder() {
-    try { if (localStorage.getItem('bfs218.dev') === '1') return; } catch (e) {}
+    try { if ((window.BFS218_DEV && (window.BFS218_DEV.pending || window.BFS218_DEV.active)) || localStorage.getItem('bfs218.dev') === '1') return; } catch (e) {}
     var key = SKEY + '.upcomingReminder.session.v1';
     try { if (sessionStorage.getItem(key) === '1') return; sessionStorage.setItem(key, '1'); } catch (e) {}
     if (document.getElementById('upcoming-reminder')) return;
@@ -8529,6 +8530,7 @@
     playVideo: function (el, id, t) { var box = el.closest ? el.closest('.rgvideo, .vid-frame, .wk-rec-frame') : el.parentNode; if (box) { box.innerHTML = '<iframe src="https://www.youtube-nocookie.com/embed/' + id + '?autoplay=1&rel=0&modestbranding=1&cc_load_policy=1&cc_lang_pref=en" referrerpolicy="strict-origin-when-cross-origin" title="' + (t ? esc(t) : 'Scholar talk') + '" allow="autoplay; encrypted-media; picture-in-picture; fullscreen" allowfullscreen style="position:absolute;inset:0;width:100%;height:100%;border:0"></iframe>'; } },
     switchSectionPrompt: function () {
       if (document.getElementById('switch-section-modal')) return;
+      switchSectionFocus = document.activeElement;
       var box = document.createElement('div');
       box.id = 'switch-section-modal'; box.className = 'upcoming-reminder';
       box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-labelledby', 'switch-section-title');
@@ -8537,12 +8539,11 @@
         + '<p>BFS218 runs in two sections, synchronous and asynchronous, on two separate sites. <b>The assignments and the due dates are different between them.</b> You are responsible for following the requirements of the section you are actually enrolled in. If you are not sure which one that is, check your timetable or Blackboard before you switch.</p>'
         + '<div><button type="button" onclick="SOC.switchSectionGo()">Switch section</button><button type="button" class="secondary" onclick="SOC.switchSectionClose()">Stay on this site</button></div></div>';
       document.body.appendChild(box);
-      box.addEventListener('click', function (e) { if (e.target === box) SOC.switchSectionClose(); });
-      box.addEventListener('keydown', function (e) { if (e.key === 'Escape') SOC.switchSectionClose(); });
+      box.addEventListener('keydown', function (e) { var bs = box.querySelectorAll('button'); if (e.key === 'Escape') { e.preventDefault(); SOC.switchSectionClose(); return; } if (e.key === 'Tab' && bs.length) { var first = bs[0], last = bs[bs.length - 1]; if (e.shiftKey && document.activeElement === first) { e.preventDefault(); last.focus(); } else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); } } });
       setTimeout(function () { var s = box.querySelector('button.secondary'); if (s) s.focus(); }, 0);
     },
     switchSectionGo: function () { try { localStorage.removeItem('bfs218.section'); } catch (e) {} location.assign('https://rpeart73.github.io/bfs218/?choose'); },
-    switchSectionClose: function () { var box = document.getElementById('switch-section-modal'); if (box) box.remove(); },
+    switchSectionClose: function () { var box = document.getElementById('switch-section-modal'); if (box) box.remove(); if (switchSectionFocus && switchSectionFocus.focus) switchSectionFocus.focus(); switchSectionFocus = null; },
     auEl: function (id) { return document.getElementById('au-el-' + id); },
     auFmt: function (t) { t = Math.max(0, Math.floor(t || 0)); var m = Math.floor(t / 60), s = t % 60; return m + ':' + (s < 10 ? '0' : '') + s; },
     auIcon: function (id, playing) { var b = document.getElementById('au-play-' + id); if (b) { b.classList.toggle('is-playing', !!playing); b.setAttribute('aria-label', playing ? 'Pause the lecture' : 'Play the lecture'); } },

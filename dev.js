@@ -1,7 +1,9 @@
 /* BFS218 developer mode (shared across the signpost and both section sites).
    Bypasses the section selector and the opening popups so the sites can be
    built and fixed. Client-side only: this gates UI conveniences, not data.
-   Activate with ?dev (enter the password) on any site; turn off with the
+   This file must load before router.js or app.js so it can capture ?dev
+   before either application normalizes the URL. Activate with ?dev (enter
+   the password) on any site; turn off with the
    Exit button on the bar, or with ?dev=off. The flag lives in localStorage
    (bfs218.dev) and is shared across all three sites on this origin. */
 (function () {
@@ -13,7 +15,7 @@
     sync: 'https://rpeart73.github.io/bfs218-sync/'
   };
   function on() { try { return localStorage.getItem(KEY) === '1'; } catch (e) { return false; } }
-  function set(v) { try { if (v) localStorage.setItem(KEY, '1'); else localStorage.removeItem(KEY); } catch (e) {} }
+  function set(v) { try { if (v) localStorage.setItem(KEY, '1'); else localStorage.removeItem(KEY); } catch (e) {} if (window.BFS218_DEV) window.BFS218_DEV.active = !!v; }
   function cleanUrl() { return location.origin + location.pathname; }
   function sha256hex(s) {
     return crypto.subtle.digest('SHA-256', new TextEncoder().encode(s)).then(function (buf) {
@@ -23,9 +25,11 @@
 
   var params;
   try { params = new URLSearchParams(location.search || ''); } catch (e) { params = null; }
+  var hasCommand = !!(params && params.has('dev'));
+  window.BFS218_DEV = { pending: hasCommand, active: on() };
 
   // Activation / deactivation via ?dev
-  if (params && params.has('dev')) {
+  if (hasCommand) {
     if (params.get('dev') === 'off') { set(false); location.replace(cleanUrl()); return; }
     var pw = window.prompt('Developer password');
     if (pw == null) { location.replace(cleanUrl()); return; }
