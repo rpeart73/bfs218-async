@@ -3293,9 +3293,9 @@
       if (voiceOpts) voiceOpts = '<optgroup label="Read aloud in a device voice">' + voiceOpts + '</optgroup>';
     } catch (e) { voiceOpts = ''; }
     return '<section id="wk-audio" class="node">'
-      + '<div class="au-kicker mono">The professor\'s lecture</div>'
+      + '<div class="au-kicker mono">The weekly lecture</div>'
       + '<h2 class="wk-sec">Listen to this week</h2>'
-      + '<p class="wk-hint">This is the whole week in your professor\'s own voice, about ' + amin + ' minutes: the week\'s question, the core idea, and how the readings fit together. Play it to catch up if you missed the week, or if you take things in better by ear. It does not replace the readings; those still carry the citations and evidence your graded work needs. ' + esc(ep.blurb || '') + '</p>'
+      + '<p class="wk-hint">Your professor wrote this lecture; the narration is an AI voice, used for clarity and accessibility. It runs about ' + amin + ' minutes: the week\'s question, the core idea, and how the readings fit together. Play it to catch up if you missed the week, or if you take things in better by ear. It does not replace the readings; those still carry the citations and evidence your graded work needs. ' + esc(ep.blurb || '') + '</p>'
       + '<div class="au-player">'
       + '<audio id="au-el-' + aid + '" preload="metadata" src="' + esc(ep.file) + '"></audio>'
       + '<div class="au-head">'
@@ -3303,7 +3303,7 @@
       + '<svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
       + '<svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>'
       + '</button>'
-      + '<div class="au-headmeta"><div class="au-title">' + esc(atitle) + '</div><div class="au-by">In your professor\'s voice, about ' + amin + ' min</div></div>'
+      + '<div class="au-headmeta"><div class="au-title">' + esc(atitle) + '</div><div class="au-by">Written by your professor, AI-narrated &middot; about ' + amin + ' min</div></div>'
       + '</div>'
       + '<div class="au-scrub"><span class="au-time" id="au-cur-' + aid + '">0:00</span>'
       + '<input class="au-seek" id="au-seek-' + aid + '" type="range" min="0" max="1000" value="0" step="1" oninput="SOC.auSeek(\'' + aid + '\',this.value)" aria-label="Seek through the lecture">'
@@ -3315,7 +3315,7 @@
       + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
       + (ep.transcript ? '<button type="button" class="au-btn au-btn-ghost" onclick="SOC.auTranscript(\'' + aid + '\')">Transcript</button>' : '')
       + '</div></div>'
-      + '<div class="rl-row au-lang-row"><b>Voice and language</b><select class="rl-voice" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture voice or language"><option value="en">English, my recorded voice</option>' + (langOpts ? '<optgroup label="Translated lecture, read by your device">' + langOpts + '</optgroup>' : '') + voiceOpts + '</select></div>'
+      + '<div class="rl-row au-lang-row"><b>Voice and language</b><select class="rl-voice" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture voice or language"><option value="en">English (AI narration)</option>' + (langOpts ? '<optgroup label="Translated lecture, read by your device">' + langOpts + '</optgroup>' : '') + voiceOpts + '</select></div>'
       + '<p class="au-foot">Download it before you travel; the subway has no signal. This is a teaching companion, not a substitute for the assigned readings.</p>'
       + '</section>';
   }
