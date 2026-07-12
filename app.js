@@ -25,7 +25,7 @@
     return !!(v && v.screen);
   }
   function cleanScreen(s) {
-    return ['journey', 'site', 'library', 'station', 'detail', 'pathways', 'assignments', 'assignment-program', 'assignment-details', 'assignment-rubric', 'assignment-release', 'assignment-ai', 'assignment-faq', 'starter', 'videos', 'readings', 'compare', 'reading', 'glossary', 'career', 'cards', 'walkthroughs', 'sandbox', 'activity', 'calendar'].indexOf(s) >= 0 ? s : 'journey';
+    return ['journey', 'site', 'library', 'station', 'detail', 'pathways', 'assignments', 'assignment-program', 'assignment-details', 'assignment-rubric', 'assignment-release', 'assignment-ai', 'assignment-faq', 'starter', 'videos', 'readings', 'compare', 'reading', 'glossary', 'career', 'cards', 'walkthroughs', 'sandbox', 'activity', 'calendar', 'lectures'].indexOf(s) >= 0 ? s : 'journey';
   }
   function cleanWeek(w) {
     w = Number(w);
@@ -763,7 +763,9 @@
     var calActive = s.screen === 'calendar';
     var cal = '<button onclick="SOC.go(\'calendar\')" aria-current="' + (calActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (calActive ? '600' : '500') + ';background:' + (calActive ? '#EEF1F5' : 'transparent') + ';color:' + (calActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (calActive ? 'var(--red)' : '#6B7280') + '">' + ic('calendar', 19) + '</span><span style="flex:1;text-align:left">Calendar and Due Dates</span></button>';
     var lbl = function (t) { return '<div class="mono" style="font-size:.6875rem;letter-spacing:.06em;color:#6B7280;padding:16px 12px 6px">' + t + '</div>'; };
-    var nav = btns[0] + btns[1] + cal + lbl('LEARN EACH WEEK') + walk + btns[2];
+    var lecActive = s.screen === 'lectures';
+    var lec = '<button onclick="SOC.go(\'lectures\')" aria-current="' + (lecActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (lecActive ? '600' : '500') + ';background:' + (lecActive ? '#EEF1F5' : 'transparent') + ';color:' + (lecActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (lecActive ? 'var(--red)' : '#6B7280') + '">' + ic('play', 19) + '</span><span style="flex:1;text-align:left">Lectures</span></button>';
+    var nav = btns[0] + btns[1] + cal + lbl('LEARN EACH WEEK') + walk + lec + btns[2];
     var study = lbl('STUDY THE SOURCES') + btns[3] + btns[5] + btns[4] + btns[6] + btns[7] + btns[8] + lbl('DO THE WORK') + btns[9] + lbl('MORE') + btns[10] + guide + report;
     var counts = {}; D.records.forEach(function (r) { counts[r.week] = (counts[r.week] || 0) + 1; });
     var navWeeks = [];
@@ -1435,6 +1437,7 @@
     if (state.screen === 'compare') return 'Compare Sources';
     if (state.screen === 'reading') return 'Source Practice';
     if (state.screen === 'walkthroughs') return 'Weekly Walkthroughs';
+    if (state.screen === 'lectures') return 'Lectures';
     if (state.screen === 'videos') return 'Videos and Podcasts';
     if (state.screen === 'glossary') return 'Glossary';
     if (state.screen === 'cards') return 'Concept Flashcards';
@@ -3297,7 +3300,6 @@
       + '<h2 class="wk-sec">Listen to this week</h2>'
       + '<p class="wk-hint">Your professor wrote this lecture; the narration is an AI voice, used for clarity and accessibility. It runs about ' + amin + ' minutes: the week\'s question, the core idea, and how the readings fit together. Play it to catch up if you missed the week, or if you take things in better by ear. It does not replace the readings; those still carry the citations and evidence your graded work needs. ' + esc(ep.blurb || '') + '</p>'
       + '<div class="au-player">'
-      + '<audio id="au-el-' + aid + '" preload="metadata" src="' + esc(ep.file) + '"></audio>'
       + '<div class="au-head">'
       + '<button type="button" class="au-play" id="au-play-' + aid + '" onclick="SOC.auToggle(\'' + aid + '\')" aria-label="Play the lecture">'
       + '<svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
@@ -7879,7 +7881,31 @@
     if (state.screen === 'cards') return homeBar() + cardsScreen();
     if (state.screen === 'sandbox' && D.course && D.course.code === 'BFS218') return backBar() + sandboxScreen();
     if (state.screen === 'activity' && D.course && D.course.code === 'BFS218') return backBar() + activityScreen();
+    if (state.screen === 'lectures') return homeBar() + lecturesScreen();
     return journeyHome();
+  }
+  function lecturesScreen() {
+    var AU = window.BFS218_AUDIO || {};
+    var weeks = Object.keys(AU).map(Number).filter(function (w) { return AU[w] && AU[w].file; }).sort(function (a, b) { return a - b; });
+    var svg = '<svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+    var head = '<div class="rise" style="max-width:820px">'
+      + '<div class="mono" style="font-size:.7rem;letter-spacing:.09em;color:var(--amode);font-weight:700;margin:0 0 8px">THE WEEKLY LECTURES</div>'
+      + '<h1 style="font-size:1.9rem;line-height:1.15;margin:0 0 10px">Lectures</h1>'
+      + '<p style="font-size:1.02rem;color:var(--ink-dim);line-height:1.6;margin:0 0 22px">Every week has a short lecture you can listen to. Your professor wrote each one; the narration is an AI voice, used for clarity and accessibility. Press play and it keeps going while you move around the site. The readings on each week page still carry the citations and evidence your graded work needs.</p>';
+    if (!weeks.length) return head + '<p style="color:var(--ink-faint)">No lectures are posted yet. Check back soon.</p></div>';
+    var rows = weeks.map(function (w) {
+      var ep = AU[w], playing = (state.auW === w);
+      return '<div class="au-lec-row">'
+        + '<button type="button" class="au-play au-lec-play' + (playing ? ' is-playing' : '') + '" id="au-lec-play-' + w + '" onclick="SOC.auPlayWeek(' + w + ')" aria-label="Play ' + esc(ep.title || ('Week ' + w)) + '">' + svg + '</button>'
+        + '<button type="button" class="au-lec-main" onclick="SOC.station(' + w + ')">'
+        + '<span class="au-lec-title">' + esc(ep.title || ('Week ' + w)) + '</span>'
+        + (ep.blurb ? '<span class="au-lec-blurb">' + esc(ep.blurb) + '</span>' : '')
+        + '</button>'
+        + (ep.minutes ? '<span class="au-lec-min mono">' + ep.minutes + ' min</span>' : '')
+        + '</div>';
+    }).join('');
+    return head + '<div class="au-lectures">' + rows + '</div>'
+      + '<p style="font-size:.86rem;color:var(--ink-faint);line-height:1.6;margin:18px 0 0">The lecture is a companion, not a substitute for the assigned readings. Open any week to read along with a follow-along transcript, or to switch the narration voice and language.</p></div>';
   }
   function careerScreen() {
     var C = window[(D.course && D.course.code) + '_CAREER'] || null;
@@ -8021,6 +8047,7 @@
     initTopicModels();
     setTimeout(showUpcomingReminder, 80);
     navHistorySync();
+    try { SOC.auDockRefresh(); } catch (e) {}
   }
   function topScroll() { var m = document.getElementById('soc-main'); if (m) m.scrollTop = 0; }
   function renderKeepScroll() {
@@ -8556,14 +8583,84 @@
     },
     switchSectionGo: function () { try { localStorage.removeItem('bfs218.section'); } catch (e) {} location.assign('https://rpeart73.github.io/bfs218/?choose'); },
     switchSectionClose: function () { var box = document.getElementById('switch-section-modal'); if (box) box.remove(); if (switchSectionFocus && switchSectionFocus.focus) switchSectionFocus.focus(); switchSectionFocus = null; },
-    auEl: function (id) { return document.getElementById('au-el-' + id); },
+    _auHost: function () { var h = document.getElementById('au-host'); if (!h) { h = document.createElement('div'); h.id = 'au-host'; document.body.appendChild(h); } return h; },
+    _auEl: function () {
+      var a = document.getElementById('au-audio');
+      if (!a) {
+        a = document.createElement('audio'); a.id = 'au-audio'; a.preload = 'metadata';
+        this._auHost().appendChild(a);
+        var self = this;
+        a.addEventListener('timeupdate', function () { self.auSync(); self._auSave(); });
+        a.addEventListener('loadedmetadata', function () { self.auSync(); });
+        a.addEventListener('play', function () { self.auSync(); });
+        a.addEventListener('pause', function () { self.auSync(); });
+        a.addEventListener('ended', function () { self.auSync(); });
+      }
+      return a;
+    },
+    _auSave: function () { var a = document.getElementById('au-audio'); if (!a || state.auW == null) return; var n = Math.floor(a.currentTime || 0); if (this._auLastT === n) return; this._auLastT = n; try { localStorage.setItem('bfs218.au', JSON.stringify({ w: state.auW, t: a.currentTime })); } catch (e) {} },
+    auEl: function (id) { var a = this._auEl(); if (id != null && Number(id) !== state.auW) { var ep = (window.BFS218_AUDIO || {})[id]; if (ep && ep.file) { state.auW = Number(id); a.src = ep.file; a.load(); this.auDockRefresh(); } } return a; },
     auFmt: function (t) { t = Math.max(0, Math.floor(t || 0)); var m = Math.floor(t / 60), s = t % 60; return m + ':' + (s < 10 ? '0' : '') + s; },
-    auIcon: function (id, playing) { var b = document.getElementById('au-play-' + id); if (b) { b.classList.toggle('is-playing', !!playing); b.setAttribute('aria-label', playing ? 'Pause the lecture' : 'Play the lecture'); } },
-    auBind: function (id) { var a = this.auEl(id); if (!a || a.dataset.auBound) return; a.dataset.auBound = '1'; var self = this; var seek = document.getElementById('au-seek-' + id), cur = document.getElementById('au-cur-' + id), dur = document.getElementById('au-dur-' + id); function setDur() { if (dur && a.duration && isFinite(a.duration)) dur.textContent = self.auFmt(a.duration); } a.addEventListener('loadedmetadata', setDur); setDur(); a.addEventListener('timeupdate', function () { if (cur) cur.textContent = self.auFmt(a.currentTime); if (seek && a.duration) { var pc = (a.currentTime / a.duration) * 100; seek.value = String(Math.round(pc * 10)); seek.style.background = 'linear-gradient(90deg,#DA291C ' + pc + '%,#E7D3D0 ' + pc + '%)'; } }); a.addEventListener('ended', function () { self.auIcon(id, false); if (seek) { seek.value = '0'; seek.style.background = ''; } if (cur) cur.textContent = '0:00'; }); },
-    auToggle: function (id) { var a = this.auEl(id); if (!a) return; this.auBind(id); if (a.paused) { var p = a.play(); if (p && p.catch) p.catch(function () {}); this.auIcon(id, true); } else { a.pause(); this.auIcon(id, false); } },
-    auSeek: function (id, v) { var a = this.auEl(id); if (!a || !a.duration) return; a.currentTime = (Number(v) / 1000) * a.duration; },
-    auSkip: function (id, d) { var a = this.auEl(id); if (!a) return; this.auBind(id); var t = a.currentTime + d; a.currentTime = Math.min(Math.max(0, t), a.duration || t); },
-    auSpeed: function (id) { var a = this.auEl(id); if (!a) return; var steps = [1, 1.25, 1.5, 1.75, 2]; var i = steps.indexOf(a.playbackRate); i = (i + 1) % steps.length; a.playbackRate = steps[i]; var l = document.getElementById('au-spd-' + id); if (l) l.textContent = steps[i] + '×'; var l2 = document.getElementById('au-tr-spd'); if (l2) l2.textContent = steps[i] + '×'; },
+    auIcon: function () { this.auSync(); },
+    auBind: function () {},
+    _auDockHtml: function (ep) {
+      var svg = '<svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>';
+      return '<div id="au-dock" class="au-dock" role="region" aria-label="Lecture player">'
+        + '<button type="button" class="au-play au-dock-play" id="au-dock-play" onclick="SOC.auToggle()" aria-label="Play or pause">' + svg + '</button>'
+        + '<button type="button" class="au-dock-main" onclick="SOC.auGoWeek()" aria-label="Open this week">'
+        + '<span class="au-dock-kick mono">NOW PLAYING &middot; AI NARRATION</span>'
+        + '<span class="au-dock-title" id="au-dock-title">' + esc(ep.title || ('Week ' + state.auW)) + '</span>'
+        + '<span class="au-dock-prog"><span class="au-dock-bar" id="au-dock-bar"></span></span>'
+        + '</button>'
+        + '<span class="au-dock-time mono" id="au-dock-time">0:00 / --:--</span>'
+        + '<button type="button" class="au-dock-x" onclick="SOC.auClose()" aria-label="Close player">&times;</button>'
+        + '</div>';
+    },
+    auDockRefresh: function () {
+      var host = this._auHost(), dock = document.getElementById('au-dock');
+      if (state.auW == null) { if (dock) dock.remove(); return; }
+      var ep = (window.BFS218_AUDIO || {})[state.auW] || {};
+      if (!dock) { host.insertAdjacentHTML('beforeend', this._auDockHtml(ep)); }
+      else { var t = document.getElementById('au-dock-title'); if (t) t.textContent = (ep.title || ('Week ' + state.auW)); }
+      this.auSync();
+    },
+    auPlayWeek: function (w) {
+      w = Number(w); var ep = (window.BFS218_AUDIO || {})[w]; if (!ep || !ep.file) return;
+      var a = this._auEl();
+      if (state.auW !== w) { state.auW = w; a.src = ep.file; a.load(); try { var s = JSON.parse(localStorage.getItem('bfs218.au') || 'null'); if (s && Number(s.w) === w && s.t > 2) { a.currentTime = s.t; } } catch (e) {} }
+      var p = a.play(); if (p && p.catch) p.catch(function () {});
+      this.auDockRefresh(); this.auSync();
+    },
+    auToggle: function (id) {
+      var a = this._auEl();
+      if (id != null && Number(id) !== state.auW) { this.auPlayWeek(Number(id)); return; }
+      if (state.auW == null) { if (id != null) this.auPlayWeek(Number(id)); return; }
+      if (!a.getAttribute('src')) { this.auPlayWeek(state.auW); return; }
+      if (a.paused) { var p = a.play(); if (p && p.catch) p.catch(function () {}); if (!document.getElementById('au-dock')) this.auDockRefresh(); }
+      else { a.pause(); }
+      this.auSync();
+    },
+    auSeek: function (id, v) { var a = this._auEl(); if (!a.duration) return; a.currentTime = (Number(v) / 1000) * a.duration; this.auSync(); },
+    auSeekPct: function (v) { this.auSeek(null, v); },
+    auSkip: function (id, d) { var a = this._auEl(); if (state.auW == null) { if (id != null) this.auPlayWeek(Number(id)); return; } var t = a.currentTime + Number(d); a.currentTime = Math.min(Math.max(0, t), a.duration || t); this.auSync(); },
+    auSpeed: function () { var a = this._auEl(); var steps = [1, 1.25, 1.5, 1.75, 2]; var i = steps.indexOf(a.playbackRate); if (i < 0) i = 0; i = (i + 1) % steps.length; a.playbackRate = steps[i]; this.auSync(); },
+    auClose: function () { var a = document.getElementById('au-audio'); if (a) a.pause(); state.auW = null; try { localStorage.removeItem('bfs218.au'); } catch (e) {} this.auDockRefresh(); },
+    auGoWeek: function () { if (state.auW != null) this.station(state.auW); },
+    auSync: function () {
+      var a = document.getElementById('au-audio'); if (!a) return;
+      var w = state.auW, playing = !a.paused && !a.ended, cur = a.currentTime || 0, dur = (a.duration && isFinite(a.duration)) ? a.duration : 0, pct = dur ? (cur / dur * 100) : 0, F = this.auFmt, rate = (a.playbackRate || 1);
+      function sT(id, t) { var e = document.getElementById(id); if (e) e.textContent = t; }
+      function sP(id) { var e = document.getElementById(id); if (e) e.classList.toggle('is-playing', playing); }
+      if (w != null) {
+        var pb = document.getElementById('au-play-' + w); if (pb) { pb.classList.toggle('is-playing', playing); pb.setAttribute('aria-label', playing ? 'Pause the lecture' : 'Play the lecture'); }
+        var sk = document.getElementById('au-seek-' + w); if (sk && dur) { sk.value = String(Math.round(pct * 10)); sk.style.background = 'linear-gradient(90deg,#DA291C ' + pct + '%,#E7D3D0 ' + pct + '%)'; }
+        sT('au-cur-' + w, F(cur)); if (dur) sT('au-dur-' + w, F(dur));
+        var sp = document.getElementById('au-spd-' + w); if (sp) sp.textContent = rate + '×';
+        var lp = document.getElementById('au-lec-play-' + w); if (lp) lp.classList.toggle('is-playing', playing);
+      }
+      sP('au-dock-play'); var db = document.getElementById('au-dock-bar'); if (db) db.style.width = pct + '%'; sT('au-dock-time', F(cur) + ' / ' + (dur ? F(dur) : '--:--'));
+      sP('au-tr-play'); sT('au-tr-spd', rate + '×');
+    },
     auTranscript: function (id) {
       var self = this, a = this.auEl(id);
       var ep = (window.BFS218_AUDIO || {})[id] || {};
@@ -9128,6 +9225,11 @@
 
   /* Reading Supports boot: apply saved settings, keep them across renders, stop speech on navigation */
   try {
+    (function () {
+      try { var _as = JSON.parse(localStorage.getItem('bfs218.au') || 'null'); if (_as && _as.w && (window.BFS218_AUDIO || {})[_as.w]) state.auW = Number(_as.w); } catch (e) {}
+      if (!document.getElementById('au-dock-css')) { var st = document.createElement('style'); st.id = 'au-dock-css'; st.textContent = '.au-play .au-ico-pause{display:none}.au-play .au-ico-play{display:block}.au-play.is-playing .au-ico-play{display:none}.au-play.is-playing .au-ico-pause{display:block}.au-dock{position:fixed;left:0;right:0;bottom:0;z-index:75;display:flex;align-items:center;gap:11px;padding:8px 12px;background:#15171C;color:#fff;box-shadow:0 -6px 22px rgba(0,0,0,.22)}.au-dock-play{flex:none;width:44px;height:44px;border-radius:50%;background:#DA291C;color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}.au-dock-play svg{width:22px;height:22px}.au-dock-main{flex:1;min-width:0;background:none;border:none;color:inherit;text-align:left;cursor:pointer;padding:0;display:block}.au-dock-kick{display:block;font-size:.58rem;letter-spacing:.08em;color:#F2A900;font-weight:700}.au-dock-title{display:block;font-size:.92rem;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin:1px 0}.au-dock-prog{display:block;height:3px;margin-top:4px;background:rgba(255,255,255,.18);border-radius:2px;overflow:hidden}.au-dock-bar{display:block;height:100%;width:0;background:#DA291C;transition:width .2s linear}.au-dock-time{flex:none;font-size:.72rem;color:#B9BEC8;white-space:nowrap}.au-dock-x{flex:none;width:34px;height:34px;border:none;background:none;color:#B9BEC8;font-size:1.5rem;line-height:1;cursor:pointer;border-radius:8px}.au-dock-x:hover{background:rgba(255,255,255,.08);color:#fff}@media(max-width:600px){.au-dock-time{display:none}.au-dock{gap:9px;padding:7px 10px}}.au-lectures{display:flex;flex-direction:column;gap:10px;margin:6px 0 0}.au-lec-row{display:flex;align-items:center;gap:13px;background:#fff;border:1px solid #DEE3EA;border-radius:13px;padding:13px 15px}.au-lec-play{flex:none;width:46px;height:46px;border-radius:50%;background:#DA291C;color:#fff;border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;padding:0}.au-lec-play svg{width:22px;height:22px}.au-lec-main{flex:1;min-width:0;background:none;border:none;text-align:left;cursor:pointer;padding:0}.au-lec-title{display:block;font-size:1rem;font-weight:600;color:#15171C}.au-lec-blurb{display:block;font-size:.85rem;color:#6B7280;line-height:1.45;margin-top:2px}.au-lec-min{flex:none;font-size:.72rem;color:#6B7280;white-space:nowrap}'; document.head.appendChild(st); }
+      try { if (window.SOC && SOC.auDockRefresh) SOC.auDockRefresh(); } catch (e) {}
+    })();
     try { if ('speechSynthesis' in window) window.speechSynthesis.getVoices(); } catch (e0) {}
     if ('speechSynthesis' in window && window.speechSynthesis.addEventListener) {
       var _voicesReady = false;
