@@ -9130,7 +9130,15 @@
   try {
     try { if ('speechSynthesis' in window) window.speechSynthesis.getVoices(); } catch (e0) {}
     if ('speechSynthesis' in window && window.speechSynthesis.addEventListener) {
-      window.speechSynthesis.addEventListener('voiceschanged', function () { if (state.rlPanelOpen || document.getElementById('wk-audio')) renderKeepScroll(); });
+      var _voicesReady = false;
+      window.speechSynthesis.addEventListener('voiceschanged', function () {
+        if (_voicesReady) return;
+        var _vs = [];
+        try { _vs = window.speechSynthesis.getVoices() || []; } catch (e) {}
+        if (!_vs.length) return;
+        _voicesReady = true;
+        if (state.rlPanelOpen || document.getElementById('wk-audio')) renderKeepScroll();
+      });
     }
     var rlSaved = load();
     if (rlSaved && rlSaved.rl && typeof rlSaved.rl === 'object') state.rl = rlSaved.rl;
