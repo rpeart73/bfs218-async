@@ -3298,14 +3298,14 @@
     return '<section id="wk-audio" class="node">'
       + '<div class="au-kicker mono">The weekly lecture</div>'
       + '<h2 class="wk-sec">Listen to this week</h2>'
-      + '<p class="wk-hint">Your professor wrote this lecture; it is read by an AI-generated voice, for clarity and accessibility. It runs about ' + amin + ' minutes: the week\'s question, the core idea, and how the readings fit together. Play it to catch up if you missed the week, or if you take things in better by ear. It does not replace the readings; those still carry the citations and evidence your graded work needs. ' + esc(ep.blurb || '') + '</p>'
+      + '<p class="wk-hint">Your professor wrote this lecture; it is read by the Eleven Labs Narrator, an AI-generated voice, for clarity and accessibility. It runs about ' + amin + ' minutes: the week\'s question, the core idea, and how the readings fit together. Play it to catch up if you missed the week, or if you take things in better by ear. It does not replace the readings; those still carry the citations and evidence your graded work needs. ' + esc(ep.blurb || '') + '</p>'
       + '<div class="au-player">'
       + '<div class="au-head">'
       + '<button type="button" class="au-play" id="au-play-' + aid + '" onclick="SOC.auToggle(\'' + aid + '\')" aria-label="Play the lecture">'
       + '<svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg>'
       + '<svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg>'
       + '</button>'
-      + '<div class="au-headmeta"><div class="au-title">' + esc(atitle) + '</div><div class="au-by">Written by your professor, AI-narrated &middot; about ' + amin + ' min</div></div>'
+      + '<div class="au-headmeta"><div class="au-title">' + esc(atitle) + '</div><div class="au-by">Written by your professor, read by the Eleven Labs Narrator &middot; about ' + amin + ' min</div></div>'
       + '</div>'
       + '<div class="au-scrub"><span class="au-time" id="au-cur-' + aid + '">0:00</span>'
       + '<input class="au-seek" id="au-seek-' + aid + '" type="range" min="0" max="1000" value="0" step="1" oninput="SOC.auSeek(\'' + aid + '\',this.value)" aria-label="Seek through the lecture">'
@@ -3317,7 +3317,7 @@
       + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
       + (ep.transcript ? '<button type="button" class="au-btn au-btn-ghost" onclick="SOC.auTranscript(\'' + aid + '\')">Transcript</button>' : '')
       + '</div></div>'
-      + '<div class="rl-row au-lang-row"><b>Voice and language</b><select class="rl-voice" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture voice or language"><option value="en">English (AI narration)</option>' + (langOpts ? '<optgroup label="Translated lecture, read by your device">' + langOpts + '</optgroup>' : '') + voiceOpts + '</select></div>'
+      + '<div class="rl-row au-lang-row"><b>Voice and language</b><select class="rl-voice" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture voice or language"><option value="en">English (Eleven Labs Narrator)</option>' + (langOpts ? '<optgroup label="Translated lecture, read by your device">' + langOpts + '</optgroup>' : '') + voiceOpts + '</select></div>'
       + '<p class="au-foot">Download it before you travel; the subway has no signal. This is a teaching companion, not a substitute for the assigned readings.</p>'
       + '</section>';
   }
@@ -7891,7 +7891,7 @@
     var head = '<div class="rise" style="max-width:820px">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.09em;color:var(--amode);font-weight:700;margin:0 0 8px">THE WEEKLY LECTURES</div>'
       + '<h1 style="font-size:1.9rem;line-height:1.15;margin:0 0 10px">Lectures</h1>'
-      + '<p style="font-size:1.02rem;color:var(--ink-dim);line-height:1.6;margin:0 0 22px">Every week has a short lecture you can listen to. Your professor wrote each one; they are read by an AI-generated voice, for clarity and accessibility. Press play and it keeps going while you move around the site. The readings on each week page still carry the citations and evidence your graded work needs.</p>';
+      + '<p style="font-size:1.02rem;color:var(--ink-dim);line-height:1.6;margin:0 0 22px">Every week has a short lecture you can listen to. Your professor wrote each one; they are read by the Eleven Labs Narrator, an AI-generated voice, for clarity and accessibility. Press play and it keeps going while you move around the site. The readings on each week page still carry the citations and evidence your graded work needs.</p>';
     if (!weeks.length) return head + '<p style="color:var(--ink-faint)">No lectures are posted yet. Check back soon.</p></div>';
     var rows = weeks.map(function (w) {
       var ep = AU[w], playing = (state.auW === w);
@@ -8608,7 +8608,7 @@
       return '<div id="au-dock" class="au-dock" role="region" aria-label="Lecture player">'
         + '<button type="button" class="au-play au-dock-play" id="au-dock-play" onclick="SOC.auToggle()" aria-label="Play or pause">' + svg + '</button>'
         + '<button type="button" class="au-dock-main" onclick="SOC.auGoWeek()" aria-label="Open this week">'
-        + '<span class="au-dock-kick mono">NOW PLAYING &middot; AI NARRATION</span>'
+        + '<span class="au-dock-kick mono">NOW PLAYING &middot; ELEVEN LABS NARRATOR</span>'
         + '<span class="au-dock-title" id="au-dock-title">' + esc(ep.title || ('Week ' + state.auW)) + '</span>'
         + '<span class="au-dock-prog"><span class="au-dock-bar" id="au-dock-bar"></span></span>'
         + '</button>'
