@@ -28,5 +28,12 @@ window.BFS218_AUDIO = {
     title: "Week 4: Default Discrimination",
     transcript: "audio/BFS218_Week04_transcript.html",
     blurb: "Benjamin's second dimension: harm that arrives through a system's defaults, with no rule and no villain, then gets excused as a glitch."
+  },
+  5: {
+    file: "audio/BFS218_Week05.mp3",
+    minutes: 13,
+    title: "Week 5: Coded Exposure",
+    transcript: "audio/BFS218_Week05_transcript.html",
+    blurb: "Benjamin's third dimension: how systems see some faces and voices clearly and misread others, from Gender Shades to speech recognition, and the auditor's move of splitting the number by who it fails."
   }
 };
