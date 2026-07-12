@@ -3283,6 +3283,8 @@
     var aid = String(w);
     var amin = ep.minutes || 10;
     var atitle = ep.title || ((window.BFS218 && window.BFS218.weeks && window.BFS218.weeks[w]) ? ('Week ' + w + ': ' + window.BFS218.weeks[w]) : ('Week ' + w));
+    var LA = (window.BFS218_AUDIO_LANGS || {})[w] || {};
+    var langOpts = Object.keys(LA).map(function (k) { return '<option value="' + esc(k) + '">' + esc(LA[k].name) + '</option>'; }).join('');
     return '<section id="wk-audio" class="node">'
       + '<div class="au-kicker mono">The professor\'s lecture</div>'
       + '<h2 class="wk-sec">Listen to this week</h2>'
@@ -3306,6 +3308,7 @@
       + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
       + (ep.transcript ? '<button type="button" class="au-btn au-btn-ghost" onclick="SOC.auTranscript(\'' + aid + '\')">Transcript</button>' : '')
       + '</div></div>'
+      + (langOpts ? '<div class="au-lang-row"><span class="au-lang-lbl">Language</span><select class="au-lang" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture language"><option value="en">English (my voice)</option>' + langOpts + '</select></div>' : '')
       + '<p class="au-foot">Download it before you travel; the subway has no signal. This is a teaching companion, not a substitute for the assigned readings.</p>'
       + '</section>';
   }
@@ -8626,6 +8629,55 @@
       this._tr = null;
     },
     auTrFont: function () { var b = document.getElementById('au-tr-body'); if (!b) return; var n = ((+b.getAttribute('data-fs') || 0) + 1) % 3; b.setAttribute('data-fs', n); b.classList.remove('au-fs1', 'au-fs2'); if (n === 1) b.classList.add('au-fs1'); else if (n === 2) b.classList.add('au-fs2'); },
+    auLang: function (id, lang) {
+      try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {}
+      if (this.auTrClose) this.auTrClose();
+      if (!lang || lang === 'en') return;
+      var L = ((window.BFS218_AUDIO_LANGS || {})[id] || {})[lang];
+      if (!L || !L.paras || !L.paras.length) return;
+      var a = this.auEl(id); if (a && !a.paused) { a.pause(); this.auIcon(id, false); }
+      this.auTrLang(id, L, lang);
+    },
+    auTrLang: function (id, L, lang) {
+      var self = this;
+      var old = document.getElementById('au-tr-modal'); if (old) old.remove();
+      var rtl = /^(ar|ur|fa|he)/.test(lang);
+      var body = L.paras.map(function (para, i) { return '<p id="au-lp-' + i + '" class="au-lpara">' + esc(para) + '</p>'; }).join('');
+      var box = document.createElement('div');
+      box.id = 'au-tr-modal'; box.className = 'au-modal'; box.setAttribute('role', 'dialog'); box.setAttribute('aria-modal', 'true'); box.setAttribute('aria-label', 'Lecture in ' + L.name);
+      box.innerHTML = '<div class="au-modal-card"><div class="au-modal-head"><div><div class="au-kicker mono">' + esc(L.name) + '</div><b>' + esc(L.title || '') + '</b></div><button type="button" class="au-modal-x" onclick="SOC.auTrClose()" aria-label="Close">×</button></div>'
+        + '<div class="au-modal-body' + (rtl ? ' au-rtl' : '') + '" id="au-tr-body" lang="' + esc(L.lang || lang) + '">' + body + '</div>'
+        + '<div class="au-modal-foot"><button type="button" class="au-play au-tr-play" id="au-tr-play" onclick="SOC.auLangPlay(\'' + id + '\')" aria-label="Play or pause"><svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><span class="au-tr-hint">Read aloud by your device in ' + esc(L.name) + '. If nothing plays, your device has no voice for this language yet; you can add one in its settings.</span></div></div>';
+      document.body.appendChild(box);
+      box.addEventListener('click', function (e) { if (e.target === box) SOC.auTrClose(); });
+      self._lang = { paras: L.paras, code: (L.lang || lang), i: 0, reading: false };
+      var onKey = function (e) { if (!document.getElementById('au-tr-modal')) return; if (e.key === ' ' || e.keyCode === 32) { e.preventDefault(); SOC.auLangPlay(id); } else if (e.key === 'Escape') { SOC.auTrClose(); } };
+      self._tr = { onKey: onKey, stop: function () { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} if (self._lang) self._lang.reading = false; } };
+      document.addEventListener('keydown', onKey);
+      setTimeout(function () { var x = box.querySelector('.au-modal-x'); if (x) x.focus(); }, 0);
+    },
+    auLangPlay: function (id) {
+      var self = this, u = this._lang; if (!u) return;
+      if (u.reading) { try { window.speechSynthesis.cancel(); } catch (e) {} u.reading = false; this._langIcon(false); return; }
+      if (!('speechSynthesis' in window)) return;
+      u.reading = true; this._langIcon(true); u.i = 0;
+      var voices = (window.speechSynthesis.getVoices() || []);
+      var want = String(u.code).toLowerCase(), primary = want.split('-')[0];
+      var voice = voices.filter(function (v) { return String(v.lang).toLowerCase() === want; })[0]
+        || voices.filter(function (v) { return String(v.lang).toLowerCase().split('-')[0] === primary; })[0] || null;
+      function speak() {
+        if (!u.reading || u.i >= u.paras.length) { u.reading = false; self._langIcon(false); return; }
+        self._langHi(u.i);
+        var utt = new SpeechSynthesisUtterance(u.paras[u.i]);
+        if (voice) { utt.voice = voice; utt.lang = voice.lang; } else { utt.lang = u.code; }
+        utt.onend = function () { u.i++; setTimeout(speak, 60); };
+        utt.onerror = function () { u.reading = false; self._langIcon(false); };
+        try { window.speechSynthesis.speak(utt); } catch (e) { u.reading = false; self._langIcon(false); }
+      }
+      speak();
+    },
+    _langHi: function (i) { Array.prototype.forEach.call(document.querySelectorAll('.au-lpara'), function (p, k) { p.classList.toggle('au-lpara-on', k === i); }); var el = document.getElementById('au-lp-' + i), bd = document.getElementById('au-tr-body'); if (el && bd) { var br = el.getBoundingClientRect(), pr = bd.getBoundingClientRect(); bd.scrollTop += (br.top - pr.top) - bd.clientHeight / 2 + br.height / 2; } },
+    _langIcon: function (on) { var b = document.getElementById('au-tr-play'); if (b) b.classList.toggle('is-playing', !!on); },
     back: function () { if (state.screen !== 'library') rememberPrevious(); state.screen = 'library'; focusTarget = 'soc-main'; render(); var m = document.getElementById('soc-main'); if (m) m.scrollTop = state.libScroll || 0; },
     open: function (id) { rememberPrevious(); var m = document.getElementById('soc-main'); if (m) state.libScroll = m.scrollTop; state.screen = 'detail'; state.detailId = id; focusTarget = 'soc-main'; render(); topScroll(); },
     layout: function (l) { state.layout = l; persist(); render(); },
