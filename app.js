@@ -3308,7 +3308,7 @@
       + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
       + (ep.transcript ? '<button type="button" class="au-btn au-btn-ghost" onclick="SOC.auTranscript(\'' + aid + '\')">Transcript</button>' : '')
       + '</div></div>'
-      + (langOpts ? '<div class="au-lang-row"><span class="au-lang-lbl">Language</span><select class="au-lang" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture language"><option value="en">English (my voice)</option>' + langOpts + '</select></div>' : '')
+      + (langOpts ? '<div class="rl-row au-lang-row"><b>Language</b><select class="rl-voice" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture language"><option value="en">English (my voice)</option>' + langOpts + '</select></div>' : '')
       + '<p class="au-foot">Download it before you travel; the subway has no signal. This is a teaching companion, not a substitute for the assigned readings.</p>'
       + '</section>';
   }
