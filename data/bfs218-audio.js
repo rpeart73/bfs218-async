@@ -17,5 +17,12 @@ window.BFS218_AUDIO = {
     title: "Week 3: Engineered Inequity",
     transcript: "audio/BFS218_Week03_transcript.html",
     blurb: "Engineered inequity is Benjamin's first dimension of the New Jim Code: harm designed into a system on purpose, then amplified by scale while it wears the calm face of efficiency."
+  },
+  4: {
+    file: "audio/BFS218_Week04.mp3",
+    minutes: 10,
+    title: "Week 4: Default Discrimination",
+    transcript: "audio/BFS218_Week04_transcript.html",
+    blurb: "Benjamin's second dimension: harm that arrives through a system's defaults, with no rule and no villain, then gets excused as a glitch."
   }
 };
