@@ -3299,7 +3299,8 @@
       + '<input class="au-seek" id="au-seek-' + aid + '" type="range" min="0" max="1000" value="0" step="1" oninput="SOC.auSeek(\'' + aid + '\',this.value)" aria-label="Seek through the lecture">'
       + '<span class="au-time au-time-dur" id="au-dur-' + aid + '">--:--</span></div>'
       + '<div class="au-ctrls">'
-      + '<button type="button" class="au-btn" onclick="SOC.auSkip(\'' + aid + '\',-15)" aria-label="Back 15 seconds"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 6 5 12l6 6z"/><path d="M19 6l-6 6 6 6z"/></svg>15s</button>'
+      + '<button type="button" class="au-btn" onclick="SOC.auSkip(\'' + aid + '\',-10)" aria-label="Back 10 seconds"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M11 6 5 12l6 6z"/><path d="M19 6l-6 6 6 6z"/></svg>10s</button>'
+      + '<button type="button" class="au-btn" onclick="SOC.auSkip(\'' + aid + '\',10)" aria-label="Forward 10 seconds">10s<svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 6l6 6-6 6z"/><path d="M5 6l6 6-6 6z"/></svg></button>'
       + '<button type="button" class="au-btn au-spd" id="au-spd-' + aid + '" onclick="SOC.auSpeed(\'' + aid + '\')" aria-label="Change playback speed">1×</button>'
       + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
       + (ep.transcript ? '<button type="button" class="au-btn au-btn-ghost" onclick="SOC.auTranscript(\'' + aid + '\')">Transcript</button>' : '')
