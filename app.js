@@ -3285,6 +3285,13 @@
     var atitle = ep.title || ((window.BFS218 && window.BFS218.weeks && window.BFS218.weeks[w]) ? ('Week ' + w + ': ' + window.BFS218.weeks[w]) : ('Week ' + w));
     var LA = (window.BFS218_AUDIO_LANGS || {})[w] || {};
     var langOpts = Object.keys(LA).map(function (k) { return '<option value="' + esc(k) + '">' + esc(LA[k].name) + '</option>'; }).join('');
+    var voiceOpts = '';
+    try {
+      var _vs = ((window.speechSynthesis && window.speechSynthesis.getVoices()) || []).slice();
+      _vs.sort(function (x, y) { var xe = String(x.lang).indexOf('en') === 0 ? 0 : 1, ye = String(y.lang).indexOf('en') === 0 ? 0 : 1; if (xe !== ye) return xe - ye; if (x.lang !== y.lang) return String(x.lang) < String(y.lang) ? -1 : 1; return String(x.name) < String(y.name) ? -1 : 1; });
+      voiceOpts = _vs.map(function (v) { var vn = String(v.name).split(' - ')[0].replace(/\s*\([^)]*\)\s*$/, ''); return '<option value="v:' + esc(v.voiceURI) + '">' + esc(rlLangLabel(v.lang) + ': ' + vn) + '</option>'; }).join('');
+      if (voiceOpts) voiceOpts = '<optgroup label="Read aloud in a device voice">' + voiceOpts + '</optgroup>';
+    } catch (e) { voiceOpts = ''; }
     return '<section id="wk-audio" class="node">'
       + '<div class="au-kicker mono">The professor\'s lecture</div>'
       + '<h2 class="wk-sec">Listen to this week</h2>'
@@ -3308,7 +3315,7 @@
       + '<a class="au-btn" href="' + esc(ep.file) + '" download><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 11 5 5 5-5"/><path d="M5 21h14"/></svg>Download</a>'
       + (ep.transcript ? '<button type="button" class="au-btn au-btn-ghost" onclick="SOC.auTranscript(\'' + aid + '\')">Transcript</button>' : '')
       + '</div></div>'
-      + (langOpts ? '<div class="rl-row au-lang-row"><b>Language</b><select class="rl-voice" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture language"><option value="en">English (my voice)</option>' + langOpts + '</select></div>' : '')
+      + '<div class="rl-row au-lang-row"><b>Voice and language</b><select class="rl-voice" id="au-lang-' + aid + '" onchange="SOC.auLang(\'' + aid + '\', this.value)" aria-label="Choose the lecture voice or language"><option value="en">English, my recorded voice</option>' + (langOpts ? '<optgroup label="Translated lecture, read by your device">' + langOpts + '</optgroup>' : '') + voiceOpts + '</select></div>'
       + '<p class="au-foot">Download it before you travel; the subway has no signal. This is a teaching companion, not a substitute for the assigned readings.</p>'
       + '</section>';
   }
@@ -8629,16 +8636,30 @@
       this._tr = null;
     },
     auTrFont: function () { var b = document.getElementById('au-tr-body'); if (!b) return; var n = ((+b.getAttribute('data-fs') || 0) + 1) % 3; b.setAttribute('data-fs', n); b.classList.remove('au-fs1', 'au-fs2'); if (n === 1) b.classList.add('au-fs1'); else if (n === 2) b.classList.add('au-fs2'); },
-    auLang: function (id, lang) {
+    auLang: function (id, value) {
       try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {}
       if (this.auTrClose) this.auTrClose();
-      if (!lang || lang === 'en') return;
-      var L = ((window.BFS218_AUDIO_LANGS || {})[id] || {})[lang];
-      if (!L || !L.paras || !L.paras.length) return;
+      if (!value || value === 'en') return;
       var a = this.auEl(id); if (a && !a.paused) { a.pause(); this.auIcon(id, false); }
-      this.auTrLang(id, L, lang);
+      if (value.indexOf('v:') === 0) { this.auVoiceRead(id, value.slice(2)); return; }
+      var L = ((window.BFS218_AUDIO_LANGS || {})[id] || {})[value];
+      if (!L || !L.paras || !L.paras.length) return;
+      this.auTrLang(id, L, value);
     },
-    auTrLang: function (id, L, lang) {
+    auVoiceRead: function (id, voiceURI) {
+      var self = this;
+      var ep = (window.BFS218_AUDIO || {})[id]; if (!ep || !ep.transcript) return;
+      var voice = ((window.speechSynthesis && window.speechSynthesis.getVoices()) || []).filter(function (v) { return v.voiceURI === voiceURI; })[0] || null;
+      var vlabel = voice ? (rlLangLabel(voice.lang) + ': ' + String(voice.name).split(' - ')[0].replace(/\s*\([^)]*\)\s*$/, '')) : 'your device voice';
+      fetch(ep.transcript).then(function (r) { return r.text(); }).then(function (html) {
+        var doc = new DOMParser().parseFromString(html, 'text/html');
+        var ps = doc.querySelectorAll('main p'); if (!ps.length) ps = doc.querySelectorAll('p');
+        var paras = Array.prototype.slice.call(ps).map(function (p) { return p.textContent.replace(/\s+/g, ' ').trim(); }).filter(function (t) { return t.length > 30; });
+        if (!paras.length) return;
+        self.auTrLang(id, { name: vlabel, lang: (voice ? voice.lang : 'en'), title: (ep.title || ''), paras: paras }, (voice ? voice.lang : 'en'), voiceURI);
+      }).catch(function () {});
+    },
+    auTrLang: function (id, L, lang, voiceURI) {
       var self = this;
       var old = document.getElementById('au-tr-modal'); if (old) old.remove();
       var rtl = /^(ar|ur|fa|he)/.test(lang);
@@ -8650,7 +8671,7 @@
         + '<div class="au-modal-foot"><button type="button" class="au-play au-tr-play" id="au-tr-play" onclick="SOC.auLangPlay(\'' + id + '\')" aria-label="Play or pause"><svg class="au-ico-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg><svg class="au-ico-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M6 5h4v14H6zM14 5h4v14h-4z"/></svg></button><span class="au-tr-hint">Read aloud by your device in ' + esc(L.name) + '. If nothing plays, your device has no voice for this language yet; you can add one in its settings.</span></div></div>';
       document.body.appendChild(box);
       box.addEventListener('click', function (e) { if (e.target === box) SOC.auTrClose(); });
-      self._lang = { paras: L.paras, code: (L.lang || lang), i: 0, reading: false };
+      self._lang = { paras: L.paras, code: (L.lang || lang), i: 0, reading: false, voiceURI: (voiceURI || '') };
       var onKey = function (e) { if (!document.getElementById('au-tr-modal')) return; if (e.key === ' ' || e.keyCode === 32) { e.preventDefault(); SOC.auLangPlay(id); } else if (e.key === 'Escape') { SOC.auTrClose(); } };
       self._tr = { onKey: onKey, stop: function () { try { window.speechSynthesis && window.speechSynthesis.cancel(); } catch (e) {} if (self._lang) self._lang.reading = false; } };
       document.addEventListener('keydown', onKey);
@@ -8662,9 +8683,11 @@
       if (!('speechSynthesis' in window)) return;
       u.reading = true; this._langIcon(true); u.i = 0;
       var voices = (window.speechSynthesis.getVoices() || []);
-      var want = String(u.code).toLowerCase(), primary = want.split('-')[0];
-      var voice = voices.filter(function (v) { return String(v.lang).toLowerCase() === want; })[0]
-        || voices.filter(function (v) { return String(v.lang).toLowerCase().split('-')[0] === primary; })[0] || null;
+      var voice = null;
+      if (u.voiceURI) voice = voices.filter(function (v) { return v.voiceURI === u.voiceURI; })[0] || null;
+      if (!voice) { var want = String(u.code).toLowerCase(), primary = want.split('-')[0];
+        voice = voices.filter(function (v) { return String(v.lang).toLowerCase() === want; })[0]
+          || voices.filter(function (v) { return String(v.lang).toLowerCase().split('-')[0] === primary; })[0] || null; }
       function speak() {
         if (!u.reading || u.i >= u.paras.length) { u.reading = false; self._langIcon(false); return; }
         self._langHi(u.i);
@@ -9107,7 +9130,7 @@
   try {
     try { if ('speechSynthesis' in window) window.speechSynthesis.getVoices(); } catch (e0) {}
     if ('speechSynthesis' in window && window.speechSynthesis.addEventListener) {
-      window.speechSynthesis.addEventListener('voiceschanged', function () { if (state.rlPanelOpen) renderKeepScroll(); });
+      window.speechSynthesis.addEventListener('voiceschanged', function () { if (state.rlPanelOpen || document.getElementById('wk-audio')) renderKeepScroll(); });
     }
     var rlSaved = load();
     if (rlSaved && rlSaved.rl && typeof rlSaved.rl === 'object') state.rl = rlSaved.rl;
