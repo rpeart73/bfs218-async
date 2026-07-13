@@ -207,7 +207,7 @@
     btn.innerHTML = '<span></span><span></span><span></span>';
     var menu = document.createElement('nav');
     menu.id = 'deck-return-menu'; menu.className = 'deck-menu'; menu.hidden = true; menu.setAttribute('aria-label', 'BFS218 course navigation');
-    menu.innerHTML = '<a class="primary" href="' + weekUrl + '">Back to Week ' + (week || '') + ' in BFS218</a><a href="' + root + '">Course Home</a><a href="' + root + '?screen=walkthroughs">Weekly Walkthroughs</a><small>This fullscreen deck is outside the app shell. Use this menu to return to BFS218.</small>';
+    menu.innerHTML = '<a class="primary" href="' + weekUrl + '">Back to Week ' + (week || '') + ' in BFS218</a><a href="' + root + '">Course Home</a><a href="' + root + '?screen=walkthroughs">Weekly Experiences</a><small>This legacy full-screen route is outside the app shell. Use this menu to return to BFS218.</small>';
     var scrim = document.createElement('button');
     scrim.className = 'deck-menu-scrim'; scrim.type = 'button'; scrim.hidden = true; scrim.setAttribute('aria-label', 'Close BFS218 course menu');
     function close() { menu.hidden = true; scrim.hidden = true; btn.setAttribute('aria-expanded', 'false'); btn.focus(); }
@@ -226,7 +226,7 @@
     toggle.className = 'deck-access-toggle'; toggle.type = 'button'; toggle.setAttribute('aria-expanded', 'false'); toggle.setAttribute('aria-controls', 'deck-access-panel'); toggle.textContent = 'Accessibility';
     var scrim = document.createElement('button'); scrim.id = 'deck-access-scrim'; scrim.className = 'deck-access-scrim'; scrim.type = 'button'; scrim.hidden = true; scrim.setAttribute('aria-label', 'Close accessibility controls');
     var panel = document.createElement('aside'); panel.id = 'deck-access-panel'; panel.className = 'deck-access-panel'; panel.hidden = true; panel.setAttribute('role', 'dialog'); panel.setAttribute('aria-modal', 'true'); panel.setAttribute('aria-labelledby', 'deck-access-title');
-    panel.innerHTML = '<div class="deck-access-head"><h2 id="deck-access-title">Walkthrough accessibility</h2><button type="button" data-access-close aria-label="Close accessibility controls">Close</button></div>'
+    panel.innerHTML = '<div class="deck-access-head"><h2 id="deck-access-title">Experience accessibility</h2><button type="button" data-access-close aria-label="Close accessibility controls">Close</button></div>'
       + '<p class="deck-access-note">Choose the screen, text, motion, and voice settings that work for you. They stay only in this browser.</p>'
       + '<fieldset><legend>Screen</legend><div class="deck-access-choices"><button type="button" data-theme-choice="light">Light</button><button type="button" data-theme-choice="soft">Soft grey</button><button type="button" data-theme-choice="warm">Warm</button><button type="button" data-theme-choice="dark">Dark</button><button type="button" data-theme-choice="contrast">High contrast</button></div></fieldset>'
       + '<fieldset><legend>Text size</legend><div class="deck-access-choices"><button type="button" data-text-choice="100">100%</button><button type="button" data-text-choice="115">115%</button><button type="button" data-text-choice="130">130%</button><button type="button" data-text-choice="150">150%</button></div><small>At 130% and 150%, the text view opens so every word can flow to the screen margins without being cut off.</small></fieldset>'

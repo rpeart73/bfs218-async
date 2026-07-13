@@ -3,6 +3,14 @@ VERSION:2.0
 PRODID:-//BFS218 Companion//Key Dates//EN
 CALSCALE:GREGORIAN
 X-WR-CALNAME:BFS218 Asynchronous Key Dates (Fall 2026)
+X-WR-TIMEZONE:America/Toronto
+BEGIN:VEVENT
+UID:bfs218-async-term-start@rpeart73.github.io
+DTSTART;VALUE=DATE:20260908
+DTEND;VALUE=DATE:20260909
+SUMMARY:BFS218: first day of classes
+DESCRIPTION:The Fall 2026 term begins. Use Blackboard and the companion site to orient yourself to the course.
+END:VEVENT
 BEGIN:VEVENT
 UID:bfs218-async-1@rpeart73.github.io
 DTSTAMP:20260708T120000Z
@@ -10,11 +18,6 @@ DTSTART;VALUE=DATE:20260921
 DTEND;VALUE=DATE:20260922
 SUMMARY:BFS218: Map Exchange opens on Blackboard
 DESCRIPTION:Details and submission on Blackboard. Guidance on the companion site: https://rpeart73.github.io/bfs218-async/?screen=assignments
-BEGIN:VALARM
-TRIGGER:-P2D
-ACTION:DISPLAY
-DESCRIPTION:BFS218 deadline in 2 days
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:bfs218-async-2@rpeart73.github.io
@@ -49,11 +52,6 @@ DTSTART;VALUE=DATE:20260921
 DTEND;VALUE=DATE:20260922
 SUMMARY:BFS218: Compass Check opens on Blackboard
 DESCRIPTION:Details and submission on Blackboard. Guidance on the companion site: https://rpeart73.github.io/bfs218-async/?screen=assignments
-BEGIN:VALARM
-TRIGGER:-P2D
-ACTION:DISPLAY
-DESCRIPTION:BFS218 deadline in 2 days
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:bfs218-async-5@rpeart73.github.io
@@ -75,11 +73,6 @@ DTSTART;VALUE=DATE:20260921
 DTEND;VALUE=DATE:20260922
 SUMMARY:BFS218: Canadian Case File opens on Blackboard
 DESCRIPTION:Details and submission on Blackboard. Guidance on the companion site: https://rpeart73.github.io/bfs218-async/?screen=assignments
-BEGIN:VALARM
-TRIGGER:-P2D
-ACTION:DISPLAY
-DESCRIPTION:BFS218 deadline in 2 days
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:bfs218-async-7@rpeart73.github.io
@@ -101,11 +94,6 @@ DTSTART;VALUE=DATE:20261102
 DTEND;VALUE=DATE:20261103
 SUMMARY:BFS218: Design the Repair opens on Blackboard
 DESCRIPTION:Details and submission on Blackboard. Guidance on the companion site: https://rpeart73.github.io/bfs218-async/?screen=assignments
-BEGIN:VALARM
-TRIGGER:-P2D
-ACTION:DISPLAY
-DESCRIPTION:BFS218 deadline in 2 days
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:bfs218-async-9@rpeart73.github.io
@@ -127,11 +115,6 @@ DTSTART;VALUE=DATE:20261102
 DTEND;VALUE=DATE:20261103
 SUMMARY:BFS218: Personal Cartography opens on Blackboard
 DESCRIPTION:Details and submission on Blackboard. Guidance on the companion site: https://rpeart73.github.io/bfs218-async/?screen=assignments
-BEGIN:VALARM
-TRIGGER:-P2D
-ACTION:DISPLAY
-DESCRIPTION:BFS218 deadline in 2 days
-END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 UID:bfs218-async-11@rpeart73.github.io
@@ -145,5 +128,19 @@ TRIGGER:-P2D
 ACTION:DISPLAY
 DESCRIPTION:BFS218 deadline in 2 days
 END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+UID:bfs218-async-study-week@rpeart73.github.io
+DTSTART;VALUE=DATE:20261026
+DTEND;VALUE=DATE:20261031
+SUMMARY:BFS218 Study Week: no classes and no new module
+DESCRIPTION:Study Week runs Monday to Friday\, October 26 to 30. No graded work is due.
+END:VEVENT
+BEGIN:VEVENT
+UID:bfs218-async-term-end@rpeart73.github.io
+DTSTART;VALUE=DATE:20261216
+DTEND;VALUE=DATE:20261217
+SUMMARY:BFS218: last day of classes
+DESCRIPTION:The Fall 2026 term ends. Nothing is due this week.
 END:VEVENT
 END:VCALENDAR
