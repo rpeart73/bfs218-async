@@ -900,7 +900,7 @@ window.BFS218_PROGRAM_CASES = {
   "s": "The sprinkler-design software your firm licenses optimizes head placement from ceiling plans and hazard classes. For the rooming houses your city keeps licensing, subdivided Victorians, sleeping rooms behind improvised partitions, the software's residential template undersizes coverage in exactly the partitioned corners where the poorest tenants sleep. The code minimum is met; the drawings are stamped.",
   "q": [
    "Code minimum met and lives underprotected can be the same sentence. Where does the template's room-geometry assumption fail partitioned occupancies, hydraulically?",
-   "Your stamp is on drawings the software drew. Define your firm's design-review overlay for high-vulnerability occupancies, beyond what the license requires.",
+   "Your stamp is on drawings the software drew. Define your firm's design-review overlay for high-vulnerability occupancies, beyond what the licence requires.",
    "Write the letter to the authority having jurisdiction: the gap between licensing reality and design templates, with the interim measure you recommend."
   ]
  },
