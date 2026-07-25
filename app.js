@@ -2389,7 +2389,9 @@
     var studyMarker = function () { var m = (ws.indexOf(7) < 0) ? '<div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px dashed var(--border);border-radius:12px;background:#FAFBFC"><span class="mono" style="font-size:.66rem;font-weight:700;letter-spacing:.06em;color:var(--ink-faint)">WEEK 7</span><span style="font-size:.86rem;color:var(--ink-dim)">' + esc(weekDate(7)) + ' &middot; Cumulative review, no new readings</span></div>' : ''; return m + studyDivider; };
     ws.forEach(function (w) {
       if (!studyIn && w >= 8) { out += studyMarker(); studyIn = true; }
-      var recs = recordsForWeek(w), n = recs.length, isCur = (w === cur);
+      var recs = recordsForWeek(w), isCur = (w === cur);
+      var wd = weekData(w);
+      var n = (wd && wd.readings && wd.readings.length) ? wd.readings.length : recs.length;
       var note = (w === OVERVIEW_WEEK && !weekData(w)) ? 'Course overview' : (WORK_WEEKS.indexOf(w) >= 0 ? 'Focus on your work, no new material' : (n + (n === 1 ? ' reading' : ' readings')));
       out += '<button class="jstation' + (isCur ? ' cur' : '') + '" onclick="SOC.station(' + w + ')">'
         + '<div style="display:flex;align-items:flex-start;gap:16px">'
@@ -4856,9 +4858,11 @@
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:8px">WEEK ' + w + ' · ' + esc(weekDate(w)) + ' · ' + (isFinal ? 'FINAL WEEK' : 'FINAL PROJECT WEEK') + '</div>'
       + '<h1 style="font-size:2rem;line-height:1.12;font-weight:700;margin:0 0 12px;color:var(--ink)">' + esc(weekTitle(w)) + '</h1>'
       + (d.overview ? '<p style="font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0 0 4px;">' + esc(d.overview) + '</p>' : '')
-      + '<div style="font-size:1.02rem;font-weight:600;color:var(--ink);border-left:3px solid var(--red);padding-left:14px;margin:16px 0">No new readings or teaching material this week. This time is yours: focus on your work' + (isFinal ? ' and close out the course. Nothing is due.' : '. Your final project is due this week.') + '</div>'
+      + '<div style="font-size:1.02rem;font-weight:600;color:var(--ink);border-left:3px solid var(--red);padding-left:14px;margin:16px 0">No new teaching material this week. This time is yours: focus on your work' + (isFinal ? ' and close out the course. Nothing is due.' : '. Your final project is due this week.') + ((d.readings && d.readings.length) ? ' The readings below are revisit anchors from earlier weeks, not new assignments.' : '') + '</div>'
       + '</div></section>';
     var path = capstoneLearningPath(w, d);
+    var outcomes = (d.outcomes && d.outcomes.length) ? '<section id="wk-out" class="node"><h2 class="wk-sec">Learning outcomes</h2><p style="margin:0 0 8px;font-size:.9rem">By the end of this week, you will be able to:</p>' + d.outcomes.map(function (o) { return '<div class="wk-oc"><span class="b"></span>' + esc(o) + '</div>'; }).join('') + '</section>' : '';
+    var revisit = (d.readings && d.readings.length) ? '<section id="wk-read" class="node"><h2 class="wk-sec">Revisit readings</h2><p class="wk-hint">Nothing here is new. These are the anchors worth rereading as you finish your work; each one names why it earns the revisit.</p>' + d.readings.map(function (r) { var resolves = (typeof rec === 'function') && r.id && rec(r.id); var tail = resolves ? '<button onclick="SOC.read(\'' + r.id + '\')" class="wk-scope">' + esc(r.scope || 'Open the reading') + ' &#8599;</button>' : (r.url ? '<a href="' + r.url + '" target="_blank" rel="noopener" class="wk-scope">' + esc(r.scope || 'Open the reading') + ' &#8599;</a>' : (r.scope ? '<div class="wk-scope" style="background:none;border:none;color:var(--ink-faint);padding:6px 0;cursor:default">' + esc(r.scope) + '</div>' : '')); return '<div class="wk-read"><div class="ref">' + r.apa + '</div>' + tail + '</div>'; }).join('') + '</section>' : '';
     var VID = window.BFS218_VIDEOS && window.BFS218_VIDEOS[w];
     var vid = weekVideoSection(w, d, VID);
     var audioPk = audioPackSection(w);
@@ -4877,9 +4881,9 @@
       + '</div>';
     var classRec = classRecordingSection(w);
     var rail = '<aside class="wk-rail"><div class="wk-railbox"><div class="wk-railh">IN THIS WEEK</div>'
-      + (classRec ? [['rec', 'From your professor']] : []).concat([['ov', 'This week'], ['path', 'Your learning path'], ['vid', 'This week in 80 seconds']]).concat(visual ? [['visual', 'A Visual Overview']] : []).concat(d.activity ? [['do', 'Your final project']] : []).concat([['reflect', 'Reflection'], ['notes', 'Generate notes']]).map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
+      + (classRec ? [['rec', 'From your professor']] : []).concat([['ov', 'This week'], ['path', 'Your learning path']]).concat(outcomes ? [['out', 'Learning outcomes']] : []).concat((d.concepts && d.concepts.length) ? [['con', 'Key concepts']] : []).concat((d.terms && d.terms.length) ? [['term', 'Key terms']] : []).concat(revisit ? [['read', 'Revisit readings']] : []).concat([['vid', 'This week in 80 seconds']]).concat(visual ? [['visual', 'A Visual Overview']] : []).concat(d.activity ? [['do', 'Your final project']] : []).concat([['reflect', 'Reflection'], ['notes', 'Generate notes']]).map(function (it) { return '<a href="#wk-' + it[0] + '"><span class="s"></span>' + it[1] + '</a>'; }).join('')
       + '<div class="wk-railt">' + ic('clock', 12) + ' No new material</div></div></aside>';
-    return '<div class="rise">' + mobileWeekActions(w, d, { activityLabel: 'Final Project' }) + hero + path + '<div class="wk-grid"><section>' + classRec + audioPk + conceptsSectionFor(w, d) + termsSectionFor(w, d) + vid + visual + act + reflect + notes + navRow + '</section>' + rail + '</div></div>';
+    return '<div class="rise">' + mobileWeekActions(w, d, { activityLabel: 'Final Project' }) + hero + path + '<div class="wk-grid"><section>' + classRec + audioPk + outcomes + conceptsSectionFor(w, d) + termsSectionFor(w, d) + revisit + vid + visual + act + reflect + notes + navRow + '</section>' + rail + '</div></div>';
   }
   var OVERVIEW_WEEK = 1;
   function overviewPage(w) {
@@ -7459,6 +7463,10 @@
       + '</article>';
   }
   function walkPad(w) { return (w < 10 ? '0' : '') + w; }
+  function assetBuster() {
+    try { var s = document.querySelector('script[src*="app.js?v="]'); var m = s && s.getAttribute('src').match(/v=([\w-]+)/); if (m) return m[1]; } catch (e) {}
+    return '1';
+  }
   function walkFig(w, idx) {
     var d = weekData(w);
     if (!d || !d.deck) return null;
@@ -7466,7 +7474,7 @@
     var man = (typeof window !== 'undefined' && window[code + '_WALKFIGS']) || {};
     var list = man[w] || man[String(w)];
     if (!list || !list[idx]) return null;
-    return 'walkthroughs/' + d.deck + '/images/' + list[idx] + '?v=20260711b';
+    return 'walkthroughs/' + d.deck + '/images/' + list[idx] + '?v=' + assetBuster();
   }
   function walkPrefs() {
     var r = rlState();

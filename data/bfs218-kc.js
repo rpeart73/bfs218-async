@@ -425,7 +425,7 @@ window.BFS218_KC = {
         "Putting the people most affected at the centre as makers and leaders, not only as subjects"
       ],
       "answer": 3,
-      "why": "Both center the people most affected, communities in design justice and Black youth in Tanksley's pedagogy, as creators and leaders rather than only as subjects of technology.",
+      "why": "Both centre the people most affected, communities in design justice and Black youth in Tanksley's pedagogy, as creators and leaders rather than only as subjects of technology.",
       "diff": 3
     }
   ],
