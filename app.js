@@ -741,6 +741,7 @@
       + '<button type="button" class="reader-lens-btn section-switch-btn" onclick="SOC.switchSectionPrompt()" aria-label="Switch to the other BFS218 section" title="Switch section: go back and choose the synchronous or asynchronous site">' + ic('columns', 17, 2) + '<span class="reader-lens-label">Switch section</span></button>'
       + '<button type="button" class="reader-lens-btn" onclick="location.reload()" aria-label="Refresh the page" title="Refresh the page"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 12a9 9 0 1 1-2.64-6.36"/><path d="M21 3v6h-6"/></svg><span class="reader-lens-label">Refresh</span></button>'
       + (D.course.mode ? '<span class="mono soc-head-mode" style="font-size:.75rem;font-weight:700;color:#fff;background:var(--amode);padding:6px 12px;border-radius:6px;letter-spacing:.05em;flex:none">' + esc(D.course.mode).toUpperCase() + '</span>' : '')
+      + (D.course.schedule ? '<span class="mono soc-head-sched" style="font-size:.75rem;font-weight:600;color:#474C57;background:#EFF1F4;padding:5px 10px;border-radius:6px;flex:none">' + esc(D.course.schedule).toUpperCase() + '</span>' : '')
       + (String(state.programViewField || state.careerField || '').trim() ? '<button type="button" class="mono soc-head-term" onclick="SOC.go(\'career\')" title="Change your program lens" style="font-size:.72rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;padding:5px 10px;border-radius:6px;flex:none;cursor:pointer;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">VIEWING AS: ' + esc(selLabel(state.programViewField || state.careerField)) + '</button>' : '')
       + '<span class="mono soc-head-term" style="font-size:.75rem;font-weight:600;color:#B02318;background:#F6E3E1;padding:5px 10px;border-radius:6px;flex:none">FALL 2026</span>'
       + '</header>';
@@ -6173,7 +6174,7 @@
     return calendarLegend() + '<div class="cal-grids">' + grids + '</div>' + keyDatesCalendar();
   }
   function calendarPage() {
-    return '<div class="rise cal-page">'
+    return '<div class="rise cal-page">' + (D.course.scheduleDetail ? '<div style="border:1px solid var(--border);border-left:4px solid var(--red);border-radius:10px;background:#fff;padding:12px 16px;margin:0 0 16px"><div class="mono" style="font-size:.66rem;letter-spacing:.07em;color:var(--red);font-weight:700;margin-bottom:5px">CLASS TIME</div><p style="margin:0;font-size:.92rem;line-height:1.55;color:var(--ink)">' + esc(D.course.scheduleDetail) + '</p></div>' : '') + ''
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">CALENDAR</div>'
       + '<h1 style="font-size:1.9rem;line-height:1.15;font-weight:600;margin:0 0 8px;color:var(--ink)">Every date that matters</h1>'
       + '<p style="font-size:1rem;line-height:1.6;color:var(--ink-dim);margin:0 0 20px">This calendar keeps two things clearly apart: Seneca red marks the days when you hand something in, and black and neutral greys mark the term schedule. Click any assignment to open its page in a new tab. Blackboard remains the official word on dates, and nothing here should ever be a surprise.</p>'
