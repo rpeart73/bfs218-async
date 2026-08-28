@@ -65,7 +65,11 @@
         var rt = pm.fromScene(env, 0.04);
         ctx.scene.environment = rt.texture;
         K.disposables.push({ dispose: function () { rt.dispose(); pm.dispose(); } });
-        geo.dispose(); wall.dispose();
+        env.traverse(function (obj) {
+          if (obj.geometry && obj.geometry.dispose) obj.geometry.dispose();
+          if (obj.material && obj.material.dispose) obj.material.dispose();
+        });
+        if (env.clear) env.clear();
       } catch (e) { /* environment is an enhancement, never a blocker */ }
     };
 
@@ -83,24 +87,25 @@
         sun.shadow.camera.left = -5; sun.shadow.camera.right = 5;
         sun.shadow.camera.top = 6; sun.shadow.camera.bottom = -3;
         sun.shadow.bias = -0.0006;
+        sun.shadow.normalBias = 0.018;
         sun.shadow.radius = 4;
       } catch (e) {}
     };
 
     /* --- materials --- */
     K.mat = {};
-    K.mat.plastic = function (c, rough) { return K.own(new THREE.MeshPhysicalMaterial({ color: c, roughness: rough == null ? 0.72 : rough, metalness: 0.01, clearcoat: 0.08, clearcoatRoughness: 0.72 })); };
-    K.mat.metal = function (c, rough) { return K.own(new THREE.MeshPhysicalMaterial({ color: c == null ? PAL.steel : c, roughness: rough == null ? 0.5 : rough, metalness: 0.62, clearcoat: 0.06, clearcoatRoughness: 0.62 })); };
+    K.mat.plastic = function (c, rough) { return K.own(new THREE.MeshPhysicalMaterial({ color: c, roughness: rough == null ? 0.72 : rough, metalness: 0.01, clearcoat: 0.08, clearcoatRoughness: 0.72, envMapIntensity: 0.62 })); };
+    K.mat.metal = function (c, rough) { return K.own(new THREE.MeshPhysicalMaterial({ color: c == null ? PAL.steel : c, roughness: rough == null ? 0.5 : rough, metalness: 0.62, clearcoat: 0.06, clearcoatRoughness: 0.62, envMapIntensity: 1.08 })); };
     K.mat.ink = function () { return K.mat.plastic(PAL.ink, 0.58); };
     K.mat.glass = function (c, opacity) {
       return K.own(new THREE.MeshPhysicalMaterial({
         color: c == null ? PAL.tealSoft : c, transparent: true, opacity: opacity == null ? 0.34 : opacity,
         roughness: 0.16, metalness: 0.01, transmission: 0.34, thickness: 0.28,
-        clearcoat: 0.5, clearcoatRoughness: 0.18, ior: 1.45, side: THREE.DoubleSide
+        clearcoat: 0.5, clearcoatRoughness: 0.18, ior: 1.45, envMapIntensity: 0.84, side: THREE.DoubleSide
       }));
     };
     K.mat.neon = function (c, intensity) {
-      return K.own(new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: intensity == null ? 0.18 : Math.min(0.38, intensity * 0.24), roughness: 0.58, metalness: 0.04 }));
+      return K.own(new THREE.MeshStandardMaterial({ color: c, emissive: c, emissiveIntensity: intensity == null ? 0.18 : Math.min(0.38, intensity * 0.24), roughness: 0.58, metalness: 0.04, envMapIntensity: 0.5 }));
     };
     K.mat.holo = function (c, opacity) {
       var mat = new THREE.ShaderMaterial({
@@ -187,7 +192,7 @@
         draw(g, w, h);
         g.restore();
       });
-      var mat = K.own(new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: opts.glow == null ? 0.22 : Math.min(0.5, opts.glow * 0.55), roughness: 0.46, metalness: 0.01 }));
+      var mat = K.own(new THREE.MeshStandardMaterial({ map: tex, emissive: 0xffffff, emissiveMap: tex, emissiveIntensity: opts.glow == null ? 0.22 : Math.min(0.5, opts.glow * 0.55), roughness: 0.46, metalness: 0.01, envMapIntensity: 0.42 }));
       return mat;
     };
 
@@ -257,7 +262,7 @@
           g.beginPath(); g.arc(256, 256, 246, 0, Math.PI * 2); g.stroke();
         }
       });
-      var floorMat = K.own(new THREE.MeshPhysicalMaterial({ map: floorTex, roughness: style === 'technical' ? 0.64 : 0.84, metalness: style === 'technical' ? 0.08 : 0.015, clearcoat: style === 'workshop' ? 0.1 : 0.03, clearcoatRoughness: 0.76 }));
+      var floorMat = K.own(new THREE.MeshPhysicalMaterial({ map: floorTex, roughness: style === 'technical' ? 0.64 : 0.84, metalness: style === 'technical' ? 0.08 : 0.015, clearcoat: style === 'workshop' ? 0.1 : 0.03, clearcoatRoughness: 0.76, envMapIntensity: 0.55 }));
       var stage;
       if (style === 'technical') {
         stage = K.rbox(7.25, 0.14, 5.25, floorMat, [0, -0.09, 0], null, { r: 0.12 });
@@ -318,6 +323,22 @@
         roughness: 0.58, metalness: 0.05, emissive: opts.color == null ? PAL.line : opts.color, emissiveIntensity: 0.045
       }));
       K.add(new THREE.TubeGeometry(curve, 40, opts.radius == null ? 0.017 : opts.radius, 10, false), tubeMat, null, null, { shadow: false, parent: opts.parent });
+      if (opts.arrow !== false) {
+        var flowRadius = opts.radius == null ? 0.017 : opts.radius;
+        var arrowLength = opts.arrowLength == null ? Math.max(0.12, flowRadius * 7) : opts.arrowLength;
+        var arrowDirection = curve.getTangentAt(1).normalize();
+        var arrowPosition = curve.getPointAt(1).addScaledVector(arrowDirection, -arrowLength / 2);
+        var arrow = K.cone(
+          opts.arrowRadius == null ? Math.max(0.045, flowRadius * 2.6) : opts.arrowRadius,
+          arrowLength,
+          tubeMat,
+          [arrowPosition.x, arrowPosition.y, arrowPosition.z],
+          null,
+          { shadow: false, parent: opts.parent }
+        );
+        arrow.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), arrowDirection);
+        arrow.name = 'bfs-flow-arrow';
+      }
       var n = opts.pulses == null ? 3 : opts.pulses;
       if (n > 0) {
         var pulseGeo = new THREE.SphereGeometry(opts.pulseSize == null ? 0.034 : opts.pulseSize, 12, 8);
@@ -379,6 +400,7 @@
       g.textBaseline = 'middle';
       g.fillText(text, 22, 33);
       var tex = new THREE.CanvasTexture(c);
+      tex.anisotropy = Math.min(4, (ctx.renderer.capabilities && ctx.renderer.capabilities.getMaxAnisotropy) ? ctx.renderer.capabilities.getMaxAnisotropy() : 2);
       if (THREE.SRGBColorSpace) tex.colorSpace = THREE.SRGBColorSpace;
       K.textures.push(tex);
       var mat = K.own(new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true }));
@@ -548,51 +570,106 @@
 
   /* ===================== WEEK 2: outcomelens - same rule, unequal outcomes */
   SCENES.outcomelens = function (K, ctx) {
-    K.stage({ lip: ctx.riskOn ? PAL.red : PAL.teal });
-    /* one shared rule gate over both lanes */
-    K.archGate([-1.1, 0, 0], { w: 2.9, h: 1.55, beamSpeed: 0.9 });
-    var ruleHolo = K.add(new K.THREE.PlaneGeometry(1.5, 0.42), K.mat.holo(PAL.teal, 0.5), [-1.1, 1.95, 0], null, { shadow: false });
-    K.float(ruleHolo, 0.04, 1.0);
-    /* two lanes */
-    var laneA = K.box(1.1, 0.04, 5.6, K.mat.plastic(PAL.greenSoft, 0.55), [-0.62, 0.02, 0.0], [0, 0.12, 0]);
-    var laneB = K.box(1.1, 0.04, 5.6, K.mat.plastic(PAL.redSoft, 0.55), [-1.6, 0.02, 0.0], [0, -0.12, 0]);
-    void laneA; void laneB;
-    /* open lane flow */
-    K.flow([[-0.35, 0.22, -2.4], [-0.55, 0.22, 0], [-0.15, 0.22, 2.4]], { color: PAL.green, pulseColor: PAL.green, pulses: 4, speed: 0.12 });
-    /* blocked lane: narrows into barrier */
-    K.flow([[-1.85, 0.22, -2.4], [-1.62, 0.22, -0.4], [-1.78, 0.22, 0.9]], { color: ctx.pathOn || ctx.riskOn ? PAL.red : PAL.line, pulseColor: PAL.red, pulses: 4, speed: 0.1 });
-    var wall = K.rbox(1.15, 0.66, 0.1, K.mat.neon(PAL.red, ctx.riskOn ? 1.1 : 0.55), [-1.78, 0.33, 1.15], [0, -0.12, 0], { r: 0.04 });
-    K.onTick(function (t) { wall.material.emissiveIntensity = (ctx.riskOn ? 1.0 : 0.5) + 0.2 * Math.sin(t * 3.2); });
-    /* travellers */
-    K.person({ pos: [-0.35, 0, -2.15], face: 3.05, color: PAL.teal, tone: 0x6f4a2f });
-    K.person({ pos: [-0.18, 0, 1.7], face: 3.05, color: PAL.teal, tone: 0xc9986a });
-    K.person({ pos: [-1.85, 0, -2.15], face: 3.05, color: PAL.orange, tone: 0x4a2f1d });
-    K.person({ pos: [-1.75, 0, 0.55], face: 3.05, color: PAL.orange, tone: 0x8a5a3b });
-    /* burden stack at the intersection */
-    var stack = new K.THREE.Group(); ctx.root.add(stack); stack.position.set(1.35, 0, 0.9);
-    for (var i = 0; i < 5; i++) {
-      K.cyl(0.24 + i * 0.015, 0.26 + i * 0.015, 0.11, i > 2 ? K.mat.neon(PAL.red, ctx.riskOn ? 0.9 : 0.4) : K.mat.plastic(PAL.orange, 0.4), [0, 0.08 + i * 0.125, 0], null, { parent: stack });
+    var THREE = K.THREE;
+    var activePath = ctx.pathOn || ctx.riskOn;
+    var stone = K.mat.plastic(0xd8d1c4, 0.9);
+    var paleStone = K.mat.plastic(0xeee9df, 0.86);
+    var bronze = K.mat.metal(0x8d6f4f, 0.46);
+    var openMat = K.mat.plastic(ctx.pathOn ? 0xd9eee2 : 0xe5e7e2, 0.82);
+    var burdenMat = K.mat.plastic(ctx.riskOn ? 0xf0c9c3 : 0xe5ddd2, 0.84);
+    K.stage({ lip: ctx.riskOn ? 0xa83a30 : 0x9b7b54 });
+
+    /* A tiled civic forum gives every object a grounded, human scale. */
+    var forum = new THREE.Group(); forum.name = 'bfs-outcome-rule-forum'; ctx.root.add(forum);
+    K.rbox(4.15, 0.09, 4.85, stone, [0, 0.015, -0.05], null, { parent: forum, r: 0.18 });
+    function lane(x, narrows, mat, name) {
+      var geo = K.own(new THREE.BoxGeometry(0.66, 0.055, 0.4));
+      var tiles = new THREE.InstancedMesh(geo, mat, 9);
+      var dummy = new THREE.Object3D();
+      for (var i = 0; i < 9; i++) {
+        var z = -2.05 + i * 0.5;
+        var progress = Math.max(0, (z + 0.25) / 2.3);
+        dummy.position.set(narrows ? x - progress * 0.2 : x, 0.09, z);
+        dummy.scale.set(narrows ? 1 - progress * 0.25 : 1, 1, 1);
+        dummy.updateMatrix(); tiles.setMatrixAt(i, dummy.matrix);
+      }
+      tiles.name = name; tiles.castShadow = true; tiles.receiveShadow = true; forum.add(tiles);
+      return tiles;
     }
-    K.halo(0.44, ctx.riskOn ? PAL.red : PAL.orange, [1.35, 0.78, 0.9], { spin: 0.5 });
-    K.person({ pos: [1.35, 0, 1.75], face: 3.3, color: PAL.orange, scale: 0.92, tone: 0x4a2f1d });
-    /* case cards holographic compare */
-    var cardMatA = K.screen(46, 30, function (g, w, h) {
-      g.fillStyle = '#eef7f1'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#1c7a43'; g.fillRect(0, 0, w, h * 0.22);
-      g.fillStyle = '#0d1526'; g.font = 'bold 7px sans-serif'; g.fillText('CASE A: APPROVED', w * 0.07, h * 0.15);
-      g.fillStyle = '#8ba0b4'; for (var i2 = 0; i2 < 3; i2++) g.fillRect(w * 0.08, h * (0.36 + i2 * 0.18), w * 0.8, h * 0.08);
-    }, { glow: 0.5 });
-    var cardMatB = K.screen(46, 30, function (g, w, h) {
-      g.fillStyle = '#fdf0ee'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#da291c'; g.fillRect(0, 0, w, h * 0.22);
-      g.fillStyle = '#ffffff'; g.font = 'bold 7px sans-serif'; g.fillText('CASE B: DENIED', w * 0.07, h * 0.15);
-      g.fillStyle = '#8ba0b4'; for (var i3 = 0; i3 < 3; i3++) g.fillRect(w * 0.08, h * (0.36 + i3 * 0.18), w * 0.8, h * 0.08);
-    }, { glow: 0.5 });
-    var cA = K.add(new K.THREE.PlaneGeometry(0.92, 0.6), cardMatA, [0.4, 1.35, -1.5], [0, -0.5, 0], { shadow: false });
-    var cB = K.add(new K.THREE.PlaneGeometry(0.92, 0.6), cardMatB, [1.55, 1.35, -0.9], [0, -0.5, 0], { shadow: false });
-    K.float(cA, 0.045, 1.1); K.float(cB, 0.045, 1.1, 1.4);
+    lane(-0.72, false, openMat, 'bfs-outcome-open-lane');
+    lane(0.72, true, burdenMat, 'bfs-outcome-narrowing-lane');
+    var jointGeo = K.own(new THREE.BoxGeometry(0.035, 0.018, 0.34));
+    var joints = new THREE.InstancedMesh(jointGeo, bronze, 8);
+    var joint = new THREE.Object3D();
+    for (var j = 0; j < 8; j++) { joint.position.set(0, 0.126, -1.8 + j * 0.5); joint.updateMatrix(); joints.setMatrixAt(j, joint.matrix); }
+    joints.name = 'bfs-outcome-shared-centreline'; joints.receiveShadow = true; forum.add(joints);
+
+    /* Both lanes pass through one substantial rule pavilion. */
+    var gate = K.archGate([0, 0.12, -0.42], { w: 2.82, h: 1.58, beam: activePath, beamSpeed: 0.72 });
+    gate.name = 'bfs-outcome-shared-rule-gate';
+    K.rbox(0.42, 0.22, 0.58, paleStone, [-1.41, 0.15, -0.42], null, { r: 0.06 });
+    K.rbox(0.42, 0.22, 0.58, paleStone, [1.41, 0.15, -0.42], null, { r: 0.06 });
+    var ruleFrame = K.rbox(1.82, 0.5, 0.09, bronze, [0, 2.08, -0.38], null, { r: 0.06 });
+    ruleFrame.name = 'bfs-outcome-rule-sign';
+    var ruleMat = K.screen(84, 22, function (g, w, h) {
+      g.fillStyle = '#f6f1e8'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#1b2a4a'; g.font = '700 7px sans-serif'; g.textAlign = 'center';
+      g.fillText('ONE SHARED RULE', w / 2, 9);
+      g.fillStyle = '#9b7b54'; g.fillRect(10, 13, w - 20, 1.5);
+      g.fillStyle = '#586270'; g.font = '5px sans-serif'; g.fillText('APPLIED TO BOTH LANES', w / 2, 19);
+    }, { glow: 0.16 });
+    K.add(new THREE.PlaneGeometry(1.66, 0.4), ruleMat, [0, 2.08, -0.27], null, { shadow: false });
+
+    /* The routes remain present in Observe, then become explicit in Path/Risk. */
+    K.flow([[-0.72, 0.18, -2.25], [-0.72, 0.18, -0.42], [-0.72, 0.18, 1.92]], {
+      color: activePath ? PAL.green : PAL.line, pulseColor: PAL.green, pulses: activePath ? 3 : 0,
+      speed: 0.11, radius: activePath ? 0.026 : 0.016, opacity: activePath ? 0.88 : 0.28
+    });
+    K.flow([[0.72, 0.18, -2.25], [0.72, 0.18, -0.42], [0.58, 0.18, 0.55], [0.5, 0.18, 1.02]], {
+      color: ctx.riskOn ? PAL.red : (ctx.pathOn ? PAL.orange : PAL.line), pulseColor: ctx.riskOn ? PAL.red : PAL.orange,
+      pulses: activePath ? 3 : 0, speed: 0.095, radius: activePath ? 0.026 : 0.016, opacity: activePath ? 0.9 : 0.28
+    });
+
+    /* A physical barrier and burden stack make the unequal outcome tangible. */
+    var barrier = new THREE.Group(); barrier.name = 'bfs-outcome-blocked-threshold'; ctx.root.add(barrier); barrier.position.set(0.5, 0, 1.2);
+    var barrierMat = ctx.riskOn ? K.mat.neon(PAL.red, 0.72) : K.mat.plastic(0xa96855, 0.72);
+    K.rbox(0.13, 0.62, 0.16, bronze, [-0.34, 0.31, 0], null, { parent: barrier, r: 0.035 });
+    K.rbox(0.13, 0.62, 0.16, bronze, [0.34, 0.31, 0], null, { parent: barrier, r: 0.035 });
+    K.rbox(0.82, 0.18, 0.15, barrierMat, [0, 0.48, 0], [0, 0, -0.08], { parent: barrier, r: 0.045 });
+    var stack = new THREE.Group(); stack.name = 'bfs-outcome-extra-burden'; ctx.root.add(stack); stack.position.set(1.43, 0.1, 1.3);
+    var burdenColours = [0xb88b58, 0xd39a55, 0xc56d4e, ctx.riskOn ? PAL.red : 0xa95348];
+    for (var b = 0; b < 4; b++) {
+      var burden = K.rbox(0.48 - b * 0.025, 0.18, 0.38, b === 3 && ctx.riskOn ? K.mat.neon(burdenColours[b], 0.7) : K.mat.plastic(burdenColours[b], 0.8), [0, 0.1 + b * 0.19, 0], [0, (b % 2 ? -0.1 : 0.08), 0], { parent: stack, r: 0.045 });
+      burden.name = 'bfs-outcome-burden-' + (b + 1);
+    }
+    if (ctx.riskOn) K.halo(0.43, PAL.red, [1.43, 0.92, 1.3], { spin: 0.34 });
+
+    /* People appear before and after the shared rule; the model never turns them into data points. */
+    K.person({ pos: [-0.72, 0.12, -1.82], face: 0.04, color: PAL.teal, tone: 0x6f4a2f });
+    K.person({ pos: [0.72, 0.12, -1.82], face: -0.04, color: PAL.orange, tone: 0x4a2f1d });
+    K.person({ pos: [-0.72, 0.12, 1.48], face: 3.08, color: PAL.teal, tone: 0xc9986a });
+    K.person({ pos: [0.5, 0.12, 0.73], face: 3.08, color: PAL.orange, tone: 0x8a5a3b });
+
+    /* Outcome records sit on real lecterns rather than floating in the scene. */
+    function caseLectern(x, z, heading, colour, face) {
+      var lectern = new THREE.Group(); lectern.name = 'bfs-outcome-' + heading.toLowerCase().replace(/[^a-z]+/g, '-'); ctx.root.add(lectern);
+      K.rbox(0.66, 0.08, 0.48, bronze, [0, 0.08, 0], null, { parent: lectern, r: 0.04 });
+      K.cyl(0.075, 0.095, 0.7, bronze, [0, 0.42, 0], null, { parent: lectern, seg: 18 });
+      K.rbox(0.9, 0.62, 0.08, paleStone, [0, 0.95, 0], [-0.12, 0, 0], { parent: lectern, r: 0.045 });
+      var card = K.screen(58, 38, function (g, w, h) {
+        g.fillStyle = '#f7f4ee'; g.fillRect(0, 0, w, h);
+        g.fillStyle = colour; g.fillRect(0, 0, w, 8);
+        g.fillStyle = '#ffffff'; g.font = '700 5px sans-serif'; g.fillText(heading, 5, 6);
+        g.fillStyle = '#586270'; for (var r = 0; r < 3; r++) g.fillRect(6, 15 + r * 7, w - 12 - r * 4, 2);
+      }, { glow: 0.1 });
+      K.add(new THREE.PlaneGeometry(0.78, 0.5), card, [0, 0.96, 0.092], [-0.12, 0, 0], { parent: lectern, shadow: false });
+      lectern.scale.setScalar(0.82);
+      lectern.position.set(x, 0, z); lectern.rotation.y = face;
+    }
+    caseLectern(-1.55, 1.48, 'CASE A: APPROVED', '#1c7a43', 0.2);
+    caseLectern(1.55, 1.48, 'CASE B: DENIED', '#b3261e', -0.2);
   };
-  ANCHORS.outcomelens = [[-1.1, 1.6, 0], [-0.15, 0.3, 2.2], [1.35, 0.8, 0.9]];
+  ANCHORS.outcomelens = [[0, 2.08, -0.38], [-0.72, 0.2, 1.45], [0.72, 0.78, 1.2]];
 
   /* ======================= WEEK 3: pipeline - inequity built into a process */
   SCENES.pipeline = function (K, ctx) {
@@ -688,16 +765,18 @@
     K.cyl(0.16, 0.2, 0.42, K.mat.metal(0x2c3852, 0.3), [0, 0.2, 0]);
     /* four trays as quadrants with face-tile mosaics */
     var groups = [
-      { a: 0, err: 0.06, label: 'LM' }, { a: Math.PI / 2, err: 0.12, label: 'LW' },
-      { a: Math.PI, err: 0.08, label: 'DM' }, { a: -Math.PI / 2, err: 0.35, label: 'DW' }
+      { a: 0, err: 0.06, badCount: 1, label: 'LM' }, { a: Math.PI / 2, err: 0.12, badCount: 3, label: 'LW' },
+      { a: Math.PI, err: 0.08, badCount: 2, label: 'DM' }, { a: -Math.PI / 2, err: 0.35, badCount: 6, label: 'DW' }
     ];
+    var tileOrder = [10, 5, 15, 0, 7, 12, 3, 9, 2, 14, 4, 11, 1, 8, 6, 13];
     groups.forEach(function (gr, gi) {
       var gx = Math.cos(gr.a) * 0.72, gz = Math.sin(gr.a) * 0.72;
       var worst = gi === 3;
       var trayMat = K.screen(40, 40, function (g, w, h) {
         g.fillStyle = worst ? '#fdf0ee' : '#f2f7fa'; g.fillRect(0, 0, w, h);
         for (var yy = 0; yy < 4; yy++) for (var xx = 0; xx < 4; xx++) {
-          var bad = Math.random() < gr.err;
+          var tile = yy * 4 + xx;
+          var bad = tileOrder.indexOf((tile + gi * 4) % 16) < gr.badCount;
           g.fillStyle = bad ? '#da291c' : '#9fb3c4';
           g.beginPath(); g.arc(w * (0.16 + xx * 0.225), h * (0.16 + yy * 0.225), w * 0.07, 0, 7); g.fill();
         }
@@ -1341,7 +1420,7 @@
     var ropeL = K.cyl(0.022, 0.022, 0.6, K.mat.metal(0xd9b64a, 0.3), [-0.25, 0.3, 1.25], null, { seg: 12 });
     var ropeR = K.cyl(0.022, 0.022, 0.6, K.mat.metal(0xd9b64a, 0.3), [1.05, 0.3, 1.25], null, { seg: 12 });
     void ropeL; void ropeR;
-    K.flow([[-0.25, 0.58, 1.25], [0.4, 0.48, 1.18], [1.05, 0.58, 1.25]], { color: PAL.amber, pulses: 0, radius: 0.014, opacity: 0.8 });
+    K.flow([[-0.25, 0.58, 1.25], [0.4, 0.48, 1.18], [1.05, 0.58, 1.25]], { color: PAL.amber, pulses: 0, radius: 0.014, opacity: 0.8, arrow: false });
     var qmark = K.add(new K.THREE.PlaneGeometry(0.4, 0.4), K.mat.holo(PAL.amber, 0.55), [0.4, 1.05, 1.6], [0, -0.3, 0], { shadow: false });
     K.float(qmark, 0.05, 1.2);
   };
@@ -1770,7 +1849,11 @@
   /* in-scene labels: what each key object IS (comprehension first) */
   var TAGS = {
     map: [['A STUDENT', [0, 1.15, 0]], ['PHONE', [-1.9, 1.25, 1.0]], ['CAMERA', [-2.0, 2.05, -1.2]], ['TAP TO PAY', [1.95, 1.15, 1.05]], ['ID CHECK', [2.0, 1.55, -1.15]], ['YOUR NOTICING MAP', [0, 1.0, 1.85]]],
-    outcomelens: [['THE SAME RULE', [-1.1, 2.3, 0]], ['OPEN PATH', [-0.25, 0.75, 1.6]], ['BLOCKED', [-1.78, 1.05, 1.15], 1], ['EXTRA BURDEN', [1.35, 1.25, 0.9], 1], ['CASE: APPROVED', [0.4, 1.85, -1.5]], ['CASE: DENIED', [1.55, 1.85, -0.9], 1]],
+    outcomelens: function (ctx) {
+      if (ctx.riskOn) return [['BLOCKED HERE', [0.5, 1.18, 1.2], 1], ['EXTRA BURDEN', [1.43, 1.28, 1.3], 1], ['UNEQUAL OUTCOMES', [0, 2.38, 1.72], 1]];
+      if (ctx.pathOn) return [['OPEN PATH', [-0.82, 0.76, 0.85]], ['NARROWING PATH', [0.62, 0.9, 0.48], 1]];
+      return [['SAME START', [0, 1.22, -1.95]]];
+    },
     pipeline: [['OLD RECORDS', [-2.5, 1.5, -0.1]], ['CONVEYOR', [-1.0, 0.75, 0]], ['SCORING RULE', [0.55, 1.75, 0]], ['APPROVED', [2.45, 0.95, -0.75]], ['DENIED', [2.45, 0.95, 0.75], 1]],
     switches: [['DEFAULT SETTINGS', [-0.55, 1.95, -0.4]], ['THE DOOR', [2.3, 1.95, -0.15]], ['FITS THE DEFAULT', [1.45, 1.35, 0.35]], ['MUST ADAPT', [1.35, 1.35, 1.35], 1]],
     audit: [['THE BENCHMARK TEST', [0, 1.05, 0]], ['AVERAGE LOOKS FINE', [0, 1.95, -0.9]], ['ERRORS CLUSTER HERE', [0, 1.15, 0.85], 1], ['THE AUDITOR', [-2.05, 1.35, 1.15]]],
@@ -1803,9 +1886,9 @@
   /* per-kind camera framing: wide dioramas pull back, bench scenes lean in */
   var FRAMES = {
     _default: { scale: 1.1, cam: [3.35, 2.55, 4.6], look: [0, 0.6, 0] },
-    outcomelens: { scale: 0.98, cam: [3.7, 2.75, 5.05], look: [0, 0.55, 0] },
+    outcomelens: { scale: 1.12, cam: [0.35, 3.0, 5.6], look: [0, 0.68, 0], views: { observe: [-0.16, 0], path: [-0.2, 0.08], risk: [-0.22, -0.12] } },
     mechanismatch: { scale: 1.02, cam: [3.6, 2.65, 4.9], look: [0, 0.6, 0] },
-    pipeline: { scale: 1.0, cam: [3.65, 2.7, 4.95], look: [0, 0.6, 0] },
+    pipeline: { scale: 1.0, narrowScale: 0.76, cam: [3.65, 2.7, 4.95], look: [0, 0.6, 0] },
     sorting: { scale: 1.0, cam: [3.65, 2.7, 4.95], look: [0, 0.6, 0] },
     compass: { scale: 1.0, cam: [3.6, 2.75, 4.9], look: [0, 0.5, 0] },
     'return': { scale: 1.0, cam: [3.6, 2.8, 4.9], look: [0, 0.85, 0] },
@@ -1840,9 +1923,9 @@
     frame: function (kind, narrow) {
       var f = FRAMES[kind] || FRAMES._default;
       /* Default to a wider, fully readable scene. Reset returns here. */
-      var wide = { scale: f.scale * 0.88, cam: [f.cam[0] * 1.15, f.cam[1] * 1.15, f.cam[2] * 1.15], look: f.look, swingRisk: f.swingRisk };
+      var wide = { scale: f.scale * 0.88, cam: [f.cam[0] * 1.15, f.cam[1] * 1.15, f.cam[2] * 1.15], look: f.look, swingRisk: f.swingRisk, views: f.views };
       if (!narrow) return wide;
-      return { scale: wide.scale * 0.9, cam: [wide.cam[0] * 1.1, wide.cam[1] * 1.1, wide.cam[2] * 1.1], look: wide.look, swingRisk: wide.swingRisk };
+      return { scale: wide.scale * (typeof f.narrowScale === 'number' ? f.narrowScale : 0.9), cam: [wide.cam[0] * 1.1, wide.cam[1] * 1.1, wide.cam[2] * 1.1], look: wide.look, swingRisk: wide.swingRisk, views: wide.views };
     },
     supports: function (kind) { return !!SCENES[kind]; },
     build: function (THREE, ctx) {
@@ -1918,7 +2001,7 @@
         });
         K.box(0.34, 0.04, 0.32, K.mat.metal(0x3d464b, 0.7), [0, 0.02, 0], null, { parent: beacon });
       }
-      var tags = TAGS[ctx.kind] || [];
+      var tags = typeof TAGS[ctx.kind] === 'function' ? TAGS[ctx.kind](ctx) : (TAGS[ctx.kind] || []);
       for (var tgi = 0; tgi < tags.length; tgi++) {
         try { K.tag(tags[tgi][0], tags[tgi][1], { warn: !!tags[tgi][2] }); } catch (e) {}
       }

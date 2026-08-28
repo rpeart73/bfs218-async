@@ -1,16 +1,7 @@
-/* BFS218 ASYNCHRONOUS per-page how-to registry (2026-07-25). Every screen carries
-   its own "How to use this page" panel so students can teach themselves each surface.
-   tour.file is the chaptered video tour; each page's clip value is a
-   media-fragment time range inside that one file (filled in later). Plain language, no dashes.
-   Collapsed aliases (sub-views keyed to their parent entry, matching howtoKey):
-     library -> journey
-     detail, reading -> readings
-     assignment-program, assignment-details, assignment-rubric, assignment-release,
-       assignment-ai, assignment-faq, starter -> assignments
-     sandbox -> activity */
+/* BFS218 ASYNCHRONOUS per-page how-to registry. demo arrays drive the v2 tour recorder (call+at / select / click choreography). */
 window.BFS218_HOWTO = {
  "tour": {
-  "file": "videos/howto-tour.mp4",
+  "file": "",
   "note": "Silent screen tour with on-screen captions."
  },
  "byScreen": {
@@ -43,12 +34,36 @@ window.BFS218_HOWTO = {
      "detail": "The Viewing as chip personalizes examples to your field of study. The course content stays the same for everyone; only the framing changes. You can turn it off any time."
     }
    ],
-   "saves": "Your visited weeks, step check-offs, optional first name, and program lens choice are saved only in this browser on this device. Nothing is sent anywhere.",
-   "graded": "Nothing on this page is graded or reported to your professor.",
+   "saves": "When browser storage is available, a temporary copy of your visited weeks, step check-offs, optional first name, and program lens choice may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove that copy. The companion site's own code does not submit or grade these entries; external links, media, and email follow the provider's practices.",
+   "graded": "The companion site does not submit or grade activity on this page; it earns no course marks.",
    "next": "Open the current week's station and start its four-step path.",
    "clip": "4,18",
    "video": "videos/tour/journey.mp4",
-   "captions": "videos/tour/journey.vtt"
+   "captions": "videos/tour/journey.vtt",
+   "demo": [
+    {
+     "do": "select",
+     "nth": 0,
+     "value": "Education, Community and Social Services::Social Service Worker",
+     "say": "Set a program lens and the whole course tunes its examples to your field. The graded work stays the same for everyone."
+    },
+    {
+     "do": "scroll",
+     "to": 0.42,
+     "say": "Every week is a station on one journey. Your progress panel counts a week driven once you check its four steps."
+    },
+    {
+     "do": "scroll",
+     "to": 0.7,
+     "say": "The Study Compass suggests what to do next from what you have already done here. A suggestion, never a rule."
+    },
+    {
+     "do": "select",
+     "nth": 0,
+     "value": "",
+     "say": "Turn the lens off any time. On this page, you steer."
+    }
+   ]
   },
   "station": {
    "title": "How to use a week page",
@@ -83,12 +98,39 @@ window.BFS218_HOWTO = {
      "detail": "Rate the same ideas you rated at the start, use the Study Guide before the Knowledge Check, write your reflection, then generate the Word file that collects your week on Seneca letterhead."
     }
    ],
-   "saves": "Your ratings, notes, step check-offs, reflections, and practice results are saved only in this browser on this device. Download your weekly notes file to keep a copy no browser can lose.",
-   "graded": "Every check on this page is practice. None of it is scored, recorded, or visible to your professor.",
+   "saves": "When browser storage is available, a temporary copy of your ratings, notes, step check-offs, reflections, and practice results may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it. Generate Your Weekly Notes downloads a separate file; protect that file according to where you save it.",
+   "graded": "Checks may show correctness and a practice result, but the companion site does not submit or grade them; they earn no course marks and are not sent to your professor.",
    "next": "When the four steps are checked, return Home and open the next station.",
    "clip": "18,32",
    "video": "videos/tour/station.mp4",
-   "captions": "videos/tour/station.vtt"
+   "captions": "videos/tour/station.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.2,
+     "say": "Each week page is your whole classroom: lecture, readings, experience, practice, and notes."
+    },
+    {
+     "do": "scroll",
+     "to": 0.33,
+     "say": "Move through the week yourself in four steps. Ticking them marks the week driven on your home page."
+    },
+    {
+     "do": "scroll",
+     "to": 0.64,
+     "say": "Play the weekly lecture in Listen to this week. It keeps playing as you move around."
+    },
+    {
+     "do": "scroll",
+     "to": 0.78,
+     "say": "Enter the weekly experience, then work the readings and the practice."
+    },
+    {
+     "do": "scroll",
+     "to": 0.9,
+     "say": "Finish with your reflection and generate your weekly notes to keep."
+    }
+   ]
   },
   "site": {
    "title": "How to use this page",
@@ -100,7 +142,7 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Skim the cards in order.",
-     "detail": "They cover privacy, copyright, translation, accessibility, and the site's known limits, including that saved work lives only in this browser."
+     "detail": "They cover privacy, copyright, translation, accessibility, and the site's known limits, including that browser storage is temporary, conditional, and device-specific."
     },
     {
      "do": "Use the diagram to keep this site and Blackboard straight.",
@@ -112,23 +154,47 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Report anything broken.",
-     "detail": "The report button opens your own email with the page details filled in. You add what happened and press send. Nothing is collected by this site."
+     "detail": "The report button opens your own email with the page details filled in. The companion site does not send anything until you choose to send; then your email provider and the instructor receive the message."
     },
     {
      "do": "Use Clear my saved work on a shared computer.",
-     "detail": "It removes every note, answer, and setting this site has saved in this browser. Download your weekly notes first if you want to keep them."
+     "detail": "It removes supported temporary notes, answers, and settings from this browser when present. It cannot remove copies held by browser or device features or external providers. Download your weekly notes first if you want to keep them."
     },
     {
-     "do": "Back up your saved work.",
-     "detail": "The Take your saved work with you box on this page downloads everything you have typed and rated as one file, and restores it on any device. The accessibility statement lives here too."
+     "do": "Download a portable backup.",
+     "detail": "The Take your saved work with you box downloads supported browser entries as one file. A later import may restore supported entries when the other browser allows storage; keep important work in your own files too. The accessibility statement lives here too."
     }
    ],
-   "saves": "Everything you type or rate on this site stays in this browser on this device. Clear my saved work wipes it.",
-   "graded": "Nothing on this site is graded. Blackboard is the only official gradebook.",
+   "saves": "When browser storage is available, a temporary copy of supported notes, answers, ratings, and settings may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it. Clear my saved work removes the supported local copy when present.",
+   "graded": "Companion-site practice is not submitted, graded, or added to the official gradebook. Blackboard remains the official gradebook.",
    "next": "Head back Home and open the current week.",
-   "clip": "32,46",
-   "video": "videos/tour/site.mp4",
-   "captions": "videos/tour/site.vtt"
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.07,
+     "say": "Start with how the whole site works, and how to work it."
+    },
+    {
+     "do": "scroll",
+     "to": 0.13,
+     "say": "Read the short guide to doing an asynchronous course well: five habits that carry you."
+    },
+    {
+     "do": "scroll",
+     "to": 0.38,
+     "say": "See how the site sits beside Blackboard: you learn here, you submit and get grades there."
+    },
+    {
+     "do": "scroll",
+     "to": 0.67,
+     "say": "Known limits are stated plainly, including conditional temporary browser storage and shared-device risk."
+    },
+    {
+     "do": "scroll",
+     "to": 0.86,
+     "say": "Take your saved work with you downloads supported entries; a later import may restore them when the other browser allows storage."
+    }
+   ]
   },
   "pathways": {
    "title": "How to use Course Pathways",
@@ -151,12 +217,29 @@ window.BFS218_HOWTO = {
      "detail": "They take you straight to the Week 2 learning room, your program's connection to the course, Career Choices, and the assignment pages."
     }
    ],
-   "saves": "This page stores nothing.",
-   "graded": "Nothing here is graded.",
+   "saves": "This page does not ask you to enter companion-site work. Browser or device features and any external service still apply their own settings and practices.",
+   "graded": "This reference page does not submit or grade work.",
    "next": "Open Calendar and Due Dates to put exact dates against this rhythm.",
    "clip": "46,59",
    "video": "videos/tour/pathways.mp4",
-   "captions": "videos/tour/pathways.vtt"
+   "captions": "videos/tour/pathways.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.18,
+     "say": "On the self-paced site, the weekly page is your classroom."
+    },
+    {
+     "do": "scroll",
+     "to": 0.38,
+     "say": "Five moves make the weekly rhythm: read, learn, practise, capture notes, finish your record."
+    },
+    {
+     "do": "scroll",
+     "to": 0.74,
+     "say": "The closing buttons jump you straight to where you should start."
+    }
+   ]
   },
   "readings": {
    "title": "How to use Readings and Media",
@@ -183,12 +266,34 @@ window.BFS218_HOWTO = {
      "detail": "Use the columns button on any card or detail page, then take them into Compare Sources."
     }
    ],
-   "saves": "Your Source Practice answers and notes stay in this browser on this device.",
-   "graded": "Source Practice is never scored.",
+   "saves": "When browser storage is available, a temporary copy of Source Practice answers and notes may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "Source Practice may show which answers match the evidence, but the companion site does not submit or grade it; it earns no course marks.",
    "next": "Take two or three sources into Compare Sources and hold them side by side.",
-   "clip": "59,73",
-   "video": "videos/tour/readings.mp4",
-   "captions": "videos/tour/readings.vtt"
+   "demo": [
+    {
+     "do": "call",
+     "js": "SOC.galWeek(3)",
+     "at": "W3 Engineered Inequity",
+     "say": "The course library. Filter by week to find a source fast."
+    },
+    {
+     "do": "scroll",
+     "to": 0.4,
+     "say": "Each card opens a detail page with the citation, the core idea, and what the source does not prove."
+    },
+    {
+     "do": "call",
+     "js": "SOC.galTopic('bias')",
+     "at": "Algorithmic Bias",
+     "say": "Or filter by topic, to line up sources that answer the same question from different angles."
+    },
+    {
+     "do": "call",
+     "js": "SOC.galWeek(null)",
+     "at": "All weeks",
+     "say": "Use Source Practice on what you have read, then add two or three to the compare tray."
+    }
+   ]
   },
   "compare": {
    "title": "How to use Compare Sources",
@@ -208,19 +313,46 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Save, copy, or print the synthesis.",
-     "detail": "Save to my notes keeps it on this device so you can return to it later."
+     "detail": "When browser storage is available, Save to my notes may keep a temporary copy on this device. Download or copy anything you need to retain."
     },
     {
      "do": "Write your own take.",
      "detail": "One or two sentences in your own words are worth more than the whole generated frame. Put them in your weekly notes."
     }
    ],
-   "saves": "A synthesis you keep with Save to my notes stays in this browser on this device.",
-   "graded": "Comparisons are never graded. They exist to sharpen your written work.",
+   "saves": "When browser storage is available, Save to my notes may keep a temporary copy of a synthesis on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "The companion site does not submit or grade comparisons; they earn no course marks and exist to sharpen your written work.",
    "next": "Carry your comparison insight into this week's reflection or your next assignment.",
-   "clip": "73,87",
-   "video": "videos/tour/compare.mp4",
-   "captions": "videos/tour/compare.vtt"
+   "demo": [
+    {
+     "do": "call",
+     "js": "SOC.compare('benjamin2019')",
+     "at": "Race After Technology",
+     "say": "Pick two or three sources from the picker. Readings, videos, and audio can sit together."
+    },
+    {
+     "do": "call",
+     "js": "SOC.compare('noble2018')",
+     "at": "Algorithms of Oppression",
+     "say": "Choose sources that speak to the same question from different angles."
+    },
+    {
+     "do": "call",
+     "js": "SOC.compare('buolamwini2018')",
+     "at": "Gender Shades",
+     "say": "Each panel keeps the source core idea, its evidence type, and what it does not prove in view."
+    },
+    {
+     "do": "click",
+     "text": "Synthesize",
+     "say": "Press Synthesize. It builds a frame across your sources. A thinking scaffold, not sentences to copy."
+    },
+    {
+     "do": "scroll",
+     "to": 0.8,
+     "say": "Save or print it, then write your own take in one or two sentences. That is worth more than the frame."
+    }
+   ]
   },
   "walkthroughs": {
    "title": "How to use Weekly Experiences",
@@ -240,23 +372,40 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Leave any time; return any time.",
-     "detail": "Close or press Escape to return to the page you came from. The button says Re-enter once you have started, and the experience remembers where you left off on this device."
+     "detail": "Close or press Escape to return to the page you came from. When browser storage is available, Re-enter may resume a temporary position on this device; browser settings, private browsing, clearing site data, shared-device use, or changing devices can remove it."
     },
     {
      "do": "Anchor it in the readings after.",
      "detail": "The experience teaches the idea; the readings carry the citations and evidence your graded work needs."
     }
    ],
-   "saves": "Your position in each experience is saved in this browser on this device.",
-   "graded": "Experiences are teaching, not testing. Nothing is scored.",
+   "saves": "When browser storage is available, a temporary copy of your position in an experience may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "Experiences are teaching, not course tests. The companion site does not submit or grade experience activity; it earns no course marks.",
    "next": "After an experience, open the same week's readings and Study Guide to lock the idea in.",
    "clip": "87,101",
    "video": "videos/tour/walkthroughs.mp4",
-   "captions": "videos/tour/walkthroughs.vtt"
+   "captions": "videos/tour/walkthroughs.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.13,
+     "say": "Here is every weekly experience, one immersive walk per teaching week."
+    },
+    {
+     "do": "scroll",
+     "to": 0.4,
+     "say": "Each one moves through scenes, evidence, and decisions, not slides."
+    },
+    {
+     "do": "scroll",
+     "to": 0.7,
+     "say": "Pick any week and enter. Move with the arrows or your keyboard, and leave any time."
+    }
+   ]
   },
   "lectures": {
    "title": "How to use Lectures",
-   "intro": "Every teaching week has a short audio lecture. Your professor wrote each one; a disclosed AI narrator reads it for clarity and accessibility.",
+   "intro": "Each currently posted audio lecture was written by your professor; a disclosed AI narrator reads it for clarity and accessibility.",
    "steps": [
     {
      "do": "Press play on any week.",
@@ -275,12 +424,29 @@ window.BFS218_HOWTO = {
      "detail": "The lecture explains how the week fits together. The readings still carry the citations and evidence your graded work needs."
     }
    ],
-   "saves": "This page stores nothing. Downloaded lectures go to your own device.",
-   "graded": "Listening is never tracked or graded.",
+   "saves": "Downloaded lectures go to your device. The companion site's own code does not record plays; browser or device features and any media provider apply their own settings and practices.",
+   "graded": "The companion site does not submit or grade listening, and it awards no course marks. A media provider is contacted only when you choose to load provider-hosted media, and its practices apply.",
    "next": "Open the week the lecture belongs to and work its readings.",
    "clip": "101,114",
    "video": "videos/tour/lectures.mp4",
-   "captions": "videos/tour/lectures.vtt"
+   "captions": "videos/tour/lectures.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.24,
+     "say": "Every teaching week has a short audio lecture, gathered here and ready to play."
+    },
+    {
+     "do": "scroll",
+     "to": 0.6,
+     "say": "Your professor wrote each one, and a disclosed AI narrator reads it for clarity."
+    },
+    {
+     "do": "scroll",
+     "to": 0.95,
+     "say": "Use the mini player here, or open a week for the full player."
+    }
+   ]
   },
   "videos": {
    "title": "How to use Videos and Podcasts",
@@ -303,12 +469,34 @@ window.BFS218_HOWTO = {
      "detail": "After the media, write one sentence you can prove from the reading. It lands in your weekly notes file."
     }
    ],
-   "saves": "Your media notes stay in this browser on this device and appear in Generate Your Weekly Notes.",
-   "graded": "Watching is never tracked or graded.",
+   "saves": "When browser storage is available, a temporary copy of your media notes may remain on this device and may appear in Generate Your Weekly Notes. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "The companion site's own code does not record plays, submit viewing activity, or grade it. A media provider is contacted only when you choose to load provider-hosted media, and its practices apply.",
    "next": "Open the reading the video connects to in Readings and Media.",
-   "clip": "114,128",
-   "video": "videos/tour/videos.mp4",
-   "captions": "videos/tour/videos.vtt"
+   "demo": [
+    {
+     "do": "call",
+     "js": "SOC.mediaKind('Podcast')",
+     "at": "Podcast",
+     "say": "This gallery collects scholar media: the researchers you read, speaking for themselves. Filter by kind."
+    },
+    {
+     "do": "call",
+     "js": "SOC.mediaKind('Video')",
+     "at": "Video",
+     "say": "Embeddable videos use official players; nothing loads until you press play."
+    },
+    {
+     "do": "call",
+     "js": "SOC.mediaKind('all')",
+     "at": "All media",
+     "say": "Each card says what to watch for and which reading move to make next."
+    },
+    {
+     "do": "scroll",
+     "to": 0.5,
+     "say": "After the media, write one sentence you can prove from the reading. It lands in your weekly notes."
+    }
+   ]
   },
   "glossary": {
    "title": "How to use the Glossary",
@@ -331,12 +519,36 @@ window.BFS218_HOWTO = {
      "detail": "Each entry names its home week, so you can revisit the fuller context."
     }
    ],
-   "saves": "This page stores nothing.",
-   "graded": "Nothing here is graded.",
+   "saves": "This page does not ask you to enter companion-site work. Browser or device features and external links still apply their own settings and practices.",
+   "graded": "This reference page does not submit or grade work.",
    "next": "Turn terms into memory with Concept Flashcards.",
    "clip": "128,142",
    "video": "videos/tour/glossary.mp4",
-   "captions": "videos/tour/glossary.vtt"
+   "captions": "videos/tour/glossary.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.2,
+     "say": "Every key term and thinker lives here, in full sentences, each with its citation."
+    },
+    {
+     "do": "select",
+     "nth": 0,
+     "value": "3",
+     "say": "Browse by week or search. Ideas like the New Jim Code do exact work in this course."
+    },
+    {
+     "do": "scroll",
+     "to": 0.6,
+     "say": "Meet the scholars behind each week readings. Click a name to open its source."
+    },
+    {
+     "do": "select",
+     "nth": 0,
+     "value": "all",
+     "say": "Used accurately, this vocabulary makes your written work read stronger."
+    }
+   ]
   },
   "cards": {
    "title": "How to use Concept Flashcards",
@@ -359,12 +571,36 @@ window.BFS218_HOWTO = {
      "detail": "If you can only repeat the card's wording, flip it again tomorrow."
     }
    ],
-   "saves": "The flip cards store nothing. Your Self-Check Studio answers stay in this browser on this device.",
-   "graded": "Cards are pure practice.",
+   "saves": "The flip cards do not ask you to enter work. When browser storage is available, a temporary copy of Self-Check Studio answers may remain on this device; browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "Cards and the studio are practice. The studio may show correctness, but the companion site does not submit or grade it; it earns no course marks.",
    "next": "Take the week's Knowledge Check and see what stuck.",
    "clip": "142,156",
    "video": "videos/tour/cards.mp4",
-   "captions": "videos/tour/cards.vtt"
+   "captions": "videos/tour/cards.vtt",
+   "demo": [
+    {
+     "do": "click",
+     "text": "Reveal the",
+     "say": "One flip card per concept. Try to answer before you flip."
+    },
+    {
+     "do": "select",
+     "nth": 0,
+     "value": "2",
+     "say": "Filter by week. Before a Knowledge Check, run this week plus one earlier."
+    },
+    {
+     "do": "call",
+     "js": "SOC.mcPick('BFS218|studio|2',0)",
+     "at": "New technology can carry old racism",
+     "say": "The Self-Check Studio turns the readings into a see-it-for-yourself check."
+    },
+    {
+     "do": "scroll",
+     "to": 0.7,
+     "say": "Say the definition out loud in your own words. If you can only repeat the card, flip it again tomorrow."
+    }
+   ]
   },
   "assignments": {
    "title": "How to use Starting Your Assignment",
@@ -388,19 +624,43 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Open the Assignment Start Lab when you want a working session.",
-     "detail": "Fixed course rules, no AI, build a private start plan you can print or save. For Compass Check, the lab gives readiness steps only; that assessment is a closed, timed Blackboard sitting."
+     "detail": "Fixed course rules, no AI, build a personal start plan you can print or save. For Compass Check, the lab gives readiness steps only; that assessment is a closed, timed Blackboard sitting."
     },
     {
      "do": "Build a first-draft plan, then submit on Blackboard, always.",
      "detail": "The starter page turns your answers into a Word planning document. The official assignment, rubric, and submission all live on Blackboard."
     }
    ],
-   "saves": "Your starter answers and program lens choice stay in this browser on this device.",
-   "graded": "Nothing here is submitted or graded. Blackboard is the only submission channel.",
-   "next": "Block one hour, open the lab, and leave with a plan.",
-   "clip": "156,170",
-   "video": "videos/tour/assignments.mp4",
-   "captions": "videos/tour/assignments.vtt"
+   "saves": "When browser storage is available, a temporary copy of your starter answers and program lens choice may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "The companion site does not submit or grade starter work; it earns no course marks. Blackboard is the only submission channel.",
+   "next": "Choose a realistic work block, open the lab, and leave with a plan.",
+   "demo": [
+    {
+     "do": "click",
+     "text": "Overview",
+     "say": "Five assignments, each 20 percent, build one Personal Cartography: notice, interpret, investigate, repair, integrate."
+    },
+    {
+     "do": "click",
+     "text": "How I Grade",
+     "say": "Open one room at a time. Each shows the purpose, what to submit, and the marking criteria."
+    },
+    {
+     "do": "click",
+     "text": "Release",
+     "say": "First half due October 25, second half December 11, all by 11:59 Eastern. Nothing due in the final week."
+    },
+    {
+     "do": "click",
+     "text": "How to Use AI",
+     "say": "A clear line on AI, plus an FAQ. The Start Lab builds a personal plan you can print."
+    },
+    {
+     "do": "scroll",
+     "to": 0.5,
+     "say": "The starter turns your answers into a Word planning document. The official submission always lives on Blackboard."
+    }
+   ]
   },
   "career": {
    "title": "How to use Career Choices",
@@ -427,12 +687,36 @@ window.BFS218_HOWTO = {
      "detail": "One honest paragraph about how this course touches your field is a seed for assignments later."
     }
    ],
-   "saves": "Your field choice and reflection stay in this browser on this device. The chip follows you around the site until you turn it off.",
+   "saves": "When browser storage is available, a temporary copy of your field choice and reflection may remain on this device, and the chip may appear elsewhere on the site. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove that copy.",
    "graded": "The graded curriculum is identical for every student. The lens changes examples and framing only.",
    "next": "Visit a week the page recommends for your field and watch the framing follow you.",
    "clip": "170,183",
    "video": "videos/tour/career.mp4",
-   "captions": "videos/tour/career.vtt"
+   "captions": "videos/tour/career.vtt",
+   "demo": [
+    {
+     "do": "select",
+     "nth": 0,
+     "value": "Education, Community and Social Services::Social Service Worker",
+     "say": "Pick your area of study or your exact program. General stream and Still exploring are options too."
+    },
+    {
+     "do": "scroll",
+     "to": 0.35,
+     "say": "Read the lens first: one question to carry through the whole course from your field."
+    },
+    {
+     "do": "scroll",
+     "to": 0.62,
+     "say": "Each field names the systems to watch, the evidence that counts, and a scenario in that world."
+    },
+    {
+     "do": "select",
+     "nth": 0,
+     "value": "",
+     "say": "The graded curriculum is identical for everyone. The lens changes examples only. When browser storage is available, it may reappear until you turn it off; browser settings, clearing site data, shared-device use, or changing devices can prevent or remove that copy."
+    }
+   ]
   },
   "activity": {
    "title": "How to use an activity page",
@@ -459,12 +743,29 @@ window.BFS218_HOWTO = {
      "detail": "One sentence about what the activity helped you notice. It lands in Generate Your Weekly Notes when you return to the week."
     }
    ],
-   "saves": "Your predictions, simulation runs, workbench choices, and notes stay in this browser on this device.",
-   "graded": "The activity is practice. Nothing is scored, recorded, or visible to your professor.",
+   "saves": "When browser storage is available, a temporary copy of predictions, simulation runs, workbench choices, and notes may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "The activity may show feedback or a practice result, but the companion site does not submit or grade it; it earns no course marks and is not sent to your professor.",
    "next": "Go back to the week page for the reflection and your weekly notes.",
    "clip": "183,197",
    "video": "videos/tour/activity.mp4",
-   "captions": "videos/tour/activity.vtt"
+   "captions": "videos/tour/activity.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.16,
+     "say": "The weekly experience is where you work an idea between classes."
+    },
+    {
+     "do": "scroll",
+     "to": 0.45,
+     "say": "Move through it at your own pace, then answer in your own words."
+    },
+    {
+     "do": "scroll",
+     "to": 0.8,
+     "say": "Finish by generating your weekly notes to keep a record of your thinking."
+    }
+   ]
   },
   "calendar": {
    "title": "How to use Calendar and Due Dates",
@@ -487,12 +788,34 @@ window.BFS218_HOWTO = {
      "detail": "If anything ever differs, Blackboard and your professor's announcements win."
     }
    ],
-   "saves": "This page stores nothing.",
-   "graded": "Nothing here is graded.",
+   "saves": "This page does not ask you to enter companion-site work. Browser or device features and external calendar services still apply their own settings and practices.",
+   "graded": "This reference page does not submit or grade work.",
    "next": "Put the two deadline dates into your own planner now, before they are close.",
    "clip": "197,211",
    "video": "videos/tour/calendar.mp4",
-   "captions": "videos/tour/calendar.vtt"
+   "captions": "videos/tour/calendar.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.15,
+     "say": "Every date that matters in one place: openings, deadlines, Study Week, and term end."
+    },
+    {
+     "do": "scroll",
+     "to": 0.52,
+     "say": "What you hand in, and when."
+    },
+    {
+     "do": "scroll",
+     "to": 0.64,
+     "say": "When each assignment opens on Blackboard."
+    },
+    {
+     "do": "scroll",
+     "to": 0.76,
+     "say": "And the full schedule. Blackboard stays the official source."
+    }
+   ]
   },
   "review": {
    "title": "How to use Term Review",
@@ -519,12 +842,36 @@ window.BFS218_HOWTO = {
      "detail": "Two short mixed sets a week beat one long cram. The pool grows as the course does."
     }
    ],
-   "saves": "Your practice history is saved only in this browser and feeds the missed-first ordering here and in the weekly Knowledge Checks.",
-   "graded": "Nothing here is scored, recorded, or visible to your professor.",
+   "saves": "When browser storage is available, a temporary copy of practice history may remain on this device and may feed missed-first ordering here and in weekly Knowledge Checks. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "graded": "Term Review may show correctness and a practice result, but the companion site does not submit or grade it; it earns no course marks and is not sent to your professor.",
    "next": "Run one set now, then revisit the week your confident misses point at.",
    "clip": "211,225",
    "video": "videos/tour/review.mp4",
-   "captions": "videos/tour/review.vtt"
+   "captions": "videos/tour/review.vtt",
+   "demo": [
+    {
+     "do": "call",
+     "js": "SOC.trPick(0)",
+     "say": "Answer a mixed practice question drawn from anywhere in the course so far."
+    },
+    {
+     "do": "call",
+     "js": "SOC.trConf(2)",
+     "at": "Sure",
+     "say": "Then mark how sure you were. The report uses this to surface confident mistakes first."
+    },
+    {
+     "do": "call",
+     "js": "SOC.trReveal()",
+     "at": "See how I did",
+     "say": "See how you did, with the reasoning, not just the answer."
+    },
+    {
+     "do": "scroll",
+     "to": 0.6,
+     "say": "Trust the ordering, read the calibration report at the end, and come back weekly."
+    }
+   ]
   },
   "outcomes": {
    "title": "How to use What This Course Builds",
@@ -547,12 +894,29 @@ window.BFS218_HOWTO = {
      "detail": "The Essential Employability Skills list is what Ontario colleges promise every graduate. This course practises the ones shown."
     }
    ],
-   "saves": "This page stores nothing.",
-   "graded": "Nothing here is graded. Blackboard carries the official documents.",
+   "saves": "This page does not ask you to enter companion-site work. Browser or device features and external links still apply their own settings and practices.",
+   "graded": "This reference page does not submit or grade work. Blackboard carries the official documents.",
    "next": "Open a week one of your shakier outcomes points at.",
    "clip": "225,239",
    "video": "videos/tour/outcomes.mp4",
-   "captions": "videos/tour/outcomes.vtt"
+   "captions": "videos/tour/outcomes.vtt",
+   "demo": [
+    {
+     "do": "scroll",
+     "to": 0.16,
+     "say": "These are the official outcomes behind every week of the course."
+    },
+    {
+     "do": "scroll",
+     "to": 0.25,
+     "say": "Read the course learning outcomes as promises for what you will be able to do."
+    },
+    {
+     "do": "scroll",
+     "to": 0.66,
+     "say": "And the Essential Employability Skills that employers name by name."
+    }
+   ]
   }
  }
 };

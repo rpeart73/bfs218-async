@@ -1,4 +1,4 @@
-/* BFS218 official outcomes registry (2026-07-25). CLO and EES wording extracted VERBATIM from the official course outline documents; week and assessment mappings only where a document states them. Sources: /mnt/c/Users/raymo/Tresorit/Tresorit Ecosystem/Workbench/Seneca/Courses/Fall/2026/BFS218/Asynchronous/Course Outline/BFS218_Course_Outline_Online-Asynchronous_Fall2026.docx; /mnt/c/Users/raymo/Tresorit/Tresorit Ecosystem/Workbench/Seneca/Courses/Fall/2026/BFS218/Synchronous/Course Outline/BFS218_Course_Outline_Online-Synchronous_Fall2026.docx; /mnt/c/Users/raymo/Tresorit/Tresorit Ecosystem/Workbench/Seneca/Courses/Fall/2026/BFS218/Asynchronous/Course Outline/_reference/BFS218_Course_Outline_NBA_Winter2026.docx; /mnt/c/Users/raymo/Tresorit/Tresorit Ecosystem/Workbench/Seneca/Courses/Fall/2026/BFS218/_Course_Plans/BFS218_Curriculum_Alignment_Map_Fall2026.md */
+/* BFS218 official outcomes registry (2026-07-25). CLO and EES wording extracted VERBATIM from the official course outline documents; week and assessment mappings only where a document states them. Sources: BFS218 Online-Asynchronous Fall 2026 course outline; BFS218 Online-Synchronous Fall 2026 course outline; BFS218 NBA Winter 2026 reference outline; BFS218 Fall 2026 curriculum alignment map. */
 window.BFS218_OUTCOMES = {
  "note": "Wording is taken verbatim from the official course outline. Blackboard carries the official documents; if anything differs, Blackboard wins.",
  "clos": [
@@ -22,7 +22,7 @@ window.BFS218_OUTCOMES = {
     "Map Exchange",
     "Compass Check: Scenario Decisions and Your Mirror",
     "Canadian Case File",
-    "Personal Cartography"
+    "Personal Cartography final project"
    ]
   },
   {
@@ -49,7 +49,7 @@ window.BFS218_OUTCOMES = {
     "Compass Check: Scenario Decisions and Your Mirror",
     "Canadian Case File",
     "Design the Repair",
-    "Personal Cartography"
+    "Personal Cartography final project"
    ]
   },
   {
@@ -82,7 +82,7 @@ window.BFS218_OUTCOMES = {
    ],
    "assessments": [
     "Design the Repair",
-    "Personal Cartography"
+    "Personal Cartography final project"
    ]
   },
   {
@@ -106,7 +106,7 @@ window.BFS218_OUTCOMES = {
    "assessments": [
     "Map Exchange",
     "Compass Check: Scenario Decisions and Your Mirror",
-    "Personal Cartography"
+    "Personal Cartography final project"
    ]
   }
  ],

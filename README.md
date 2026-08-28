@@ -4,7 +4,7 @@ Instructor-created course site for the fully asynchronous section of **BFS218: R
 
 A student-facing weekly learning pathway on the shared corpus engine: search and filter the course readings, move through the course by week, drill into one source, browse the glossary and key thinkers, and run self-check cards. Weekly pages carry the overview, purpose, outcomes, guiding questions, concepts, readings, an immersive weekly experience, and an activity. The repo also serves the legacy weekly presentation routes at `/walkthroughs/`.
 
-It is a **companion to Blackboard**, not a replacement. Official course records, discussion, grades, and submission live in Blackboard. No accounts, no grading, no student-to-student interaction, no analytics, no PDFs, and no reproduced reading text. Reading links point outward (open access, publisher, Seneca Library, or Blackboard).
+It is a **companion to Blackboard**, not a replacement. Official course records, discussion, grades, and submission live in Blackboard. The site has no accounts, grading, student-to-student interaction, analytics, or reproduced reading text. It does provide a downloadable student-guide PDF. Reading links point outward (open access, publisher, Seneca Library, or Blackboard).
 
 ## Canonical public site
 This repository serves the asynchronous section site (planned URL `https://rpeart73.github.io/bfs218-async/`). The synchronous-online section has its own site; shared curriculum data cascades from the course master via `_shared/cascade.sh`, and presentation stays forked per section.

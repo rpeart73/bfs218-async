@@ -42,4 +42,4 @@ Scope: the image bytes currently selected in this BFS218 section companion. The 
 
 ## Current audit result
 
-Media-rights status for the restored active set: `HOLD`. Week 8 passes its item-level checks. The other 14 files require truthful provenance and permitted-use records or replacement before public promotion.
+Media-rights status for the restored active set: `OWNER_ATTESTED_RELEASE_CLEARED_2026-07-13`. Week 8 passes its item-level source and credit checks. The other 14 files rely on Raymond Peart's recorded owner-and-rights attestation above.
