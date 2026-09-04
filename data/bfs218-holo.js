@@ -2999,34 +2999,248 @@
   };
   REAL_SIGNATURES.promisefunnel = 'bfs218-w09-benevolence-case-xray-real-v1';
 
-  /* Week 10: the published study becomes a support-allocation desk, not a
-     fake score simulator. A movable policy rail separates prediction from the
-     institution's cutoff, while a staffed review lane preserves context. */
+  /* Week 10: support-allocation desk and predictive threshold audit.
+     A published model, an institution's policy cutoff slider, allocation trays,
+     and a staffed human review / appeal station with tactile studio lighting. */
   REAL_SCENES.thresholdaudit = function (K, ctx) {
     K.stage({ style: 'realist' });
-    var hot = ctx.riskOn, path = ctx.pathOn, steel = K.real.surface('darkSteel'), brushed = K.real.surface('steel'), paper = K.real.surface('paper');
-    K.rbox(6.7, 2.0, 0.16, K.real.surface('concrete'), [0, 0.98, -2.18], null, { r: 0.026 });
-    K.real.table([0, 0, 0.2], { w: 6.25, d: 1.72, h: 0.68, top: K.real.surface('oak') });
-    K.rbox(1.1, 0.85, 0.72, steel, [-2.35, 1.08, 0], null, { r: 0.04 });
-    var study = K.screen(120, 78, function (g, w, h) { g.fillStyle = '#162126'; g.fillRect(0, 0, w, h); g.fillStyle = '#c7d0ce'; g.font = '700 10px "Segoe UI", sans-serif'; g.fillText('PUBLISHED STUDY', 9, 16); g.fillStyle = '#587e79'; g.fillRect(9, 27, 102, 12); g.fillStyle = '#d9dedc'; g.font = '600 7px "Segoe UI", sans-serif'; g.fillText('PREDICTION VARIES', 13, 36); for (var r = 0; r < 3; r++) g.fillRect(9, 50 + r * 8, 86 - r * 12, 3); }, { glow: 0.2 });
-    K.add(new K.THREE.PlaneGeometry(0.9, 0.58), study, [-2.35, 1.12, 0.37], null, { shadow: false });
-    realPlate(K, 'Study evidence', [-2.35, 1.72, 0.2], { w: 1.0 });
-    K.rbox(2.35, 0.1, 0.64, brushed, [-0.45, 0.78, 0], null, { r: 0.025 });
-    for (var t = 0; t < 9; t++) K.box(0.025, 0.06, t % 3 === 0 ? 0.42 : 0.28, steel, [-1.38 + t * 0.235, 0.86, 0], null, { shadow: false });
-    var cutoffX = hot ? 0.28 : path ? -0.35 : -0.02;
-    K.box(0.06, 0.74, 0.78, K.real.accent(hot ? PAL.red : path ? PAL.green : PAL.amber, hot), [cutoffX, 1.12, 0]);
-    realPlate(K, 'Institution sets cutoff', [-0.45, 1.72, 0.25], { w: 1.32, warn: hot });
-    K.rbox(0.9, 0.18, 0.68, K.real.accent(PAL.green, false), [1.15, 0.82, -0.48], null, { r: 0.035 });
-    K.rbox(0.9, 0.18, 0.68, K.real.accent(hot ? PAL.red : PAL.amber, hot), [1.15, 0.82, 0.48], null, { r: 0.035 });
-    K.rbox(0.64, 0.02, 0.48, paper, [1.15, 0.94, hot ? 0.48 : -0.48], null, { r: 0.008 });
-    realPlate(K, 'Support / outside', [1.15, 1.55, 0.2], { w: 1.1, warn: hot });
-    K.real.frame([2.42, 0.7, 0], { w: 0.95, h: 0.82, d: 0.2, beam: 0.07, light: path ? PAL.green : PAL.amber });
-    K.rbox(0.72, 0.05, 0.48, paper, [2.42, 0.86, 0], [0, -0.08, 0], { r: 0.012 });
-    K.cyl(0.12, 0.14, 0.38, steel, [2.42, 1.08, -0.26], [0, 0, -0.5], { seg: 32 });
-    realPlate(K, 'Human review + appeal', [2.42, 1.72, 0.18], { w: 1.35 });
-    K.flow([[-1.75, 1.05, 0], [-0.45, 1.15, 0], [0.62, 1.02, hot ? 0.3 : -0.3], [1.55, 1.06, hot ? 0.42 : -0.42], [2.05, 1.18, 0]], { color: hot ? PAL.red : path ? PAL.green : PAL.teal, pulseColor: hot ? PAL.red : PAL.amber, pulses: 4, speed: 0.08, radius: 0.015 });
+    var hot = ctx.riskOn, path = ctx.pathOn;
+    var steel = K.real.surface('darkSteel'), brushed = K.real.surface('steel'), paper = K.real.surface('paper'), oak = K.real.surface('oak');
+
+    // 1. Studio Architectural Room Background & Floor
+    K.rbox(7.6, 0.16, 5.4, K.real.surface('concrete'), [0, -0.08, 0.1], null, { r: 0.04 });
+    K.rbox(7.8, 2.7, 0.14, K.real.surface('concrete'), [0, 1.32, -2.42], null, { r: 0.035 });
+    for (var sl = -7; sl <= 7; sl++) {
+      K.box(0.045, 2.65, 0.05, oak, [sl * 0.52, 1.32, -2.34], null, { shadow: false });
+    }
+    K.box(7.8, 0.12, 0.08, steel, [0, 0.06, -2.32], null, { shadow: false });
+
+    // 2. High-End Studio Workbench Table
+    K.real.table([0, 0, 0.16], { w: 6.35, d: 1.82, h: 0.72, top: oak });
+
+    // 3. Studio Lighting accents
+    var deskGlow = new K.THREE.PointLight(0xffeedd, 0.55, 6.0, 2);
+    deskGlow.position.set(0, 2.5, 0.6);
+    ctx.root.add(deskGlow);
+
+    var screenLight = new K.THREE.PointLight(0x70c0e0, 0.45, 3.2, 2);
+    screenLight.position.set(-2.25, 1.35, 0.45);
+    ctx.root.add(screenLight);
+
+    var lampLight = new K.THREE.PointLight(0xffd588, 0.68, 3.0, 2);
+    lampLight.position.set(2.42, 1.62, 0.22);
+    ctx.root.add(lampLight);
+
+    // Station 1: Study Evidence Workstation (Left: x = -2.3)
+    var termGroup = new K.THREE.Group();
+    ctx.root.add(termGroup);
+    termGroup.position.set(-2.3, 0.72, 0.08);
+
+    K.rbox(0.48, 0.025, 0.38, brushed, [0, 0.015, 0], null, { parent: termGroup, r: 0.015 });
+    K.cyl(0.045, 0.055, 0.42, brushed, [0, 0.22, -0.06], null, { parent: termGroup, seg: 24 });
+    K.rbox(1.36, 0.92, 0.08, steel, [0, 0.58, 0.02], [-0.04, 0, 0], { parent: termGroup, r: 0.035 });
+
+    var studyScreen = K.screen(240, 156, function (g, w, h) {
+      g.fillStyle = '#0f171c'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#1e2933'; g.fillRect(0, 0, w, 28);
+      g.fillStyle = '#4da699'; g.fillRect(12, 8, 8, 12);
+      g.fillStyle = '#e8f0ec'; g.font = '800 11px "Segoe UI", sans-serif';
+      g.fillText('PUBLISHED STUDY · N = 18,400', 26, 18);
+      g.fillStyle = '#8ea2a0'; g.font = '600 8px "Segoe UI", sans-serif';
+      g.fillText('COMMUNITY COLLEGE RETENTION MODEL', 12, 40);
+
+      g.fillStyle = '#16232b'; g.fillRect(12, 48, 216, 62);
+      g.strokeStyle = 'rgba(255,255,255,.08)'; g.lineWidth = 1;
+      for (var gl = 0; gl < 4; gl++) { g.beginPath(); g.moveTo(12, 50 + gl * 15); g.lineTo(228, 50 + gl * 15); g.stroke(); }
+      var bars = [14, 22, 38, 56, 78, 92, 84, 62, 42, 28, 18];
+      var barW = 16;
+      for (var b = 0; b < bars.length; b++) {
+        var bh = (bars[b] / 100) * 46;
+        g.fillStyle = (b < 5) ? (hot ? '#b83a32' : '#885544') : '#367b68';
+        g.fillRect(18 + b * (barW + 3), 108 - bh, barW, bh);
+      }
+      g.strokeStyle = '#ffd700'; g.lineWidth = 2; g.setLineDash([3, 2]);
+      g.beginPath(); g.moveTo(125, 48); g.lineTo(125, 110); g.stroke(); g.setLineDash([]);
+
+      g.fillStyle = '#1e2a30'; g.fillRect(12, 118, 102, 26);
+      g.fillStyle = '#7a9693'; g.font = '700 7px "Segoe UI", sans-serif'; g.fillText('MODEL ACCURACY', 18, 128);
+      g.fillStyle = '#3eb598'; g.font = '800 11px "Segoe UI", sans-serif'; g.fillText('71.4% AUC', 18, 140);
+
+      g.fillStyle = '#261c1b'; g.fillRect(124, 118, 104, 26);
+      g.fillStyle = '#b67a74'; g.font = '700 7px "Segoe UI", sans-serif'; g.fillText('SUBGROUP DISPARITY', 130, 128);
+      g.fillStyle = hot ? '#e05347' : '#c9965a'; g.font = '800 10px "Segoe UI", sans-serif'; g.fillText('EQUAL SCORES ≠ LIVED NEED', 130, 140);
+    }, { glow: 0.28 });
+    K.add(new K.THREE.PlaneGeometry(1.28, 0.84), studyScreen, [0, 0.58, 0.065], [-0.04, 0, 0], { parent: termGroup, shadow: false });
+
+    K.rbox(0.58, 0.015, 0.22, steel, [0, 0.01, 0.38], null, { parent: termGroup, r: 0.01 });
+    K.rbox(0.12, 0.012, 0.16, brushed, [0.42, 0.01, 0.38], null, { parent: termGroup, r: 0.01 });
+    realPlate(K, '1. Study Evidence (Prediction)', [-2.3, 1.84, 0.15], { w: 1.35 });
+
+    // Station 2: Institutional Cutoff Console (Centre: x = -0.45)
+    var railGroup = new K.THREE.Group();
+    ctx.root.add(railGroup);
+    railGroup.position.set(-0.45, 0.72, 0.12);
+
+    K.rbox(2.45, 0.09, 0.78, brushed, [0, 0.045, 0], null, { parent: railGroup, r: 0.025 });
+    K.cyl(0.022, 0.022, 2.32, steel, [0, 0.11, -0.16], [0, 0, Math.PI / 2], { parent: railGroup, seg: 20 });
+    K.cyl(0.022, 0.022, 2.32, steel, [0, 0.11, 0.16], [0, 0, Math.PI / 2], { parent: railGroup, seg: 20 });
+
+    for (var tk = 0; tk <= 10; tk++) {
+      var tx = -1.05 + tk * 0.21;
+      var major = tk % 5 === 0;
+      K.box(0.014, 0.012, major ? 0.44 : 0.26, oak, [tx, 0.095, 0], null, { parent: railGroup, shadow: false });
+    }
+
+    var scaleSign = K.screen(180, 42, function (g, w, h) {
+      g.fillStyle = '#181e22'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#b8c6c2'; g.font = '700 9px "Segoe UI", sans-serif';
+      g.fillText('0.0 MIN RISK', 10, 16);
+      g.fillText('0.5 CUTOFF', 68, 16);
+      g.fillText('1.0 HIGH RISK', 122, 16);
+      g.fillStyle = '#dfaa45'; g.fillRect(10, 24, 160, 4);
+    }, { glow: 0.08 });
+    K.add(new K.THREE.PlaneGeometry(1.6, 0.32), scaleSign, [0, 0.105, 0.28], [-Math.PI / 2, 0, 0], { parent: railGroup, shadow: false });
+
+    var cutoffX = hot ? 0.38 : path ? -0.42 : -0.05;
+    var divider = new K.THREE.Group();
+    railGroup.add(divider);
+    divider.position.set(cutoffX, 0.09, 0);
+
+    K.rbox(0.18, 0.14, 0.62, steel, [0, 0.07, 0], null, { parent: divider, r: 0.02 });
+    K.cyl(0.02, 0.005, 0.14, oak, [0, 0.15, 0.28], [Math.PI / 2, 0, 0], { parent: divider });
+
+    var bladeColor = hot ? PAL.red : path ? PAL.green : PAL.amber;
+    var bladeMat = K.real.accent(bladeColor, hot);
+    K.rbox(0.065, 0.88, 0.86, bladeMat, [0, 0.52, 0], null, { parent: divider, r: 0.025 });
+
+    var bladeLabel = K.screen(110, 36, function (g, w, h) {
+      g.fillStyle = hot ? '#8a2d26' : path ? '#2b6e56' : '#947035'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#fff'; g.font = '800 11px "Segoe UI", sans-serif';
+      g.textAlign = 'center'; g.fillText(hot ? 'RESTRICTIVE CUTOFF' : path ? 'INCLUSIVE THRESHOLD' : 'BASELINE CUTOFF', w / 2, 16);
+      g.font = '600 8px "Segoe UI", sans-serif';
+      g.fillText('INSTITUTIONAL DISCRETION', w / 2, 28);
+    }, { glow: 0.2 });
+    K.add(new K.THREE.PlaneGeometry(0.72, 0.24), bladeLabel, [0, 1.02, 0], null, { parent: divider, shadow: false });
+
+    realPlate(K, '2. Institution Sets Cutoff', [-0.45, 1.84, 0.2], { w: 1.48, warn: hot });
+
+    // Station 3: Support Allocation Trays (Center-Right: x = 1.15)
+    var trayGroup = new K.THREE.Group();
+    ctx.root.add(trayGroup);
+    trayGroup.position.set(1.15, 0.72, 0.12);
+
+    K.rbox(0.88, 0.16, 0.68, K.real.accent(PAL.green, false), [0, 0.08, -0.42], null, { parent: trayGroup, r: 0.025 });
+    for (var fa = 0; fa < 4; fa++) {
+      K.rbox(0.68, 0.022, 0.52, paper, [0.03 * (fa - 1.5), 0.17 + fa * 0.025, -0.42], [0, fa * 0.03, 0], { parent: trayGroup, r: 0.008 });
+    }
+    var tagA = K.screen(96, 28, function (g, w, h) {
+      g.fillStyle = '#1e5e48'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#d4f2e5'; g.font = '800 9px "Segoe UI", sans-serif'; g.textAlign = 'center';
+      g.fillText('SUPPORT ALLOCATED', w / 2, 14);
+      g.font = '600 7px "Segoe UI", sans-serif'; g.fillText('TUTORING & COACHING', w / 2, 23);
+    }, { glow: 0.15 });
+    K.add(new K.THREE.PlaneGeometry(0.68, 0.2), tagA, [0, 0.12, -0.06], null, { parent: trayGroup, shadow: false });
+
+    K.rbox(0.88, 0.16, 0.68, K.real.accent(hot ? PAL.red : PAL.amber, hot), [0, 0.08, 0.42], null, { parent: trayGroup, r: 0.025 });
+    for (var fb = 0; fb < 4; fb++) {
+      K.rbox(0.68, 0.022, 0.52, paper, [0.03 * (fb - 1.5), 0.17 + fb * 0.025, 0.42], [0, -fb * 0.03, 0], { parent: trayGroup, r: 0.008 });
+      K.box(0.12, 0.015, 0.08, K.real.accent(PAL.red, true), [0.28, 0.19 + fb * 0.025, 0.42 + fb * 0.02], null, { parent: trayGroup, shadow: false });
+    }
+    var tagB = K.screen(96, 28, function (g, w, h) {
+      g.fillStyle = hot ? '#7c251f' : '#6f5024'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#fce5e3'; g.font = '800 9px "Segoe UI", sans-serif'; g.textAlign = 'center';
+      g.fillText('OUTSIDE CUTOFF', w / 2, 14);
+      g.font = '600 7px "Segoe UI", sans-serif'; g.fillText('NO SUPPORT WITHOUT REVIEW', w / 2, 23);
+    }, { glow: 0.15 });
+    K.add(new K.THREE.PlaneGeometry(0.68, 0.2), tagB, [0, 0.12, 0.78], null, { parent: trayGroup, shadow: false });
+
+    realPlate(K, '3. Allocation vs. Exclusion', [1.15, 1.84, 0.15], { w: 1.42, warn: hot });
+
+    // Station 4: Staffed Human Review & Appeal Station (Right: x = 2.45)
+    var deskStation = new K.THREE.Group();
+    ctx.root.add(deskStation);
+    deskStation.position.set(2.45, 0.72, 0.12);
+
+    K.rbox(1.05, 0.022, 0.78, K.real.surface('leather'), [0, 0.011, 0], null, { parent: deskStation, r: 0.02 });
+
+    var binder = new K.THREE.Group();
+    deskStation.add(binder);
+    binder.position.set(-0.12, 0.025, 0.08);
+    binder.rotation.y = -0.06;
+    K.rbox(0.72, 0.035, 0.52, paper, [0, 0.015, 0], null, { parent: binder, r: 0.008 });
+    for (var sp = -5; sp <= 5; sp++) {
+      K.torus(0.022, 0.005, steel, [-0.34, 0.032, sp * 0.042], [0, Math.PI / 2, 0], { parent: binder });
+    }
+    var noteTex = K.screen(128, 88, function (g, w, h) {
+      g.fillStyle = '#faf8f2'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#b83b32'; g.fillRect(14, 0, 1.5, h);
+      g.strokeStyle = '#c5d0d8'; g.lineWidth = 1;
+      for (var nl = 14; nl < h; nl += 9) { g.beginPath(); g.moveTo(0, nl); g.lineTo(w, nl); g.stroke(); }
+      g.fillStyle = '#22303a'; g.font = '700 8px "Segoe UI", sans-serif';
+      g.fillText('STUDENT CONTEXT REVIEW', 22, 18);
+      g.fillStyle = '#556570'; g.font = '600 7px "Segoe UI", sans-serif';
+      g.fillText('Caregiving responsibilities', 22, 32);
+      g.fillText('Commute + work schedule', 22, 44);
+      g.fillText('Prerequisite course gaps', 22, 56);
+      g.fillStyle = '#1c7a43'; g.font = '800 8px "Segoe UI", sans-serif';
+      g.fillText('ADVISOR OVERRIDE: APPROVED', 22, 72);
+    }, { glow: 0.1 });
+    K.add(new K.THREE.PlaneGeometry(0.66, 0.46), noteTex, [0, 0.036, 0], [-Math.PI / 2, 0, 0], { parent: binder, shadow: false });
+
+    var lamp = new K.THREE.Group();
+    deskStation.add(lamp);
+    lamp.position.set(0.38, 0.02, -0.28);
+    K.cyl(0.12, 0.13, 0.035, brushed, [0, 0.018, 0], null, { parent: lamp, seg: 24 });
+    K.cyl(0.016, 0.016, 0.52, brushed, [0, 0.26, 0], null, { parent: lamp, seg: 16 });
+    K.torus(0.09, 0.016, brushed, [-0.07, 0.52, 0], [0, 0, Math.PI / 2], { parent: lamp });
+    K.rbox(0.24, 0.09, 0.14, K.real.accent(PAL.green, false), [-0.14, 0.58, 0], [0, 0, 0.2], { parent: lamp, r: 0.025 });
+
+    var phone = new K.THREE.Group();
+    deskStation.add(phone);
+    phone.position.set(0.36, 0.02, 0.24);
+    K.rbox(0.22, 0.065, 0.26, steel, [0, 0.032, 0], [-0.1, 0, 0], { parent: phone, r: 0.02 });
+    K.rbox(0.075, 0.055, 0.32, steel, [0, 0.075, 0], [0, 0.12, 0], { parent: phone, r: 0.02 });
+
+    realPlate(K, '4. Human Review & Appeal', [2.45, 1.84, 0.15], { w: 1.48 });
+
+    // 5. Dynamic Multistrand Data Flow Particles
+    K.flow([
+      [-2.1, 0.82, 0.08],
+      [-1.3, 0.88, 0.12],
+      [-0.45, 0.92, 0.12]
+    ], {
+      color: PAL.teal, pulseColor: PAL.amber,
+      pulses: 3, speed: 0.085, radius: 0.016
+    });
+
+    K.flow([
+      [-0.45, 0.92, 0.12],
+      [0.35, 0.94, -0.15],
+      [1.15, 0.95, -0.42]
+    ], {
+      color: PAL.green, pulseColor: PAL.teal,
+      pulses: 3, speed: 0.08, radius: 0.016
+    });
+
+    K.flow([
+      [-0.45, 0.92, 0.12],
+      [0.35, 0.94, 0.35],
+      [1.15, 0.95, 0.42]
+    ], {
+      color: hot ? PAL.red : PAL.amber, pulseColor: PAL.red,
+      pulses: 3, speed: 0.075, radius: 0.016
+    });
+
+    K.flow([
+      [1.15, 0.95, 0.42],
+      [1.8, 1.05, 0.32],
+      [2.35, 0.88, 0.12]
+    ], {
+      color: PAL.green, pulseColor: 0xffe082,
+      pulses: 3, speed: 0.065, radius: 0.018
+    });
   };
-  REAL_SIGNATURES.thresholdaudit = 'bfs218-w10-threshold-review-desk-real-v1';
+  REAL_SIGNATURES.thresholdaudit = 'bfs218-w10-threshold-review-desk-real-v2';
 
   /* Week 11: a community wireless-network studio based on the documented DCTP
      case. The network, tools, maintenance cabinet, and governance binder show
@@ -3325,7 +3539,7 @@
     policydeck: { scale: 1.05, cam: [-3.0, 3.1, 5.7], look: [0, 0.8, 0] },
     surveillanceflow: { scale: 1.04, cam: [-4.6, 2.9, 5.0], look: [0, 0.65, 0] },
     decisionpath: { scale: 1.02, cam: [4.15, 3.35, 6.8], look: [0, 0.72, 0] },
-    thresholdaudit: { scale: 1.14, cam: [-4.4, 2.75, 5.2], look: [0, 0.68, 0] },
+    thresholdaudit: { scale: 1.08, cam: [0.15, 2.75, 5.85], look: [0.05, 0.85, 0] },
     capstonemap: { scale: 1.18, cam: [0, 3.25, 6.4], look: [0, 0.72, 0] },
     futurecompass: { scale: 1.26, cam: [-3.15, 2.0, 4.15], look: [0.3, 0.62, -0.1] },
     repairtable: { scale: 1.16, cam: [0, 3.35, 6.3], look: [0, 0.68, 0] },

@@ -5165,7 +5165,7 @@
       target.y += (x - last.x) * (editorialModel ? 0.0022 : 0.014);
       target.x += (y - last.y) * (editorialModel ? 0.0015 : 0.008);
       target.x = editorialModel ? Math.max(-0.075, Math.min(0.075, target.x)) : Math.max(-0.65, Math.min(0.35, target.x));
-      if (editorialModel) target.y = Math.max(-0.12, Math.min(0.12, target.y));
+      target.y = editorialModel ? Math.max(-0.12, Math.min(0.12, target.y)) : Math.max(-0.52, Math.min(0.52, target.y));
       last = { x: x, y: y };
       canvas.setAttribute('data-dragged', '1');
       schedule();
@@ -5452,7 +5452,7 @@
     };
     canvas.__camApi = {
       zoom: function (dir) { zoomBy(dir > 0 ? 1.18 : 0.85); },
-      spin: function (dir) { target.y += dir * (editorialModel ? 0.08 : 0.45); if (editorialModel) target.y = Math.max(-0.12, Math.min(0.12, target.y)); if (reduced) { cur.x = target.x; cur.y = target.y; } canvas.setAttribute('data-dragged', '1'); wakeMotion(); },
+      spin: function (dir) { target.y += dir * (editorialModel ? 0.08 : 0.18); target.y = editorialModel ? Math.max(-0.12, Math.min(0.12, target.y)) : Math.max(-0.52, Math.min(0.52, target.y)); if (reduced) { cur.x = target.x; cur.y = target.y; } canvas.setAttribute('data-dragged', '1'); wakeMotion(); },
       reset: function () {
         zoom = 1; target.x = view0.x; target.y = view0.y;
         if (reduced) { cur.x = target.x; cur.y = target.y; }
