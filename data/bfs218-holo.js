@@ -3568,17 +3568,21 @@
       overlay.add(group);
       var active = modes[index] === (ctx.view || 'predict');
       var mat = material(colours[index], active, false);
-      var halo = addMesh(group, new THREE.TorusGeometry(0.31, 0.014, 14, 72), material(colours[index], active, false), [0, 0, -0.035]);
-      halo.material.transparent = true; halo.material.opacity = active ? 0.88 : 0.5;
+      var halo = null;
+      if (ctx.kind === 'thresholdaudit') {
+        halo = { material: { opacity: 0, set emissiveIntensity(v) {}, color: { getHex: function () { return 0; } }, emissive: { setHex: function () {} } } };
+      } else {
+        halo = addMesh(group, new THREE.TorusGeometry(0.31, 0.014, 14, 72), material(colours[index], active, false), [0, 0, -0.035]);
+        halo.material.transparent = true; halo.material.opacity = active ? 0.88 : 0.5;
+      }
       var visual = new THREE.Group(); group.add(visual);
       if (ctx.kind === 'mechanismatch') {
         if (index === 0) documentShape(visual, mat);
         else if (index === 1) lensShape(visual, mat);
         else gearShape(visual, mat);
       } else if (ctx.kind === 'thresholdaudit') {
-        if (index === 0) hopperShape(visual, mat);
-        else if (index === 1) micrometerShape(visual, mat);
-        else balanceShape(visual, mat);
+        /* Option 1 artwork cleanly depicts the intake hopper, vernier cutoff gate, and equity balance scale.
+           Do not superimpose crude 3D primitives over the photorealistic artwork. */
       } else {
         if (index === 0) documentShape(visual, mat);
         else if (index === 1) leverShape(visual, mat);
@@ -3604,7 +3608,7 @@
         if (active) activeNode = node;
         node.mat.emissive.setHex(active ? node.mat.color.getHex() : 0x000000);
         node.mat.emissiveIntensity = active ? 0.17 : 0;
-        node.halo.material.opacity = active ? 0.68 : 0.3;
+        if (node.halo && node.halo.material && ctx.kind !== 'thresholdaudit') node.halo.material.opacity = active ? 0.68 : 0.3;
         var visualScale = active ? 0.82 : 0.7;
         node.group.scale.setScalar(visualScale);
         node.hit.scale.setScalar(1 / visualScale);

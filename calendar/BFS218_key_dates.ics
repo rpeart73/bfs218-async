@@ -327,17 +327,28 @@ END:VALARM
 END:VEVENT
 BEGIN:VEVENT
 DTSTAMP:20260904T160000Z
+SEQUENCE:1
+UID:bfs218-async-final-reflection-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20261130
+DTEND;VALUE=DATE:20261201
+SUMMARY:BFS218: Final Learning Reflection opens (5 percent)
+DESCRIPTION:Review the five closing prompts and begin planning your responses. Blackboard contains the official instructions and submission link.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg
+ =final-reflection
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260904T160000Z
 SEQUENCE:4
 UID:bfs218-async-final-reflection-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261215
-DTEND;VALUE=DATE:20261216
+DTSTART;VALUE=DATE:20261213
+DTEND;VALUE=DATE:20261214
 SUMMARY:BFS218: Final Learning Reflection due (5 percent)
 DESCRIPTION:Five short closing responses are due by 11:59 p.m. Eastern in
  Blackboard.
 BEGIN:VALARM
-TRIGGER:-P2D
+TRIGGER:-P1D
 ACTION:DISPLAY
-DESCRIPTION:BFS218: Final Learning Reflection due (5 percent) in 2 days
+DESCRIPTION:BFS218: Final Learning Reflection due (5 percent) tomorrow
 END:VALARM
 END:VEVENT
 END:VCALENDAR

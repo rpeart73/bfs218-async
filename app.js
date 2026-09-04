@@ -3968,14 +3968,14 @@
       : spec.kind === 'decisionpath'
       ? ['Drag right: application enters', 'Drag sideways: trace name filter', 'Drag sideways: compare outcomes']
       : spec.kind === 'thresholdaudit'
-      ? ['Drag vertically: compress student context', 'Drag vertically: adjust cutoff threshold', 'Drag sideways: weigh human recourse']
+      ? ['Drag vertically: compress student context', 'Drag vertically: adjust cutoff gate', 'Drag sideways: weigh human recourse']
       : ['Inspect object 1', 'Inspect object 2', 'Inspect object 3'];
     var dragTypes = spec.kind === 'mechanismatch'
       ? ['forward', 'sweep', 'turn']
       : spec.kind === 'decisionpath'
       ? ['forward', 'turn', 'sweep']
       : spec.kind === 'thresholdaudit'
-      ? ['sweep', 'forward', 'turn']
+      ? ['vertical', 'vertical', 'sweep']
       : ['sweep', 'sweep', 'sweep'];
     var dragResults = spec.kind === 'mechanismatch'
       ? [
@@ -3990,9 +3990,9 @@
           'This is amplification. The name-derived proxy turns the same current evidence into approval, added proof work, or denial.'
         ]
       : [
-          'Station 1: Student experiences compressed into scalar risk data. Rich personal history is reduced to proxy indicators.',
-          'Station 2: Administrative cutoff gate adjusted. Notice how changing the threshold redistributes errors and can deny resources to marginal students.',
-          'Station 3: Equity balance engaged. Human review and contextual evidence balance against automated predictive scores.'
+          'Station 1: Feature compression hopper engaged. Multidimensional student context (work, caregiving, health) is crushed into a single scalar score cylinder.',
+          'Station 2: Vernier cutoff gate adjusted. Moving the micrometer line shows that the cutoff is an administrative policy choice, determining who enters the SUPPORT bin vs. who is dropped into EXCLUDED ATTRITION.',
+          'Station 3: Equity balance scale engaged. Human review and contextual evidence balance against automated predictive scores to provide recourse for excluded students.'
         ];
     var dragLayer = renderAsset ? '<div class="wk-native-drag-layer" aria-label="Direct manipulation controls">' + dragPositions.map(function (pos, i) {
       var step = (spec.steps || [])[i] || [];
@@ -4801,7 +4801,8 @@
         try { (window.__HOLO_ERRS = window.__HOLO_ERRS || []).push(kind + ': ' + (e && (e.message || e))); } catch (e2) {}
       }
     }
-    if (!holo) {
+    var hasRenderAsset = !!(canvas.getAttribute('data-render-asset') || (shell && shell.hasAttribute('data-rendered-environment')) || (window.BFS218_HOLO && window.BFS218_HOLO.activityAsset && window.BFS218_HOLO.activityAsset(kind)));
+    if (!holo && !hasRenderAsset) {
       var grid = new THREE.GridHelper(7.2, 10, 0xd6dde5, 0xd6dde5);
       var gridMats = Array.isArray(grid.material) ? grid.material : [grid.material];
       gridMats.forEach(function (gm) {
@@ -4854,7 +4855,7 @@
         if (i > 0) arrow([x - (4.8 / Math.max(1, n - 1)) + 0.38, 0.38, 0], [x - 0.42, 0.38, 0], pathOn || hot ? 0xda291c : 0x1b2a4a);
       }
     }
-      if (!holo) switch (kind) {
+      if (!holo && !hasRenderAsset) switch (kind) {
       case 'startermap':
         miniPerson(0, -0.1, 0x1b2a4a);
         [[-2.05, -1.05, 0xffffff], [-2.1, 0.95, 0xe7f3ec], [1.95, -1.05, 0xfbe9ea], [2.05, 0.95, 0xffffff]].forEach(function (p, si) {
@@ -5314,6 +5315,9 @@
             y = clampDrag(y + dy * 0.24, -14, 14);
           } else if (dragType === 'turn') {
             rotation = clampDrag(rotation + dx * 1.2, -80, 80);
+          } else if (dragType === 'vertical') {
+            x = clampDrag(x + dx * 0.2, -12, 12);
+            y = clampDrag(y + dy * 0.58, -48, 48);
           } else {
             x = clampDrag(x + dx * 0.58, -58, 72);
             y = clampDrag(y + dy * 0.22, -16, 16);
@@ -5640,7 +5644,7 @@
       if (!dragging && !reduced && !editorialModel && frames < 150) target.y += 0.0015 + (week % 3) * 0.0004;
       if (reduced) { cur.x = target.x; cur.y = target.y; }
       else { cur.x += (target.x - cur.x) * 0.08; cur.y += (target.y - cur.y) * 0.08; }
-      if (editorialModel) {
+      if (editorialModel || hasRenderAsset) {
         root.rotation.set(0, 0, 0);
         baseCam.lerp(goalCam, reduced ? 1 : 0.085);
         baseLook.lerp(goalLook, reduced ? 1 : 0.085);
@@ -7897,7 +7901,7 @@
         weight: '5 marks (5%)',
         timing: 'Opens Monday, November 30, 2026 and is due Sunday, December 13, 2026.',
         opens: 'Week 14.',
-        release: '2026-12-14',
+        release: '2026-11-30',
         due: 'Due Sunday, December 13, 2026, at 11:59 p.m. Eastern.',
         purpose: 'Close the course by answering the opening question in your own words, using one specific Personal Cartography entry as evidence, and naming how you will carry the course lens into your field.',
         role: 'This is a short, separate final-week assessment. It is not the ungraded Reflection Corner and does not reopen Personal Cartography.',
