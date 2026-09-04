@@ -3003,6 +3003,9 @@
      A precision analytical apparatus demonstrating feature compression,
      institutional cutoff gatekeeping, and human recourse balance. */
   REAL_SCENES.thresholdaudit = function (K, ctx) {
+    if (REAL_ASSETS[ctx.kind] && (ctx.context === 'activity' || ctx.root.userData.renderAsset)) {
+      return renderedActivityEnvironment(K, ctx);
+    }
     K.stage({ style: 'realist' });
     var THREE = K.THREE;
     var view = ctx.view || 'try';
@@ -3437,7 +3440,9 @@
   };
   REAL_SIGNATURES.policydeck = 'bfs218-w12-aida-evidence-docket-real-v1';
 
-  var REAL_ASSETS = {};
+  var REAL_ASSETS = {
+    thresholdaudit: 'images/story/bfs218-w10-policy-sieve.jpg'
+  };
   function renderedActivityEnvironment(K, ctx) {
     var THREE = K.THREE;
     var asset = REAL_ASSETS[ctx.kind];
@@ -3457,8 +3462,12 @@
     var modes = ['predict', 'try', 'explain'];
     var positions = ctx.kind === 'mechanismatch'
       ? [[-1.38, -0.62, -4], [-0.72, -0.16, -4], [0.9, 0.08, -4]]
-      : [[-1.24, -0.48, -4], [0.02, -0.54, -4], [0.86, 0.16, -4]];
-    var colours = [0xa67a42, 0x4f7977, 0x6f2824];
+      : (ctx.kind === 'thresholdaudit'
+        ? [[-1.32, -0.28, -3.8], [-0.08, -0.20, -3.8], [1.18, -0.26, -3.8]]
+        : [[-1.24, -0.48, -4], [0.02, -0.54, -4], [0.86, 0.16, -4]]);
+    var colours = ctx.kind === 'thresholdaudit'
+      ? [0x2dd4bf, 0xd4af37, 0x10b981]
+      : [0xa67a42, 0x4f7977, 0x6f2824];
     function material(colour, active, glass) {
       return new THREE.MeshPhysicalMaterial({
         color: colour,
@@ -3522,6 +3531,37 @@
       link(parent, [0, -0.02], [0.18, 0.22], material(0xa53b33, true, false), 0.027);
       addMesh(parent, new THREE.SphereGeometry(0.045, 24, 18), mat, [0, -0.02, 0]);
     }
+    function hopperShape(parent, mat) {
+      addMesh(parent, new THREE.BoxGeometry(0.34, 0.44, 0.16), material(0x2dd4bf, false, true), [0, 0.08, 0]);
+      for (var cd = 0; cd < 3; cd++) {
+        addMesh(parent, new THREE.BoxGeometry(0.26, 0.34, 0.008), material(0x5eead4, true, false), [0, 0.14 - cd * 0.06, 0.015 * cd], [0, 0, -0.02]);
+      }
+      addMesh(parent, new THREE.CylinderGeometry(0.07, 0.07, 0.38, 24), material(0xd4af37, false, false), [0, -0.16, 0], [0, 0, Math.PI / 2]);
+      addMesh(parent, new THREE.TorusGeometry(0.078, 0.01, 10, 32), material(0xb89535, false, false), [-0.1, -0.16, 0], [0, Math.PI / 2, 0]);
+      addMesh(parent, new THREE.TorusGeometry(0.078, 0.01, 10, 32), material(0xb89535, false, false), [0.1, -0.16, 0], [0, Math.PI / 2, 0]);
+    }
+    function micrometerShape(parent, mat) {
+      addMesh(parent, new THREE.CylinderGeometry(0.07, 0.07, 0.46, 28), material(0x9ca3af, false, false), [0.08, 0.14, 0], [0, 0, Math.PI / 2]);
+      addMesh(parent, new THREE.CylinderGeometry(0.09, 0.09, 0.18, 28), material(0x6b7280, false, false), [0.27, 0.14, 0], [0, 0, Math.PI / 2]);
+      var blade = addMesh(parent, new THREE.BoxGeometry(0.42, 0.36, 0.035), material(0x27272a, true, false), [0, -0.08, 0]);
+      addMesh(blade, new THREE.BoxGeometry(0.44, 0.024, 0.045), material(0xd4af37, false, false), [0, -0.17, 0]);
+      parent.userData.gateBlade = blade;
+    }
+    function balanceShape(parent, mat) {
+      addMesh(parent, new THREE.CylinderGeometry(0.025, 0.035, 0.52, 20), material(0xb89535, false, false), [0, 0, 0]);
+      addMesh(parent, new THREE.CylinderGeometry(0.08, 0.1, 0.04, 24), material(0x27272a, false, false), [0, -0.25, 0]);
+      var beam = new THREE.Group(); parent.add(beam); beam.position.set(0, 0.24, 0);
+      addMesh(beam, new THREE.BoxGeometry(0.56, 0.025, 0.025), material(0xd4af37, false, false), [0, 0, 0]);
+      link(beam, [-0.22, 0], [-0.22, -0.22], mat, 0.012);
+      addMesh(beam, new THREE.CylinderGeometry(0.09, 0.09, 0.015, 24), material(0xd4af37, false, false), [-0.22, -0.22, 0]);
+      addMesh(beam, new THREE.CylinderGeometry(0.04, 0.04, 0.08, 20), material(0xb89535, false, false), [-0.22, -0.17, 0]);
+      link(beam, [0.22, 0], [0.22, -0.22], mat, 0.012);
+      addMesh(beam, new THREE.CylinderGeometry(0.09, 0.09, 0.015, 24), material(0xd4af37, false, false), [0.22, -0.22, 0]);
+      addMesh(beam, new THREE.BoxGeometry(0.12, 0.022, 0.08), material(0xfef08a, false, false), [0.22, -0.20, 0]);
+      addMesh(parent, new THREE.TorusGeometry(0.065, 0.012, 12, 32), material(0xd4af37, false, false), [0.28, 0.06, 0.05], [0.2, 0.3, 0]);
+      addMesh(parent, new THREE.CircleGeometry(0.055, 24), material(0x9fdde0, false, true), [0.28, 0.06, 0.05], [0.2, 0.3, 0]);
+      parent.userData.beam = beam;
+    }
     positions.forEach(function (position, index) {
       var group = new THREE.Group();
       group.position.set(position[0], position[1], position[2]);
@@ -3535,6 +3575,10 @@
         if (index === 0) documentShape(visual, mat);
         else if (index === 1) lensShape(visual, mat);
         else gearShape(visual, mat);
+      } else if (ctx.kind === 'thresholdaudit') {
+        if (index === 0) hopperShape(visual, mat);
+        else if (index === 1) micrometerShape(visual, mat);
+        else balanceShape(visual, mat);
       } else {
         if (index === 0) documentShape(visual, mat);
         else if (index === 1) leverShape(visual, mat);
@@ -3542,7 +3586,12 @@
       }
       var hit = addMesh(group, new THREE.SphereGeometry(0.37, 24, 18), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
       hit.userData.storyView = modes[index];
-      picks.push({ mesh: hit, view: modes[index], announcement: index === 0 ? 'Input or outcome selected.' : index === 1 ? 'System mechanism selected.' : 'Consequence selected.' });
+      var announcement = ctx.kind === 'thresholdaudit'
+        ? (index === 0 ? 'Station 1: Feature compression hopper selected. Multidimensional context flattened into scalar scores.'
+          : (index === 1 ? 'Station 2: Vernier cutoff gate selected. Institutional discretion sets the support threshold.'
+          : 'Station 3: Equity balance selected. Human review weighs cold prediction against lived context.'))
+        : (index === 0 ? 'Input or outcome selected.' : index === 1 ? 'System mechanism selected.' : 'Consequence selected.');
+      picks.push({ mesh: hit, view: modes[index], announcement: announcement });
       nodes.push({ group: group, visual: visual, halo: halo, hit: hit, mat: mat, mode: modes[index], index: index, turnX: 0, turnY: 0, spinZ: 0, leverShift: 0, dragX: 0, dragY: 0 });
     });
     var activeNode = nodes[0];
@@ -3576,6 +3625,17 @@
         } else {
           activeNode.spinZ += dx * 0.02;
           activeNode.turnY += dy * 0.006;
+        }
+      } else if (ctx.kind === 'thresholdaudit') {
+        if (activeNode.index === 0) {
+          activeNode.dragY = Math.max(-0.25, Math.min(0.25, activeNode.dragY - dy * 0.003));
+          activeNode.turnY += dx * 0.006;
+        } else if (activeNode.index === 1) {
+          activeNode.leverShift = Math.max(-0.35, Math.min(0.35, activeNode.leverShift - dy * 0.004));
+          activeNode.turnY += dx * 0.008;
+        } else {
+          activeNode.spinZ = Math.max(-0.32, Math.min(0.32, activeNode.spinZ + dx * 0.008));
+          activeNode.turnY += dy * 0.005;
         }
       } else if (activeNode.index === 0) {
         activeNode.dragX = Math.max(0, Math.min(0.72, activeNode.dragX + dx * 0.005));
@@ -3615,6 +3675,8 @@
         node.group.position.x = positions[index][0] + node.dragX;
         node.group.position.y = positions[index][1] + node.dragY + Math.sin(time * 1.1 + index) * (active ? 0.025 : 0.009);
         if (node.visual.userData.arm) node.visual.userData.arm.rotation.z = -0.42 + node.leverShift + Math.sin(time * 0.9) * 0.06;
+        if (node.visual.userData.gateBlade) node.visual.userData.gateBlade.position.y = -0.08 + node.leverShift + (active ? Math.sin(time * 1.5) * 0.015 : 0);
+        if (node.visual.userData.beam) node.visual.userData.beam.rotation.z = node.spinZ + (active ? Math.sin(time * 1.2) * 0.06 : Math.sin(time * 0.6) * 0.02);
       });
     });
     return {

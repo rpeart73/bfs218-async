@@ -594,7 +594,7 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Note every release and due date.",
-     "detail": "The first graded deadline is October 18 and the final deadline is December 15. Use the calendar for every release, milestone, and due date. Deadlines are 11:59 p.m. Eastern."
+     "detail": "The first graded deadline is October 18 and the final deadline is December 13. Use the calendar for every release, milestone, and due date. Deadlines are 11:59 p.m. Eastern."
     },
     {
      "do": "Open one assignment room at a time.",
@@ -630,7 +630,7 @@ window.BFS218_HOWTO = {
     {
      "do": "click",
      "text": "Release",
-     "say": "Assessment deadlines run from October 18 to December 15, all by 11:59 p.m. Eastern. Nothing is due in Study Week; the 5 percent Final Learning Reflection is due in Week 14."
+     "say": "Assessment deadlines run from October 18 to December 13, all by 11:59 p.m. Eastern. Nothing is due in Study Week; the 5 percent Final Learning Reflection is due in Week 14."
     },
     {
      "do": "click",

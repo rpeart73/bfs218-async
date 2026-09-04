@@ -15,7 +15,7 @@ Edit and deploy this repository for all BFS218 site updates.
 Live data is `data/corpus-data.js` (one `window.BFS218` object) plus `data/bfs218-mc.js` (self-check banks). Weekly page copy lives in the `WEEKPAGE` block of `app.js`.
 - Never use em or en dashes anywhere.
 - Every glossary term and key concept cites the week's assigned reading.
-- Book readings are always pinned to a chapter or page range. Personal Cartography (15%) is due in Week 13, and the Final Learning Reflection (5%) is due Tuesday, December 15 in Week 14, matching the official outline.
+- Book readings are always pinned to a chapter or page range. Personal Cartography (15%) is due in Week 13, and the Final Learning Reflection (5%) is due Sunday, December 13 in Week 14, matching the official outline.
 - After editing JavaScript or data, bump the matching `?v=` cache-buster in `index.html`.
 
 ## Run it
