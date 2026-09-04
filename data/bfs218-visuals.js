@@ -32,7 +32,7 @@ window.BFS218_VISUALS = {
     datastory: 'A realistic survey-governance table places the documented First Nations Regional Health Survey beside an ownership seal, decision keys, an access register, and a possession cabinet. The four objects keep OCAP® responsibilities distinct and make governance more concrete than receiving a finished report.',
     promisefunnel: 'A realistic evidence bench holds three documented case files beside an institutional X-ray screen. Students keep the benefit visible while comparing the added surveillance, historical ranking, or population management and testing burden, refusal, authority, and the condition left unchanged.',
     detector: 'A technical evidence station sends three writing samples through one detector and onto a verdict board. The orthographic layout keeps the essays, claimed accuracy, and unequal false flags visible at the same time.',
-    thresholdaudit: 'A realistic support-allocation desk places the published community-college study beside an institutional cutoff rail, support trays, and a human-review-and-appeal station. The objects separate prediction evidence from the policy choices made around it.',
+    thresholdaudit: 'The Mechanical Policy Sieve and Equity Balance combines a feature-compression hopper, a calibrated vernier micrometer gate, dual support vs. attrition chutes, and an analytical balance scale that weighs algorithm predictions against student lived context.',
     repairtable: 'A realistic community-network studio reconstructs documented DCTP roles in learning, design, installation, maintenance, and governance. The linked workstations show that participation becomes power through concrete expertise, infrastructure work, and decision rights.',
     policydeck: 'A realistic parliamentary evidence desk keeps a historical AIDA proposal binder, five argued gap files, and an institutional-response station in one view. The proposal is visibly marked as not enacted so policy argument, recommendation, and legislative status remain distinct.',
     capstonemap: 'A layered evidence table places an early entry, a later entry, the change between them, and a final plan in one cartographic field. The design turns reflection into a traceable evidence path.',
@@ -435,19 +435,19 @@ window.BFS218_VISUALS = {
         title: 'Use the model to inspect a gatekeeping tool.',
         steps: ['Identify the score or threshold.', 'Ask who is filtered out.', 'Name what human review would need to see.'],
         modelKind: 'thresholdaudit',
-        modelTitle: 'Activity model: test the threshold.',
-        modelScene: 'The Bird, Castleman, and Song study sits beside an institutional policy rail, two support trays, and a review-and-appeal desk. The physical separation shows that a prediction does not choose its own target, cutoff, resource rule, explanation, or appeal route.',
-        modelNote: 'The study used Virginia Community College System administrative data and simulated allocations. The rail represents institutional discretion only; it reproduces no student score, study threshold, operational program, or causal outcome.',
-        modelLearningJob: 'This model helps you explain how a threshold changes access to support and why a score cannot contain the whole student context.',
+        modelTitle: 'The Mechanical Policy Sieve & Equity Balance',
+        modelScene: 'A precision analytical sorting machine models the three stages of gatekeeping: a feature-compression hopper flattens lived student lives into scalar risk scores; an institutional micrometer gate splits the cohort between support and attrition; and an analytical balance scale weighs cold predictions against human context.',
+        modelNote: 'The study used Virginia Community College System administrative data and simulated allocations. The mechanical apparatus demonstrates how institutional discretion and cutoff thresholds move access to support, without reproducing an operational score or causal outcome.',
+        modelLearningJob: 'This model helps you explain the violence of feature compression, why an institutional threshold is a policy choice rather than a mathematical truth, and why human recourse is required outside the algorithm.',
         modelSteps: [
-          ['Read the study boundary', 'The study analysed predictions and simulated allocations, not a live support program.'],
-          ['Separate model from policy', 'The institution chooses the outcome, cutoff, and resource rule.'],
-          ['Add explanation and recourse', 'Context, human review, and appeal belong in the institutional design.']
+          ['Examine feature compression', 'Watch multidimensional student context get stripped away and flattened into a single scalar brass score cylinder.'],
+          ['Test the vernier cutoff gate', 'Adjust the institutional threshold to see how raising the cutoff systematically starves marginal Black students of support.'],
+          ['Engage the equity balance', 'Deploy the articulated inspection loupe and balance scale to restore human context and trigger advisor overrides.']
         ],
         modelLabels: [
-          { t: '1. Study boundary', sub: 'Prediction and simulated allocation are not a live program.' },
-          { t: '2. Institutional policy', sub: 'The college chooses the target, cutoff, and resource rule.' },
-          { t: '3. Explanation and recourse', sub: 'Add context, human review, and appeal.' }
+          { t: '1. Compression Hopper', sub: 'Multidimensional human lives flattened into scalar risk scores.' },
+          { t: '2. Vernier Cutoff Gate', sub: 'Institutional discretion sets the guillotine blade and divides support from attrition.' },
+          { t: '3. Equity Balance', sub: 'Weighs cold algorithm score against lived reality and enables human recourse.' }
         ]
       }
     },

@@ -2999,248 +2999,387 @@
   };
   REAL_SIGNATURES.promisefunnel = 'bfs218-w09-benevolence-case-xray-real-v1';
 
-  /* Week 10: support-allocation desk and predictive threshold audit.
-     A published model, an institution's policy cutoff slider, allocation trays,
-     and a staffed human review / appeal station with tactile studio lighting. */
+  /* Week 10: The Mechanical Policy Sieve & Equity Balance
+     A precision analytical apparatus demonstrating feature compression,
+     institutional cutoff gatekeeping, and human recourse balance. */
   REAL_SCENES.thresholdaudit = function (K, ctx) {
     K.stage({ style: 'realist' });
-    var hot = ctx.riskOn, path = ctx.pathOn;
-    var steel = K.real.surface('darkSteel'), brushed = K.real.surface('steel'), paper = K.real.surface('paper'), oak = K.real.surface('oak');
+    var THREE = K.THREE;
+    var view = ctx.view || 'try';
+    var hot = ctx.riskOn;
+    var path = ctx.pathOn;
+    var policy = typeof ctx.thresholdPolicy === 'number' ? ctx.thresholdPolicy : (hot ? 2 : (path ? 0 : (view === 'try' ? 1 : 0)));
 
-    // 1. Studio Architectural Room Background & Floor
-    K.rbox(7.6, 0.16, 5.4, K.real.surface('concrete'), [0, -0.08, 0.1], null, { r: 0.04 });
-    K.rbox(7.8, 2.7, 0.14, K.real.surface('concrete'), [0, 1.32, -2.42], null, { r: 0.035 });
+    var steel = K.real.surface('steel');
+    var darkSteel = K.real.surface('darkSteel');
+    var oak = K.real.surface('oak');
+    var paper = K.real.surface('paper');
+    var brass = K.mat.metal(0xd4af37, 0.28);
+    var antiqueBrass = K.mat.metal(0xb89535, 0.35);
+    var acrylic = K.mat.glass(0x8ae0db, 0.32);
+    var polishedBronze = K.mat.metal(0xa66b38, 0.32);
+
+    // 1. Studio Architectural Room & Heavy Walnut Plinth Base
+    K.rbox(7.6, 0.16, 5.4, K.real.surface('concrete'), [0, -0.16, 0.1], null, { r: 0.04 });
+    K.rbox(7.8, 2.8, 0.14, K.real.surface('concrete'), [0, 1.34, -2.42], null, { r: 0.035 });
     for (var sl = -7; sl <= 7; sl++) {
-      K.box(0.045, 2.65, 0.05, oak, [sl * 0.52, 1.32, -2.34], null, { shadow: false });
+      K.box(0.048, 2.75, 0.05, oak, [sl * 0.52, 1.34, -2.34], null, { shadow: false });
     }
-    K.box(7.8, 0.12, 0.08, steel, [0, 0.06, -2.32], null, { shadow: false });
+    K.box(7.8, 0.12, 0.08, darkSteel, [0, 0.04, -2.32], null, { shadow: false });
 
-    // 2. High-End Studio Workbench Table
-    K.real.table([0, 0, 0.16], { w: 6.35, d: 1.82, h: 0.72, top: oak });
+    // Machine Walnut Plinth with bevelled base
+    K.rbox(6.3, 0.14, 2.0, oak, [0, -0.01, 0.1], null, { r: 0.03 });
+    K.rbox(6.1, 0.06, 1.8, darkSteel, [0, 0.09, 0.1], null, { r: 0.02 });
 
-    // 3. Studio Lighting accents
-    var deskGlow = new K.THREE.PointLight(0xffeedd, 0.55, 6.0, 2);
-    deskGlow.position.set(0, 2.5, 0.6);
-    ctx.root.add(deskGlow);
+    // Localized Studio Lighting
+    var ambientFill = new THREE.PointLight(0xffeedd, 0.65, 6.5, 2);
+    ambientFill.position.set(0, 2.6, 0.8);
+    ctx.root.add(ambientFill);
 
-    var screenLight = new K.THREE.PointLight(0x70c0e0, 0.45, 3.2, 2);
-    screenLight.position.set(-2.25, 1.35, 0.45);
-    ctx.root.add(screenLight);
+    var hopperGlow = new THREE.PointLight(0x5eead4, 0.55, 3.2, 2);
+    hopperGlow.position.set(-2.15, 1.35, 0.45);
+    ctx.root.add(hopperGlow);
 
-    var lampLight = new K.THREE.PointLight(0xffd588, 0.68, 3.0, 2);
-    lampLight.position.set(2.42, 1.62, 0.22);
-    ctx.root.add(lampLight);
+    var gateGlow = new THREE.PointLight(policy === 2 ? 0xff4d4d : (policy === 0 ? 0x2dd4bf : 0xf59e0b), 0.75, 3.5, 2);
+    gateGlow.position.set(-0.15, 1.25, 0.55);
+    ctx.root.add(gateGlow);
 
-    // Station 1: Study Evidence Workstation (Left: x = -2.3)
-    var termGroup = new K.THREE.Group();
-    ctx.root.add(termGroup);
-    termGroup.position.set(-2.3, 0.72, 0.08);
+    var balanceSpot = new THREE.PointLight(0xffdf99, 0.8, 3.2, 2);
+    balanceSpot.position.set(2.25, 1.75, 0.45);
+    ctx.root.add(balanceSpot);
 
-    K.rbox(0.48, 0.025, 0.38, brushed, [0, 0.015, 0], null, { parent: termGroup, r: 0.015 });
-    K.cyl(0.045, 0.055, 0.42, brushed, [0, 0.22, -0.06], null, { parent: termGroup, seg: 24 });
-    K.rbox(1.36, 0.92, 0.08, steel, [0, 0.58, 0.02], [-0.04, 0, 0], { parent: termGroup, r: 0.035 });
+    // =========================================================================
+    // STATION 1 (LEFT: x = -2.15): Feature Compression Hopper & Roller Assembly
+    // =========================================================================
+    var hopperGroup = new THREE.Group();
+    ctx.root.add(hopperGroup);
+    hopperGroup.position.set(-2.15, 0.12, 0.1);
 
-    var studyScreen = K.screen(240, 156, function (g, w, h) {
-      g.fillStyle = '#0f171c'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#1e2933'; g.fillRect(0, 0, w, 28);
-      g.fillStyle = '#4da699'; g.fillRect(12, 8, 8, 12);
-      g.fillStyle = '#e8f0ec'; g.font = '800 11px "Segoe UI", sans-serif';
-      g.fillText('PUBLISHED STUDY · N = 18,400', 26, 18);
-      g.fillStyle = '#8ea2a0'; g.font = '600 8px "Segoe UI", sans-serif';
-      g.fillText('COMMUNITY COLLEGE RETENTION MODEL', 12, 40);
+    // Acrylic tower columns & glass panels
+    K.box(0.04, 1.85, 0.04, darkSteel, [-0.48, 1.05, -0.32], null, { parent: hopperGroup });
+    K.box(0.04, 1.85, 0.04, darkSteel, [0.48, 1.05, -0.32], null, { parent: hopperGroup });
+    K.box(0.04, 1.85, 0.04, darkSteel, [-0.48, 1.05, 0.32], null, { parent: hopperGroup });
+    K.box(0.04, 1.85, 0.04, darkSteel, [0.48, 1.05, 0.32], null, { parent: hopperGroup });
 
-      g.fillStyle = '#16232b'; g.fillRect(12, 48, 216, 62);
-      g.strokeStyle = 'rgba(255,255,255,.08)'; g.lineWidth = 1;
-      for (var gl = 0; gl < 4; gl++) { g.beginPath(); g.moveTo(12, 50 + gl * 15); g.lineTo(228, 50 + gl * 15); g.stroke(); }
-      var bars = [14, 22, 38, 56, 78, 92, 84, 62, 42, 28, 18];
-      var barW = 16;
-      for (var b = 0; b < bars.length; b++) {
-        var bh = (bars[b] / 100) * 46;
-        g.fillStyle = (b < 5) ? (hot ? '#b83a32' : '#885544') : '#367b68';
-        g.fillRect(18 + b * (barW + 3), 108 - bh, barW, bh);
+    // Transparent acrylic hopper walls
+    K.box(0.92, 1.78, 0.02, acrylic, [0, 1.05, -0.32], null, { parent: hopperGroup, shadow: false });
+    K.box(0.92, 1.78, 0.02, acrylic, [0, 1.05, 0.32], null, { parent: hopperGroup, shadow: false });
+    K.box(0.02, 1.78, 0.62, acrylic, [-0.48, 1.05, 0], null, { parent: hopperGroup, shadow: false });
+    K.box(0.02, 1.78, 0.62, acrylic, [0.48, 1.05, 0], null, { parent: hopperGroup, shadow: false });
+
+    // 3 Luminous Holographic Student Dossier Cards inside hopper
+    var cardStudents = [
+      { name: 'MAYA', gpa: '2.5 GPA', work: '28h Shift Work', transit: '2 Bus Transfers', care: 'Sole Caregiver', risk: '0.58' },
+      { name: 'TARIQ', gpa: '2.6 GPA', work: 'Delayed Aid Hold', transit: 'Long Commute', care: 'Prereq Gaps', risk: '0.61' },
+      { name: 'LUCAS', gpa: '2.4 GPA', work: 'Campus Resident', transit: 'Family Support', care: 'No Outside Work', risk: '0.52' }
+    ];
+
+    for (var c = 0; c < 3; c++) {
+      (function (idx) {
+        var cardData = cardStudents[idx];
+        var cardTex = K.screen(180, 130, function (g, w, h) {
+          g.fillStyle = 'rgba(8, 22, 28, 0.95)'; g.fillRect(0, 0, w, h);
+          g.strokeStyle = '#2dd4bf'; g.lineWidth = 3; g.strokeRect(4, 4, w - 8, h - 8);
+          g.fillStyle = '#115e59'; g.fillRect(6, 6, w - 12, 26);
+          g.fillStyle = '#f0fdfa'; g.font = '800 11px "Segoe UI", sans-serif';
+          g.fillText('STUDENT DOSSIER · ' + cardData.name, 14, 23);
+          g.fillStyle = '#5eead4'; g.font = '700 8px "Segoe UI", sans-serif';
+          g.fillText('LIVED REALITY VS. PROXY', 14, 44);
+          g.fillStyle = '#ccfbf1'; g.font = '600 8px "Segoe UI", sans-serif';
+          g.fillText('• ' + cardData.work, 14, 58);
+          g.fillText('• ' + cardData.transit, 14, 70);
+          g.fillText('• ' + cardData.care, 14, 82);
+          g.fillStyle = '#f59e0b'; g.font = '800 9px "Segoe UI", sans-serif';
+          g.fillText('COMPRESSED SCALAR RISK: ' + cardData.risk, 14, 102);
+          g.fillStyle = 'rgba(45, 212, 191, 0.2)'; g.fillRect(14, 108, w - 28, 12);
+        }, { glow: 0.35 });
+        K.add(new THREE.PlaneGeometry(0.8, 0.52), cardTex, [0, 1.55 - idx * 0.48, 0.02 * (idx - 1)], null, { parent: hopperGroup, shadow: false });
+      })(c);
+    }
+
+    // Horizontal Brass Extrusion / Compression Roller Barrel
+    var rollerGroup = new THREE.Group();
+    hopperGroup.add(rollerGroup);
+    rollerGroup.position.set(0, 0.22, 0);
+
+    // Knurled black knob on the far left
+    K.cyl(0.24, 0.26, 0.22, darkSteel, [-0.64, 0, 0], [0, 0, Math.PI / 2], { parent: rollerGroup, seg: 24 });
+    K.cyl(0.18, 0.18, 0.12, darkSteel, [-0.78, 0, 0], [0, 0, Math.PI / 2], { parent: rollerGroup, seg: 24 });
+
+    // Main ribbed brass compression cylinder
+    K.cyl(0.32, 0.32, 1.15, brass, [0, 0, 0], [0, 0, Math.PI / 2], { parent: rollerGroup, seg: 36 });
+    for (var r = -4; r <= 4; r++) {
+      K.torus(0.335, 0.016, antiqueBrass, [r * 0.11, 0, 0], [0, Math.PI / 2, 0], { parent: rollerGroup });
+    }
+
+    // Lower transparent receiving tray holding compressed brass score cylinders
+    K.rbox(0.92, 0.14, 0.62, acrylic, [0, -0.06, 0], null, { parent: hopperGroup, r: 0.02 });
+    for (var cy = 0; cy < 4; cy++) {
+      K.cyl(0.045, 0.045, 0.16, brass, [-0.28 + cy * 0.18, -0.04, 0.05 * (cy % 2 === 0 ? 1 : -1)], [0, 0, Math.PI / 2], { parent: hopperGroup });
+    }
+
+    realPlate(K, '1. Feature Compression Hopper', [-2.15, 2.1, 0.2], { w: 1.62 });
+
+    // =========================================================================
+    // STATION 2 (CENTRE: x = -0.15): Vernier Policy Micrometer Gate & Chutes
+    // =========================================================================
+    var gateGroup = new THREE.Group();
+    ctx.root.add(gateGroup);
+    gateGroup.position.set(-0.15, 0.12, 0.1);
+
+    // Cast-iron / dark-steel arched stanchions with brass capitals
+    K.rbox(0.26, 2.3, 0.44, darkSteel, [-0.85, 1.15, 0], null, { parent: gateGroup, r: 0.03 });
+    K.rbox(0.26, 2.3, 0.44, darkSteel, [0.55, 1.15, 0], null, { parent: gateGroup, r: 0.03 });
+    K.rbox(0.32, 0.12, 0.5, brass, [-0.85, 2.28, 0], null, { parent: gateGroup, r: 0.02 });
+    K.rbox(0.32, 0.12, 0.5, brass, [0.55, 2.28, 0], null, { parent: gateGroup, r: 0.02 });
+
+    // Top horizontal micrometer spindle cylinder with silver knurled barrel & vernier scales
+    var micrometerSpindle = new THREE.Group();
+    gateGroup.add(micrometerSpindle);
+    micrometerSpindle.position.set(-0.15, 2.22, 0);
+
+    K.cyl(0.18, 0.18, 1.25, acrylic, [0, 0, 0], [0, 0, Math.PI / 2], { parent: micrometerSpindle, seg: 32 });
+    K.cyl(0.24, 0.26, 0.65, steel, [0.65, 0, 0], [0, 0, Math.PI / 2], { parent: micrometerSpindle, seg: 32 });
+    K.cyl(0.12, 0.12, 0.28, darkSteel, [1.05, 0, 0], [0, 0, Math.PI / 2], { parent: micrometerSpindle, seg: 24 });
+
+    var vernierTex = K.screen(160, 48, function (g, w, h) {
+      g.fillStyle = '#22272b'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#d1d5db'; g.font = '700 8px "Segoe UI", sans-serif';
+      g.fillText('0.0 MIN', 10, 16); g.fillText('0.5 CUTOFF', 58, 16); g.fillText('1.0 MAX', 116, 16);
+      g.strokeStyle = '#e5e7eb'; g.lineWidth = 1;
+      g.beginPath(); g.moveTo(10, 24); g.lineTo(150, 24); g.stroke();
+      for (var vk = 0; vk <= 14; vk++) {
+        var vx = 10 + vk * 10;
+        g.beginPath(); g.moveTo(vx, 24); g.lineTo(vx, vk % 5 === 0 ? 38 : 31); g.stroke();
       }
-      g.strokeStyle = '#ffd700'; g.lineWidth = 2; g.setLineDash([3, 2]);
-      g.beginPath(); g.moveTo(125, 48); g.lineTo(125, 110); g.stroke(); g.setLineDash([]);
+    }, { glow: 0.15 });
+    K.add(new THREE.PlaneGeometry(0.62, 0.18), vernierTex, [0.65, 0, 0.27], null, { parent: micrometerSpindle, shadow: false });
 
-      g.fillStyle = '#1e2a30'; g.fillRect(12, 118, 102, 26);
-      g.fillStyle = '#7a9693'; g.font = '700 7px "Segoe UI", sans-serif'; g.fillText('MODEL ACCURACY', 18, 128);
-      g.fillStyle = '#3eb598'; g.font = '800 11px "Segoe UI", sans-serif'; g.fillText('71.4% AUC', 18, 140);
+    // The Sliding Guillotine Blade (moves vertically based on policy)
+    var bladeHeight = policy === 0 ? 1.38 : (policy === 2 ? 0.95 : 1.16);
+    var bladeGroup = new THREE.Group();
+    gateGroup.add(bladeGroup);
+    bladeGroup.position.set(-0.15, bladeHeight, 0);
 
-      g.fillStyle = '#261c1b'; g.fillRect(124, 118, 104, 26);
-      g.fillStyle = '#b67a74'; g.font = '700 7px "Segoe UI", sans-serif'; g.fillText('SUBGROUP DISPARITY', 130, 128);
-      g.fillStyle = hot ? '#e05347' : '#c9965a'; g.font = '800 10px "Segoe UI", sans-serif'; g.fillText('EQUAL SCORES ≠ LIVED NEED', 130, 140);
-    }, { glow: 0.28 });
-    K.add(new K.THREE.PlaneGeometry(1.28, 0.84), studyScreen, [0, 0.58, 0.065], [-0.04, 0, 0], { parent: termGroup, shadow: false });
+    K.rbox(1.14, 0.96, 0.1, darkSteel, [0, 0, 0], null, { parent: bladeGroup, r: 0.02 });
+    K.rbox(1.18, 0.04, 0.14, brass, [0, -0.48, 0], null, { parent: bladeGroup, r: 0.01 });
 
-    K.rbox(0.58, 0.015, 0.22, steel, [0, 0.01, 0.38], null, { parent: termGroup, r: 0.01 });
-    K.rbox(0.12, 0.012, 0.16, brushed, [0.42, 0.01, 0.38], null, { parent: termGroup, r: 0.01 });
-    realPlate(K, '1. Study Evidence (Prediction)', [-2.3, 1.84, 0.15], { w: 1.35 });
+    // Dual illuminated front status displays
+    var bladeCutoffBox = K.screen(88, 36, function (g, w, h) {
+      g.fillStyle = '#0f172a'; g.fillRect(0, 0, w, h);
+      g.strokeStyle = '#38bdf8'; g.lineWidth = 2; g.strokeRect(2, 2, w - 4, h - 4);
+      g.fillStyle = '#38bdf8'; g.font = '800 11px "Segoe UI", sans-serif'; g.textAlign = 'center';
+      g.fillText('CUTOFF', w / 2, 16);
+      g.fillStyle = '#e2e8f0'; g.font = '700 9px "Segoe UI", sans-serif';
+      g.fillText(policy === 0 ? '0.35' : (policy === 2 ? '0.70' : '0.50'), w / 2, 28);
+    }, { glow: 0.3 });
+    K.add(new THREE.PlaneGeometry(0.44, 0.22), bladeCutoffBox, [-0.26, 0.08, 0.06], null, { parent: bladeGroup, shadow: false });
 
-    // Station 2: Institutional Cutoff Console (Centre: x = -0.45)
-    var railGroup = new K.THREE.Group();
-    ctx.root.add(railGroup);
-    railGroup.position.set(-0.45, 0.72, 0.12);
+    var policyRuleColor = policy === 0 ? '#10b981' : (policy === 2 ? '#ef4444' : '#f59e0b');
+    var policyRuleText = policy === 0 ? 'INCLUSIVE' : (policy === 2 ? 'RESTRICTIVE' : 'BASELINE');
+    var bladePolicyBox = K.screen(88, 36, function (g, w, h) {
+      g.fillStyle = '#0f172a'; g.fillRect(0, 0, w, h);
+      g.strokeStyle = policyRuleColor; g.lineWidth = 2; g.strokeRect(2, 2, w - 4, h - 4);
+      g.fillStyle = policyRuleColor; g.font = '800 10px "Segoe UI", sans-serif'; g.textAlign = 'center';
+      g.fillText(policyRuleText, w / 2, 16);
+      g.fillStyle = '#e2e8f0'; g.font = '700 8px "Segoe UI", sans-serif';
+      g.fillText('DISCRETION', w / 2, 28);
+    }, { glow: 0.3 });
+    K.add(new THREE.PlaneGeometry(0.44, 0.22), bladePolicyBox, [0.26, 0.08, 0.06], null, { parent: bladeGroup, shadow: false });
 
-    K.rbox(2.45, 0.09, 0.78, brushed, [0, 0.045, 0], null, { parent: railGroup, r: 0.025 });
-    K.cyl(0.022, 0.022, 2.32, steel, [0, 0.11, -0.16], [0, 0, Math.PI / 2], { parent: railGroup, seg: 20 });
-    K.cyl(0.022, 0.022, 2.32, steel, [0, 0.11, 0.16], [0, 0, Math.PI / 2], { parent: railGroup, seg: 20 });
+    // Dual Sorting Chutes (Extending from right side of gate)
+    // 1. Upper Chute (Curved down into Support Tray)
+    K.rbox(0.68, 0.08, 0.42, darkSteel, [0.85, 0.95, -0.05], [0, 0, -0.32], { parent: gateGroup, r: 0.015 });
 
-    for (var tk = 0; tk <= 10; tk++) {
-      var tx = -1.05 + tk * 0.21;
-      var major = tk % 5 === 0;
-      K.box(0.014, 0.012, major ? 0.44 : 0.26, oak, [tx, 0.095, 0], null, { parent: railGroup, shadow: false });
-    }
+    // Support Allocated Tray
+    var traySupport = new THREE.Group();
+    gateGroup.add(traySupport);
+    traySupport.position.set(1.42, 0.76, -0.08);
 
-    var scaleSign = K.screen(180, 42, function (g, w, h) {
-      g.fillStyle = '#181e22'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#b8c6c2'; g.font = '700 9px "Segoe UI", sans-serif';
-      g.fillText('0.0 MIN RISK', 10, 16);
-      g.fillText('0.5 CUTOFF', 68, 16);
-      g.fillText('1.0 HIGH RISK', 122, 16);
-      g.fillStyle = '#dfaa45'; g.fillRect(10, 24, 160, 4);
-    }, { glow: 0.08 });
-    K.add(new K.THREE.PlaneGeometry(1.6, 0.32), scaleSign, [0, 0.105, 0.28], [-Math.PI / 2, 0, 0], { parent: railGroup, shadow: false });
-
-    var cutoffX = hot ? 0.38 : path ? -0.42 : -0.05;
-    var divider = new K.THREE.Group();
-    railGroup.add(divider);
-    divider.position.set(cutoffX, 0.09, 0);
-
-    K.rbox(0.18, 0.14, 0.62, steel, [0, 0.07, 0], null, { parent: divider, r: 0.02 });
-    K.cyl(0.02, 0.005, 0.14, oak, [0, 0.15, 0.28], [Math.PI / 2, 0, 0], { parent: divider });
-
-    var bladeColor = hot ? PAL.red : path ? PAL.green : PAL.amber;
-    var bladeMat = K.real.accent(bladeColor, hot);
-    K.rbox(0.065, 0.88, 0.86, bladeMat, [0, 0.52, 0], null, { parent: divider, r: 0.025 });
-
-    var bladeLabel = K.screen(110, 36, function (g, w, h) {
-      g.fillStyle = hot ? '#8a2d26' : path ? '#2b6e56' : '#947035'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#fff'; g.font = '800 11px "Segoe UI", sans-serif';
-      g.textAlign = 'center'; g.fillText(hot ? 'RESTRICTIVE CUTOFF' : path ? 'INCLUSIVE THRESHOLD' : 'BASELINE CUTOFF', w / 2, 16);
-      g.font = '600 8px "Segoe UI", sans-serif';
-      g.fillText('INSTITUTIONAL DISCRETION', w / 2, 28);
-    }, { glow: 0.2 });
-    K.add(new K.THREE.PlaneGeometry(0.72, 0.24), bladeLabel, [0, 1.02, 0], null, { parent: divider, shadow: false });
-
-    realPlate(K, '2. Institution Sets Cutoff', [-0.45, 1.84, 0.2], { w: 1.48, warn: hot });
-
-    // Station 3: Support Allocation Trays (Center-Right: x = 1.15)
-    var trayGroup = new K.THREE.Group();
-    ctx.root.add(trayGroup);
-    trayGroup.position.set(1.15, 0.72, 0.12);
-
-    K.rbox(0.88, 0.16, 0.68, K.real.accent(PAL.green, false), [0, 0.08, -0.42], null, { parent: trayGroup, r: 0.025 });
-    for (var fa = 0; fa < 4; fa++) {
-      K.rbox(0.68, 0.022, 0.52, paper, [0.03 * (fa - 1.5), 0.17 + fa * 0.025, -0.42], [0, fa * 0.03, 0], { parent: trayGroup, r: 0.008 });
-    }
-    var tagA = K.screen(96, 28, function (g, w, h) {
-      g.fillStyle = '#1e5e48'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#d4f2e5'; g.font = '800 9px "Segoe UI", sans-serif'; g.textAlign = 'center';
+    K.rbox(0.95, 0.22, 0.68, brass, [0, 0.11, 0], null, { parent: traySupport, r: 0.025 });
+    var supportSign = K.screen(110, 32, function (g, w, h) {
+      g.fillStyle = '#064e3b'; g.fillRect(0, 0, w, h);
+      g.strokeStyle = '#34d399'; g.lineWidth = 2; g.strokeRect(2, 2, w - 4, h - 4);
+      g.fillStyle = '#a7f3d0'; g.font = '800 9px "Segoe UI", sans-serif'; g.textAlign = 'center';
       g.fillText('SUPPORT ALLOCATED', w / 2, 14);
-      g.font = '600 7px "Segoe UI", sans-serif'; g.fillText('TUTORING & COACHING', w / 2, 23);
-    }, { glow: 0.15 });
-    K.add(new K.THREE.PlaneGeometry(0.68, 0.2), tagA, [0, 0.12, -0.06], null, { parent: trayGroup, shadow: false });
-
-    K.rbox(0.88, 0.16, 0.68, K.real.accent(hot ? PAL.red : PAL.amber, hot), [0, 0.08, 0.42], null, { parent: trayGroup, r: 0.025 });
-    for (var fb = 0; fb < 4; fb++) {
-      K.rbox(0.68, 0.022, 0.52, paper, [0.03 * (fb - 1.5), 0.17 + fb * 0.025, 0.42], [0, -fb * 0.03, 0], { parent: trayGroup, r: 0.008 });
-      K.box(0.12, 0.015, 0.08, K.real.accent(PAL.red, true), [0.28, 0.19 + fb * 0.025, 0.42 + fb * 0.02], null, { parent: trayGroup, shadow: false });
+      g.fillStyle = '#ecfdf5'; g.font = '600 7px "Segoe UI", sans-serif';
+      g.fillText('TUTORING & COACHING', w / 2, 24);
+    }, { glow: 0.28 });
+    K.add(new THREE.PlaneGeometry(0.85, 0.2), supportSign, [0, 0.11, 0.35], null, { parent: traySupport, shadow: false });
+    for (var sa = 0; sa < 4; sa++) {
+      K.rbox(0.72, 0.02, 0.48, paper, [0.02 * (sa - 1.5), 0.22 + sa * 0.024, 0], [0, sa * 0.02, 0], { parent: traySupport, r: 0.008 });
     }
-    var tagB = K.screen(96, 28, function (g, w, h) {
-      g.fillStyle = hot ? '#7c251f' : '#6f5024'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#fce5e3'; g.font = '800 9px "Segoe UI", sans-serif'; g.textAlign = 'center';
-      g.fillText('OUTSIDE CUTOFF', w / 2, 14);
-      g.font = '600 7px "Segoe UI", sans-serif'; g.fillText('NO SUPPORT WITHOUT REVIEW', w / 2, 23);
-    }, { glow: 0.15 });
-    K.add(new K.THREE.PlaneGeometry(0.68, 0.2), tagB, [0, 0.12, 0.78], null, { parent: trayGroup, shadow: false });
 
-    realPlate(K, '3. Allocation vs. Exclusion', [1.15, 1.84, 0.15], { w: 1.42, warn: hot });
+    // 2. Lower Chute (Bypass slide curving beneath into Excluded Bin)
+    K.rbox(0.82, 0.06, 0.38, polishedBronze, [0.82, 0.45, 0.16], [0, 0, -0.42], { parent: gateGroup, r: 0.015 });
 
-    // Station 4: Staffed Human Review & Appeal Station (Right: x = 2.45)
-    var deskStation = new K.THREE.Group();
-    ctx.root.add(deskStation);
-    deskStation.position.set(2.45, 0.72, 0.12);
+    // Excluded Attrition Bin
+    var binExcluded = new THREE.Group();
+    gateGroup.add(binExcluded);
+    binExcluded.position.set(1.42, 0.08, 0.18);
 
-    K.rbox(1.05, 0.022, 0.78, K.real.surface('leather'), [0, 0.011, 0], null, { parent: deskStation, r: 0.02 });
-
-    var binder = new K.THREE.Group();
-    deskStation.add(binder);
-    binder.position.set(-0.12, 0.025, 0.08);
-    binder.rotation.y = -0.06;
-    K.rbox(0.72, 0.035, 0.52, paper, [0, 0.015, 0], null, { parent: binder, r: 0.008 });
-    for (var sp = -5; sp <= 5; sp++) {
-      K.torus(0.022, 0.005, steel, [-0.34, 0.032, sp * 0.042], [0, Math.PI / 2, 0], { parent: binder });
+    K.rbox(0.98, 0.28, 0.72, polishedBronze, [0, 0.14, 0], null, { parent: binExcluded, r: 0.025 });
+    var excludedSign = K.screen(110, 32, function (g, w, h) {
+      g.fillStyle = policy === 2 ? '#7f1d1d' : '#78350f'; g.fillRect(0, 0, w, h);
+      g.strokeStyle = policy === 2 ? '#f87171' : '#fbbf24'; g.lineWidth = 2; g.strokeRect(2, 2, w - 4, h - 4);
+      g.fillStyle = '#fef3c7'; g.font = '800 9px "Segoe UI", sans-serif'; g.textAlign = 'center';
+      g.fillText('EXCLUDED ATTRITION', w / 2, 14);
+      g.fillStyle = '#fffbeb'; g.font = '600 7px "Segoe UI", sans-serif';
+      g.fillText('FILTERED FROM SUPPORT', w / 2, 24);
+    }, { glow: 0.28 });
+    K.add(new THREE.PlaneGeometry(0.88, 0.22), excludedSign, [0, 0.14, 0.37], null, { parent: binExcluded, shadow: false });
+    for (var ex = 0; ex < 5; ex++) {
+      K.cyl(0.045, 0.045, 0.16, darkSteel, [-0.25 + ex * 0.12, 0.18, 0.08 * (ex % 2 === 0 ? 1 : -1)], [0, 0, Math.PI / 2], { parent: binExcluded });
     }
-    var noteTex = K.screen(128, 88, function (g, w, h) {
-      g.fillStyle = '#faf8f2'; g.fillRect(0, 0, w, h);
-      g.fillStyle = '#b83b32'; g.fillRect(14, 0, 1.5, h);
-      g.strokeStyle = '#c5d0d8'; g.lineWidth = 1;
-      for (var nl = 14; nl < h; nl += 9) { g.beginPath(); g.moveTo(0, nl); g.lineTo(w, nl); g.stroke(); }
-      g.fillStyle = '#22303a'; g.font = '700 8px "Segoe UI", sans-serif';
-      g.fillText('STUDENT CONTEXT REVIEW', 22, 18);
-      g.fillStyle = '#556570'; g.font = '600 7px "Segoe UI", sans-serif';
-      g.fillText('Caregiving responsibilities', 22, 32);
-      g.fillText('Commute + work schedule', 22, 44);
-      g.fillText('Prerequisite course gaps', 22, 56);
-      g.fillStyle = '#1c7a43'; g.font = '800 8px "Segoe UI", sans-serif';
-      g.fillText('ADVISOR OVERRIDE: APPROVED', 22, 72);
-    }, { glow: 0.1 });
-    K.add(new K.THREE.PlaneGeometry(0.66, 0.46), noteTex, [0, 0.036, 0], [-Math.PI / 2, 0, 0], { parent: binder, shadow: false });
 
-    var lamp = new K.THREE.Group();
-    deskStation.add(lamp);
-    lamp.position.set(0.38, 0.02, -0.28);
-    K.cyl(0.12, 0.13, 0.035, brushed, [0, 0.018, 0], null, { parent: lamp, seg: 24 });
-    K.cyl(0.016, 0.016, 0.52, brushed, [0, 0.26, 0], null, { parent: lamp, seg: 16 });
-    K.torus(0.09, 0.016, brushed, [-0.07, 0.52, 0], [0, 0, Math.PI / 2], { parent: lamp });
-    K.rbox(0.24, 0.09, 0.14, K.real.accent(PAL.green, false), [-0.14, 0.58, 0], [0, 0, 0.2], { parent: lamp, r: 0.025 });
+    realPlate(K, '2. Vernier Policy Micrometer Gate', [-0.15, 2.1, 0.2], { w: 1.7, warn: policy === 2 });
 
-    var phone = new K.THREE.Group();
-    deskStation.add(phone);
-    phone.position.set(0.36, 0.02, 0.24);
-    K.rbox(0.22, 0.065, 0.26, steel, [0, 0.032, 0], [-0.1, 0, 0], { parent: phone, r: 0.02 });
-    K.rbox(0.075, 0.055, 0.32, steel, [0, 0.075, 0], [0, 0.12, 0], { parent: phone, r: 0.02 });
+    // =========================================================================
+    // STATION 3 (RIGHT: x = 2.2): Precision Analytical Balance & Articulated Loupe
+    // =========================================================================
+    var balanceGroup = new THREE.Group();
+    ctx.root.add(balanceGroup);
+    balanceGroup.position.set(2.2, 0.12, 0.1);
 
-    realPlate(K, '4. Human Review & Appeal', [2.45, 1.84, 0.15], { w: 1.48 });
+    // Cast-iron central balance stand & pedestal
+    K.rbox(0.92, 0.08, 0.44, darkSteel, [0, 0.04, 0], null, { parent: balanceGroup, r: 0.02 });
+    K.cyl(0.042, 0.052, 1.48, darkSteel, [0, 0.78, 0], null, { parent: balanceGroup, seg: 24 });
+    K.torus(0.08, 0.016, brass, [0, 1.48, 0], [Math.PI / 2, 0, 0], { parent: balanceGroup });
 
-    // 5. Dynamic Multistrand Data Flow Particles
+    // Pivot Knife-edge & Horizontal Balance Beam
+    var beamTilt = view === 'explain' ? 0.09 : (policy === 2 ? -0.07 : 0);
+    var beamGroup = new THREE.Group();
+    balanceGroup.add(beamGroup);
+    beamGroup.position.set(0, 1.48, 0);
+    beamGroup.rotation.z = beamTilt;
+
+    K.box(1.58, 0.038, 0.045, darkSteel, [0, 0, 0], null, { parent: beamGroup });
+    K.cyl(0.028, 0.028, 0.07, brass, [-0.74, 0, 0], null, { parent: beamGroup, seg: 16 });
+    K.cyl(0.028, 0.028, 0.07, brass, [0.74, 0, 0], null, { parent: beamGroup, seg: 16 });
+
+    // Left Pan Assembly: Cold Brass Algorithm Score Cylinder
+    var panLeft = new THREE.Group();
+    balanceGroup.add(panLeft);
+    panLeft.position.set(-0.74, 1.48 - Math.sin(beamTilt) * 0.74 - 0.65, 0);
+
+    K.cyl(0.008, 0.008, 0.58, steel, [0, 0.32, 0], null, { parent: panLeft, seg: 12 });
+    K.cyl(0.26, 0.28, 0.035, brass, [0, 0.02, 0], null, { parent: panLeft, seg: 32 });
+    // Heavy cold brass cylinder: Risk Score
+    K.cyl(0.13, 0.13, 0.42, brass, [0, 0.24, 0], null, { parent: panLeft, seg: 32 });
+
+    // Right Pan Assembly: Open Student Context Notebook
+    var panRight = new THREE.Group();
+    balanceGroup.add(panRight);
+    panRight.position.set(0.74, 1.48 + Math.sin(beamTilt) * 0.74 - 0.65, 0);
+
+    K.cyl(0.008, 0.008, 0.58, steel, [0, 0.32, 0], null, { parent: panRight, seg: 12 });
+    K.cyl(0.26, 0.28, 0.035, brass, [0, 0.02, 0], null, { parent: panRight, seg: 32 });
+
+    // The Open Student Context Notebook
+    var notebook = new THREE.Group();
+    panRight.add(notebook);
+    notebook.position.set(0, 0.08, 0);
+    K.rbox(0.52, 0.032, 0.42, paper, [0, 0, 0], null, { parent: notebook, r: 0.01 });
+
+    var noteTex = K.screen(140, 96, function (g, w, h) {
+      g.fillStyle = '#fefcf8'; g.fillRect(0, 0, w, h);
+      g.fillStyle = '#dc2626'; g.fillRect(16, 0, 2, h);
+      g.strokeStyle = '#cbd5e1'; g.lineWidth = 1;
+      for (var nl = 16; nl < h; nl += 10) { g.beginPath(); g.moveTo(0, nl); g.lineTo(w, nl); g.stroke(); }
+      g.fillStyle = '#0f172a'; g.font = '800 9px "Segoe UI", sans-serif';
+      g.fillText('STUDENT CONTEXT DOSSIER', 24, 16);
+      g.fillStyle = '#475569'; g.font = '600 7px "Segoe UI", sans-serif';
+      g.fillText('Caregiving: 28 hrs/wk sibling care', 24, 30);
+      g.fillText('Employment: Night nursing aide shift', 24, 42);
+      g.fillText('Transit: 2 bus routes each way', 24, 54);
+      g.fillStyle = '#059669'; g.font = '800 8px "Segoe UI", sans-serif';
+      g.fillText('ADVISOR OVERRIDE: APPROVED', 24, 72);
+      g.fillStyle = '#2563eb'; g.font = '700 7px "Segoe UI", sans-serif';
+      g.fillText('DIRECT TO TUTORING WING', 24, 84);
+    }, { glow: 0.18 });
+    K.add(new THREE.PlaneGeometry(0.48, 0.36), noteTex, [0, 0.022, 0], [-Math.PI / 2, 0, 0], { parent: notebook, shadow: false });
+
+    // Articulated Brass Inspection Lamp / Loupe Arm
+    var loupeGroup = new THREE.Group();
+    balanceGroup.add(loupeGroup);
+    loupeGroup.position.set(0.68, 0.06, 0.32);
+
+    K.cyl(0.14, 0.16, 0.045, brass, [0, 0.02, 0], null, { parent: loupeGroup, seg: 24 });
+    K.cyl(0.018, 0.018, 0.58, brass, [0, 0.31, 0], null, { parent: loupeGroup, seg: 16 });
+    K.torus(0.08, 0.018, antiqueBrass, [-0.08, 0.58, 0], [0, 0, Math.PI / 2], { parent: loupeGroup });
+    K.cyl(0.016, 0.016, 0.44, brass, [-0.22, 0.68, -0.08], [0.35, 0, 0.45], { parent: loupeGroup, seg: 16 });
+
+    // The Circular Magnifying Loupe
+    var loupeHead = new THREE.Group();
+    loupeGroup.add(loupeHead);
+    loupeHead.position.set(-0.35, 0.82, -0.16);
+    loupeHead.rotation.set(Math.PI / 4, 0, 0.2);
+
+    K.torus(0.14, 0.025, antiqueBrass, [0, 0, 0], null, { parent: loupeHead });
+    K.cyl(0.13, 0.13, 0.012, acrylic, [0, 0, 0], [Math.PI / 2, 0, 0], { parent: loupeHead, shadow: false });
+
+    realPlate(K, '3. Equity Balance & Recourse', [2.2, 2.1, 0.2], { w: 1.62 });
+
+    // =========================================================================
+    // 5. DYNAMIC MULTISTRAND PARTICLE FLOWS (Direct Cause & Effect)
+    // =========================================================================
+    // Stream 1: Intake dossier particles into compression roller
     K.flow([
-      [-2.1, 0.82, 0.08],
-      [-1.3, 0.88, 0.12],
-      [-0.45, 0.92, 0.12]
+      [-2.15, 1.65, 0.08],
+      [-2.15, 0.85, 0.08],
+      [-2.15, 0.35, 0.08]
     ], {
-      color: PAL.teal, pulseColor: PAL.amber,
-      pulses: 3, speed: 0.085, radius: 0.016
+      color: 0x2dd4bf, pulseColor: 0x99f6e4,
+      pulses: 3, speed: 0.08, radius: 0.018
     });
 
+    // Stream 2: Extrusion stream entering the micrometer gate
     K.flow([
-      [-0.45, 0.92, 0.12],
-      [0.35, 0.94, -0.15],
-      [1.15, 0.95, -0.42]
+      [-2.0, 0.32, 0.08],
+      [-1.1, 0.45, 0.1],
+      [-0.15, 0.55, 0.1]
     ], {
-      color: PAL.green, pulseColor: PAL.teal,
-      pulses: 3, speed: 0.08, radius: 0.016
+      color: 0xd4af37, pulseColor: 0xfef08a,
+      pulses: 4, speed: 0.09, radius: 0.018
     });
 
+    // Stream 3A: Upper sorting branch passing through into SUPPORT ALLOCATED
+    var supportPulses = policy === 0 ? 5 : (policy === 2 ? 1 : 3);
     K.flow([
-      [-0.45, 0.92, 0.12],
-      [0.35, 0.94, 0.35],
-      [1.15, 0.95, 0.42]
+      [-0.15, 0.75, 0.1],
+      [0.65, 0.95, 0.0],
+      [1.42, 0.92, -0.08]
     ], {
-      color: hot ? PAL.red : PAL.amber, pulseColor: PAL.red,
-      pulses: 3, speed: 0.075, radius: 0.016
+      color: 0x10b981, pulseColor: 0x6ee7b7,
+      pulses: supportPulses, speed: 0.075, radius: 0.018
     });
 
+    // Stream 3B: Lower sorting branch plunging into EXCLUDED ATTRITION
+    var excludedPulses = policy === 2 ? 6 : (policy === 0 ? 1 : 3);
     K.flow([
-      [1.15, 0.95, 0.42],
-      [1.8, 1.05, 0.32],
-      [2.35, 0.88, 0.12]
+      [-0.15, 0.55, 0.1],
+      [0.65, 0.42, 0.16],
+      [1.42, 0.24, 0.18]
     ], {
-      color: PAL.green, pulseColor: 0xffe082,
-      pulses: 3, speed: 0.065, radius: 0.018
+      color: policy === 2 ? 0xef4444 : 0xf59e0b, pulseColor: 0xfca5a5,
+      pulses: excludedPulses, speed: 0.085, radius: 0.018
     });
+
+    // Stream 4: Human Recourse Loop (Active in explain view or when override engaged)
+    if (view === 'explain' || path) {
+      K.flow([
+        [1.42, 0.25, 0.18],
+        [2.0, 0.85, 0.25],
+        [2.2, 1.45, 0.1],
+        [1.85, 1.35, -0.05],
+        [1.42, 0.95, -0.08]
+      ], {
+        color: 0x38bdf8, pulseColor: 0xfde047,
+        pulses: 4, speed: 0.065, radius: 0.02
+      });
+    }
   };
-  REAL_SIGNATURES.thresholdaudit = 'bfs218-w10-threshold-review-desk-real-v2';
+  REAL_SIGNATURES.thresholdaudit = 'bfs218-w10-policy-sieve-balance-real-v1';
 
   /* Week 11: a community wireless-network studio based on the documented DCTP
      case. The network, tools, maintenance cabinet, and governance binder show
@@ -3539,7 +3678,7 @@
     policydeck: { scale: 1.05, cam: [-3.0, 3.1, 5.7], look: [0, 0.8, 0] },
     surveillanceflow: { scale: 1.04, cam: [-4.6, 2.9, 5.0], look: [0, 0.65, 0] },
     decisionpath: { scale: 1.02, cam: [4.15, 3.35, 6.8], look: [0, 0.72, 0] },
-    thresholdaudit: { scale: 1.08, cam: [0.15, 2.75, 5.85], look: [0.05, 0.85, 0] },
+    thresholdaudit: { scale: 1.08, cam: [0.15, 2.7, 5.75], look: [0.05, 0.85, 0], views: { predict: [-0.07, 0.03], try: [0, 0], explain: [0.07, -0.02] } },
     capstonemap: { scale: 1.18, cam: [0, 3.25, 6.4], look: [0, 0.72, 0] },
     futurecompass: { scale: 1.26, cam: [-3.15, 2.0, 4.15], look: [0.3, 0.62, -0.1] },
     repairtable: { scale: 1.16, cam: [0, 3.35, 6.3], look: [0, 0.68, 0] },

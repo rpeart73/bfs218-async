@@ -4744,8 +4744,8 @@
         } catch (e2) {}
         var simCtx = state.simLab && state.simLab[week];
         var simLast = simCtx && simCtx.history && simCtx.history.length ? simCtx.history[simCtx.history.length - 1] : null;
-        var simOutcome = simLast && simLast.dominant;
-        holo = window.BFS218_HOLO.build(THREE, { kind: kind, week: week, view: view, riskOn: riskOn || simOutcome === 'burden', pathOn: pathOn || simOutcome === 'positive', root: root, scene: scene, camera: camera, renderer: renderer, canvas: canvas, sun: sun, context: canvas.getAttribute('data-topic-model'), expOptions: expCtx && expCtx.options, expPick: expCtx && expCtx.pick, expRan: expCtx && expCtx.ran, simOutcome: simOutcome, simTotal: simLast && simLast.total });
+        var thPol = (state.act && typeof state.act['a|10|threshold|policy'] === 'number') ? state.act['a|10|threshold|policy'] : null;
+        holo = window.BFS218_HOLO.build(THREE, { kind: kind, week: week, view: view, thresholdPolicy: thPol, riskOn: riskOn || simOutcome === 'burden', pathOn: pathOn || simOutcome === 'positive', root: root, scene: scene, camera: camera, renderer: renderer, canvas: canvas, sun: sun, context: canvas.getAttribute('data-topic-model'), expOptions: expCtx && expCtx.options, expPick: expCtx && expCtx.pick, expRan: expCtx && expCtx.ran, simOutcome: simOutcome, simTotal: simLast && simLast.total });
         if (holo && root.userData.activityOverhaulSignature) {
           canvas.setAttribute('data-activity-overhaul', root.userData.activityOverhaulSignature);
           canvas.setAttribute('data-visual-family', root.userData.visualFamily || 'realist');
