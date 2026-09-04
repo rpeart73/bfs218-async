@@ -6,13 +6,13 @@
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#961A13">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="build" content="20260901-105527">
+<meta name="build" content="20260904-135903">
 <script>
 (function(){try{var m=document.querySelector('meta[name="build"]');var L=m?(m.content||''):'';if(!L)return;function cleanMarker(t){try{var u=new URL(location.href);if(t===L&&u.searchParams.has('_bf_build')){u.searchParams.delete('_bf_build');history.replaceState(history.state,'',u.href);}}catch(e){}}function chk(){fetch('build.txt?_='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():null;}).then(function(t){if(!t)return;t=(t||'').trim();if(!t)return;if(t===L){cleanMarker(t);return;}var seen=false,storageOK=true;try{seen=sessionStorage.getItem('bf_reload_for')===t;if(!seen)sessionStorage.setItem('bf_reload_for',t);}catch(e){storageOK=false;}if(seen)return;if(storageOK){location.reload();return;}try{var u=new URL(location.href);if(u.searchParams.get('_bf_build')===t)return;u.searchParams.set('_bf_build',t);location.replace(u.href);}catch(e){}}).catch(function(){});}chk();document.addEventListener('visibilitychange',function(){if(!document.hidden)chk();});window.addEventListener('focus',chk);setInterval(function(){if(!document.hidden)chk();},60000);}catch(e){}})();
 </script>
 <title>BFS218 Asynchronous: your self-paced course site</title>
 <meta name="description" content="Instructor-created course site for the fully asynchronous section of BFS218 at Seneca Polytechnic: weekly learning pathways, readings, concepts, immersive experiences, and study supports, all self-paced. Blackboard remains the official Seneca course platform.">
-<link rel="stylesheet" href="./fonts/fonts.css?v=20260831-150748">
+<link rel="stylesheet" href="./fonts/fonts.css?v=20260904-135903">
 <link rel="icon" type="image/svg+xml" href="./favicon.svg">
 <style>
   :root{
@@ -472,6 +472,10 @@
   .wk-model-style-cartographic{background:radial-gradient(circle at 50% 30%,#F8F1E2 0%,#D8CCB8 56%,#9DA5A2 100%);border-color:rgba(110,86,55,.28)}
   .wk-model-style-workshop{background:radial-gradient(circle at 50% 25%,#F2E5D3 0%,#C9B395 55%,#858988 100%);border-color:rgba(89,65,43,.3)}
   .wk-model-kind-outcomelens,.wk-model-kind-mechanismatch{min-height:430px;background:radial-gradient(circle at 70% 22%,rgba(159,221,224,.52),transparent 30%),radial-gradient(circle at 74% 62%,rgba(218,41,28,.16),transparent 28%),radial-gradient(circle at 22% 78%,rgba(255,204,102,.28),transparent 34%),linear-gradient(180deg,#FCFEFF 0%,#E8F1F6 100%)}
+  .wk-model-documentary{min-height:430px;background:radial-gradient(circle at 72% 18%,rgba(255,244,222,.62),transparent 31%),linear-gradient(180deg,#E9E4DA 0%,#B7B3AC 100%);border-color:rgba(64,59,51,.3);box-shadow:inset 0 1px 0 rgba(255,255,255,.86),0 18px 42px rgba(34,38,41,.12)}
+  .wk-model-documentary .wk-model-canvas{min-height:430px;touch-action:pan-y}
+  .wk-evidence-boundary{display:grid;grid-template-columns:auto 1fr;gap:8px 12px;align-items:start;margin:8px 10px 0;padding:10px 12px;border:1px solid rgba(138,23,16,.24);border-left:4px solid #8A1710;border-radius:0 10px 10px 0;background:#FFF9F7;color:var(--ink)}
+  .wk-evidence-boundary b{font-size:.69rem;letter-spacing:.05em;text-transform:uppercase;color:#8A1710}.wk-evidence-boundary span{font-size:.76rem;line-height:1.45;color:var(--ink-dim)}
   .wk-model-canvas{display:block;width:100%;height:100%;min-height:360px;touch-action:pan-y}
   .wk-model-kind-outcomelens .wk-model-canvas,.wk-model-kind-mechanismatch .wk-model-canvas{min-height:430px}
   .wk-model-note{position:static;max-width:none;margin:10px 10px 0;background:#fff;border:1px solid rgba(27,42,74,.13);border-radius:11px;padding:10px 12px}
@@ -672,7 +676,8 @@
   .asg-starter-context h2{font-size:clamp(1.75rem,3vw,2.6rem);line-height:1.05;margin:5px 0 9px;color:var(--ink);letter-spacing:0}
   @media(max-width:760px){.asg-starter-context h2{font-size:1.75rem}}
 </style>
-<link rel="stylesheet" href="./assets/walkthrough-immersive.css?v=20260831-150748">
+<link rel="stylesheet" href="./assets/walkthrough-immersive.css?v=20260904-135903">
+<link rel="stylesheet" href="./assets/bfs218-evidence-visuals.css?v=20260904-135903">
 </head>
 <body>
 <a class="skip" href="#soc-main">Skip to main content</a>
@@ -685,30 +690,32 @@
 </noscript>
 <div id="app"></div>
 <div id="soc-live" role="status" aria-live="polite" class="skip"></div>
-<script src="./data/corpus-data.js?v=20260831-150748"></script>
-<script src="./data/bfs218-mc.js?v=20260831-150748"></script>
-<script src="./data/bfs218-featured-sources.js?v=20260831-150748"></script>
-<script src="./data/bfs218-kc.js?v=20260831-150748"></script>
-<script src="./data/bfs218-kc-additions.js?v=20260831-150748"></script>
-<script src="./data/bfs218-career.js?v=20260831-150748"></script>
-<script src="./data/seneca-programs.js?v=20260831-150748"></script>
-<script src="./data/bfs218-lens.js?v=20260831-150748"></script>
-<script src="./data/bfs218-howto.js?v=20260831-150748"></script>
-<script src="./data/bfs218-outcomes.js?v=20260831-150748"></script>
-<script src="data/bfs218-audio.js?v=20260831-150748"></script>
-<script defer src="data/bfs218-field-examples.js?v=20260831-150748"></script>
-<script defer src="data/bfs218-program-cases.js?v=20260831-150748"></script>
-<script src="./data/bfs218-visuals.js?v=20260831-150748"></script>
-<script src="./data/bfs218-experiments.js?v=20260831-150748"></script>
-<script src="./data/bfs218-simulations.js?v=20260831-150748"></script>
-<script src="./data/bfs218-holo.js?v=20260831-150748"></script>
-<script src="./data/videos.js?v=20260831-150748"></script>
-<script src="./data/bfs218-walkfigs.js?v=20260831-150748"></script>
-<script src="./data/bfs218-recordings.js?v=20260831-150748"></script>
-<script src="./dev.js?v=20260831-150748"></script>
-<script src="./data/bfs218-audio-timings.js?v=20260831-150748"></script>
-<script src="./data/bfs218-audio-langs.js?v=20260831-150748"></script>
-<script src="./app.js?v=20260831-150748"></script>
-<script defer src="assets/img-viewer.js?v=20260831-150748"></script>
+<script src="./data/corpus-data.js?v=20260904-135903"></script>
+<script src="./data/bfs218-mc.js?v=20260904-135903"></script>
+<script src="./data/bfs218-featured-sources.js?v=20260904-135903"></script>
+<script src="./data/bfs218-kc.js?v=20260904-135903"></script>
+<script src="./data/bfs218-kc-additions.js?v=20260904-135903"></script>
+<script src="./data/bfs218-career.js?v=20260904-135903"></script>
+<script src="./data/seneca-programs.js?v=20260904-135903"></script>
+<script src="./data/bfs218-lens.js?v=20260904-135903"></script>
+<script src="./data/bfs218-howto.js?v=20260904-135903"></script>
+<script src="./data/bfs218-outcomes.js?v=20260904-135903"></script>
+<script src="data/bfs218-audio.js?v=20260904-135903"></script>
+<script defer src="data/bfs218-field-examples.js?v=20260904-135903"></script>
+<script defer src="data/bfs218-program-cases.js?v=20260904-135903"></script>
+<script src="./data/bfs218-visuals.js?v=20260904-135903"></script>
+<script src="./data/bfs218-evidence-visuals.js?v=20260904-135903"></script>
+<script src="./data/bfs218-walkfigs.js?v=20260904-135903"></script>
+<script src="./data/bfs218-visual-stories.js?v=20260904-135903"></script>
+<script src="./data/bfs218-experiments.js?v=20260904-135903"></script>
+<script src="./data/bfs218-simulations.js?v=20260904-135903"></script>
+<script src="./data/bfs218-holo.js?v=20260904-135903"></script>
+<script src="./data/videos.js?v=20260904-135903"></script>
+<script src="./data/bfs218-recordings.js?v=20260904-135903"></script>
+<script src="./dev.js?v=20260904-135903"></script>
+<script src="./data/bfs218-audio-timings.js?v=20260904-135903"></script>
+<script src="./data/bfs218-audio-langs.js?v=20260904-135903"></script>
+<script src="./app.js?v=20260904-135903"></script>
+<script defer src="assets/img-viewer.js?v=20260904-135903"></script>
 </body>
 </html>

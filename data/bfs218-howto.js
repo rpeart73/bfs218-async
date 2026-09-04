@@ -1,9 +1,5 @@
 /* BFS218 ASYNCHRONOUS per-page how-to registry. demo arrays drive the v2 tour recorder (call+at / select / click choreography). */
 window.BFS218_HOWTO = {
- "tour": {
-  "file": "",
-  "note": "Silent screen tour with on-screen captions."
- },
  "byScreen": {
   "journey": {
    "title": "How to use your home page",
@@ -11,7 +7,7 @@ window.BFS218_HOWTO = {
    "steps": [
     {
      "do": "Find the current week.",
-     "detail": "The suggested-pace card names the week the calendar sits in. Click it, or click any station below, to open that week's page. The pace is a suggestion; the only fixed points are the two due dates."
+     "detail": "The suggested-pace card names the week the calendar sits in. Click it, or click any station below, to open that week's page. The weekly pace is flexible, but Blackboard releases prompts and assessment rooms in stages."
     },
     {
      "do": "Read the station badge before you click.",
@@ -19,7 +15,7 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Track your driven weeks.",
-     "detail": "The progress panel counts a week as driven once you check off its four steps on the week page. The two assessment windows under it show what is open and when it is due."
+     "detail": "The progress panel counts a week as driven once you check off its four steps. The assessment cards underneath show each release and due date."
     },
     {
      "do": "Read the five moves.",
@@ -38,8 +34,6 @@ window.BFS218_HOWTO = {
    "graded": "The companion site does not submit or grade activity on this page; it earns no course marks.",
    "next": "Open the current week's station and start its four-step path.",
    "clip": "4,18",
-   "video": "videos/tour/journey.mp4",
-   "captions": "videos/tour/journey.vtt",
    "demo": [
     {
      "do": "select",
@@ -82,16 +76,16 @@ window.BFS218_HOWTO = {
      "detail": "Your professor wrote it; a disclosed AI narrator reads it. Use the player to pause, skip, change speed, download, or open the transcript. It keeps playing while you move around the site."
     },
     {
-     "do": "Watch This week in 80 seconds, then work the readings.",
-     "detail": "The short video overview is made with NotebookLM from the week's readings and reviewed by your instructor. Each reading names exactly what to read. If you are behind, Reading Rescue gives you one anchor source, one concept, and one question as the shortest honest way back in."
+     "do": "Use This week in 80 seconds, then work the readings.",
+     "detail": "The orientation gives you a fast entry into the week. When an exact-source, captioned video has cleared review, it appears in the same section and inside the weekly experience. Each reading still names exactly what to read. If you are behind, Reading Rescue gives you one anchor source, one concept, and one question as the shortest honest way back in."
     },
     {
      "do": "Enter the weekly experience.",
      "detail": "With no live class, the immersive experience is where the teaching happens. Enter it, move through its scenes and evidence, and come back to the readings to anchor what it showed you."
     },
     {
-     "do": "Open the activity and run the experiment.",
-     "detail": "The activity page starts with a predict, run, and reveal experiment, then a simulation and a hands-on workbench. The gap between your guess and the outcome is where the learning is."
+     "do": "Enter the activity room and follow its route.",
+     "detail": "Every week uses a different sequence. You may begin with a 3D scene, a decision, an experiment, a design comparison, or an assembly bench. Follow the numbered route and use the feedback to test what each move changes."
     },
     {
      "do": "Close with the checks, your reflection, and Generate Your Weekly Notes.",
@@ -102,8 +96,6 @@ window.BFS218_HOWTO = {
    "graded": "Checks may show correctness and a practice result, but the companion site does not submit or grade them; they earn no course marks and are not sent to your professor.",
    "next": "When the four steps are checked, return Home and open the next station.",
    "clip": "18,32",
-   "video": "videos/tour/station.mp4",
-   "captions": "videos/tour/station.vtt",
    "demo": [
     {
      "do": "scroll",
@@ -206,7 +198,7 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Notice what is fixed and what is yours.",
-     "detail": "You can move ahead or catch up freely. The only fixed points in the term are the two due dates."
+     "detail": "You can move ahead or catch up within the material that has opened. Blackboard releases graded prompts, case rooms, studios, and milestones in stages."
     },
     {
      "do": "Treat the experience as your lecture.",
@@ -221,8 +213,6 @@ window.BFS218_HOWTO = {
    "graded": "This reference page does not submit or grade work.",
    "next": "Open Calendar and Due Dates to put exact dates against this rhythm.",
    "clip": "46,59",
-   "video": "videos/tour/pathways.mp4",
-   "captions": "videos/tour/pathways.vtt",
    "demo": [
     {
      "do": "scroll",
@@ -383,8 +373,6 @@ window.BFS218_HOWTO = {
    "graded": "Experiences are teaching, not course tests. The companion site does not submit or grade experience activity; it earns no course marks.",
    "next": "After an experience, open the same week's readings and Study Guide to lock the idea in.",
    "clip": "87,101",
-   "video": "videos/tour/walkthroughs.mp4",
-   "captions": "videos/tour/walkthroughs.vtt",
    "demo": [
     {
      "do": "scroll",
@@ -428,8 +416,6 @@ window.BFS218_HOWTO = {
    "graded": "The companion site does not submit or grade listening, and it awards no course marks. A media provider is contacted only when you choose to load provider-hosted media, and its practices apply.",
    "next": "Open the week the lecture belongs to and work its readings.",
    "clip": "101,114",
-   "video": "videos/tour/lectures.mp4",
-   "captions": "videos/tour/lectures.vtt",
    "demo": [
     {
      "do": "scroll",
@@ -523,8 +509,6 @@ window.BFS218_HOWTO = {
    "graded": "This reference page does not submit or grade work.",
    "next": "Turn terms into memory with Concept Flashcards.",
    "clip": "128,142",
-   "video": "videos/tour/glossary.mp4",
-   "captions": "videos/tour/glossary.vtt",
    "demo": [
     {
      "do": "scroll",
@@ -575,8 +559,6 @@ window.BFS218_HOWTO = {
    "graded": "Cards and the studio are practice. The studio may show correctness, but the companion site does not submit or grade it; it earns no course marks.",
    "next": "Take the week's Knowledge Check and see what stuck.",
    "clip": "142,156",
-   "video": "videos/tour/cards.mp4",
-   "captions": "videos/tour/cards.vtt",
    "demo": [
     {
      "do": "click",
@@ -604,15 +586,15 @@ window.BFS218_HOWTO = {
   },
   "assignments": {
    "title": "How to use Starting Your Assignment",
-   "intro": "The five assignments build one map across the term. These pages explain the arc, the rooms, the dates, and the rules, so the blank page never wins.",
+   "intro": "The seven graded components build one map across the term. These pages explain the arc, the rooms, the dates, and the rules, so the blank page never wins.",
    "steps": [
     {
      "do": "Start with the overview.",
-     "detail": "Five assignments, each worth 20 percent: notice, interpret, investigate, repair, integrate. Together they build your Personal Cartography."
+     "detail": "The graded work includes two 10 percent Field Notes portfolios, three 20 percent assessments, Personal Cartography at 15 percent, and a 5 percent Final Learning Reflection. Together they build and close your learning map."
     },
     {
-     "do": "Note the two deadlines.",
-     "detail": "First half due October 25; second half due December 11. Everything is due by 11:59 p.m. Eastern Time, and nothing is due in the final week."
+     "do": "Note every release and due date.",
+     "detail": "The first graded deadline is October 18 and the final deadline is December 15. Use the calendar for every release, milestone, and due date. Deadlines are 11:59 p.m. Eastern."
     },
     {
      "do": "Open one assignment room at a time.",
@@ -624,7 +606,7 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Open the Assignment Start Lab when you want a working session.",
-     "detail": "Fixed course rules, no AI, build a personal start plan you can print or save. For Compass Check, the lab gives readiness steps only; that assessment is a closed, timed Blackboard sitting."
+     "detail": "Fixed course rules, no AI, build a personal start plan you can print or save. For Digital Decision Scenarios, the lab gives readiness steps only; that assessment is a closed, timed Blackboard sitting."
     },
     {
      "do": "Build a first-draft plan, then submit on Blackboard, always.",
@@ -638,7 +620,7 @@ window.BFS218_HOWTO = {
     {
      "do": "click",
      "text": "Overview",
-     "say": "Five assignments, each 20 percent, build one Personal Cartography: notice, interpret, investigate, repair, integrate."
+     "say": "Seven graded components build and close one learning map, from private Field Notes through the Final Learning Reflection."
     },
     {
      "do": "click",
@@ -648,7 +630,7 @@ window.BFS218_HOWTO = {
     {
      "do": "click",
      "text": "Release",
-     "say": "First half due October 25, second half December 11, all by 11:59 Eastern. Nothing due in the final week."
+     "say": "Assessment deadlines run from October 18 to December 15, all by 11:59 p.m. Eastern. Nothing is due in Study Week; the 5 percent Final Learning Reflection is due in Week 14."
     },
     {
      "do": "click",
@@ -691,8 +673,6 @@ window.BFS218_HOWTO = {
    "graded": "The graded curriculum is identical for every student. The lens changes examples and framing only.",
    "next": "Visit a week the page recommends for your field and watch the framing follow you.",
    "clip": "170,183",
-   "video": "videos/tour/career.mp4",
-   "captions": "videos/tour/career.vtt",
    "demo": [
     {
      "do": "select",
@@ -720,7 +700,7 @@ window.BFS218_HOWTO = {
   },
   "activity": {
    "title": "How to use an activity page",
-   "intro": "Each teaching week's activity opens on its own page: the experiment first, then the simulation, then the workbench where you practise the idea.",
+   "intro": "Each teaching week opens a different activity room. Follow its numbered route through the 3D scene and the decisions, comparisons, or construction tasks authored for that week's idea.",
    "steps": [
     {
      "do": "Make your prediction before anything runs.",
@@ -731,8 +711,8 @@ window.BFS218_HOWTO = {
      "detail": "The reveal shows what actually happened; the mirror shows what your prediction says about the lens you carry. Keep one sentence from it in the note box."
     },
     {
-     "do": "Run the simulation more than once.",
-     "detail": "Choose the case, the system, and the safeguard, run one case, then run one hundred. One run contains luck; the batch shows what the system makes more likely. It is a teaching model, not real population numbers."
+     "do": "Compare system designs deliberately.",
+     "detail": "Choose what enters the system, what the institution does, and what recourse exists. Interpret the configuration, change one condition, and compare the institutional pattern. The studio is qualitative: it creates no fake people, random cases, or population percentages."
     },
     {
      "do": "Practise in the workbench.",
@@ -743,12 +723,10 @@ window.BFS218_HOWTO = {
      "detail": "One sentence about what the activity helped you notice. It lands in Generate Your Weekly Notes when you return to the week."
     }
    ],
-   "saves": "When browser storage is available, a temporary copy of predictions, simulation runs, workbench choices, and notes may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
+   "saves": "When browser storage is available, a temporary copy of predictions, design comparisons, activity choices, and notes may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it.",
    "graded": "The activity may show feedback or a practice result, but the companion site does not submit or grade it; it earns no course marks and is not sent to your professor.",
    "next": "Go back to the week page for the reflection and your weekly notes.",
    "clip": "183,197",
-   "video": "videos/tour/activity.mp4",
-   "captions": "videos/tour/activity.vtt",
    "demo": [
     {
      "do": "scroll",
@@ -773,7 +751,7 @@ window.BFS218_HOWTO = {
    "steps": [
     {
      "do": "Scan the term at a glance.",
-     "detail": "Seneca red marks the days you hand something in; the greys are the schedule. The deadlines cluster on October 25 and December 11, and everything is due by 11:59 p.m. Eastern Time."
+     "detail": "Seneca red marks due dates; the other calendar entries show releases, milestones, Study Week, and term markers. Deadlines are 11:59 p.m. Eastern Time."
     },
     {
      "do": "Click any assignment.",
@@ -790,10 +768,8 @@ window.BFS218_HOWTO = {
    ],
    "saves": "This page does not ask you to enter companion-site work. Browser or device features and external calendar services still apply their own settings and practices.",
    "graded": "This reference page does not submit or grade work.",
-   "next": "Put the two deadline dates into your own planner now, before they are close.",
+   "next": "Add the releases, milestones, and due dates to your own planner now.",
    "clip": "197,211",
-   "video": "videos/tour/calendar.mp4",
-   "captions": "videos/tour/calendar.vtt",
    "demo": [
     {
      "do": "scroll",
@@ -846,8 +822,6 @@ window.BFS218_HOWTO = {
    "graded": "Term Review may show correctness and a practice result, but the companion site does not submit or grade it; it earns no course marks and is not sent to your professor.",
    "next": "Run one set now, then revisit the week your confident misses point at.",
    "clip": "211,225",
-   "video": "videos/tour/review.mp4",
-   "captions": "videos/tour/review.vtt",
    "demo": [
     {
      "do": "call",
@@ -898,8 +872,6 @@ window.BFS218_HOWTO = {
    "graded": "This reference page does not submit or grade work. Blackboard carries the official documents.",
    "next": "Open a week one of your shakier outcomes points at.",
    "clip": "225,239",
-   "video": "videos/tour/outcomes.mp4",
-   "captions": "videos/tour/outcomes.vtt",
    "demo": [
     {
      "do": "scroll",

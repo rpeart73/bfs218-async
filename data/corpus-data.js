@@ -3,7 +3,7 @@ window.BFS218 = {
   "code": "BFS218",
   "name": "Racism and the Digital Age: Understanding Techno-Racism",
   "frame": "",
-  "mode": "Asynchronous · Self-paced", "schedule": "SYA · No live class", "scheduleDetail": "Section SYA (LEC 9007). Your Seneca timetable shows Monday 10:45 to 1:25. This section is asynchronous, so there is no live class in that slot. Work at your own pace and use the due dates below.",
+  "mode": "Asynchronous · Self-paced",
   "blackboardNote": "A companion to Blackboard. Official records, discussion, and submission live in Blackboard."
  },
  "themes": {

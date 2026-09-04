@@ -497,7 +497,7 @@ window.BFS218_PROGRAM_CASES = {
   ]
  },
  "TESL 2": {
-  "s": "The college's academic-integrity office now runs all international students' essays through an AI-writing detector, and your advanced EAP students, taught to write in the careful formal register you assess them on, keep getting flagged. One student rewrites her essays to sound less proficient to pass the detector, deliberately unlearning what you taught her.",
+  "s": "A fictional college introduces a support app for international students. It promises earlier help, reads existing attendance and language-course records, and places selected students into mandatory check-ins before they ask for support. The support may be useful, but students cannot refuse without being marked non-compliant, and the app does not change the institutional barriers that produced the need.",
   "q": [
    "Your own instruction produces the register the detector flags. Explain that mechanism to the integrity office in one paragraph they can act on.",
    "She is unlearning proficiency for safety. What do you tell her about her writing this week, and what do you refuse to tell her?",

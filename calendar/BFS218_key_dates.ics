@@ -6,192 +6,338 @@ METHOD:PUBLISH
 X-WR-CALNAME:BFS218 Asynchronous Key Dates (Fall 2026)
 X-WR-TIMEZONE:America/Toronto
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
 UID:bfs218-async-term-start@rpeart73.github.io
 DTSTART;VALUE=DATE:20260908
 DTEND;VALUE=DATE:20260909
 SUMMARY:BFS218: first day of classes
-DESCRIPTION:The Fall 2026 term begins. Use Blackboard and the companion sit
- e to orient yourself to the course.
+DESCRIPTION:The Fall 2026 term begins. Use Blackboard and the companion s
+ ite to orient yourself.
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-map-open@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20260921
-DTEND;VALUE=DATE:20260922
-SUMMARY:BFS218: Map Exchange opens on Blackboard
-DESCRIPTION:Weekly contributions run through Week 12. The first-half checkp
- oint is October 25 and the full-term close is December 11. Blackboard cont
- rols access and submission.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- map-exchange
-END:VEVENT
-BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-compass-open@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20260921
-DTEND;VALUE=DATE:20260922
-SUMMARY:BFS218: Compass Check opens on Blackboard
-DESCRIPTION:Complete Weeks 2 to 6 before beginning the standard 90-minute B
- lackboard window or your approved accommodated time.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- compass-check
-END:VEVENT
-BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-case-open@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20260921
-DTEND;VALUE=DATE:20260922
-SUMMARY:BFS218: Canadian Case File opens on Blackboard
-DESCRIPTION:The first-half brief opens early so you can work ahead. Blackbo
- ard controls access and submission.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- case-file
-END:VEVENT
-BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-map-checkpoint@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20261025
-DTEND;VALUE=DATE:20261026
-SUMMARY:BFS218: Map Exchange first-half checkpoint due
-DESCRIPTION:The first-half entries and short authorship response are due by
-  11:59 p.m. Eastern. Blackboard is the official submission record.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- map-exchange
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-vocabulary-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20260914
+DTEND;VALUE=DATE:20260915
+SUMMARY:BFS218: Starting Point vocabulary check due
+DESCRIPTION:This ungraded Blackboard form checks the starting vocabulary.
 BEGIN:VALARM
 TRIGGER:-P2D
 ACTION:DISPLAY
-DESCRIPTION:BFS218 Map Exchange checkpoint in 2 days
+DESCRIPTION:BFS218: Starting Point vocabulary check due in 2 days
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-compass-due@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20261025
-DTEND;VALUE=DATE:20261026
-SUMMARY:BFS218: Compass Check due (20 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern before Study Week. Blackboard is the
-  official submission record.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- compass-check
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-field-notes-1-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20260921
+DTEND;VALUE=DATE:20260922
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 1 opens
+DESCRIPTION:The first private journal contains three notes from Weeks 3 t
+ o 6. Blackboard controls access and submission.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=map-exchange
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-investigation-preview@rpeart73.github.io
+DTSTART;VALUE=DATE:20260921
+DTEND;VALUE=DATE:20260922
+SUMMARY:BFS218: Canadian Technology Investigation preview opens
+DESCRIPTION:Choose one case pathway. The full source room opens October 1
+ 3.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=case-file
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-tenant-practice-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20260921
+DTEND;VALUE=DATE:20260922
+SUMMARY:BFS218: tenant-screening practice due
+DESCRIPTION:This is an ungraded Blackboard practice activity.
 BEGIN:VALARM
 TRIGGER:-P2D
 ACTION:DISPLAY
-DESCRIPTION:BFS218 Compass Check deadline in 2 days
+DESCRIPTION:BFS218: tenant-screening practice due in 2 days
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-case-due@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20261025
-DTEND;VALUE=DATE:20261026
-SUMMARY:BFS218: Canadian Case File due (20 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern before Study Week. Blackboard is the
-  official submission record.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- case-file
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-decisions-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261014
+SUMMARY:BFS218: Digital Decision Scenarios opens
+DESCRIPTION:Complete Weeks 2 to 6 before beginning the one 90-minute stan
+ dard attempt or approved accommodated time.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=compass-check
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-investigation-full@rpeart73.github.io
+DTSTART;VALUE=DATE:20261013
+DTEND;VALUE=DATE:20261014
+SUMMARY:BFS218: Canadian Technology Investigation full room opens
+DESCRIPTION:The source bundle and submission area are available in Blackb
+ oard.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=case-file
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-field-notes-1-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261018
+DTEND;VALUE=DATE:20261019
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 1 due (10 percent)
+DESCRIPTION:Three private field notes are due by 11:59 p.m. Eastern in Bl
+ ackboard.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=map-exchange
 BEGIN:VALARM
 TRIGGER:-P2D
 ACTION:DISPLAY
-DESCRIPTION:BFS218 Canadian Case File deadline in 2 days
+DESCRIPTION:BFS218: Digital Systems Field Notes Portfolio 1 due (10 perce
+ nt) in 2 days
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-decisions-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261023
+DTEND;VALUE=DATE:20261024
+SUMMARY:BFS218: Digital Decision Scenarios due (20 percent)
+DESCRIPTION:The independent Blackboard attempt is due by 11:59 p.m. Easte
+ rn.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=compass-check
+BEGIN:VALARM
+TRIGGER:-P2D
+ACTION:DISPLAY
+DESCRIPTION:BFS218: Digital Decision Scenarios due (20 percent) in 2 days
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-investigation-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261025
+DTEND;VALUE=DATE:20261026
+SUMMARY:BFS218: Canadian Technology Investigation due (20 percent)
+DESCRIPTION:The evidence board\, briefing\, and references are due by 11:
+ 59 p.m. Eastern in Blackboard.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=case-file
+BEGIN:VALARM
+TRIGGER:-P2D
+ACTION:DISPLAY
+DESCRIPTION:BFS218: Canadian Technology Investigation due (20 percent) in
+  2 days
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
 UID:bfs218-async-study-week@rpeart73.github.io
 DTSTART;VALUE=DATE:20261026
 DTEND;VALUE=DATE:20261031
-SUMMARY:BFS218 Study Week: no classes and no new module
-DESCRIPTION:Study Week runs Monday to Friday\, October 26 to 30. No graded
-  work is due.
+SUMMARY:BFS218 Study Week
+DESCRIPTION:Study Week runs October 26 to 30. No new material or graded w
+ ork is due.
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-field-notes-2-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261103
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 2 opens
+DESCRIPTION:The second private journal contains three new notes from Week
+ s 8 to 11.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=map-exchange
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-repair-anchor-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261103
+SUMMARY:BFS218: Design the Repair anchor choice opens
+DESCRIPTION:Choose the earlier evidence you will repair. The full studio 
+ opens November 23.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=repair
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-cartography-m1-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20261102
+DTEND;VALUE=DATE:20261103
+SUMMARY:BFS218: Personal Cartography Milestone 1 opens
+DESCRIPTION:Begin the final route in Blackboard.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=cartography
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-cartography-m1-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261108
+DTEND;VALUE=DATE:20261109
+SUMMARY:BFS218: Personal Cartography Milestone 1 due
+DESCRIPTION:This development milestone is due in Blackboard and is not se
+ parately graded.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=cartography
+BEGIN:VALARM
+TRIGGER:-P2D
+ACTION:DISPLAY
+DESCRIPTION:BFS218: Personal Cartography Milestone 1 due in 2 days
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-cartography-m2-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20261116
+DTEND;VALUE=DATE:20261117
+SUMMARY:BFS218: Personal Cartography Milestone 2 opens
+DESCRIPTION:Develop the route across both halves of the course.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=cartography
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-cartography-m2-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261122
+DTEND;VALUE=DATE:20261123
+SUMMARY:BFS218: Personal Cartography Milestone 2 due
+DESCRIPTION:This development milestone is due in Blackboard and is not se
+ parately graded.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=cartography
+BEGIN:VALARM
+TRIGGER:-P2D
+ACTION:DISPLAY
+DESCRIPTION:BFS218: Personal Cartography Milestone 2 due in 2 days
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
 UID:bfs218-async-repair-open@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20261102
-DTEND;VALUE=DATE:20261103
-SUMMARY:BFS218: Design the Repair opens on Blackboard
-DESCRIPTION:The second-half brief opens after Study Week so you can work ah
- ead. Blackboard controls access and submission.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- repair
+DTSTART;VALUE=DATE:20261123
+DTEND;VALUE=DATE:20261124
+SUMMARY:BFS218: Design the Repair full studio opens
+DESCRIPTION:The prototype and Blackboard stress tests are available.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=repair
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-cartography-open@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20261102
-DTEND;VALUE=DATE:20261103
-SUMMARY:BFS218: Personal Cartography final project opens on Blackboard
-DESCRIPTION:The second-half final project brief opens after Study Week so y
- ou can work ahead. Blackboard controls access and submission.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- cartography
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-field-notes-2-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261129
+DTEND;VALUE=DATE:20261130
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 2 due (10 percent)
+DESCRIPTION:Three new private field notes are due by 11:59 p.m. Eastern i
+ n Blackboard.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=map-exchange
+BEGIN:VALARM
+TRIGGER:-P2D
+ACTION:DISPLAY
+DESCRIPTION:BFS218: Digital Systems Field Notes Portfolio 2 due (10 perce
+ nt) in 2 days
+END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-cartography-final-open@rpeart73.github.io
+DTSTART;VALUE=DATE:20261130
+DTEND;VALUE=DATE:20261201
+SUMMARY:BFS218: Personal Cartography Milestone 3 and final area open
+DESCRIPTION:Complete the five-point route and final project in Blackboard
+ .
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=cartography
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
+UID:bfs218-async-cartography-m3-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261202
+DTEND;VALUE=DATE:20261203
+SUMMARY:BFS218: Personal Cartography Milestone 3 due
+DESCRIPTION:This development milestone is due in Blackboard and is not se
+ parately graded.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=cartography
+BEGIN:VALARM
+TRIGGER:-P2D
+ACTION:DISPLAY
+DESCRIPTION:BFS218: Personal Cartography Milestone 3 due in 2 days
+END:VALARM
+END:VEVENT
+BEGIN:VEVENT
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
 UID:bfs218-async-repair-due@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20261211
-DTEND;VALUE=DATE:20261212
+DTSTART;VALUE=DATE:20261206
+DTEND;VALUE=DATE:20261207
 SUMMARY:BFS218: Design the Repair due (20 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern at the end of Week 13. Blackboard is
-  the official submission record.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- repair
+DESCRIPTION:The repair model\, stress tests\, and rationale are due by 11
+ :59 p.m. Eastern in Blackboard.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=repair
 BEGIN:VALARM
 TRIGGER:-P2D
 ACTION:DISPLAY
-DESCRIPTION:BFS218 Design the Repair deadline in 2 days
+DESCRIPTION:BFS218: Design the Repair due (20 percent) in 2 days
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-map-close@rpeart73.github.io
-SEQUENCE:2
-DTSTART;VALUE=DATE:20261211
-DTEND;VALUE=DATE:20261212
-SUMMARY:BFS218: Map Exchange final close
-DESCRIPTION:The full-term map and short authorship response are due by 11:5
- 9 p.m. Eastern. Blackboard is the official submission record.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- map-exchange
-BEGIN:VALARM
-TRIGGER:-P2D
-ACTION:DISPLAY
-DESCRIPTION:BFS218 Map Exchange close in 2 days
-END:VALARM
-END:VEVENT
-BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
+DTSTAMP:20260902T160000Z
+SEQUENCE:3
 UID:bfs218-async-cartography-due@rpeart73.github.io
-SEQUENCE:2
 DTSTART;VALUE=DATE:20261211
 DTEND;VALUE=DATE:20261212
-SUMMARY:BFS218: Personal Cartography final project due (20 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern at the end of Week 13. Nothing is due
-  in Week 14. Blackboard is the official submission record.
-URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&asg=
- cartography
+SUMMARY:BFS218: Personal Cartography due (15 percent)
+DESCRIPTION:The final project is due by 11:59 p.m. Eastern in Blackboard.
+URL:https://rpeart73.github.io/bfs218-async/?screen=assignment-details&as
+ g=cartography
 BEGIN:VALARM
 TRIGGER:-P2D
 ACTION:DISPLAY
-DESCRIPTION:BFS218 Personal Cartography deadline in 2 days
+DESCRIPTION:BFS218: Personal Cartography due (15 percent) in 2 days
 END:VALARM
 END:VEVENT
 BEGIN:VEVENT
-DTSTAMP:20260827T120000Z
-UID:bfs218-async-term-end@rpeart73.github.io
-DTSTART;VALUE=DATE:20261216
-DTEND;VALUE=DATE:20261217
-SUMMARY:BFS218: last day of classes
-DESCRIPTION:The Fall 2026 term ends. Nothing is due this week.
+DTSTAMP:20260904T160000Z
+SEQUENCE:4
+UID:bfs218-async-final-reflection-due@rpeart73.github.io
+DTSTART;VALUE=DATE:20261215
+DTEND;VALUE=DATE:20261216
+SUMMARY:BFS218: Final Learning Reflection due (5 percent)
+DESCRIPTION:Five short closing responses are due by 11:59 p.m. Eastern in
+ Blackboard.
+BEGIN:VALARM
+TRIGGER:-P2D
+ACTION:DISPLAY
+DESCRIPTION:BFS218: Final Learning Reflection due (5 percent) in 2 days
+END:VALARM
 END:VEVENT
 END:VCALENDAR

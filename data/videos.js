@@ -1,7 +1,7 @@
-/* BFS218 weekly overview videos. Sanitized for the public site: week -> file,
-   poster, captions, summary only. No prompts, no notebook ids. Credit line lives
-   in app.js. Files self-hosted in ./videos/. */
-window.BFS218_VIDEOS = {
+/* BFS218 weekly overview video candidates. Candidate metadata is inert until an
+   exact-hash approval receipt marks an entry approved. Prompts, source hashes,
+   approval receipts and notebook ids never ship to the public site. */
+window.BFS218_VIDEO_CANDIDATES = {
  2: { file: "videos/BFS218_Week02.mp4", poster: "videos/BFS218_Week02.jpg", vtt: "videos/BFS218_Week02.vtt",
       summary: "How a technology that looks neutral can still carry old racial hierarchies, and why the harm falls hardest on people who sit at more than one margin at once." },
  3: { file: "videos/BFS218_Week03.mp4", poster: "videos/BFS218_Week03.jpg", vtt: "videos/BFS218_Week03.vtt",
@@ -23,3 +23,8 @@ window.BFS218_VIDEOS = {
  12: { file: "videos/BFS218_Week12.mp4", poster: "videos/BFS218_Week12.jpg", vtt: "videos/BFS218_Week12.vtt",
       summary: "Why the rules for AI are still catching up, and one concrete gap between what the technology already does and what current law actually covers." }
 };
+window.BFS218_VIDEOS = Object.keys(window.BFS218_VIDEO_CANDIDATES).reduce(function (published, week) {
+  var candidate = window.BFS218_VIDEO_CANDIDATES[week];
+  if (candidate && candidate.approval === 'approved') published[week] = candidate;
+  return published;
+}, {});

@@ -4,3 +4,19 @@ vendor/
 __pycache__/
 *.pyc
 _extracted/
+*conflict*
+
+# Local review candidates without documented public-redistribution rights.
+images/story/coded-gaze-short-poster.jpg
+images/story/default-body-crash-test.jpg
+images/story/electronic-monitor-aclu.jpg
+images/story/eu-ai-act-vote.jpg
+images/story/jim-crow-video-poster.jpg
+images/story/joy-buolamwini.jpg
+images/story/kimberle-crenshaw.jpg
+images/story/no-fly-list-kids.jpg
+images/story/odeyto-first-peoples.jpg
+images/story/robot-bias-jhu.jpg
+images/story/ruha-benjamin.webp
+images/story/safiya-noble.jpg
+images/story/sasha-costanza-chock.webp

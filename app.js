@@ -15,7 +15,7 @@
   var HKEY = SKEY + '.hardResetNext';
   var WKKEY = SKEY + '.walk.v1';
   function load() { try { var o = JSON.parse(localStorage.getItem(SKEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
-  function persist() { try { localStorage.setItem(SKEY, JSON.stringify({ saved: state.saved, cmpNotes: state.cmpNotes, rcNotes: state.rcNotes, sgNotes: state.sgNotes, sgTick: state.sgTick, wkCheck: state.wkCheck, wkReflect: state.wkReflect, wkNotes: state.wkNotes, wkSteps: state.wkSteps, actResult: state.actResult, mcSel: state.mcSel, mcConf: state.mcConf, kcVersion: state.kcVersion, kcShort: state.kcShort, kcShortRate: state.kcShortRate, kcHist: state.kcHist, careerReflect: state.careerReflect, mediaNotes: state.mediaNotes, assignmentStarter: state.assignmentStarter, rl: state.rl, exp: state.exp, simLab: state.simLab, studentName: state.studentName, visits: state.visits, careerField: state.careerField, programViewField: state.programViewField })); } catch (e) {} }
+  function persist() { try { localStorage.setItem(SKEY, JSON.stringify({ saved: state.saved, cmpNotes: state.cmpNotes, rcNotes: state.rcNotes, sgNotes: state.sgNotes, sgTick: state.sgTick, wkCheck: state.wkCheck, wkReflect: state.wkReflect, wkNotes: state.wkNotes, walkChapterNotes: state.walkChapterNotes, noteVaultUpdated: state.noteVaultUpdated, wkSteps: state.wkSteps, actResult: state.actResult, mcSel: state.mcSel, mcConf: state.mcConf, kcVersion: state.kcVersion, kcShort: state.kcShort, kcShortRate: state.kcShortRate, kcHist: state.kcHist, careerReflect: state.careerReflect, mediaNotes: state.mediaNotes, assignmentStarter: state.assignmentStarter, rl: state.rl, exp: state.exp, simLab: state.simLab, studentName: state.studentName, visits: state.visits, careerField: state.careerField, programViewField: state.programViewField })); } catch (e) {} }
   function loadView() { try { var o = JSON.parse(sessionStorage.getItem(VKEY) || '{}'); return o && typeof o === 'object' ? o : {}; } catch (e) { return {}; } }
   function clearView() { try { sessionStorage.removeItem(VKEY); sessionStorage.removeItem(HKEY); } catch (e) {} }
   function shouldResumeView(v) {
@@ -57,7 +57,7 @@
     try {
       var p = new URLSearchParams(location.search || '');
       var invalidRoute = { screen: 'journey', invalid: true };
-      var known = { screen: 1, view: 1, week: 1, w: 1, part: 1, experience: 1, asg: 1, _bf_build: 1 }, badKey = false, hasRouteKey = false;
+      var known = { screen: 1, view: 1, week: 1, w: 1, part: 1, experience: 1, asg: 1, item: 1, items: 1, _bf_build: 1 }, badKey = false, hasRouteKey = false;
       p.forEach(function (_, key) { if (!known[key] || p.getAll(key).length !== 1) badKey = true; if (key !== '_bf_build') hasRouteKey = true; });
       if (badKey || (p.has('screen') && p.has('view')) || (p.has('week') && p.has('w'))) return invalidRoute;
       var screenParam = p.get('screen'), viewParam = p.get('view');
@@ -72,6 +72,8 @@
       if ((p.has('part') && !part) || (p.has('part') && !hasWeek)) return invalidRoute;
       if ((p.has('experience') && p.get('experience') !== '1') || (p.has('experience') && !hasWeek)) return invalidRoute;
       if (p.has('asg') && s !== 'assignment-details') return invalidRoute;
+      if (p.has('item') && s !== 'detail' && s !== 'reading') return invalidRoute;
+      if (p.has('items') && s !== 'compare') return invalidRoute;
       if (hasWeek && p.has('asg')) return invalidRoute;
       if (w && rawScreen && s !== 'activity' && s !== 'sandbox' && s !== 'station') return invalidRoute;
       if (w && (s === 'activity' || s === 'sandbox') && (p.has('part') || p.has('experience'))) return invalidRoute;
@@ -82,6 +84,17 @@
         var r = { screen: s };
         var ai = p.get('asg');
         if (ai != null && ai !== '' && s === 'assignment-details') r.assignmentIndex = assignmentRouteIndex(ai);
+        var item = p.get('item');
+        if (item != null) {
+          if (!item || !rec(item)) return invalidRoute;
+          if (s === 'detail') r.detailId = item;
+          if (s === 'reading') r.rcReading = item;
+        }
+        if (p.has('items')) {
+          var ids = String(p.get('items') || '').split(',').filter(function (id, idx, all) { return !!rec(id) && all.indexOf(id) === idx; }).slice(0, 3);
+          if (!ids.length) return invalidRoute;
+          r.compareIds = ids;
+        }
         return r;
       }
       if (hasRouteKey) return invalidRoute;
@@ -114,19 +127,21 @@
     wkCheck: (saved0.wkCheck && typeof saved0.wkCheck === 'object') ? saved0.wkCheck : {},
     wkReflect: (saved0.wkReflect && typeof saved0.wkReflect === 'object') ? saved0.wkReflect : {},
     wkNotes: (saved0.wkNotes && typeof saved0.wkNotes === 'object') ? saved0.wkNotes : {},
+    walkChapterNotes: (saved0.walkChapterNotes && typeof saved0.walkChapterNotes === 'object' && !Array.isArray(saved0.walkChapterNotes)) ? saved0.walkChapterNotes : {},
+    noteVaultUpdated: Number(saved0.noteVaultUpdated) || 0,
     wkSteps: (saved0.wkSteps && typeof saved0.wkSteps === 'object') ? saved0.wkSteps : {},
     wkOpen: {},
     studentName: typeof saved0.studentName === 'string' ? saved0.studentName.slice(0, 40) : '',
     visits: (saved0.visits && typeof saved0.visits === 'object') ? saved0.visits : {},
-    act: (resumeView0 && view0.act && typeof view0.act === 'object') ? view0.act : {},
+    act: Object.assign({}, (saved0.actResult && typeof saved0.actResult === 'object') ? saved0.actResult : {}, (resumeView0 && view0.act && typeof view0.act === 'object') ? view0.act : {}),
     actResult: (saved0.actResult && typeof saved0.actResult === 'object') ? saved0.actResult : {},
     layout: 'byweek',
     search: '',
     activeTypes: [],
     activeWeek: null,
     sort: 'week',
-    detailId: null,
-    compareIds: [],
+    detailId: (route0 && route0.detailId) ? route0.detailId : null,
+    compareIds: (route0 && Array.isArray(route0.compareIds)) ? route0.compareIds.slice() : [],
     saved: Array.isArray(saved0.saved) ? saved0.saved : [],
     introOpen: true,
     savedView: false,
@@ -137,7 +152,7 @@
     cmpNotes: (saved0.cmpNotes && typeof saved0.cmpNotes === 'object') ? saved0.cmpNotes : {},
     showModel: false,
     exampleOpen: false,
-    rcReading: null,
+    rcReading: (route0 && route0.rcReading) ? route0.rcReading : null,
     rcNotes: (saved0.rcNotes && typeof saved0.rcNotes === 'object') ? saved0.rcNotes : {},
     revealed: {},
     mcSel: (saved0.mcSel && typeof saved0.mcSel === 'object') ? saved0.mcSel : {},
@@ -250,12 +265,18 @@
     }
   }, true);
   var refocusSearch = false, focusTarget = null, toastTimer = null, auditRenderStamp = 0, threePromise = null, modelCleanups = [];
-  function registerModelCleanup(fn) {
-    if (typeof fn === 'function') modelCleanups.push(fn);
+  function registerModelCleanup(fn, owner) {
+    if (typeof fn === 'function') modelCleanups.push({ fn: fn, owner: owner || null });
   }
-  function cleanupModels() {
-    var fns = modelCleanups.splice(0);
-    fns.forEach(function (fn) { try { fn(); } catch (e) {} });
+  function cleanupModels(scope) {
+    var run = [], keep = [];
+    modelCleanups.forEach(function (entry) {
+      var item = typeof entry === 'function' ? { fn: entry, owner: null } : entry;
+      var owned = !scope || !item.owner || item.owner === scope || (scope.contains && scope.contains(item.owner));
+      (owned ? run : keep).push(item);
+    });
+    modelCleanups = keep;
+    run.forEach(function (item) { try { item.fn(); } catch (e) {} });
   }
   function disposeThreeScene(scene) {
     if (!scene || !scene.traverse) return;
@@ -309,13 +330,28 @@
   function eyeLabel(r) { return r.eye === 'indigenous' ? 'Indigenous-scholar reading' : 'Western reading'; }
   function weekTitle(n) { return (D.weeks && D.weeks[n]) ? D.weeks[n] : ''; }
   function weekHeroAlt(n) {
-    if (n === 8) return 'Two Inuit Elders point to locations on a digital map during a community mapping session in Sanikiluaq, Nunavut.';
-    return weekTitle(n);
+    var alt = {
+      1: 'A diverse group moves through an institutional checkpoint while ceiling cameras watch the space.',
+      2: 'A Black applicant sits across from a reviewer whose computer mediates the institutional decision.',
+      3: 'A workplace team examines a conceptual automated hiring dashboard and its unequal scoring signals.',
+      4: 'A clinician views a conceptual medical dashboard where a race-based default changes a referral decision.',
+      5: 'A diverse group of adults stands before facial-analysis brackets that frame each face.',
+      6: 'A Canadian oversight team examines a conceptual facial-recognition dashboard and differences across skin tones.',
+      7: 'A student assembles data, surveillance, and decision processes into one systems map at a desk.',
+      8: 'Two Inuit Elders point to locations on a digital map during a community mapping session in Sanikiluaq, Nunavut.',
+      9: 'A laptop displays a conceptual automated writing detector with unequal flag rates across language backgrounds.',
+      10: 'An institutional committee examines a conceptual automated admissions ranking and its decision thresholds.',
+      11: 'Black students and mentors build an electronics project together around a shared worktable.',
+      12: 'A person codes on the lower floor of a multilevel institution while decisions and meetings happen above.',
+      13: 'A student connects photographs, notes, and source traces across a large paper map.',
+      14: 'A student presents a completed evidence map to peers gathered around a classroom table.'
+    };
+    return alt[n] || '';
   }
   function weekHeroSrc(n) { return 'images/weeks/week' + (n < 10 ? '0' : '') + n + '.jpg'; }
   function weekHeroCredit(n) {
-    if (n !== 8) return '';
-    return '<p class="wk-hero-credit">Real photograph: Inuit Elders correcting a community map in Sanikiluaq, Nunavut. Source: <a href="https://blog.google/intl/en-au/products/explore-get-answers/using-maps-to-preserve-indigenous/" target="_blank" rel="noopener noreferrer">Google Earth Outreach</a>.</p>';
+    if (n === 8) return '<p class="wk-hero-credit">Real photograph: Inuit Elders correcting a community map in Sanikiluaq, Nunavut. Source: <a href="https://blog.google/intl/en-au/products/explore-get-answers/using-maps-to-preserve-indigenous/" target="_blank" rel="noopener noreferrer">Google Earth Outreach</a>.</p>';
+    return '<p class="wk-hero-credit">Conceptual course illustration. It introduces the week\'s question and does not depict a documented institution, interface, dataset, or measured result.</p>';
   }
   function weeksWithReadings() { var set = {}; D.records.forEach(function (r) { set[r.week] = (set[r.week] || 0) + 1; }); return Object.keys(set).map(Number).sort(function (a, b) { return a - b; }); }
   function templatedSynthesis(recs) {
@@ -821,8 +857,7 @@
     var weekOpen = s.screen === 'library' || s.screen === 'station' || s.screen === 'detail';
     var weekGroup = '<details class="soc-nav-weekgroup"' + (weekOpen ? ' open' : '') + '><summary><span>WEEKLY JOURNEY</span><b>' + (s.stationWeek ? 'Week ' + s.stationWeek : 'Weeks 1-14') + '</b></summary><div>' + weekNav + '</div></details>';
     var nav = group('ORIENT', btns[1] + btns[0] + btns[2] + cal)
-      + weekGroup
-      + group('LEARN EACH WEEK', walk + lec)
+      + group('LEARN EACH WEEK', weekGroup + walk + lec)
       + group('STUDY THE SOURCES', btns[3] + btns[6] + btns[5] + btns[4])
       + group('PRACTISE & APPLY', btns[8] + btns[7] + btns[9] + btns[10])
       + group('SITE SUPPORT', guide + report);
@@ -1142,6 +1177,27 @@
   }
   function numList(arr) { if (!arr.length) return ''; if (arr.length === 1) return 'question ' + arr[0]; if (arr.length === 2) return 'questions ' + arr[0] + ' and ' + arr[1]; return 'questions ' + arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1]; }
   function listJoin(arr) { if (!arr.length) return ''; if (arr.length === 1) return arr[0]; if (arr.length === 2) return arr[0] + ' and ' + arr[1]; return arr.slice(0, -1).join(', ') + ', and ' + arr[arr.length - 1]; }
+  /* Present answer choices in a varied but stable order. Values always retain
+     their authored index, so scoring, explanations, and saved work stay valid. */
+  function orderedAnswerOptions(item, salt) {
+    var options = (item && item.options) || [];
+    var rows = options.map(function (text, index) { return { text: text, index: index }; });
+    if (rows.length < 2) return rows;
+    var seedText = String((item && item.q) || '') + '|' + String(salt || '');
+    var seed = 2166136261;
+    for (var si = 0; si < seedText.length; si++) { seed ^= seedText.charCodeAt(si); seed = Math.imul(seed, 16777619); }
+    function next() { seed += 0x6D2B79F5; var t = seed; t = Math.imul(t ^ (t >>> 15), t | 1); t ^= t + Math.imul(t ^ (t >>> 7), t | 61); return ((t ^ (t >>> 14)) >>> 0) / 4294967296; }
+    var answer = Number(item.answer);
+    if (!Number.isInteger(answer) || answer < 0 || answer >= rows.length) {
+      for (var ai = rows.length - 1; ai > 0; ai--) { var aj = Math.floor(next() * (ai + 1)); var at = rows[ai]; rows[ai] = rows[aj]; rows[aj] = at; }
+      return rows;
+    }
+    var correct = rows[answer];
+    var distractors = rows.filter(function (row) { return row.index !== answer; });
+    for (var di = distractors.length - 1; di > 0; di--) { var dj = Math.floor(next() * (di + 1)); var dt = distractors[di]; distractors[di] = distractors[dj]; distractors[dj] = dt; }
+    distractors.splice(Math.floor(next() * rows.length), 0, correct);
+    return distractors;
+  }
   var RC_SKILLS = { argument: 'the main argument', concepts: 'the key concepts', context: 'the context and who is speaking', significance: 'why the reading matters' };
   var RC_SKILL_ORDER = ['argument', 'concepts', 'context', 'significance'];
   function rcSkillProfile(rid, items) {
@@ -1192,13 +1248,14 @@
         var sel = state.mcSel[mkey];
         var done = (sel !== undefined && sel !== null);
         if (done) { answered++; if (sel === m.answer) correct++; else missed.push(mi + 1); }
-        var opts = (m.options || []).map(function (o, oi) {
+        var opts = orderedAnswerOptions(m, 'reading|' + r.id + '|' + mi).map(function (option, displayIndex) {
+          var o = option.text, oi = option.index;
           var isSel = (sel === oi), isCor = (oi === m.answer);
           var bg = '#fff', bd = '#DEE3EA', col = '#15171C';
           if (done && isCor) { bg = '#E9EFE7'; bd = '#50694C'; col = '#2c3b29'; }
           else if (done && isSel) { bg = '#F6E3E1'; bd = '#DA291C'; col = '#8f1b12'; }
           var mark = (done && isCor) ? ' &#10003;' : ((done && isSel) ? ' &#10007;' : '');
-          return '<button onclick="SOC.mcPick(\'' + mkey + '\',' + oi + ')" style="display:block;width:100%;text-align:left;border:1px solid ' + bd + ';background:' + bg + ';color:' + col + ';border-radius:8px;padding:9px 12px;margin-bottom:7px;font-size:.9rem;font-weight:500">' + esc(o) + mark + '</button>';
+          return '<button data-option-position="' + displayIndex + '" data-option-index="' + oi + '" onclick="SOC.mcPick(\'' + mkey + '\',' + oi + ')" style="display:block;width:100%;text-align:left;border:1px solid ' + bd + ';background:' + bg + ';color:' + col + ';border-radius:8px;padding:9px 12px;margin-bottom:7px;font-size:.9rem;font-weight:500">' + esc(o) + mark + '</button>';
         }).join('');
         var ok = (sel === m.answer);
         var why = done ? '<div style="margin:9px 0 0;padding:10px 13px;border-radius:9px;background:' + (ok ? '#E9EFE7' : '#FBE9E7') + ';border:1px solid ' + (ok ? '#9CC4A8' : '#E5A9A2') + '"><span style="display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.9rem;color:' + (ok ? '#2c6b3f' : '#b23121') + '">' + (ok ? ic('check', 15, 2.4) + 'Correct' : ic('x', 15, 2.4) + 'Not quite') + '</span><div style="margin-top:4px;font-size:.85rem;line-height:1.5;color:#474C57">' + esc(m.why || '') + '</div></div>' : '';
@@ -1272,7 +1329,8 @@
           synthBlock = '<button class="cmp-model" onclick="SOC.synthesize()" style="display:inline-flex;align-items:center;gap:8px;border:none;border-radius:9px;padding:12px 22px;font-size:1rem;font-weight:600;color:#fff;background:#15171C;margin-bottom:18px">' + ic('sparkle', 16) + 'Synthesize their relationship</button>';
         }
       }
-      left = hint + synthBlock + '<div class="hshelf cmp-shelf" style="display:flex;gap:16px;align-items:stretch;overflow-x:auto;padding-bottom:10px">' + cols + '</div>';
+      left = hint + synthBlock + '<div class="hshelf cmp-shelf" style="display:flex;gap:16px;align-items:stretch;overflow-x:auto;padding-bottom:10px">' + cols + '</div>'
+        + (recs.length >= 2 ? '<div style="margin-top:24px">' + comparativeStudio(recs) + '</div>' : '');
     } else {
       left = '<div class="cmp-empty" style="background:#fff;border:1px dashed #DEE3EA;border-radius:14px;padding:48px 26px;text-align:center;color:#474C57"><div style="display:inline-flex;color:#C9D1DC;margin-bottom:12px">' + ic('columns', 40, 1.4) + '</div><div style="font-size:1.0625rem;font-weight:600;color:#15171C;margin-bottom:6px">Nothing selected yet.</div><p style="font-size:.9375rem;margin:0">Choose two or three readings from the picker.</p></div>';
     }
@@ -1758,12 +1816,13 @@
   }
   function studioCheck(key, check) {
     var sel = state.mcSel[key], done = (sel !== undefined && sel !== null), ok = done && sel === check.answer;
-    var opts = check.options.map(function (o, oi) {
+    var opts = orderedAnswerOptions(check, 'studio|' + key).map(function (option, displayIndex) {
+      var o = option.text, oi = option.index;
       var isSel = sel === oi, isCor = oi === check.answer, bg = '#fff', bd = '#DEE3EA', col = '#15171C';
       if (done && isCor) { bg = '#E9EFE7'; bd = '#50694C'; col = '#2c3b29'; }
       else if (done && isSel) { bg = '#F6E3E1'; bd = '#DA291C'; col = '#8f1b12'; }
       var mark = (done && isCor) ? ' &#10003;' : ((done && isSel) ? ' &#10007;' : '');
-      return '<button onclick="SOC.mcPick(\'' + key + '\',' + oi + ')" aria-pressed="' + (isSel ? 'true' : 'false') + '" style="display:block;width:100%;text-align:left;border:1px solid ' + bd + ';background:' + bg + ';color:' + col + ';border-radius:8px;padding:9px 12px;margin-bottom:7px;font-size:.875rem;font-weight:500;cursor:pointer">' + esc(o) + mark + '</button>';
+      return '<button data-option-position="' + displayIndex + '" data-option-index="' + oi + '" onclick="SOC.mcPick(\'' + key + '\',' + oi + ')" aria-pressed="' + (isSel ? 'true' : 'false') + '" style="display:block;width:100%;text-align:left;border:1px solid ' + bd + ';background:' + bg + ';color:' + col + ';border-radius:8px;padding:9px 12px;margin-bottom:7px;font-size:.875rem;font-weight:500;cursor:pointer">' + esc(o) + mark + '</button>';
     }).join('');
     var why = done ? '<div style="margin:8px 0 0;padding:10px 13px;border-radius:9px;background:' + (ok ? '#E9EFE7' : '#FBE9E7') + ';border:1px solid ' + (ok ? '#9CC4A8' : '#E5A9A2') + '"><span style="display:inline-flex;align-items:center;gap:6px;font-weight:700;font-size:.875rem;color:' + (ok ? '#2c6b3f' : '#b23121') + '">' + (ok ? ic('check', 14, 2.4) + 'Correct' : ic('x', 14, 2.4) + 'Not quite') + '</span><div style="margin-top:4px;font-size:.84rem;line-height:1.5;color:#474C57">' + esc(check.why) + '</div></div>' : '';
     return '<div role="group" style="background:#F7F8FA;border:1px solid #DEE3EA;border-radius:12px;padding:14px 16px;margin-top:14px"><div class="mono" style="font-size:.6875rem;letter-spacing:.05em;color:#6B7280;margin-bottom:8px">QUICK CHECK</div><p style="margin:0 0 9px;font-size:.9rem;font-weight:600;color:#15171C">' + esc(check.q) + '</p>' + opts + why + '</div>';
@@ -1800,7 +1859,7 @@
         ? '<div style="margin-top:12px;background:#15171C;color:#fff;border-radius:11px;padding:14px 16px"><div class="mono" style="font-size:.62rem;letter-spacing:.05em;color:#9aa3b2;margin-bottom:6px">ONE GROUNDED WEAVE</div><p style="font-size:.86rem;line-height:1.55;color:rgba(255,255,255,.92);margin:0">' + esc(syn) + '</p><p style="font-size:.72rem;color:#9aa3b2;margin:9px 0 0">One way the course sources have been held together, not the answer. Two-Eyed Seeing keeps both eyes distinct (Etuaptmumk), never blended. <button onclick="SOC.rcReveal(\'' + wk2 + '\')" style="background:none;border:none;color:#f3b0a8;font-weight:600;cursor:pointer;padding:0">Hide</button></p></div>'
         : '<button onclick="SOC.rcReveal(\'' + wk2 + '\')" style="margin-top:12px;background:#fff;border:1px solid #DEE3EA;color:#15171C;border-radius:9px;padding:9px 14px;font-size:.84rem;font-weight:600;cursor:pointer">Reflect first, then see one grounded weave &#8595;</button>';
     }
-    var save = '<div style="margin-top:14px"><button onclick="SOC.saveStudio()" style="background:var(--red);border:none;color:#fff;border-radius:9px;padding:9px 16px;font-size:.875rem;font-weight:600;cursor:pointer">Save my work to the Personal Cartography (.docx)</button></div>';
+    var save = '<div style="margin-top:14px"><button onclick="SOC.saveStudio()" style="background:var(--red);border:none;color:#fff;border-radius:9px;padding:9px 16px;font-size:.875rem;font-weight:600;cursor:pointer">Save my activity notes (.docx)</button></div>';
     return studioShell('Two attributed eyes', 'Read the two source frames as attributed readings, then bring Two-Eyed Seeing yourself. The app does not write a bridge for you.', '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:14px">' + panels + '</div>' + soloNote + practice + check + woven + save);
   }
   function psyStudio(sel) {
@@ -1833,7 +1892,7 @@
       answer: 0,
       why: 'The mechanism sits in the design and data, not in intent or luck: ' + lcFirst(String(r.coreIdea).replace(/\s*\.?\s*$/, '')) + '. That is the New Jim Code, harm built into how the system is made.'
     });
-    var save = '<div style="margin-top:14px"><button onclick="SOC.saveStudio()" style="background:var(--red);border:none;color:#fff;border-radius:9px;padding:9px 16px;font-size:.875rem;font-weight:600;cursor:pointer">Save my work to the Personal Cartography (.docx)</button></div>';
+    var save = '<div style="margin-top:14px"><button onclick="SOC.saveStudio()" style="background:var(--red);border:none;color:#fff;border-radius:9px;padding:9px 16px;font-size:.875rem;font-weight:600;cursor:pointer">Save my activity notes (.docx)</button></div>';
     return studioShell('Accountability Chain Lab', 'Trace techno-racism through mechanism and responsibility. A strong answer names structure, not only intent.', '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px">' + chain + '</div>' + anchor + (g ? '<div style="font-size:.75rem;color:#6B7280;margin-top:10px">Concept anchor: ' + esc(g.term) + '</div>' : '') + check + save);
   }
   function selfCheckStudio(sel) {
@@ -1844,9 +1903,9 @@
     return '';
   }
   /* ---------- BFS218 bias audit: staged audit + avatar scan (gated to BFS218) ---------- */
-  /* Published Gender Shades (Buolamwini and Gebru, 2018) intersectional error rates.
-     darker-skinned women 34.7% and lighter-skinned men 0.8% are the corpus headline figures;
-     lighter-skinned women ~7% and darker-skinned men ~12% are the published per-system intersectional results. */
+  /* Published Gender Shades (Buolamwini and Gebru, 2018) Table 4 error rates.
+     Intersectional and single-axis/overall rates are stored separately because the published
+     aggregate results are weighted by the benchmark composition, not simple subgroup means. */
   var GS = {
     perGroup: 25,
     groups: [
@@ -1856,27 +1915,27 @@
       { id: 'dw', label: 'Darker-skinned women', short: 'Darker women', skin: 'darker', gender: 'women' }
     ],
     systems: [
-      { id: 'ibm', name: 'IBM', rate: { lm: 0.3, lw: 7.1, dm: 12.0, dw: 34.7 } },
-      { id: 'microsoft', name: 'Microsoft', rate: { lm: 0.0, lw: 1.7, dm: 6.0, dw: 20.8 } },
-      { id: 'faceplus', name: 'Face++', rate: { lm: 0.8, lw: 6.0, dm: 0.7, dw: 34.5 } }
+      { id: 'ibm', name: 'IBM', rate: { lm: 0.3, lw: 7.1, dm: 12.0, dw: 34.7 }, aggregate: { overall: 12.1, men: 5.6, women: 20.3, lighter: 3.2, darker: 22.4 } },
+      { id: 'microsoft', name: 'Microsoft', rate: { lm: 0.0, lw: 1.7, dm: 6.0, dw: 20.8 }, aggregate: { overall: 6.3, men: 2.6, women: 10.7, lighter: 0.7, darker: 12.9 } },
+      { id: 'faceplus', name: 'Face++', rate: { lm: 0.8, lw: 6.0, dm: 0.7, dw: 34.5 }, aggregate: { overall: 10.0, men: 0.7, women: 21.3, lighter: 4.7, darker: 16.5 } }
     ]
   };
   function auditSys() { return GS.systems[state.auditSystem || 0]; }
   function rateOf(g) { return auditSys().rate[g.id]; }
   function gsFails(g) { return Math.round(rateOf(g) / 100 * GS.perGroup); }
-  function gsAvg(fn) { var a = GS.groups.filter(fn), s = 0; a.forEach(function (g) { s += rateOf(g); }); return Math.round(s / a.length * 10) / 10; }
   function auditSliceData(slice) {
-    if (slice === 'overall') return [['All faces, one number', gsAvg(function () { return true; }), '#15171C']];
-    if (slice === 'gender') return [['Men', gsAvg(function (g) { return g.gender === 'men'; }), '#3a47a8'], ['Women', gsAvg(function (g) { return g.gender === 'women'; }), '#3a47a8']];
-    if (slice === 'skin') return [['Lighter-skinned', gsAvg(function (g) { return g.skin === 'lighter'; }), '#B7791F'], ['Darker-skinned', gsAvg(function (g) { return g.skin === 'darker'; }), '#B7791F']];
+    var aggregate = auditSys().aggregate;
+    if (slice === 'overall') return [['All faces, one number', aggregate.overall, '#15171C']];
+    if (slice === 'gender') return [['Men', aggregate.men, '#3a47a8'], ['Women', aggregate.women, '#3a47a8']];
+    if (slice === 'skin') return [['Lighter-skinned', aggregate.lighter, '#B7791F'], ['Darker-skinned', aggregate.darker, '#B7791F']];
     return GS.groups.map(function (g) { return [g.label, rateOf(g), g.id === 'dw' ? '#DA291C' : '#15171C']; });
   }
   function auditInsight(slice) {
     var sys = auditSys();
-    if (slice === 'overall') return 'One number for ' + sys.name + ': about ' + Math.round(100 - gsAvg(function () { return true; })) + ' percent accurate overall. A marketing slide would stop here. Would you ship it?';
+    if (slice === 'overall') return 'One number for ' + sys.name + ': ' + (100 - sys.aggregate.overall).toFixed(1) + ' percent accurate overall. A marketing slide could stop here. What would that number hide?';
     if (slice === 'gender') return 'Split by gender, a gap opens: ' + sys.name + ' fails women more than men. Averaging still keeps it looking manageable.';
     if (slice === 'skin') return 'Split by skin type, a wider gap: ' + sys.name + ' fails darker-skinned faces more. Each single axis on its own still understates the harm.';
-    return sys.name + ': darker-skinned women fail ' + sys.rate.dw.toFixed(1) + ' percent of the time, against ' + sys.rate.lm.toFixed(1) + ' percent for lighter-skinned men. A single-axis test would have passed it. That is intersectionality (Crenshaw) and the coded gaze (Buolamwini).';
+    return sys.name + ': darker-skinned women are misclassified ' + sys.rate.dw.toFixed(1) + ' percent of the time, against ' + sys.rate.lm.toFixed(1) + ' percent for lighter-skinned men. The single-axis summaries show disparities, but this intersectional slice reveals their sharpest concentration. That is intersectionality (Crenshaw) and the coded gaze (Buolamwini).';
   }
   function auditBars(slice) {
     var data = auditSliceData(slice);
@@ -1901,8 +1960,8 @@
       + '<canvas class="audit-model-canvas" role="img" aria-label="' + esc(aria) + '" data-audit-model="week5" data-run="' + (run ? '1' : '0') + '" data-slice="' + esc(slice) + '" data-system-index="' + idx + '" data-view="' + esc(view) + '"></canvas>'
       + auditModelControls(view)
       + '<div class="audit-model-fallback" role="status" hidden>The 3D model could not load. The data table below still shows the audit results.</div>'
-      + '</div><div class="audit-model-description"><b>What this model shows</b><span>This is a functional audit station shown from an elevated technical view. A camera station and a system station feed four benchmark trays. Each tray holds 25 benchmark faces across the Gender Shades comparison groups. Red pins mark errors, and their concentration reveals what the overall average hides.</span></div>'
-      + '<div class="audit-model-guide"><b>Use it in order</b><ol><li>Run the audit: red pins appear where the system misclassifies benchmark faces.</li><li>Switch systems: IBM, Microsoft, and Face++ repeat the same pattern at different levels.</li><li>Change the slice: overall looks safe; intersectional shows who is carrying the error.</li></ol></div></div>';
+      + '</div><div class="audit-model-description"><b>What this model shows</b><span>This is a functional audit station shown from an elevated technical view. A camera station and a system station feed four benchmark trays. Each tray uses 25 neutral teaching markers as a normalized scale across the Gender Shades comparison groups. Red pins approximate each published error rate; they are not faces or participant counts from the study.</span></div>'
+      + '<div class="audit-model-guide"><b>Use it in order</b><ol><li>Run the audit: red teaching markers appear in proportion to the published error rate.</li><li>Switch systems: IBM, Microsoft, and Face++ repeat the same pattern at different levels.</li><li>Change the slice: overall looks safe; intersectional shows who is carrying the error.</li></ol></div></div>';
   }
   function loadThree() {
     if (!threePromise) threePromise = import('./assets/lib/three.module.min.js');
@@ -2168,7 +2227,7 @@
     try { reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches; } catch (e) {}
     function resize() {
       var w = Math.max(320, shell.clientWidth || canvas.clientWidth || 720);
-      var h = Math.max(300, Math.round(w * 0.58));
+      var h = w <= 520 ? 320 : Math.max(280, Math.min(340, Math.round(w * 0.45)));
       if (w <= 520) baseCam.set(6.45, 4.75, 8.55);
       else baseCam.set(5.8, 4.25, 7.55);
       applyAuditZoom();
@@ -2209,7 +2268,7 @@
       if (renderer.forceContextLoss) renderer.forceContextLoss();
       canvas.__auditGL = null;
     }
-    registerModelCleanup(cleanupAuditModel);
+    registerModelCleanup(cleanupAuditModel, canvas);
     function animate() {
       if (auditContextFailed) { animating = false; return; }
       if (!canvas.isConnected || canvas.__auditStamp !== auditRenderStamp) {
@@ -2293,14 +2352,14 @@
   function auditFallbackTable() {
     var sys = auditSys();
     var rows = GS.groups.map(function (g) { return '<tr><td style="padding:6px 8px;border-top:1px solid #EEF1F5">' + esc(g.label) + '</td><td style="text-align:right;padding:6px 8px;border-top:1px solid #EEF1F5">' + rateOf(g).toFixed(1) + '%</td><td style="text-align:right;padding:6px 8px;border-top:1px solid #EEF1F5">' + gsFails(g) + ' of ' + GS.perGroup + '</td></tr>'; }).join('');
-    return '<table style="width:100%;border-collapse:collapse;margin-top:16px;font-size:.8125rem"><caption class="mono" style="text-align:left;font-size:.6875rem;letter-spacing:.05em;color:#6B7280;margin-bottom:6px">' + esc(sys.name) + ' RESULTS (DATA TABLE)</caption><thead><tr><th scope="col" style="text-align:left;padding:6px 8px;border-bottom:1px solid #DEE3EA">Group</th><th scope="col" style="text-align:right;padding:6px 8px;border-bottom:1px solid #DEE3EA">Error rate</th><th scope="col" style="text-align:right;padding:6px 8px;border-bottom:1px solid #DEE3EA">Faces failed of 25</th></tr></thead><tbody>' + rows + '</tbody></table><p style="font-size:.72rem;line-height:1.5;color:#6B7280;margin:8px 0 0">Per-system intersectional error rates from Buolamwini and Gebru, Gender Shades (2018), the three commercial systems they audited (IBM, Microsoft, Face++). Gender, skin-type, and overall figures are averages across the balanced benchmark of 25 faces per group.</p>';
+    return '<table style="width:100%;border-collapse:collapse;margin-top:16px;font-size:.8125rem"><caption class="mono" style="text-align:left;font-size:.6875rem;letter-spacing:.05em;color:#6B7280;margin-bottom:6px">' + esc(sys.name) + ' RESULTS (DATA TABLE)</caption><thead><tr><th scope="col" style="text-align:left;padding:6px 8px;border-bottom:1px solid #DEE3EA">Group</th><th scope="col" style="text-align:right;padding:6px 8px;border-bottom:1px solid #DEE3EA">Published error rate</th><th scope="col" style="text-align:right;padding:6px 8px;border-bottom:1px solid #DEE3EA">Highlighted teaching markers (of 25)</th></tr></thead><tbody>' + rows + '</tbody></table><p style="font-size:.72rem;line-height:1.5;color:#6B7280;margin:8px 0 0">The error rates are the per-system intersectional results reported by Buolamwini and Gebru in Gender Shades (2018) for IBM, Microsoft, and Face++. The 25-marker column is only a rounded visual translation of each percentage for this teaching display; it is not the study sample size or a count reported in the paper.</p>';
   }
   function sandboxScreen() {
     var run = !!state.auditRun, slice = state.auditSlice || 'overall', sys = auditSys();
     var auditedCount = Object.keys(state.auditedSystems || {}).length;
     var openBtn = '<button onclick="SOC.read(\'buolamwini2018\')" style="margin-top:2px;background:none;border:none;color:#1552D8;font-size:.8125rem;font-weight:600;padding:0;cursor:pointer">Open Gender Shades (Buolamwini and Gebru, 2018) &#8599;</button>';
     var predict = '<div style="background:#F7F8FA;border:1px solid #DEE3EA;border-radius:12px;padding:14px 16px;margin:16px 0 0"><div class="mono" style="font-size:.6875rem;letter-spacing:.05em;color:#6B7280;margin-bottom:6px">PREDICT FIRST</div><p style="font-size:.9rem;line-height:1.55;color:#15171C;margin:0">You are about to audit three real facial-analysis systems against a benchmark balanced by gender and skin type. Before you run it: which group do you expect them to fail the most, and why?</p></div>';
-    var method = '<p style="font-size:.78rem;line-height:1.5;color:#6b7280;margin:14px 0 0">This re-enacts Buolamwini and Gebru\'s published audit of three commercial systems (IBM, Microsoft, and Face++). The systems, the balanced benchmark, and the results are theirs; you are walking through what they found, not running a live classifier. Each marker is one benchmark face the system was tested on; red means the system got it wrong. The markers are neutral and do not depict anyone.</p>';
+    var method = '<p style="font-size:.78rem;line-height:1.5;color:#6b7280;margin:14px 0 0">This re-enacts Buolamwini and Gebru\'s published audit of three commercial systems (IBM, Microsoft, and Face++). The systems, the balanced benchmark, and the error rates are theirs; you are walking through what they found, not running a live classifier. Each tray uses 25 neutral markers to translate a percentage into a readable visual pattern. The markers do not depict people, and their rounded red count is not a participant count from the paper.</p>';
     var how = '<section class="activity-run-guide" aria-label="How this activity works" style="margin-top:16px"><div><b>How this activity works</b><ol><li>Run the audit on the first system.</li><li>Use the slice buttons to compare overall, gender, skin-type, and intersectional results.</li><li>Audit the next systems and ask whether the pattern repeats across the industry.</li></ol></div></section>';
     var leave = '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write one sentence explaining why a high overall accuracy score can hide who the system fails most. Add that sentence to Activity Notes so it appears in Generate Your Weekly Notes.</p></div></section>';
     var grid = audit3dScene(run, slice, sys);
@@ -2419,7 +2478,7 @@
       + '<div style="position:relative;">'
       + '<div class="mono" style="font-size:.78rem;letter-spacing:.09em;color:var(--amode);font-weight:700;margin-bottom:14px">FULLY ASYNCHRONOUS &middot; SELF-PACED</div>'
       + '<h1 class="jhero-title" style="font-size:3rem;line-height:1.04;font-weight:700;margin:0 0 16px;letter-spacing:-.01em;color:var(--ink)">You set the pace, within the deadlines.</h1>'
-      + '<p style="font-size:1.18rem;line-height:1.55;color:var(--ink);margin:0 0 20px;font-weight:500">No live class carries you along, and nothing waits somewhere else. Every reading, weekly experience, activity, and check is right here, and the pace between the two due dates is yours to set. That is not a lighter class. It is the harder skill that outlasts any single course: learning to direct yourself.</p>'
+      + '<p style="font-size:1.18rem;line-height:1.55;color:var(--ink);margin:0 0 20px;font-weight:500">No live class carries you along, and nothing waits somewhere else. Every reading, weekly experience, activity, and check is right here. You direct your weekly learning within the staged Blackboard opening dates and deadlines that pace the assessed work across the term. That is not a lighter class. It builds the lasting skill of directing your own learning.</p>'
       + '<div style="display:flex;flex-wrap:wrap;gap:8px;margin:0 0 18px">' + ['No live classes', 'You set the pace', 'Two fixed due dates', 'Complete by design'].map(function (t) { return '<span class="mono" style="font-size:.72rem;font-weight:700;letter-spacing:.03em;color:var(--amode);background:#FBF4F3;border:1px solid #F0C8C3;border-radius:999px;padding:5px 12px">' + esc(t) + '</span>'; }).join('') + '</div>'
       + '<div class="mono" style="font-size:.72rem;letter-spacing:.06em;color:var(--ink-faint);font-weight:600">SENECA POLYTECHNIC &middot; FALL 2026 &middot; <span style="color:var(--ink-dim)">' + esc(title) + '</span></div>'
       + '</div></section>';
@@ -2447,7 +2506,7 @@
   }
   function asyncOrientation() {
     var moves = [
-      ['You set the pace', 'No one is moving the class along. The suggested rhythm is one week at a time, but you can go faster or catch up. The only fixed points are the two due dates.'],
+      ['You set the pace', 'No one is moving the class along. The suggested rhythm is one week at a time, but you can go faster or catch up. Use the staged Blackboard opening dates and deadlines to plan your work.'],
       ['Enter the teaching experience', 'There is no live class explaining the ideas out loud. In Weeks 2 to 12, the immersive weekly experience is where the teaching happens. Enter it first, then read.'],
       ['You check your own understanding', 'No one is watching you learn. The Knowledge Checks, Source Practice, and flashcards are how you find out whether an idea actually landed. Use them honestly.'],
       ['When you are stuck, you still have moves', 'You cannot raise your hand in the moment, but you are not alone: re-enter the experience, search the Glossary, post in the Blackboard discussion, and email me. Replies come within about a business day, not in real time.'],
@@ -2487,11 +2546,13 @@
     /* Show the whole approved assessment arc from day one. Dates below describe Blackboard access;
        Blackboard remains the authority for whether a brief, assessment, or dropbox can be opened. */
     var WINDOWS = [
-      { name: 'Map Exchange', opens: '2026-09-21', due: '2026-12-11', dueTxt: 'October 25 checkpoint; December 11 close', items: 'Weekly observations and peer replies, 20 percent' },
-      { name: 'Compass Check', opens: '2026-09-21', due: '2026-10-25', dueTxt: 'due Sunday, October 25', items: '25 zero-point scenarios and four mirror responses, 20 percent' },
-      { name: 'Canadian Case File', opens: '2026-09-21', due: '2026-10-25', dueTxt: 'due Sunday, October 25', items: 'One real Canadian system and recorded brief, 20 percent' },
-      { name: 'Design the Repair', opens: '2026-11-02', due: '2026-12-11', dueTxt: 'due Friday, December 11', items: 'One peer-facing repair brief, 20 percent' },
-      { name: 'Personal Cartography', opens: '2026-11-02', due: '2026-12-11', dueTxt: 'due Friday, December 11', items: 'Integrated final project and walkthrough, 20 percent' }
+      { name: 'Field Notes Portfolio 1', opens: '2026-09-21', due: '2026-10-18', dueTxt: 'due Sunday, October 18', items: 'Three private field notes, 10 percent' },
+      { name: 'Digital Decision Scenarios', opens: '2026-10-13', due: '2026-10-23', dueTxt: 'due Friday, October 23', items: '15 scenario choices and four mirror reflections, 20 percent' },
+      { name: 'Canadian Technology Investigation', opens: '2026-09-21', due: '2026-10-25', dueTxt: 'full room October 13; due October 25', items: 'Evidence board and decision briefing, 20 percent' },
+      { name: 'Field Notes Portfolio 2', opens: '2026-11-02', due: '2026-11-29', dueTxt: 'due Sunday, November 29', items: 'Three new private field notes, 10 percent' },
+      { name: 'Design the Repair', opens: '2026-11-23', due: '2026-12-06', dueTxt: 'anchor November 2; due December 6', items: 'Repair model, stress tests, and rationale, 20 percent' },
+      { name: 'Personal Cartography', opens: '2026-11-02', due: '2026-12-11', dueTxt: 'milestones begin November 2; final due December 11', items: 'Five-point final route, 15 percent' },
+      { name: 'Final Learning Reflection', opens: '2026-12-14', due: '2026-12-15', dueTxt: 'opens December 14; due December 15', items: 'Five short closing responses, 5 percent' }
     ];
     var arcs = WINDOWS.map(function (wd) {
       var toOpen = kdDaysUntil(wd.opens), toDue = kdDaysUntil(wd.due);
@@ -2511,12 +2572,12 @@
       + '<div class="ap-dots">' + dots + '</div>'
       + pace
       + '<div class="aw-row">' + arcs + '</div>'
-      + '<p class="ap-note">A week counts as driven once you have checked off its four steps. No one marks this for you. The pace is yours, and the only fixed points are the two due dates.</p>'
+      + '<p class="ap-note">A week counts as driven once you have checked off its four steps. No one marks this for you. The pace is yours within the staged Blackboard opening dates and deadlines shown above.</p>'
       + '</section>';
   }
   function journeyStations(cur) {
     var ws = journeyWeeks();
-    var studyDivider = '<div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px dashed var(--border);border-radius:12px;background:#FAFBFC"><span class="mono" style="font-size:.66rem;font-weight:700;letter-spacing:.06em;color:var(--red)">STUDY WEEK</span><span style="font-size:.86rem;color:var(--ink-dim)">' + STUDY_WEEK_DATE + ' &middot; Nothing new opens and nothing is due. The first half closed on Sunday, October 25; rest and reset</span></div>';
+    var studyDivider = '<div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px dashed var(--border);border-radius:12px;background:#FAFBFC"><span class="mono" style="font-size:.66rem;font-weight:700;letter-spacing:.06em;color:var(--red)">STUDY WEEK</span><span style="font-size:.86rem;color:var(--ink-dim)">' + STUDY_WEEK_DATE + ' &middot; Nothing new opens and nothing is due. The first-half assessments are complete; rest and reset.</span></div>';
     var out = '', studyIn = false;
     var studyMarker = function () { var m = (ws.indexOf(7) < 0) ? '<div style="display:flex;align-items:center;gap:12px;padding:11px 16px;border:1px dashed var(--border);border-radius:12px;background:#FAFBFC"><span class="mono" style="font-size:.66rem;font-weight:700;letter-spacing:.06em;color:var(--ink-faint)">WEEK 7</span><span style="font-size:.86rem;color:var(--ink-dim)">' + esc(weekDate(7)) + ' &middot; Cumulative review, no new readings</span></div>' : ''; return m + studyDivider; };
     ws.forEach(function (w) {
@@ -2560,7 +2621,7 @@
   }
   function stationDo(w) {
     var tiles = [['See it for yourself', 'Work this week\'s readings in the Self-Check Studio.', 'clipboard', 'SOC.goWeek(\'cards\',' + w + ')']];
-    if (D.course && D.course.frame) tiles.push(['Locate it on your map', 'Add this week to your Personal Cartography.', 'globe', 'SOC.go(\'map\')']);
+    if (D.course && D.course.frame) tiles.push(['Save course evidence', 'Keep a privacy-safe record you can use in later Blackboard work.', 'globe', 'SOC.go(\'map\')']);
     if (D.course && D.course.code === 'BFS218') tiles.push(['Audit a system', 'Watch a racialized harm appear in the sandbox, then name it.', 'search', 'SOC.go(\'sandbox\')']);
     if (D.course && D.course.code === 'PSY355') tiles.push(['Build your resilience', 'Bring this week into your Resilience Ecology.', 'layers', 'SOC.go(\'ecology\')']);
     tiles.push(['Hold two readings together', 'Compare any two readings, side by side.', 'columns', 'SOC.go(\'compare\')']);
@@ -2605,25 +2666,315 @@
           { apa: 'Crenshaw, K. (1991). Mapping the margins: Intersectionality, identity politics, and violence against women of color. Stanford Law Review, 43(6), 1241-1299.', scope: 'Foundational, first assigned in Week 2', id: 'crenshaw1991' },
           { apa: 'Koenecke, A., Nam, A., Lake, E., Nudell, J., Quartey, M., Mengesha, Z., Toups, C., Rickford, J. R., Jurafsky, D., & Goel, S. (2020). Racial disparities in automated speech recognition. Proceedings of the National Academy of Sciences, 117(14), 7684-7689. https://doi.org/10.1073/pnas.1915768117', scope: 'Open access, about 6 pages', id: 'koenecke2020' }
         ],
-        activity: { screen: 'sandbox', title: 'Audit the Coded Gaze', what: 'You step into the role of a bias auditor and re-enact the structure of Buolamwini and Gebru\'s published benchmark for three commercial facial-analysis systems (IBM, Microsoft, and Face++).', why: 'so you inspect the published group-level results yourself and see how an overall accuracy figure can conceal intersectional disparities. This is a teaching re-enactment of reported findings, not a live test of current products.' },
-        youcan: ['Explain coded exposure in your own words', 'Say why being over-watched and being unrecognized can both be harms', 'Describe the coded gaze and point to the Gender Shades evidence'],
-        reflectPrompt: 'In a sentence or two: where in your own life is being visible handed out by design, and who decides?'
+        activity: { screen: 'sandbox', title: 'Audit the Coded Gaze', what: 'You step into the role of a bias auditor and re-enact the structure of Buolamwini and Gebru\'s published benchmark for three commercial facial-analysis systems (IBM, Microsoft, and Face++).', why: 'so you inspect the published group-level results yourself and see how an overall accuracy figure can conceal intersectional disparities. Then you carry the audit into one system from your own life. This is a teaching re-enactment of reported findings, not a live test of current products.' },
+        youcan: ['Explain coded exposure in your own words', 'Say why being over-watched and being unrecognized can both be harms', 'Describe the coded gaze and point to the Gender Shades evidence', 'Find one example of coded exposure and record who is made over-visible or under-recognized, what consequence follows, and what evidence supports the claim in your Personal Cartography'],
+        reflectPrompt: 'Record a Week 5 Personal Cartography entry about one system that makes someone over-visible, under-recognized, or both. Name the system, the person or group affected, what consequence follows, what evidence supports your claim, and who can challenge or change the result.'
       },
       1: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "", "overview": "Welcome to the course. Our work this term is to learn to see something that is built to stay out of sight: techno-racism, the way racial bias is carried inside the technologies we use every day, from search bars to hiring tools to facial recognition. It hides because the systems look neutral, even helpful, while they quietly do the old work of exclusion in new clothes. That is exactly why a course about racism spends a whole term on technology: harm can also operate through design, data, and defaults, and learning to read it there is the skill this course builds. This first week is lighter on dense theory on purpose, because before we analyse a single algorithm we need a shared language and a shared question.", "purpose": "Week 1 answers one question: why would a course about racism spend an entire term on technology? It introduces techno-racism as a real and specific form of racial inequity that lives inside the design of digital systems, not only inside individual attitudes. This is a week about learning to look, and it launches the Personal Cartography, the assignment that turns that critical looking into a habit.", "outcomes": ["By the end of this week you can define techno-racism in your own words and explain why it is often invisible to the people it does not harm.", "By the end of this week you can name Benjamin's New Jim Code and give one clear example of a system that looks neutral while reproducing inequity.", "By the end of this week you can begin to apply an intersectional lens, recognizing that race interacts with gender, class, and other identities in how technology treats people.", "By the end of this week you can start your Personal Cartography by noticing at least one moment from your own digital life to map."], "guiding": ["Can a machine be racist, when a machine has no feelings and no intent?", "Why is techno-racism harder to see than a sign on a door or a slur said out loud?", "Who builds the digital systems that sort, score, and screen us, and whose experience gets treated as the default?", "If a system is promoted as objective, neutral, or helpful, what questions should that promise make you ask?"], "checks": [{"t": "What techno-racism means: racial bias built into the data, defaults, and design of digital systems, not only into people", "look": "the Key Concepts and the Benjamin reading"}, {"t": "The New Jim Code: how an old inequity gets carried forward by a tool that looks objective, fair, or even helpful", "look": "the Benjamin reading"}, {"t": "Why a system can produce racially unequal outcomes even when no single person intends harm", "look": "the Key Concepts for this week"}, {"t": "An intersectional lens: how race interacts with gender and class in how a system treats people, and the Gender Shades example", "look": "the Crenshaw and Buolamwini and Gebru readings"}, {"t": "Noticing one moment in your own digital life where a machine sorts, scores, or screens you", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Techno-racism", "body": "Techno-racism names the way racial bias is embedded inside technical systems: the algorithms, datasets, defaults, and design choices that shape digital life. It is racism that operates through technology rather than only through individual people. A landlord can refuse a tenant; a tenant-screening algorithm can do the same thing at scale, quietly, and call it a risk score. The key move is to stop treating technology as separate from society and to notice that technical systems are built within unequal social conditions and can encode dominant assumptions as defaults even without an explicit discriminatory rule.", "cite": "Benjamin, 2019"}, {"h": "The New Jim Code", "body": "This is the engine of the whole course. Ruha Benjamin defines the New Jim Code as new technologies that reflect and reproduce existing inequities while being promoted and perceived as more objective or progressive than the discriminatory systems of an earlier era. Hold onto three things. First, the technology carries an old inequity forward; it does not invent racism. Second, it is dressed in the language of progress, so it looks neutral, fair, or even benevolent. Third, that appearance of objectivity is exactly what makes it dangerous, because it discourages the scrutiny that would catch it. Benjamin names four dimensions of the New Jim Code that organize the middle of the term, and you meet each one in its own week.", "cite": "Benjamin, 2019"}, {"h": "Intersectionality", "body": "Intersectionality, from legal scholar Kimberlé Crenshaw, is the idea that systems of identity and power do not act one at a time. Race, gender, class, and other categories overlap, and a person at the intersection can face a harm that looking at any single category would miss. We introduce it in Week 1 because the harms we will study are rarely about race alone. Buolamwini and Gebru found that facial-analysis systems failed most often not for darker-skinned people in general, nor for women in general, but specifically for darker-skinned women, at the overlap. Intersectionality is the tool that lets you ask the sharper question: who exactly does this system fail, and at which overlap?", "cite": "Crenshaw, 1991"}], "terms": [{"term": "Techno-racism", "def": "racial bias embedded inside technical systems, the algorithms, datasets, defaults, and design choices that shape digital life; racism that operates through technology, not only through individual people.", "cite": "Benjamin, 2019"}, {"term": "The New Jim Code", "def": "Benjamin's name for new technologies that reflect and reproduce existing inequities while being promoted and perceived as more objective or progressive than the discriminatory systems of an earlier era.", "cite": "Benjamin, 2019"}, {"term": "Intersectionality", "def": "Crenshaw's idea that race, gender, class, and other categories of identity and power overlap, so a harm aimed at people at the intersection can be missed if you look at any single category alone.", "cite": "Crenshaw, 1991"}, {"term": "Personal Cartography", "def": "your first major course task, a map of your own relationship to digital technology, the tools you use and the moments where you have felt seen, sorted, watched, or misread by a machine.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Introduction: The New Jim Code. In Race after technology: Abolitionist tools for the New Jim Code (pp. 1-32). Polity Press.", "scope": "Read this on Blackboard", "id": "benjamin2019"}, {"apa": "Noble, S. U. (2018). Introduction: The power of algorithms. In Algorithms of oppression: How search engines reinforce racism. New York University Press.", "scope": "Read this on Blackboard", "id": "noble2018"}, {"apa": "Buolamwini, J., & Gebru, T. (2018). Gender shades: Intersectional accuracy disparities in commercial gender classification. Proceedings of Machine Learning Research, 81, 77-91.", "scope": "Open access", "id": "buolamwini2018"}, {"apa": "Crenshaw, K. (1991). Mapping the margins: Intersectionality, identity politics, and violence against women of color. Stanford Law Review, 43(6), 1241-1299.", "scope": "Core excerpt pp. 1241-1252 this week; explored further in Week 2", "id": "crenshaw1991"}], "activity": {"screen": "activity", "archetype": "match", "title": "Read the map", "what": "You match a real everyday technology to the idea it raises, using examples from this week's readings.", "why": "so you start the term already practising the core move of the course: looking at an ordinary tool and naming what it might be doing.", "data": {"prompt": "Match each everyday example to the idea it raises. There is one idea per example. After you match, read the short why and notice that none of these requires a single villain to do harm.", "pairs": [{"item": "A search engine returns demeaning and stereotyped results when someone looks up Black girls, while the company describes the ranking as just a neutral reflection of what people search and click.", "match": "Techno-racism", "why": "Noble shows that a tool presented as a neutral information service can carry racial bias inside its ranking, which is racism operating through the design of a system rather than through one person.", "cite": "Noble, 2018"}, {"item": "A commercial facial-analysis product is sold as accurate and objective, yet it classifies lighter-skinned men almost perfectly while misclassifying darker-skinned women far more often.", "match": "Intersectionality", "why": "Buolamwini and Gebru found the worst failures at the overlap of race and gender, a harm you only see when you look at darker-skinned women specifically, not race alone or gender alone.", "cite": "Buolamwini & Gebru, 2018"}, {"item": "A hiring or screening tool is promoted as a modern, data-driven upgrade over biased human recruiters, yet it quietly keeps surfacing the same kinds of applicants the old system favoured.", "match": "The New Jim Code", "why": "Benjamin's definition fits exactly: an old inequity is reproduced by a tool experienced as more objective and progressive than the system it replaced, and the appearance of neutrality is what hides it.", "cite": "Benjamin, 2019"}, {"item": "An automatic faucet or soap dispenser turns on reliably for some hands but not for others, and the gap was never chosen on purpose by anyone who built it.", "match": "Techno-racism", "why": "Benjamin uses small everyday objects to show that bias can be built into design and defaults without intent, so the technology treats one group as the default user and the rest as an afterthought.", "cite": "Benjamin, 2019"}, {"item": "A platform presents its results as the neutral output of a fair algorithm, so users are taught to trust the ranking rather than ask whose experience the system was built around.", "match": "The New Jim Code", "why": "The danger Benjamin names is precisely this appearance of objectivity, which discourages the scrutiny that would catch the inequity the tool is carrying forward.", "cite": "Benjamin, 2019"}]}}, "youcan": ["You can now define techno-racism in your own words and say why it is often invisible to the people it does not harm.", "You can now name the New Jim Code and point to a system that looks neutral while reproducing inequity.", "You can now start your Personal Cartography by noticing where a machine sorts, scores, or screens you in everyday life."], "reflectPrompt": "This week, begin your Personal Cartography by paying attention. Notice the technologies that touch your life, a search bar, a feed, a payment app, a camera, an ID check, and write down one moment where you felt seen, sorted, watched, or misread by a machine. You are not solving anything yet; you are just learning to notice."},
       2: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week02", "overview": "This week gives you the theory underneath the New Jim Code vocabulary. Critical race theory, or CRT, makes one hard claim: racism is ordinary and structural, built into laws, institutions, and everyday systems, and it can produce racially unequal outcomes even when a system looks neutral. Ruha Benjamin takes that lens to technology and calls the result the New Jim Code, old inequities carried forward by tools that look new, objective, and fair. By the end of the week you can explain CRT, connect it to the New Jim Code, and use both to read a real example from your own digital life. Your Personal Cartography is due at the end of next week; this week gives you the lenses to write it.", "purpose": "Week 2 closes the opening arc of the course by giving you the body of thought that techno-racism and the New Jim Code rest on. The point is to help you stop asking whether the person behind a system is racist and start asking what the system does, to whom, and who pays. You will use that shift on a real technology in your Personal Cartography.", "outcomes": ["By the end of this week you can explain clearly what critical race theory argues: that racism is ordinary and structural and can operate through systems that look neutral.", "By the end of this week you can connect critical race theory to Benjamin's New Jim Code, showing how the New Jim Code applies CRT to technology.", "By the end of this week you can distinguish an intentions-based account of a racist system from an outcomes-based account.", "By the end of this week you can use an outcomes-focused, intersectional lens to analyse a real technology from your own Personal Cartography."], "guiding": ["Critical race theory says racism is ordinary and structural, not only personal. What changes when you stop asking whether the person behind a system is racist and start asking what the system does, and to whom?", "Benjamin calls technology that reproduces old inequities while looking objective the New Jim Code. Why is the appearance of neutrality the most dangerous part?", "CRT asks us to weigh outcomes, not just intentions. Where in your digital life would an outcomes lens reveal something an intentions lens would miss?", "How does intersectionality (Crenshaw) show what a one-axis account of harm can miss at the overlap of systems?"], "checks": [{"t": "What critical race theory argues: that racism is ordinary and structural, built into systems, not only into personal prejudice", "look": "the course frame, the Crenshaw reading, and the Benjamin reading"}, {"t": "Structural racism: how a system can produce racially unequal outcomes even when no single person intends harm", "look": "the Benjamin reading"}, {"t": "How the New Jim Code applies critical race theory to technology, so old inequity rides inside a tool that looks neutral", "look": "the Benjamin reading"}, {"t": "The shift from intentions to outcomes: asking what a system does, to whom, and who pays, rather than who designed it", "look": "the Key Concepts for this week"}, {"t": "Reading one real technology from your own digital life through outcomes and an intersectional lens", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Critical race theory (CRT)", "body": "Critical race theory is a broad field of scholarship that examines how racism can be embedded in law, institutions, and ordinary systems, not only in individual prejudice. In this course, Crenshaw's intersectional analysis and Benjamin's study of technology provide two connected parts of that wider frame: examine what a system does, and check what a single-axis account leaves out.", "cite": "Crenshaw, 1991"}, {"h": "Structural and systemic racism", "body": "Structural racism is racism that lives in how systems are designed and how they routinely operate, so that unequal outcomes recur even when no single person intends them. This is why the course studies design and data, not only attitudes. It also means you can find a racial harm without ever finding a single villain who chose it.", "cite": "Benjamin, 2019"}, {"h": "The New Jim Code as applied critical race theory", "body": "Ruha Benjamin defines the New Jim Code as new technologies that reflect and reproduce existing inequities while being promoted and experienced as more objective or progressive than the systems of an earlier era. Read it as CRT applied to code: the same structural racism, now carried by technology that looks like progress. The danger is that the inequity becomes harder to see precisely because the tool looks neutral.", "cite": "Benjamin, 2019"}, {"h": "Intentions versus outcomes", "body": "The key analytic shift this week is to stop asking whether a system intends harm and start asking what it does, to whom, and who pays. A system with no intent at all can still produce a racial harm, and CRT trains you to see it. An intentions lens looks for a guilty designer; an outcomes lens looks at who the system actually sorts, scores, or fails.", "cite": "Benjamin, 2019"}], "terms": [{"term": "Critical race theory (CRT)", "def": "a broad field of scholarship that examines how racism can be embedded in law, institutions, and ordinary systems, including systems that present themselves as neutral.", "cite": "Crenshaw, 1991"}, {"term": "Structural and systemic racism", "def": "racism that lives in how systems are designed and routinely operate, so unequal outcomes recur even when no single person intends them.", "cite": "Benjamin, 2019"}, {"term": "The New Jim Code", "def": "Benjamin's name for new technologies that reflect and reproduce existing inequities while being experienced as more objective or progressive than earlier systems.", "cite": "Benjamin, 2019"}, {"term": "Intersectionality", "def": "Crenshaw's intersectional analysis shows that systems such as race and gender can overlap, so a one-axis account can obscure experiences produced at their intersection.", "cite": "Crenshaw, 1991"}], "readings": [{"apa": "Crenshaw, K. (1991). Mapping the margins: Intersectionality, identity politics, and violence against women of color. Stanford Law Review, 43(6), 1241-1299. https://doi.org/10.2307/1229039", "scope": "Core excerpt pp. 1241-1265. Open access", "id": "crenshaw1991"}, {"apa": "Benjamin, R. (2019). Introduction: The New Jim Code. In Race after technology: Abolitionist tools for the New Jim Code (pp. 1-32). Polity Press.", "scope": "Revisit from Week 1. Read this on Blackboard", "id": "benjamin2019"}], "activity": {"screen": "activity", "archetype": "match", "title": "Name the code", "what": "You match a real system, policy, or example to the critical race theory mechanism it reveals.", "why": "so you practise reading technology through outcomes, not intentions, which is the exact lens you need for your Personal Cartography this week.", "data": {"prompt": "Choose the CRT mechanism button under each real example. There is one mechanism per example. After you match, read the short why and notice that none of these requires a single villain to do harm.", "pairs": [{"item": "A hiring algorithm trained on a company's past hires keeps surfacing candidates who look like the people already there, and the firm calls it an objective, data-driven screen.", "match": "The New Jim Code: old inequity reproduced by a tool experienced as more objective than earlier systems", "why": "The tool reflects and reproduces an existing inequity while being promoted as neutral and progressive, which is exactly Benjamin's definition.", "cite": "Benjamin, 2019"}, {"item": "A tenant-screening or risk-scoring system produces racially unequal results even though no one who built it set out to discriminate.", "match": "Structural and systemic racism: unequal outcomes recur even when no single person intends them", "why": "The harm lives in how the system is designed and routinely operates, not in one person's intent, so you find the harm without finding a villain.", "cite": "Benjamin, 2019"}, {"item": "A standardized application form treats one group as the default user, so anyone who does not fit that template has to do extra work to be read correctly.", "match": "Critical race theory: racism is ordinary and built into everyday systems that look normal", "why": "CRT holds that racism is ordinary and structural, sitting in routine machinery that presents itself as neutral rather than in open hostility.", "cite": "Crenshaw, 1991"}, {"item": "A facial-analysis tool works well for lighter-skinned men but fails far more often for darker-skinned women, a gap that only appears when you look at race and gender together.", "match": "Intersectionality: harm appears at the overlap of systems and is missed by single-axis analysis", "why": "Looking only at race or only at gender can hide a distinct pattern at their intersection; Crenshaw's move is to examine how those systems operate together.", "cite": "Crenshaw, 1991"}, {"item": "A welfare-fraud detection system is praised as efficient and modern, yet it flags and burdens racialized claimants at higher rates while its defenders point only to the good intentions of its designers.", "match": "Intentions versus outcomes: ask what the system does and who pays, not whether it meant harm", "why": "An intentions lens stops at the designers' good faith; an outcomes lens asks what the system actually does, to whom, and who carries the cost.", "cite": "Benjamin, 2019"}, {"item": "A search engine returns demeaning or stereotyped results for queries about a racial group while the company describes the ranking as just a neutral reflection of what people click.", "match": "The New Jim Code: inequity carried by a tool framed as objective and neutral", "why": "The system reproduces existing inequity while being experienced as a neutral, objective ranking, which is how the New Jim Code hides in plain sight.", "cite": "Benjamin, 2019"}]}}, "youcan": ["You can now explain clearly what critical race theory argues and why racism can be structural, not only personal.", "You can now connect critical race theory to the New Jim Code and say how the New Jim Code applies CRT to technology.", "You can now read a real technology through outcomes rather than intentions, using an intersectional lens."], "reflectPrompt": "Choose one digital moment from your own life, study program, or future field. Looking at the outcome rather than the intention, whose world does that system assume, and who pays when it gets that person wrong?"},
       3: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week03", "overview": "This week opens Part II of the course, where we take the New Jim Code apart one dimension at a time. We begin with the first dimension, engineered inequity: technology that, by its design, amplifies social hierarchies of race, class, and gender while presenting itself as neutral or efficient. The key idea is amplify, not create: the inequality is already in society, and the design widens it, speeds it up, and makes it harder to escape. By the end of the week you should be able to define engineered inequity, answer Benjamin's question are robots racist, and name a real example from your own digital life.", "purpose": "The purpose of this week is to give you a precise definition of engineered inequity and the habit of looking for design choices rather than bad intentions. It builds directly on the New Jim Code from Part I and sets up the three dimensions that follow: default discrimination, coded exposure, and technological benevolence.", "outcomes": ["By the end of this week you can define engineered inequity as technology that, by design, amplifies existing hierarchies of race, class, and gender.", "By the end of this week you can distinguish amplifying an existing inequity from the looser idea that a technology creates bias from nothing.", "By the end of this week you can explain Benjamin's answer to the question are robots racist, and why design, not intent, is the issue.", "By the end of this week you can identify a real example of engineered inequity and add it to your Personal Cartography."], "guiding": ["What is the difference between a technology that creates a bias and one that amplifies an inequality that already exists, and why does Benjamin insist on the second?", "Are robots racist? After this week, how would you answer, and what would you point to as evidence?", "Where in your own digital life does a system seem to widen a gap that was already there, while presenting itself as neutral or efficient?", "Engineered inequity is framed across race, class, and gender at once. Where might those amplifications stack on the same person?"], "checks": [{"t": "What engineered inequity means: a design that, by the way it is built, amplifies existing hierarchies of race, class, and gender", "look": "the Key Concepts and the Benjamin reading"}, {"t": "Amplify, not create: why engineered inequity widens a gap that already exists rather than inventing one from nothing", "look": "the Benjamin reading"}, {"t": "Benjamin's question are robots racist, and why a machine can do racial harm with no hatred and no racist programmer", "look": "the Benjamin reading"}, {"t": "Why the fix for engineered inequity is a different design choice, not just better intentions", "look": "the activity and the Key Concepts"}, {"t": "Spotting a system in your own digital life that widens a gap already there while looking neutral or efficient", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Engineered inequity", "body": "Engineered inequity is Benjamin's first dimension of the New Jim Code: technology that, by its design, explicitly amplifies social hierarchies based on race, class, and gender. The harm is built into the design, and the system presents itself as neutral or efficient while widening a gap that already exists. The point is that the harm comes from how the system is designed, not from a feeling, a slur, or a single mistake.", "cite": "Benjamin, 2019"}, {"h": "Amplify, not create", "body": "The careful move this week is the word amplify. Engineered inequity does not conjure inequality out of nothing; it takes an existing inequity and makes it wider, faster, or harder to escape. This framework directs attention to design outcomes whether or not discriminatory intent can be shown; a response therefore has to examine the design, not only the designer's intentions.", "cite": "Benjamin, 2019"}, {"h": "Are robots racist?", "body": "This is Benjamin's framing question for the dimension, and her answer is that robots can be racist. Not because a machine feels hatred, but because it is designed inside a society already structured by racism and carries that structure forward. The question deliberately moves us from intent to design: a system can do racial harm with no racist programmer behind it.", "cite": "Benjamin, 2019"}], "terms": [{"term": "Engineered inequity", "def": "technology that, by its design, amplifies existing social hierarchies of race, class, and gender, while presenting itself as neutral or efficient.", "cite": "Benjamin, 2019"}, {"term": "Amplify, not create", "def": "the idea that engineered inequity widens an inequality that already exists rather than inventing one from nothing, which is why the fix is different design rather than better intentions.", "cite": "Benjamin, 2019"}, {"term": "Are robots racist?", "def": "Benjamin's framing question for engineered inequity; her answer is that a machine can do racial harm by design, with no hatred and no racist programmer, when it is built inside a society already structured by racism.", "cite": "Benjamin, 2019"}, {"term": "The New Jim Code", "def": "Benjamin's name for new technologies that carry old racism forward while appearing neutral or even fair; engineered inequity is the first of its four dimensions.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. Read the first dimension, engineered inequity (the chapter framed as Are Robots Racist?).", "scope": "Read this on Blackboard", "id": "benjamin2019"}], "activity": {"screen": "activity", "archetype": "scenario", "title": "Trace the design choice", "what": "You walk a design team's decisions for a real-world system, step by step, and choose what they do at each fork.", "why": "It makes engineered inequity concrete: you watch a neutral-looking design amplify an existing gap one choice at a time, this week's exact dimension.", "data": {"setup": "A city hires a team to build an automated screening tool that ranks tenant applications for subsidized housing. The neighbourhood already has a long history of who gets approved and who does not, and the team is told to make the process faster and more objective.", "steps": [{"situation": "The team needs data to train the tool. The fastest option is to learn from years of past approval decisions made by human officers in this same city.", "choices": [{"label": "Train on the past approval records as they are, because they are the data on hand", "outcome": "The tool learns the existing pattern of who was approved before, including its bias, and forwards that hierarchy at speed and scale while looking objective.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Treat the past records as evidence of an existing gap and design to correct for it, not just reproduce it", "outcome": "The team names the existing inequity first and changes the design so the tool does not simply amplify the old pattern.", "harm": false, "cite": "Benjamin, 2019"}]}, {"situation": "The team cannot use race directly, so they must choose other inputs. One easy, predictive input is the applicant's postal code and rental history.", "choices": [{"label": "Use postal code and rental history because they boost accuracy", "outcome": "These inputs stand in for race and class, so the tool widens the same hierarchy without ever naming race, presenting the result as neutral and efficient.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Drop inputs that act as proxies for an existing hierarchy and document why", "outcome": "The team refuses a design choice that would amplify race and class through the back door, accepting a small accuracy cost.", "harm": false, "cite": "Benjamin, 2019"}, {"label": "Keep the inputs but add a label that calls the tool objective", "outcome": "The alibi of neutrality hides the amplification rather than removing it, so the harm continues while looking fair.", "harm": true, "cite": "Benjamin, 2019"}]}, {"situation": "The finished tool works. It is faster than the old process and its overall approval numbers look reasonable, so leadership wants to deploy it now.", "choices": [{"label": "Deploy it because it is efficient and the overall numbers look fine", "outcome": "Efficiency and a clean overall number become the cover; the amplified gap lands on the same families as before, now faster and harder to appeal.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Ask who carries the cost when it is wrong before deploying", "outcome": "The team checks who is hurt by the errors and finds the design still amplifies the existing gap, so they redesign rather than ship.", "harm": false, "cite": "Benjamin, 2019"}]}]}}, "youcan": ["You can now define engineered inequity as a design that amplifies an existing hierarchy of race, class, and gender.", "You can now explain why amplify, not create, makes the fix a matter of design rather than intentions.", "You can now name a real example of engineered inequity from your own digital life for your Personal Cartography."], "reflectPrompt": "Think of one system you used today that seems to widen a gap that was already there. In a sentence or two, name the existing gap, the design choice that amplifies it, and who carries the cost."},
-      4: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week04", "overview": "This week is about a quieter kind of harm: the harm that arrives through a system's defaults. Default discrimination is Benjamin's second dimension of the New Jim Code, the way technology can carry inequity forward through the settings, data, and assumptions that treat one group's world as normal. No one has to type a slur into the code, because the inequity is already sitting in the defaults and no one designed against it. Your job is to learn the sharp question that holds the week, is the glitch systemic, and to find a real default that quietly disadvantages a group in your own world.", "purpose": "Default discrimination is Benjamin's second dimension of the New Jim Code, and the point of this week is to help you name it and test it. You will learn to apply her glitch-versus-systemic question to a real failure, to explain why she calls database design an exercise in worldbuilding, and to spot a default that treats one group's world as the norm. It builds on engineered inequity from last week and sets up coded exposure next week.", "outcomes": ["By the end of this week you can define default discrimination as harm that arrives through the defaults, data, and assumptions of a system, not only through active design.", "By the end of this week you can apply Benjamin's glitch-versus-systemic test to a real technological failure.", "By the end of this week you can explain why database design is, in Benjamin's words, an exercise in worldbuilding.", "By the end of this week you can identify a real default that quietly disadvantages a group and add it to your Personal Cartography."], "guiding": ["What is the difference between a harm someone designs on purpose and a harm that arrives through a default, and why does Benjamin insist the second is just as real?", "Is the glitch systemic? When a system fails a group and the failure is called a glitch, how would you decide whether it is an accident or a design working as built?", "Whose world is treated as the default in a system you use, and who has to adapt themselves to fit it?", "If the fix is not patching the glitch but changing the default, what default would you change first?"], "checks": [{"t": "What default discrimination means: harm that arrives through a system's settings, data, and assumptions, not only through active design", "look": "the Key Concepts and the Benjamin reading"}, {"t": "Benjamin's glitch-versus-systemic question: how to test whether a repeated failure is incidental or connected to the system's design", "look": "the Benjamin reading"}, {"t": "Design as worldbuilding: how database design encodes whose world counts as normal, with the Malcolm X Boulevard example", "look": "the Benjamin reading"}, {"t": "Why the real fix is changing the default itself, not patching the glitch faster", "look": "the activity and the Key Concepts"}, {"t": "Naming a default in your own life, program, or future field that quietly assumes someone who is not you", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Default discrimination", "body": "Default discrimination is Benjamin's second dimension of the New Jim Code: harm that arrives through the defaults of a system, the settings, data, and assumptions that treat one group's world as the norm. It does not require a racist designer. It requires only that the existing inequity is left in the defaults and that no one designs against it. Engineered inequity is active, a design that amplifies a gap on purpose, but default discrimination is quieter, the harm that arrives when no one is looking.", "cite": "Benjamin, 2019"}, {"h": "Is the glitch systemic?", "body": "This is Benjamin's framing question for the dimension. A glitch is supposed to be minor and temporary, a brief irregularity that someone will patch. Benjamin asks whether the glitch is actually systemic, that is, whether the failure is not an accident but the predictable result of how the system was built. When the answer is yes, the word glitch is doing work: it makes a designed harm sound like bad luck and closes the case before anyone asks who carries the cost.", "cite": "Benjamin, 2019"}, {"h": "Design as worldbuilding", "body": "Benjamin describes database design as an exercise in worldbuilding: programmers project their assumptions, interests, and view of the world into the system, and that world too often reproduces the technology of race. When Google Maps reads Malcolm X Boulevard aloud as Malcolm Ten, it reads the X as a Roman numeral because that is the default, a small sign of whose knowledge is set as normal and whose is treated as the exception.", "cite": "Benjamin, 2019"}], "terms": [{"term": "Default discrimination", "def": "harm that arrives through the defaults of a system, the settings, data, and assumptions that treat one group's world as the norm, without needing a racist designer.", "cite": "Benjamin, 2019"}, {"term": "Is the glitch systemic?", "def": "Benjamin's framing question, which asks whether a failure called a glitch is really an accident or the predictable result of how the system was built.", "cite": "Benjamin, 2019"}, {"term": "Design as worldbuilding", "def": "Benjamin's phrase for how database design projects a worldview into a system, encoding assumptions about who is normal as defaults that reproduce the technology of race.", "cite": "Benjamin, 2019"}, {"term": "Automating anti-Blackness", "def": "the way everyday tools such as credit scores, hiring algorithms, and risk assessments sift and sort people at scale, carrying old inequities forward in their defaults without ever using an explicit slur.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. Read the second dimension, default discrimination (the chapter Is the Glitch Systemic?, including the section Automating Anti-Blackness).", "scope": "Read this on Blackboard", "id": "benjamin2019"}], "activity": {"screen": "activity", "archetype": "toggle", "title": "Defaults are not neutral", "what": "You flip a system's default settings one at a time and watch who is helped and who is harmed when each default is treated as neutral.", "why": "It lets you test how a default changes outcomes and ask whether a repeated failure is incidental or connected to the system's design.", "data": {"system": "A set of everyday systems whose defaults sift and sort people: a map voice, a credit-score screen, neighbourhood surveillance, and an autofill name field.", "toggles": [{"label": "Map voice reads the letter X as a Roman numeral by default", "on": "Malcolm X Boulevard is read aloud as Malcolm Ten, so the Black liberation leader's name disappears from the system.", "off": "The map treats X in a street name as a name, so Malcolm X Boulevard is read correctly.", "whoHarmed": "Communities whose history and naming the default treats as the exception, who must adapt to be heard correctly.", "cite": "Benjamin, 2019"}, {"label": "Hiring screen uses a credit score as a default proxy for a good candidate", "on": "Applicants with thin or damaged credit are filtered out before a human ever sees them, and the bias hides inside a number that looks objective.", "off": "Candidates are judged on the job's actual requirements, so a credit history shaped by inequality does not stand in for race or class.", "whoHarmed": "Racialized and lower-income applicants, whose credit reflects old inequities rather than their ability to do the job.", "cite": "Benjamin, 2019"}, {"label": "Surveillance system watches blocks flagged by historical crime data by default", "on": "The same neighbourhoods are watched again and again because the past data is treated as a neutral map of risk.", "off": "Watching is not steered by historical data alone, so a biased past does not decide who is surveilled in the present.", "whoHarmed": "Residents of over-policed neighbourhoods, who carry the cost of a default that recycles an unequal past.", "cite": "Benjamin, 2019"}, {"label": "Name field treats a narrow set of names as the default normal", "on": "Names outside the assumed norm are rejected, truncated, or misread, so people are misrecorded by the system.", "off": "The field accepts the full range of real names, so no one has to alter their name to fit the database.", "whoHarmed": "People whose names fall outside the worldview encoded into the default, who must adapt or be misread.", "cite": "Benjamin, 2019"}]}}, "youcan": ["You can now define default discrimination as harm that arrives through a system's defaults, not only through active design.", "You can now apply Benjamin's glitch-versus-systemic test to a real technological failure.", "You can now explain why Benjamin calls database design an exercise in worldbuilding."], "reflectPrompt": "In a sentence or two: where in your own life, your Seneca program, placement, workplace, or future field, does a default just seem to assume someone who is not you, and who has to adapt to fit it?"},
+      4: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week04", "overview": "This week is about a quieter kind of harm: the harm that arrives through a system's defaults. Default discrimination is Benjamin's second dimension of the New Jim Code, the way technology can carry inequity forward through the settings, data, and assumptions that treat one group's world as normal. No one has to type a slur into the code, because the inequity is already sitting in the defaults and no one designed against it. Your job is to learn the sharp question that holds the week, is the glitch systemic, and to find a real default that quietly disadvantages a group in your own world.", "purpose": "Default discrimination is Benjamin's second dimension of the New Jim Code, and the point of this week is to help you name it and test it. You will learn to apply her glitch-versus-systemic question to a real failure, to explain why she calls database design an exercise in worldbuilding, and to spot a default that treats one group's world as the norm. It builds on engineered inequity from last week and sets up coded exposure next week.", "outcomes": ["By the end of this week you can define default discrimination as harm that arrives through the defaults, data, and assumptions of a system, not only through active design.", "By the end of this week you can apply Benjamin's glitch-versus-systemic test to a real technological failure.", "By the end of this week you can explain why database design is, in Benjamin's words, an exercise in worldbuilding.", "By the end of this week you can identify a real default that quietly disadvantages a group and add it to your Personal Cartography."], "guiding": ["What is the difference between a harm someone designs on purpose and a harm that arrives through a default, and why does Benjamin insist the second is just as real?", "Is the glitch systemic? When a system fails a group and the failure is called a glitch, how would you decide whether it is an accident or a design working as built?", "Whose world is treated as the default in a system you use, and who has to adapt themselves to fit it?", "If the fix is not patching the glitch but changing the default, what default would you change first?"], "checks": [{"t": "What default discrimination means: harm that arrives through a system's settings, data, and assumptions, not only through active design", "look": "the Key Concepts and the Benjamin reading"}, {"t": "Benjamin's glitch-versus-systemic question: how to test whether a repeated failure is incidental or connected to the system's design", "look": "the Benjamin reading"}, {"t": "Design as worldbuilding: how database design encodes whose world counts as normal, with the Malcolm X Boulevard example", "look": "the Benjamin reading"}, {"t": "Why the real fix is changing the default itself, not patching the glitch faster", "look": "the activity and the Key Concepts"}, {"t": "Naming a default in your own life, program, or future field that quietly assumes someone who is not you", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Default discrimination", "body": "Default discrimination is Benjamin's second dimension of the New Jim Code: harm that arrives through the defaults of a system, the settings, data, and assumptions that treat one group's world as the norm. It does not require a racist designer. It requires only that the existing inequity is left in the defaults and that no one designs against it. Engineered inequity is active, a design that amplifies a gap on purpose, but default discrimination is quieter, the harm that arrives when no one is looking.", "cite": "Benjamin, 2019"}, {"h": "Is the glitch systemic?", "body": "This is Benjamin's framing question for the dimension. A glitch is supposed to be minor and temporary, a brief irregularity that someone will patch. Benjamin asks whether the glitch is actually systemic, that is, whether the failure is not an accident but the predictable result of how the system was built. When the answer is yes, the word glitch is doing work: it makes a designed harm sound like bad luck and closes the case before anyone asks who carries the cost.", "cite": "Benjamin, 2019"}, {"h": "Design as worldbuilding", "body": "Benjamin describes database design as an exercise in worldbuilding: programmers project their assumptions, interests, and view of the world into the system, and that world too often reproduces the technology of race. When Google Maps reads Malcolm X Boulevard aloud as Malcolm Ten, it reads the X as a Roman numeral because that is the default, a small sign of whose knowledge is set as normal and whose is treated as the exception.", "cite": "Benjamin, 2019"}], "terms": [{"term": "Default discrimination", "def": "harm that arrives through the defaults of a system, the settings, data, and assumptions that treat one group's world as the norm, without needing a racist designer.", "cite": "Benjamin, 2019"}, {"term": "Is the glitch systemic?", "def": "Benjamin's framing question, which asks whether a failure called a glitch is really an accident or the predictable result of how the system was built.", "cite": "Benjamin, 2019"}, {"term": "Design as worldbuilding", "def": "Benjamin's phrase for how database design projects a worldview into a system, encoding assumptions about who is normal as defaults that reproduce the technology of race.", "cite": "Benjamin, 2019"}, {"term": "Automating anti-Blackness", "def": "the way everyday tools such as credit scores, hiring algorithms, and risk assessments sift and sort people at scale, carrying old inequities forward in their defaults without ever using an explicit slur.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. Read the second dimension, default discrimination (Chapter 2, Is the Glitch Systemic?).", "scope": "Read this on Blackboard", "id": "benjamin2019"}], "activity": {"screen": "activity", "archetype": "toggle", "title": "Defaults are not neutral", "what": "You flip a system's default settings one at a time and watch who is helped and who is harmed when each default is treated as neutral.", "why": "It lets you test how a default changes outcomes and ask whether a repeated failure is incidental or connected to the system's design.", "data": {"system": "A set of everyday systems whose defaults sift and sort people: a map voice, a credit-score screen, neighbourhood surveillance, and an autofill name field.", "toggles": [{"label": "Map voice reads the letter X as a Roman numeral by default", "on": "Malcolm X Boulevard is read aloud as Malcolm Ten, so the Black liberation leader's name disappears from the system.", "off": "The map treats X in a street name as a name, so Malcolm X Boulevard is read correctly.", "whoHarmed": "Communities whose history and naming the default treats as the exception, who must adapt to be heard correctly.", "cite": "Benjamin, 2019"}, {"label": "Hiring screen uses a credit score as a default proxy for a good candidate", "on": "Applicants with thin or damaged credit are filtered out before a human ever sees them, and the bias hides inside a number that looks objective.", "off": "Candidates are judged on the job's actual requirements, so a credit history shaped by inequality does not stand in for race or class.", "whoHarmed": "Racialized and lower-income applicants, whose credit reflects old inequities rather than their ability to do the job.", "cite": "Benjamin, 2019"}, {"label": "Surveillance system watches blocks flagged by historical crime data by default", "on": "The same neighbourhoods are watched again and again because the past data is treated as a neutral map of risk.", "off": "Watching is not steered by historical data alone, so a biased past does not decide who is surveilled in the present.", "whoHarmed": "Residents of over-policed neighbourhoods, who carry the cost of a default that recycles an unequal past.", "cite": "Benjamin, 2019"}, {"label": "Name field treats a narrow set of names as the default normal", "on": "Names outside the assumed norm are rejected, truncated, or misread, so people are misrecorded by the system.", "off": "The field accepts the full range of real names, so no one has to alter their name to fit the database.", "whoHarmed": "People whose names fall outside the worldview encoded into the default, who must adapt or be misread.", "cite": "Benjamin, 2019"}]}}, "youcan": ["You can now define default discrimination as harm that arrives through a system's defaults, not only through active design.", "You can now apply Benjamin's glitch-versus-systemic test to a real technological failure.", "You can now explain why Benjamin calls database design an exercise in worldbuilding."], "reflectPrompt": "In a sentence or two: where in your own life, your Seneca program, placement, workplace, or future field, does a default just seem to assume someone who is not you, and who has to adapt to fit it?"},
       6: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week06", "overview": "This week we bring the New Jim Code home to Canada. You have already named the dimensions of algorithmic harm in the abstract; now you watch them operate in real Canadian systems across borders, policing, and corrections. You will study documented Canadian cases, including the RCMP's use of Clearview AI and the Supreme Court ruling in Ewert v Canada, and connect each one to the harms, risks, or statutory and privacy findings supported by its source. The point is to see that these issues arise in Canada: a federal privacy investigation found the RCMP's Clearview AI use unlawful, and the Supreme Court found a statutory breach in Ewert. The course then applies Benjamin's framework without attributing its vocabulary to either body.", "purpose": "Week 6 grounds the New Jim Code in Canada. Having named the dimensions, you now examine documented Canadian cases in borders, policing, and corrections, and connect each to the harms, risks, or legal findings its source supports. The aim is to spot which dimension is at work in a real Canadian system, name who is harmed, and ask whether any law or oversight body is holding it accountable.", "outcomes": ["By the end of this week you can describe at least one documented Canadian case of algorithmic harm in borders, policing, or corrections.", "By the end of this week you can explain the OPC finding on the RCMP's use of Clearview AI, and the holding in Ewert v Canada (2018).", "By the end of this week you can connect a Canadian case to one dimension of the New Jim Code: engineered inequity, default discrimination, or coded exposure.", "By the end of this week you can identify a Canadian example from your own life and add it to your Personal Cartography, naming the dimension, the harm, and the oversight gap."], "guiding": ["Which dimension, engineered inequity, default discrimination, or coded exposure, do you see in the RCMP's use of Clearview AI?", "In Ewert v Canada, why did it matter that the risk tools were not validated for Indigenous offenders, and which dimension is that?", "Molnar documents experimental border technologies used on people on the move. What makes consent, refusal, and redress difficult in that setting?", "Singh notes much algorithmic policing is authorized by courts, not legislation. Why does that gap matter?", "Nagra and Maurutto show young Canadian Muslims being watched and stopped at borders as a matter of routine. What does it do to people to be treated as a security category before they have done anything?"], "checks": [{"t": "What the 2020 report documented about Canadian examples and possible uses of algorithmic policing, while noting that its factual record was incomplete and widespread use did not appear established at the time", "look": "the Robertson, Khoo, and Song reading"}, {"t": "The RCMP's use of Clearview AI as coded exposure, and the finding that it violated federal privacy law", "look": "the Office of the Privacy Commissioner of Canada reading"}, {"t": "Why Ewert v Canada matters: the statutory duty the Court found breached, and why this course reads the case through default discrimination", "look": "the Ewert v Canada ruling"}, {"t": "How experimental border technologies operate where people on the move may have limited ability to refuse or seek redress, and the legal oversight questions raised by Molnar and Singh", "look": "the Molnar and Singh readings"}, {"t": "Naming a place in your own Canadian life where a data-driven system may operate, then identifying what evidence would be needed before naming a dimension, harm, or oversight gap", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Algorithmic policing", "body": "Algorithmic policing is the use of data-driven tools by law enforcement: predictive policing, facial recognition, and social-media surveillance. Robertson, Khoo, and Song documented Canadian examples and possible uses, while stating that their factual record was incomplete and that widespread use did not appear established at the time. Much of it has been authorized through court rulings rather than clear legislation, which leaves a gap in oversight: powerful tools running without debated rules to govern them.", "cite": "Robertson, Khoo, and Song, 2020"}, {"h": "Digital border technologies", "body": "Digital border technologies are the surveillance, biometrics, and automated decision systems used at borders, and Petra Molnar shows they operate through logics of exclusion. Molnar documents experimental border technologies operating under weak oversight on people whose ability to refuse, understand, or challenge their use may be limited. Her 2023 commentary does not establish a universal first-then-spread sequence for every technology.", "cite": "Molnar, 2023"}, {"h": "Coded exposure at the border of policing", "body": "Clearview AI scraped billions of images from the web to build a face-search tool, and the RCMP used it. The Office of the Privacy Commissioner of Canada found that this use violated federal privacy law. People who never agreed to be in a police database were made searchable in one anyway, which is coded exposure: being made visible to a system that was never meant to see you.", "cite": "Office of the Privacy Commissioner of Canada, 2021"}, {"h": "Ewert v Canada: a statutory breach read through default discrimination", "body": "In Ewert v Canada, the Supreme Court held that Correctional Service Canada breached section 24(1) of the Corrections and Conditional Release Act by continuing to rely on assessment tools without taking all reasonable steps to ensure their validity for Indigenous offenders. The Court did not hold that the tools were proved inaccurate, did not find a Charter breach, and did not use the phrase default discrimination. This course applies Benjamin's term to analyse the unverified default.", "cite": "Ewert v Canada, 2018"}, {"h": "Muslim communities treated as a security category", "body": "Baljit Nagra and Paula Maurutto interviewed young Canadian Muslims about borders, security, and surveillance. Participants described being questioned, scrutinized, or treated as potential security risks, and described managing how they presented themselves in response. These interview accounts document how a security category was experienced by the people in the study; they should not be generalized to every young Muslim or every border encounter.", "cite": "Nagra and Maurutto, 2016"}], "terms": [{"term": "Algorithmic policing", "def": "the use of data-driven tools by law enforcement, including predictive policing, facial recognition, and social-media surveillance, much of it authorized through court rulings rather than clear legislation.", "cite": "Robertson, Khoo, and Song, 2020"}, {"term": "Digital border technologies", "def": "surveillance, biometrics, and automated decision systems used at borders; Molnar analyses their logics of exclusion and experimental deployment where people on the move may have limited ability to refuse or seek redress.", "cite": "Molnar, 2023"}, {"term": "Logics of exclusion", "def": "Molnar's analysis of how border technologies can reinforce exclusion by rendering people on the move as security objects under weak oversight.", "cite": "Molnar, 2023"}, {"term": "Oversight gap", "def": "the space that opens when a technology is deployed and authorized by court rulings rather than debated legislation, so powerful tools run without clear rules governing them.", "cite": "Singh, 2021"}, {"term": "The security category", "def": "a course term for the pattern described by Nagra and Maurutto's interview participants: being treated as a potential security risk through racialized and religious categorization; the evidence is bounded to their participants' accounts.", "cite": "Nagra and Maurutto, 2016"}], "readings": [{"apa": "Robertson, K., Khoo, C., & Song, Y. (2020). To surveil and predict: A human rights analysis of algorithmic policing in Canada. Citizen Lab and International Human Rights Program, University of Toronto.", "scope": "Required. Read the Executive Summary and Part I.", "id": "robertson2020"}, {"apa": "Nagra, B., & Maurutto, P. (2016). Crossing borders and managing racialized identities: Experiences of security and surveillance among young Canadian Muslims. Canadian Journal of Sociology, 41(2), 165-194. https://doi.org/10.29173/cjs23031", "scope": "Required. Open access, about 30 pages.", "id": "nagra2016"}, {"apa": "Molnar, P. (2023). Digital border technologies, techno-racism and logics of exclusion. International Migration. https://doi.org/10.1111/imig.13187", "scope": "Optional / Explore.", "id": "molnar2023"}, {"apa": "Office of the Privacy Commissioner of Canada. (2021). Police use of facial recognition technology in Canada and the way forward. Special report to Parliament.", "scope": "Optional / Explore. Findings summary.", "id": "opc2021"}, {"apa": "Ewert v Canada, 2018 SCC 30.", "scope": "Required. Read the case summary and the holding.", "id": "ewert2018", "url": "https://scc-csc.lexum.com/scc-csc/scc-csc/en/item/17133/index.do"}, {"apa": "Singh, S. (2021). Algorithmic policing technologies in Canada. Manitoba Law Journal, 44(6).", "scope": "Optional / Explore. Executive summary.", "id": "singh2021"}], "activity": {"screen": "activity", "archetype": "scenario", "title": "Map the Canadian case", "what": "You walk a documented Canadian deployment of facial recognition step by step, deciding what an institution does at each turn and watching where the harm lands and where the accountability gap opens.", "why": "so you practise naming the dimension, the harm, and the oversight gap on a real Canadian case before you add one to your own Personal Cartography.", "data": {"setup": "Clearview AI built a face-search database from billions of images scraped from the internet without consent, and the RCMP conducted hundreds of searches of that unlawfully compiled database. You step into the choices Canadian institutions faced as this deployment unfolded, from acquisition to oversight.", "steps": [{"situation": "A facial-recognition vendor offers a police service a tool whose database was built by scraping billions of public images without consent. The service is deciding whether and how to use it.", "choices": [{"label": "Use the tool quietly, since the images were already public online", "outcome": "People who never agreed to be in a police database are now searchable in one. They are made visible to a system that was never meant to see them, which is coded exposure, and the OPC later finds this use unlawful.", "harm": true, "cite": "Office of the Privacy Commissioner of Canada, 2021"}, {"label": "Pause and ask whether scraped images can lawfully be used before deploying", "outcome": "The service confronts the consent problem up front. Treating the scraped database as a privacy question, not a convenience, is exactly the gap the OPC report says should have been closed first.", "harm": false, "cite": "Office of the Privacy Commissioner of Canada, 2021"}]}, {"situation": "A police service is considering an algorithmic policing tool after reports documented Canadian examples and possible uses. The institution must decide what legal basis, evidence, and public disclosure would be required before use.", "choices": [{"label": "Proceed using existing common-law authority without dedicated legislation or public debate", "outcome": "Singh argues that relying on court rulings and common-law authority rather than dedicated legislation can leave important Charter and oversight questions unresolved.", "harm": true, "cite": "Singh, 2021"}, {"label": "Document the tool and its human-rights risks in a public human-rights analysis", "outcome": "The deployment is made visible to scrutiny. Robertson, Khoo, and Song recommend disclosure, impact assessment, consultation, and oversight; this scenario applies that accountability logic without claiming disclosure alone guarantees a remedy.", "harm": false, "cite": "Robertson, Khoo, and Song, 2020"}, {"label": "Treat a separate border-technology case as proof that this same tool spread there", "outcome": "That inference is not supported. Molnar documents experimental border technologies under weak oversight where people on the move may have limited ability to refuse or seek redress; the commentary does not show that Clearview followed a universal border-first or border-next sequence.", "harm": true, "cite": "Molnar, 2023"}]}, {"situation": "Harm has now been documented and the case reaches an oversight body. The question is whether accountability arrives in time to protect the people affected.", "choices": [{"label": "Wait for a complaint and let the oversight body rule case by case after the fact", "outcome": "This is delayed oversight. In Ewert, concerns about the tools' use with Indigenous offenders persisted for years before the Supreme Court declared that CSC had breached its statutory duty; the case supports a timing question without proving that every result produced by the tools was inaccurate.", "harm": true, "cite": "Ewert v Canada, 2018"}, {"label": "Treat the OPC's finding as a rule for future deployments, not just this one", "outcome": "The finding becomes a standard rather than a one-off. The OPC's report points beyond the single case toward a way forward that closes the gap before the next tool ships.", "harm": false, "cite": "Office of the Privacy Commissioner of Canada, 2021"}]}]}}, "youcan": ["You can now describe a documented Canadian case of algorithmic harm in borders, policing, or corrections", "You can now connect a Canadian case to one dimension of the New Jim Code and name who is harmed", "You can now ask of any Canadian system whether a law, court ruling, or oversight body is holding it accountable"], "reflectPrompt": "In a sentence or two: where in your Canadian life, city, program, or future field might a data-driven system operate, and what evidence would you need to verify its use, and what changes the moment you can name the harm where you live?"},
       7: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week07", "overview": "This week closes Part II by assembling the parts you already have. Over the last few weeks you named three dimensions of the New Jim Code one at a time: engineered inequity, default discrimination, and coded exposure. There is no new reading. Instead, you put those three layers together into one working picture of how a discriminatory system produces harm, then use the practice tools to check whether you can explain that anatomy clearly.", "purpose": "Week 7 consolidates Part II. You assemble the three dimensions of the New Jim Code and the Canadian cases into one working picture, then rehearse that understanding before Study Week. The aim is to hold the whole anatomy in one view: the three dimensions, how they differ, and how they show up together in real Canadian systems.", "outcomes": ["By the end of this week you can define and distinguish the three dimensions of the New Jim Code studied so far.", "By the end of this week you can analyse a real system and name which dimension or dimensions it reveals.", "By the end of this week you can judge whether a harm is designed or incidental, and give your reasons.", "By the end of this week you can use the Knowledge Check, Source Practice, and Concept Flashcards to rehearse one system from your own Personal Cartography before Study Week."], "guiding": ["In one sentence each, how would you define engineered inequity, default discrimination, and coded exposure?", "Pick a real system. Does it show one dimension, or more than one at once? How can you tell?", "How would you decide whether a harm is designed into a system or merely incidental?", "Where do the dimensions stack on the same person, at the intersection of race, gender, class, or status?"], "checks": [{"t": "Defining and telling apart the three dimensions: engineered inequity, default discrimination, and coded exposure", "look": "the Key Concepts and the Benjamin reading"}, {"t": "Coded exposure as visibility handed out unevenly, with the Gender Shades evidence on darker-skinned women", "look": "the Buolamwini and Gebru reading"}, {"t": "How the three dimensions are one anatomy, not separate machines, and can show up together in a single Canadian system", "look": "the Benjamin and Robertson, Khoo, and Song readings"}, {"t": "Judging whether a harm is designed into a system or merely incidental, and giving your reasons", "look": "the activity and the Key Concepts"}, {"t": "Using one system from your own Personal Cartography to rehearse which dimension or dimensions it reveals", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Engineered inequity: amplify, not create", "body": "Engineered inequity is the first dimension of the New Jim Code: a design that, by the way it is built, amplifies an existing hierarchy of race, class, or gender. The harm is active and built into the design, not a side effect. The key word is amplify, not create: the technology takes a gap that already existed in the world and makes it bigger and faster.", "cite": "Benjamin, 2019"}, {"h": "Default discrimination: ride the defaults", "body": "Default discrimination is the second dimension: harm that arrives through the defaults, the settings, data, and assumptions that treat one group's world as normal. No one has to set out to discriminate for it to happen. The key question is whether the glitch is systemic, because when the same error keeps landing on the same people, it is not a glitch, it is the design.", "cite": "Benjamin, 2019"}, {"h": "Coded exposure: visibility handed out unevenly", "body": "Coded exposure is the third dimension: the uneven, designed distribution of visibility, where some people are watched too closely and others are not seen at all. The key question is whether visibility is a trap. Buolamwini and Gebru measured one version of it, finding facial-analysis systems near-perfect on lighter-skinned men and far worse on darker-skinned women.", "cite": "Benjamin, 2019"}, {"h": "Not separate machines: one anatomy", "body": "These three dimensions are not separate machines; they are three ways the same systemic racism enters technology. A single real system can show more than one at once, and in Canada we saw them together in policing, corrections, and at the border. Assembling the anatomy means seeing how the whole system, not one part, produces the harm.", "cite": "Benjamin, 2019"}], "terms": [{"term": "Engineered inequity (dimension one)", "def": "technology that, by its design, amplifies an existing hierarchy of race, class, or gender; the harm is active and built in, and the key word is amplify, not create.", "cite": "Benjamin, 2019"}, {"term": "Default discrimination (dimension two)", "def": "harm that arrives through the defaults, the settings, data, and assumptions that treat one group's world as normal; the key question is whether the glitch is systemic.", "cite": "Benjamin, 2019"}, {"term": "Coded exposure (dimension three)", "def": "the uneven, designed distribution of visibility, where some people are watched too closely and others are not seen at all; the key question is whether visibility is a trap.", "cite": "Benjamin, 2019"}, {"term": "Algorithmic policing", "def": "the use of data-driven tools such as predictive policing, facial recognition, and social-media surveillance by law enforcement; the 2020 Canadian report documented examples and risks but did not claim widespread use had been established.", "cite": "Robertson, Khoo, and Song, 2020"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. (Engineered inequity; default discrimination; coded exposure.)", "scope": "Read this on Blackboard", "id": "benjamin2019"}, {"apa": "Buolamwini, J., and Gebru, T. (2018). Gender shades: Intersectional accuracy disparities in commercial gender classification. Proceedings of Machine Learning Research, 81, 77-91.", "scope": "Open access", "id": "buolamwini2018"}, {"apa": "Robertson, K., Khoo, C., and Song, Y. (2020). To surveil and predict: A human rights analysis of algorithmic policing in Canada. Citizen Lab and International Human Rights Program, University of Toronto.", "scope": "Open access", "id": "robertson2020"}, {"apa": "Molnar, P. (2023). Digital border technologies, techno-racism and logics of exclusion. International Migration. https://doi.org/10.1111/imig.13187", "scope": "Open access", "id": "molnar2023"}], "activity": {"screen": "activity", "archetype": "assemble", "title": "Assemble the anatomy", "what": "You take one real discriminatory system and build it layer by layer, the data, the model, the deployment, and the feedback loop, then name which dimension of the New Jim Code each layer reveals.", "why": "so you see how the whole system, not one part, produces harm, and arrive ready for Study Week and the next assignment work.", "data": {"goal": "Assemble the four layers of one real system into a single anatomy, then name the dimension each layer reveals, so the harm is shown to come from the whole structure rather than one bad part.", "components": [{"label": "The data layer", "role": "feeds the system a record of an unequal world, so the defaults treat one group's world as normal and others as the exception.", "cite": "Benjamin, 2019"}, {"label": "The model layer", "role": "scores or sorts people by that data, amplifying an existing hierarchy of race, class, or gender rather than creating a new one.", "cite": "Benjamin, 2019"}, {"label": "The deployment layer", "role": "puts the system to work in policing, predictive tools, facial recognition, and surveillance, where documented deployments and proposed uses require source-specific analysis of risk and harm.", "cite": "Robertson, Khoo, and Song, 2020"}, {"label": "The border deployment", "role": "places surveillance, biometrics, or automated decisions in a border setting where people on the move may have limited ability to refuse or challenge the system.", "cite": "Molnar, 2023"}, {"label": "The visibility setting", "role": "hands out being seen unevenly, watching some people too closely and missing others, so accuracy and safety come apart.", "cite": "Buolamwini and Gebru, 2018"}, {"label": "The feedback loop", "role": "feeds each biased result back in as new data, so the whole anatomy keeps reproducing the same harm and the glitch proves systemic.", "cite": "Benjamin, 2019"}]}}, "youcan": ["You can now define and distinguish engineered inequity, default discrimination, and coded exposure in your own words", "You can now take one real system and name which dimension or dimensions it reveals", "You can now judge whether a harm is designed or incidental, and give your reasons"], "reflectPrompt": "You can now name the anatomy of the New Jim Code, but naming a harm is not the same as ending it. For one system in your own life, what is the difference between seeing the harm clearly and being able to change it?"},
       8: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week08", "overview": "This week the course turns from naming the New Jim Code to answering it, and it begins on purpose not with a Western fix but with a different relation to data altogether. Indigenous data sovereignty is the principle that First Nations, Inuit, and Métis peoples have the right to govern the data about their own communities. You will learn the OCAP principles (Ownership, Control, Access, Possession), a registered trademark of the First Nations Information Governance Centre, alongside the CARE Principles from the Global Indigenous Data Alliance, and you will run a real data-governance case through them. The point is to ask not only whether a system is biased, but who should govern the data, and on whose terms.", "purpose": "Week 8 reframes the question from bias to governance. You will examine Indigenous data sovereignty, learn OCAP® specifically as a First Nations framework, meet the broader CARE Principles, and distinguish both from the course's decolonial-AI reading. The aim is accurate application: no framework is treated as interchangeable across all Indigenous Peoples or all communities.", "outcomes": ["By the end of this week you can explain Indigenous data sovereignty as the right of First Nations, Inuit, and Métis communities to govern data about themselves.", "By the end of this week you can describe the four OCAP principles, attribute them to the First Nations Information Governance Centre, and say what each one protects.", "By the end of this week you can summarise what a decolonial approach to AI centres, after Mohamed, Png, and Isaac (2020), and name what algorithmic colonialism means.", "By the end of this week you can run a data-governance case through OCAP and CARE and connect it to your own Personal Cartography, naming where a community could hold its own data."], "guiding": ["Most systems assume whoever collects data owns it. What changes if the community owns it instead?", "What do Ownership, Control, Access, and Possession each protect, and why are all four needed together?", "Mohamed, Png, and Isaac warn against algorithmic colonialism. What would a decolonial approach to AI centre instead?"], "checks": [{"t": "Indigenous data sovereignty: the right of First Nations, Inuit, and Métis communities to govern data about themselves", "look": "the Key Concepts and the First Nations Information Governance Centre reading"}, {"t": "The four OCAP principles, Ownership, Control, Access, and Possession, and what each one protects", "look": "the First Nations Information Governance Centre reading"}, {"t": "What a decolonial approach to AI centres, and what algorithmic colonialism means", "look": "the Mohamed, Png, and Isaac reading"}, {"t": "Naming a community whose data has been governed mostly by others, and what would change if it governed its own data", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Indigenous data sovereignty", "body": "Indigenous data sovereignty is the principle that First Nations, Inuit, and Métis peoples have the right to govern the collection, ownership, and use of data about their own communities, lands, and knowledge. It reframes data from something extracted by outsiders to something a community holds and governs. Instead of asking only whether a system is biased, it asks who should govern the data at all, moving the community from the subject of the data to its steward.", "cite": "First Nations Information Governance Centre, 2014"}, {"h": "OCAP: Ownership, Control, Access, Possession", "body": "OCAP names four First Nations principles for data governance, stewarded by the First Nations Information Governance Centre, and is a registered trademark of that Centre. Ownership means a community collectively owns its information. Control means it controls how data about it is collected and used. Access means the community can reach data about itself. Possession means it physically holds and stewards that data. All four are needed together: ownership without possession is hollow, and access without control is thin.", "cite": "First Nations Information Governance Centre, 2014"}, {"h": "Decolonial AI and algorithmic colonialism", "body": "Mohamed, Png, and Isaac (2020) argue that decolonial and postcolonial theory should guide how artificial intelligence is built and governed. They warn against algorithmic colonialism, where tools built elsewhere are imposed on communities while the power and benefit flow back outward to those who built them. A decolonial approach instead centres those most affected in how systems are designed and governed.", "cite": "Mohamed, Png, and Isaac, 2020"}], "terms": [{"term": "Indigenous data sovereignty", "def": "the right of First Nations, Inuit, and Métis peoples to govern the collection, ownership, and use of data about their own communities, lands, and knowledge.", "cite": "First Nations Information Governance Centre, 2014"}, {"term": "OCAP (Ownership, Control, Access, Possession)", "def": "four First Nations principles for data governance, a registered trademark stewarded by the First Nations Information Governance Centre: a community owns its information, controls how it is collected and used, can access it, and physically possesses it.", "cite": "First Nations Information Governance Centre, 2014"}, {"term": "Algorithmic colonialism", "def": "the pattern in which AI tools built elsewhere are imposed on communities, with power and benefit flowing back outward to those who built them rather than to those most affected.", "cite": "Mohamed, Png, and Isaac, 2020"}, {"term": "CARE Principles for Indigenous Data Governance", "def": "people-and-purpose principles (Collective benefit, Authority to control, Responsibility, and Ethics) from the Global Indigenous Data Alliance that sit alongside data-sharing rules to keep Indigenous rights and wellbeing at the centre.", "cite": "Global Indigenous Data Alliance, 2019"}], "readings": [{"apa": "Mohamed, S., Png, M.-T., & Isaac, W. (2020). Decolonial AI: Decolonial theory as sociotechnical foresight in artificial intelligence. Philosophy & Technology, 33, 659-684.", "scope": "Open access", "id": "mohamed2020"}, {"apa": "Smillie-Adjarkwa, C. (2005). Is the internet a useful resource for Indigenous women living in remote communities? National Network for Aboriginal Mental Health Research.", "scope": "Optional reading; open access", "id": "smillie2005"}, {"apa": "First Nations Information Governance Centre. (2014). Ownership, control, access and possession (OCAP): The path to First Nations information governance. First Nations Information Governance Centre.", "scope": "Open access", "id": "fnigc2014", "url": "https://fnigc.ca/wp-content/uploads/2020/09/5776c4ee9387f966e6771aa93a04f389_ocap_path_to_fn_information_governance_en_final.pdf"}, {"apa": "Global Indigenous Data Alliance. (2019). CARE principles for Indigenous data governance. Global Indigenous Data Alliance.", "scope": "Open access", "id": "gida2019", "url": "https://www.gida-global.org/careprinciples"}], "activity": {"screen": "activity", "archetype": "lab", "title": "Apply OCAP and CARE", "what": "You work through a fictional First Nations health-data scenario using OCAP® and CARE, keeping the frameworks' origins and scope visible.", "why": "It lets you practise governance questions without presenting the fictional scenario as a documented community case or treating OCAP® as a generic checklist.", "data": {"case": "Fictional teaching scenario: a provincial health agency holds a dataset about a First Nation's community health, collected by outside researchers and stored on the agency's own servers. The community can request reports but cannot change what is collected, cannot reach the raw records, and does not hold a copy. You decide which governance principles to apply.", "levers": [{"label": "Ownership (OCAP)", "effect": "Recognises the community, not the agency, as the collective owner of its information, so it is the community's claim to the data that is honoured first.", "tradeoff": "Ownership on paper can be hollow if the agency still controls and physically holds the data, so this principle alone does not move real power.", "cite": "First Nations Information Governance Centre, 2014"}, {"label": "Control (OCAP)", "effect": "Gives the community say over what is collected and how it is used, so research and reporting happen on the community's terms rather than the agency's.", "tradeoff": "Control without access or possession means the community can set rules but still cannot reach or hold the records, which slows decisions and depends on the agency's cooperation.", "cite": "First Nations Information Governance Centre, 2014"}, {"label": "Access (OCAP)", "effect": "Requires access to data about the community regardless of where it is held and affirms First Nations' authority to manage and regulate access.", "tradeoff": "Access lets the community see the data but not decide its use, so it is thin on its own and must be paired with control to matter.", "cite": "First Nations Information Governance Centre, 2014"}, {"label": "Possession (OCAP)", "effect": "Addresses physical control of data as a mechanism through which ownership and control can be asserted and protected.", "tradeoff": "Possession requires community-determined resourcing and infrastructure. Smillie-Adjarkwa's 2005 report is historical evidence of then-current connectivity barriers, not a current estimate and not a reason for an outside institution to retain control.", "cite": "First Nations Information Governance Centre, 2014"}, {"label": "Collective benefit (CARE)", "effect": "Requires that the data and any AI built on it work for the community's wellbeing first, not mainly for the agency's research goals or outside funders.", "tradeoff": "Naming collective benefit does not by itself transfer control, so it can be stated as a value while the real decisions stay with the agency unless paired with OCAP.", "cite": "Global Indigenous Data Alliance, 2019"}, {"label": "Authority to control (CARE)", "effect": "Affirms the community's right and authority to govern how the data is used at every stage, which is the CARE principle that most directly answers algorithmic colonialism by keeping authority with those most affected.", "tradeoff": "Authority must be resourced and recognised by the agency to be real, and a decolonial approach warns that authority granted in name only repeats the extraction it claims to refuse.", "cite": "Global Indigenous Data Alliance, 2019"}], "pick": 2}}, "youcan": ["You can now explain Indigenous data sovereignty in your own words and attribute it to First Nations, Inuit, and Métis communities.", "You can now describe the four OCAP principles, attribute them to the First Nations Information Governance Centre, and say what each protects.", "You can now run a data-governance case through OCAP and CARE and name what would change if the community governed its own data."], "reflectPrompt": "In the fictional First Nations scenario, what would OCAP® require of the agency? In another setting, what data-governance framework has the affected community itself authorized? Do not assume that one community's framework belongs to another."},
-      9: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week09", "overview": "This week completes the four dimensions of the New Jim Code with the one Benjamin saves for last: technological benevolence, the false promise of help. The idea is simple but slippery: the most dangerous systems may be the ones that arrive as care, a fix, an upgrade, an act of help, while still carrying the old harms. You will learn to name the benevolence trap, where a tool sold as the solution becomes harder to question than one that is openly harmful. Then you will practice Benjamin's hard test, will the fix fix it, and add a technology of your own to your Personal Cartography.", "purpose": "Technological benevolence is the fourth and final dimension of the New Jim Code, and it completes the anatomy you have built since Week 2. The point of this week is to help you look past benevolent framing and ask, of any proposed fix, whether it actually changes the harm or only makes it harder to question. It turns the whole course toward response: once you can see harm hiding inside help, you can test the solutions you are offered instead of trusting them.", "outcomes": ["By the end of this week you can define technological benevolence as harm carried inside the language of help.", "By the end of this week you can recognize the benevolence trap, where a fix sold as care disarms criticism in advance.", "By the end of this week you can explain Benjamin's argument in Raising Robots about helpers, disposability, and race.", "By the end of this week you can apply the will-the-fix-fix-it test to a real technology and add it to your Personal Cartography."], "guiding": ["What makes a technology sold as help harder to criticize than one that is openly harmful?", "In Raising Robots, why does Benjamin connect the disposability of robots to the denigration of racialized people?", "Who benefits when a harm is reframed as a problem that technology has already solved?", "How would you tell a real repair from a comfortable story about one?"], "checks": [{"t": "What technological benevolence means: harm carried inside the language of help, care, a fix, or an upgrade", "look": "the Key Concepts and the Benjamin reading"}, {"t": "The benevolence trap: why a tool sold as care can be harder to question than one that is openly harmful", "look": "the Benjamin reading"}, {"t": "Benjamin's argument in Raising Robots about helpers, disposability, and race, and the police throwbots example", "look": "the Benjamin reading"}, {"t": "The will-the-fix-fix-it test: asking whether a fix actually changes the harm, and for whom", "look": "the activity and the Key Concepts"}, {"t": "Naming a technology in your own life that was sold to you, or to your community, as help", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Help can be how harm survives", "body": "Technological benevolence is Benjamin's fourth dimension: technology promoted as good for us, a fix, an upgrade, an act of care, that still carries the old harms. The benevolent framing is not a side effect; it is part of how the harm survives, because help is hard to argue with. A tool sold as the solution is harder to question than one that is openly harmful, and that difficulty is the point.", "cite": "Benjamin, 2019"}, {"h": "The benevolence trap", "body": "The benevolence trap is what makes this dimension dangerous. A tool sold as the solution disarms criticism in advance, so to question it can feel like opposing progress or refusing help. The trap is not only the harm itself but the difficulty of naming it once it wears the language of care. A harm you cannot name, you cannot organize against.", "cite": "Benjamin, 2019"}, {"h": "Raising Robots connects disposability to race", "body": "In Raising Robots, Benjamin shows how robots and automation are imagined as helpers and even servants, and how the disposability of robots travels with the denigration of racialized people. Her example is police throwbots, sent in first so officers can own the real estate with their eyes before paying with their bodies. The machine is framed as safety, which is why the right question becomes safety for whom.", "cite": "Benjamin, 2019"}, {"h": "Will the fix fix it?", "body": "This is Benjamin's working question for the dimension. For any proposed fix, ask what it actually changes and for whom. A comfortable story makes harm look solved while who carries the cost has not changed; a real repair changes who pays. The test is to separate a real repair from a comfortable story about one, and to remember that benevolence rarely arrives alone.", "cite": "Benjamin, 2019"}], "terms": [{"term": "Technological benevolence", "def": "Benjamin's fourth dimension of the New Jim Code: technology promoted as good for us, a fix, an upgrade, an act of help, that still carries existing harms because the framing of care disarms criticism.", "cite": "Benjamin, 2019"}, {"term": "The benevolence trap", "def": "what makes this dimension dangerous: a tool sold as the solution is harder to question than one that is openly harmful, so the harm is not only done but hard to name.", "cite": "Benjamin, 2019"}, {"term": "Will the fix fix it?", "def": "Benjamin's working test for any proposed solution: ask what it actually changes and for whom, to tell a real repair from a comfortable story about one.", "cite": "Benjamin, 2019"}, {"term": "Raising Robots", "def": "the chapter section where Benjamin examines machines framed as helpers, including police throwbots, and shows how the disposability of robots travels with the denigration of racialized people.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. (Technological benevolence, the fourth dimension; the chapter section Raising Robots.)", "scope": "Read this on Blackboard", "id": "benjamin2019"}], "activity": {"screen": "activity", "archetype": "scenario", "title": "The benevolence test", "what": "You evaluate a 'tech for good' pitch one promise at a time and decide whether each one is a real repair or a comfortable story that hides a harm.", "why": "so you practice Benjamin's working question, will the fix fix it, on a friendly-sounding system before you trust the next one you are offered.", "data": {"setup": "A start-up pitches CareScan, a 'tech for good' tool for a city shelter network: an AI camera and check-in app that promises to keep residents safe, speed up intake, and flag people who need help, all framed as care for a vulnerable community.", "steps": [{"situation": "The pitch opens: CareScan will make the shelter safer by watching every common area around the clock and alerting staff to incidents automatically.", "choices": [{"label": "Accept it: more watching means more safety for residents.", "outcome": "This is the benevolence trap. The camera is sold as safety, but constant surveillance of a vulnerable, often racialized population is the same exposure harm wrapped in the language of care. Ask: safety for whom.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Ask who the watching actually serves and who carries its cost.", "outcome": "This is the right move. Naming who is watched and who benefits separates a real safety measure from coded exposure sold as care, which is exactly the question Benjamin's framework demands.", "harm": false, "cite": "Benjamin, 2019"}]}, {"situation": "Next promise: CareScan's intake app uses an automated risk score to decide who gets a bed first, which the founders call a fairer, faster fix than staff judgment.", "choices": [{"label": "Run the will-the-fix-fix-it test: what does the score actually change, and for whom?", "outcome": "This is the right move. The test exposes that a fix sold as fairness can simply relocate the harm. If the score has not changed who carries the cost, it is a comfortable story, not a real repair.", "harm": false, "cite": "Benjamin, 2019"}, {"label": "Trust the score because it removes human bias and is faster.", "outcome": "This is the comfortable story. A faster, friendlier tool can still carry engineered inequity underneath; benevolence rarely arrives alone, so an automated score deserves more scrutiny, not less.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Ask whether the score has been tested for who it advantages and who it sets back.", "outcome": "This is also a strong move. Asking who the fix advantages and who it sets back is how you tell a real repair from a harm reframed as a problem technology has already solved.", "harm": false, "cite": "Benjamin, 2019"}]}, {"situation": "Closing promise: the founders say CareScan deploys cleanup and delivery robots so staff face less risky work, and they add that the robots are cheap and disposable.", "choices": [{"label": "Approve it: disposable robots take on the dangerous tasks, so no person is put at risk.", "outcome": "This repeats Benjamin's warning in Raising Robots. Machines framed as helpers can serve power, and the language of disposability travels with the denigration of the racialized people whose labour and risk the system still depends on. Ask who is really treated as disposable.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Ask who is still doing the risky labour and who the friendly framing leaves out.", "outcome": "This is the right move. Looking past the helper framing to who actually carries the risk is how you refuse the comfortable story and apply Benjamin's politics of help.", "harm": false, "cite": "Benjamin, 2019"}]}]}}, "youcan": ["You can now define technological benevolence as harm carried inside the language of help.", "You can now name the benevolence trap and explain why a fix sold as care is harder to criticize than open harm.", "You can now apply the will-the-fix-fix-it test to a real technology and tell a repair from a comfortable story."], "reflectPrompt": "Think of one technology in your own life that was sold to you, or to a community you belong to, as help. What is the harm underneath, and what does the language of help make hard to question?"},
+      9: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week09", "overview": "This week completes the four dimensions of the New Jim Code with the one Benjamin saves for last: technological benevolence, the problem of racial fixes that can help and constrain at once. The idea is simple but slippery: the most dangerous systems may be the ones that arrive as care, a fix, an upgrade, an act of help, while still carrying the old harms. You will learn to name the benevolence trap, where a tool sold as the solution becomes harder to question than one that is openly harmful. Then you will practice Benjamin's hard test, will the fix fix it, and add a technology of your own to your Personal Cartography.", "purpose": "Technological benevolence is the fourth and final dimension of the New Jim Code, and it completes the anatomy you have built since Week 2. The point of this week is to help you look past benevolent framing and ask, of any proposed fix, whether it actually changes the harm or only makes it harder to question. It turns the whole course toward response: once you can see harm hiding inside help, you can test the solutions you are offered instead of trusting them.", "outcomes": ["By the end of this week you can define technological benevolence as harm carried inside the language of help.", "By the end of this week you can recognize the benevolence trap, where a fix sold as care disarms criticism in advance.", "By the end of this week you can explain how a racial fix can offer a real benefit while extending surveillance, sorting, or control.", "By the end of this week you can apply the will-the-fix-fix-it test to a real technology and add it to your Personal Cartography."], "guiding": ["What makes a technology sold as help harder to criticize than one that is openly harmful?", "How can a proposed alternative reduce one burden while extending surveillance, sorting, or control?", "Who benefits when a harm is reframed as a problem that technology has already solved?", "How would you tell a real repair from a comfortable story about one?"], "checks": [{"t": "What technological benevolence means: harm carried inside the language of help, care, a fix, or an upgrade", "look": "the Key Concepts and the Benjamin reading"}, {"t": "The benevolence trap: why a tool sold as care can be harder to question than one that is openly harmful", "look": "the Benjamin reading"}, {"t": "Benjamin's Chapter 4 cases of racial fixes, including electronic monitoring and automated hiring", "look": "the Benjamin reading"}, {"t": "The will-the-fix-fix-it test: asking whether a fix actually changes the harm, and for whom", "look": "the activity and the Key Concepts"}, {"t": "Naming a technology in your own life that was sold to you, or to your community, as help", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Help can be how harm survives", "body": "Technological benevolence is Benjamin's fourth dimension: technology promoted as good for us, a fix, an upgrade, an act of care, that still carries the old harms. The benevolent framing is not a side effect; it is part of how the harm survives, because help is hard to argue with. A tool sold as the solution is harder to question than one that is openly harmful, and that difficulty is the point.", "cite": "Benjamin, 2019"}, {"h": "The benevolence trap", "body": "The benevolence trap is what makes this dimension dangerous. A tool sold as the solution disarms criticism in advance, so to question it can feel like opposing progress or refusing help. The trap is not only the harm itself but the difficulty of naming it once it wears the language of care. A harm you cannot name, you cannot organize against.", "cite": "Benjamin, 2019"}, {"h": "A racial fix can help and constrain at once", "body": "Benjamin calls attention to racial fixes: interventions presented as solutions that can reduce one burden while creating or extending another. Chapter 4 opens with electronic monitoring offered as an alternative to incarceration. The device can permit release while also extending surveillance and control into daily life. The question is not whether the benefit is imaginary, but what else the fix does, who carries that burden, and whether a person can refuse it.", "cite": "Benjamin, 2019"}, {"h": "Will the fix fix it?", "body": "This is Benjamin's working question for the dimension. For any proposed fix, ask what it actually changes and for whom. A comfortable story makes harm look solved while who carries the cost has not changed; a real repair changes who pays. The test is to separate a real repair from a comfortable story about one, and to remember that benevolence rarely arrives alone.", "cite": "Benjamin, 2019"}], "terms": [{"term": "Technological benevolence", "def": "Benjamin's fourth dimension of the New Jim Code: technology promoted as good for us, a fix, an upgrade, an act of help, that still carries existing harms because the framing of care disarms criticism.", "cite": "Benjamin, 2019"}, {"term": "The benevolence trap", "def": "what makes this dimension dangerous: a tool sold as the solution is harder to question than one that is openly harmful, so the harm is not only done but hard to name.", "cite": "Benjamin, 2019"}, {"term": "Will the fix fix it?", "def": "Benjamin's working test for any proposed solution: ask what it actually changes and for whom, to tell a real repair from a comfortable story about one.", "cite": "Benjamin, 2019"}, {"term": "Racial fix", "def": "Benjamin's term for an intervention offered as a solution that can address one problem while preserving or producing another form of racialized control.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. (Chapter 4: Technological benevolence, Do Fixes Fix Us?)", "scope": "Read this on Blackboard", "id": "benjamin2019"}], "activity": {"screen": "activity", "archetype": "scenario", "title": "The benevolence test", "what": "You evaluate a 'tech for good' pitch one promise at a time and decide whether each one is a real repair or a comfortable story that hides a harm.", "why": "so you practice Benjamin's working question, will the fix fix it, on a friendly-sounding system before you trust the next one you are offered.", "data": {"setup": "A start-up pitches CareScan, a 'tech for good' tool for a city shelter network: an AI camera and check-in app that promises to keep residents safe, speed up intake, and flag people who need help, all framed as care for a vulnerable community.", "steps": [{"situation": "The pitch opens: CareScan will make the shelter safer by watching every common area around the clock and alerting staff to incidents automatically.", "choices": [{"label": "Accept it: more watching means more safety for residents.", "outcome": "This is the benevolence trap. The camera is sold as safety, but constant surveillance of a vulnerable, often racialized population is the same exposure harm wrapped in the language of care. Ask: safety for whom.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Ask who the watching actually serves and who carries its cost.", "outcome": "This is the right move. Naming who is watched and who benefits separates a real safety measure from coded exposure sold as care, which is exactly the question Benjamin's framework demands.", "harm": false, "cite": "Benjamin, 2019"}]}, {"situation": "Next promise: CareScan's intake app uses an automated risk score to decide who gets a bed first, which the founders call a fairer, faster fix than staff judgment.", "choices": [{"label": "Run the will-the-fix-fix-it test: what does the score actually change, and for whom?", "outcome": "This is the right move. The test exposes that a fix sold as fairness can simply relocate the harm. If the score has not changed who carries the cost, it is a comfortable story, not a real repair.", "harm": false, "cite": "Benjamin, 2019"}, {"label": "Trust the score because it removes human bias and is faster.", "outcome": "This is the comfortable story. A faster, friendlier tool can still carry engineered inequity underneath; benevolence rarely arrives alone, so an automated score deserves more scrutiny, not less.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Ask whether the score has been tested for who it advantages and who it sets back.", "outcome": "This is also a strong move. Asking who the fix advantages and who it sets back is how you tell a real repair from a harm reframed as a problem technology has already solved.", "harm": false, "cite": "Benjamin, 2019"}]}, {"situation": "Closing promise: the founders offer residents faster access to housing if they keep the CareScan app running so it can report their location and missed check-ins.", "choices": [{"label": "Approve it: location monitoring is a reasonable trade for faster access to housing.", "outcome": "This is a racial fix: access to housing is a real benefit, but the condition can extend surveillance and control into daily life. A benefit does not make the added burden irrelevant or automatically justified.", "harm": true, "cite": "Benjamin, 2019"}, {"label": "Ask what the monitoring adds, who receives the data, and whether residents can refuse without losing access.", "outcome": "This is the right move. Testing the condition, data flow, and right to refuse separates a real repair from a benefit that expands control.", "harm": false, "cite": "Benjamin, 2019"}]}]}}, "youcan": ["You can now define technological benevolence as harm carried inside the language of help.", "You can now name the benevolence trap and explain why a fix sold as care is harder to criticize than open harm.", "You can now apply the will-the-fix-fix-it test to a real technology and tell a repair from a comfortable story."], "reflectPrompt": "Think of one technology in your own life that was sold to you, or to a community you belong to, as help. What is the harm underneath, and what does the language of help make hard to question?"},
       10: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week10", "overview": "This week is about who is let through the gate, and who is kept out, when the gatekeeper is an algorithm. Automated systems now decide access in hiring, in lending, and in education, and they decide at scale and at speed. You will learn how an automated gate can reproduce racial inequity, name where that inequity lives, and ask the hard question that follows: when a model keeps someone out, quietly and at scale, who can they ask, and who is accountable.", "purpose": "Gatekeeping is where the dimensions you have studied this term meet a person's life chances. The point of this week is to help you explain how an automated gate can reproduce racial inequity at scale, and to name who is accountable when it does. It carries the New Jim Code forward into the systems that govern real opportunity, and it sets up the work on resistance and policy still to come.", "outcomes": ["By the end of this week you can explain algorithmic gatekeeping and give an example from hiring, lending, or education.", "By the end of this week you can summarise the Bird, Castleman, and Song (2023) finding on bias in predicting student success.", "By the end of this week you can distinguish inequality within the algorithm from inequality without it, after Devlin (2023).", "By the end of this week you can identify a gate in your own life decided by a system, and add it to your Personal Cartography."], "guiding": ["When an algorithm decides who is let through a gate, who can the person who is kept out actually ask?", "Bird, Castleman, and Song found that resource-allocation results can vary by race and by the chosen at-risk threshold. Who can lose support when a prediction rule is less informative for one group?", "Devlin distinguishes inequality within and without the algorithm. What does each mean, and why do both matter?", "Which gate in your own life, a job portal, a loan, an admission, a benefit, was decided in part by a system?"], "checks": [{"t": "What algorithmic gatekeeping is: automated systems deciding access in hiring, lending, or education, at scale and at speed", "look": "the Key Concepts and the Devlin reading"}, {"t": "How prediction error and the chosen at-risk threshold can direct fewer resources to some at-risk Black students", "look": "the Bird, Castleman, and Song reading"}, {"t": "Inequality within the algorithm versus inequality without it, and why both matter", "look": "the Devlin reading"}, {"t": "How a search or ranking system can reproduce racism and sexism while looking like a neutral utility", "look": "the Noble reading"}, {"t": "Naming a gate in your own life, a job portal, a loan, or an admission, that a system helped decide, and who you could ask", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "An algorithmic gate decides at scale and in an instant", "body": "Algorithmic gatekeeping is the use of automated systems to decide who is granted access: who is hired, who is approved for credit, who is admitted or flagged in education. The gate operates at scale and at speed, sorting thousands of people on the same rule. An automated decision process can also make review harder when an institution provides no clear explanation, human contact, or appeal route. Whether that happens is a feature of the institution's actual process, not an automatic property of every algorithm.", "cite": "Devlin, 2023"}, {"h": "A tool sold as help can still harm", "body": "Bird, Castleman, and Song (2023) examined models predicting course and degree completion in one community-college system. In simulated resource allocation, some at-risk Black students could receive fewer success resources than white students at comparatively lower risk. The magnitude and pattern changed across outcomes, thresholds, and models, and the study does not show that a prediction label caused a student to fail.", "cite": "Bird, Castleman & Song, 2023"}, {"h": "Inequality lives within and without the algorithm", "body": "Devlin (2023) argues that inequality in AI sits in two places at once. Within the algorithm, it lives in the data and the design. Without it, it lives in who builds these systems and who is subject to them. Both matter, because fixing the data does not fix who holds the power, and changing who builds the tool does not fix biased data on its own.", "cite": "Devlin, 2023"}, {"h": "A ranking is a gate too", "body": "Safiya Umoja Noble shows that search and ranking systems can reproduce racism and sexism, often against Black women, while presenting as neutral utilities. A ranking is a gate too: what is pushed to the top is let through, and what is buried is kept out. The harm is easy to miss because the system looks like an objective tool rather than a decision about who counts.", "cite": "Noble, 2018"}], "terms": [{"term": "Algorithmic gatekeeping", "def": "the use of automated systems to decide who is granted access, such as who is hired, approved for credit, or admitted; the gate runs at scale and at speed, and an institution may make review difficult when it provides no clear explanation, human contact, or appeal route.", "cite": "Devlin, 2023"}, {"term": "Bias in predicting success", "def": "Bird, Castleman, and Song's finding that simulated resource allocation can give fewer resources to some at-risk Black students than to lower-risk white students, with the result changing by model, outcome, and at-risk threshold.", "cite": "Bird, Castleman & Song, 2023"}, {"term": "Inequality within and without the algorithm", "def": "Devlin's distinction between inequality inside the system, in its data and design, and inequality outside it, in who builds these systems and who is subject to them.", "cite": "Devlin, 2023"}, {"term": "Algorithms of oppression", "def": "Noble's argument that search and ranking systems can reproduce racism and sexism, especially against Black women, while presenting themselves as neutral tools.", "cite": "Noble, 2018"}], "readings": [{"apa": "Bird, K. A., Castleman, B. L., & Song, Y. (2023). Are algorithms biased in education? Exploring racial bias in predicting community college student success. EdWorkingPaper No. 23-717. Annenberg Institute at Brown University.", "scope": "Open access", "id": "bird2023"}, {"apa": "Devlin, K. (2023). Power in AI: Inequality within and without the algorithm. In The handbook of gender, communication, and women's human rights (pp. 123-139). Wiley-Blackwell. https://doi.org/10.1002/9781119800729.ch8", "scope": "Read this on Blackboard", "id": "devlin2023"}, {"apa": "Noble, S. U. (2018). Chapter 1: A society, searching. In Algorithms of oppression: How search engines reinforce racism. NYU Press.", "scope": "Read this on Blackboard", "id": "noble2018"}], "activity": {"screen": "activity", "archetype": "toggle", "title": "At the gate", "what": "You work with a simplified teaching model, moving a threshold and switching criteria to observe how design choices change who is filtered or supported.", "why": "so you can trace how a threshold or criterion changes an allocation. The interaction is a course model for reasoning, not a reproduction of any one study's operational system.", "data": {"system": "An automated screening gate for a job, a loan, or a college program", "toggles": [{"label": "Resume keyword filter (auto-screen applicants before any person reads them)", "on": "Applicants whose words do not match the model's idea of a strong candidate are cut before a human ever sees them.", "off": "Every application reaches a person who can ask a question and weigh context.", "whoHarmed": "Applicants from backgrounds, schools, or first languages the training data underrepresented, screened out at scale with no one to ask.", "cite": "Devlin, 2023"}, {"label": "Early risk flag (predict who is likely to fail and sort support accordingly)", "on": "Depending on the outcome and threshold, a prediction rule can allocate fewer success resources to some at-risk Black students than to white students at comparatively lower risk.", "off": "This course alternative allocates support through observed need and student request rather than using the prediction alone.", "whoHarmed": "At-risk Black students who could receive fewer success resources than lower-risk white students under the simulated allocation; the size of the disparity depends on the model and threshold.", "cite": "Bird, Castleman & Song, 2023"}, {"label": "Credit-score cutoff (set the threshold that decides who is trusted with money)", "on": "A hard cutoff approves applicants above the line and refuses everyone below it, with no review of the history behind the number.", "off": "A person reviews borderline cases and can weigh circumstances the score cannot see.", "whoHarmed": "Applicants whose communities carry the legacy of unequal access to credit, refused at the threshold while the gate looks objective.", "cite": "Devlin, 2023"}, {"label": "Search ranking (push some results to the top and bury others)", "on": "What the ranking promotes is let through to attention; what it buries is effectively kept out, while the system looks like a neutral utility.", "off": "Results are shown without a hidden ordering that sorts who and what is seen.", "whoHarmed": "Groups the ranking demeans or buries, often Black women, harmed by a sorting that presents itself as a neutral tool.", "cite": "Noble, 2018"}]}}, "youcan": ["You can now explain algorithmic gatekeeping and give an example from hiring, lending, or education.", "You can now distinguish inequality within the algorithm from inequality without it, after Devlin.", "You can now explain how a prediction model and its at-risk threshold can produce unequal resource allocation, after Bird, Castleman, and Song."], "reflectPrompt": "Every gate an algorithm guards was once guarded by a person who could be asked to explain. Name one gate in your own life or future field that a system helped decide: who did it let through, who did it keep out, and who could you actually ask?"},
       11: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week11", "overview": "This is the week the whole course has been building toward. All term you have learned to see the New Jim Code and trace its harms, and now the course turns from critique to construction: you stop only naming what is wrong and start asking how to build differently. The subtitle of Benjamin's book is Abolitionist Tools for the New Jim Code, and this week you pick up those tools. You will learn design justice and the abolitionist stance, learn to tell a reform that leaves a system intact from a real repair that moves power, and see what a real repair would take.", "purpose": "Week 11 reframes the course from critique to construction. The point is to give you concrete anti-racist strategies, design justice and abolitionist tools, so you can bring a response, not only a diagnosis, to a system in your own map. It sets up the final move of the course toward accountability and policy.", "outcomes": ["By the end of this week you can explain design justice and name several of its principles.", "By the end of this week you can explain what Benjamin means by abolitionist tools, as opposed to patches.", "By the end of this week you can distinguish a reform that leaves a system intact from a real repair that moves power.", "By the end of this week you can return to one system from your Personal Cartography and propose a design-justice or abolitionist response to it."], "guiding": ["What is the difference between a reform that leaves a system intact and a real repair?", "Design justice centres those most affected. What changes when the people harmed lead the design, instead of being consulted at the end?", "Benjamin connects abolitionist tools with both ending harmful systems and envisioning alternatives. What does that change about the response you design?", "Tanksley centres Black youth as technological innovators. Where have you seen communities build their own tools?"], "checks": [{"t": "What design justice is, and several of its principles, including centring those most affected and impact over intentions", "look": "the Key Concepts and the Costanza-Chock reading"}, {"t": "What Benjamin means by abolitionist tools as opposed to patches, asking whether the gate should exist at all", "look": "the Benjamin reading"}, {"t": "Telling a reform that leaves a system intact from a real repair that moves who holds power and who carries the cost", "look": "the Benjamin reading"}, {"t": "Centring Black youth as technological innovators, not only as people who are harmed", "look": "the Tanksley reading"}, {"t": "Bringing a design-justice or abolitionist response, not only a diagnosis, to a system in your own Personal Cartography", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Design justice", "body": "Design justice rethinks how things get designed so that it centres the people who are normally marginalized by design. Its principles include centring the voices of those directly impacted, prioritizing the design's impact on the community over the designer's intentions, treating everyone as an expert in their own lived experience, and looking first for what is already working at the community level. The people most affected lead the design, they are not consulted after it is built.", "cite": "Costanza-Chock, 2020"}, {"h": "Abolitionist tools", "body": "Benjamin describes abolitionist tools as forms of resistance concerned not only with ending harmful systems but also with envisioning and building alternatives. The framework asks whether a proposed reform preserves the structure, whether a system should end, and what solidarity, democratized data, or new institution should take its place. It is broader than a rule that every reform is merely a patch.", "cite": "Benjamin, 2019"}, {"h": "Reform versus real repair", "body": "The working test this week is to ask of any proposed response: is it a reform or a real repair? A reform eases harm but leaves power in place, so after the change the same people still decide. A real repair changes who holds power and who carries the cost. The test exposes fixes that sound generous, like more diverse data or a fairness audit, that can soften harm while the same company keeps deciding everything.", "cite": "Benjamin, 2019"}, {"h": "Centring Black youth as innovators", "body": "Tanksley models the abolitionist move in education with a critical race pedagogy in computer science that centres the voices, experiences, and technological innovations of Black youth. The shift is from seeing communities only as people who are harmed to seeing them as designers and builders. If communities are only ever the harmed, others still hold the power to fix them, so treating Black youth as innovators is itself part of moving that power.", "cite": "Tanksley, 2023"}], "terms": [{"term": "Design justice", "def": "an approach that rethinks design to centre people normally marginalized by it, so those most affected lead the work and count as experts by their own lived experience.", "cite": "Costanza-Chock, 2020"}, {"term": "Abolitionist tools", "def": "forms of resistance that may end harmful systems, democratize data, and build alternatives; they test whether a reform changes the structure rather than assuming every reform does.", "cite": "Benjamin, 2019"}, {"term": "Impact over intentions", "def": "the design justice rule that a design is judged by its real effect on the community, not by whether the designer meant well.", "cite": "Costanza-Chock, 2020"}, {"term": "Critical race pedagogy in computer science", "def": "an abolitionist way of teaching that centres the voices, experiences, and technological innovations of Black youth, treating them as designers rather than only as those harmed.", "cite": "Tanksley, 2023"}], "readings": [{"apa": "Costanza-Chock, S. (2020). Design justice: Community-led practices to build the worlds we need (Introduction, pp. 1-30). MIT Press.", "scope": "Read this on Blackboard", "id": "costanza2020"}, {"apa": "Tanksley, T. (2023). Employing an abolitionist, critical race pedagogy in CS: Centering the voices, experiences and technological innovations of Black youth. Journal of Computer Science Integration, 6(1).", "scope": "Open access", "id": "tanksley2023"}, {"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code (Chapter 5: Retooling solidarity, reimagining justice). Polity Press.", "scope": "Read this on Blackboard", "id": "benjamin2019"}], "activity": {"screen": "activity", "archetype": "assemble", "title": "Build the abolitionist toolkit", "what": "You pick one harmful system from your Personal Cartography and assemble a toolkit of abolitionist tactics against it, choosing which tactics to include and saying what each one contributes.", "why": "so you move from naming harm to proposing a real response, and learn to judge whether your toolkit reforms a system or actually repairs it by moving power.", "data": {"goal": "The harm is a racialized gatekeeping system, for example a biased screening, scoring, or recognition tool that decides who gets through and quietly leaves the same people deciding. A good toolkit does not just smooth that system's edges; it shifts who leads the design and who holds power, so the response is a real repair rather than a reform.", "components": [{"label": "Audit the system", "role": "Measure who the system fails and who it serves, so the harm is documented evidence rather than a feeling, and the case for change is grounded.", "cite": "Benjamin, 2019"}, {"label": "Refuse or abolish", "role": "Ask whether the gate should exist at all and be willing to not build or to retire the system, the abolitionist move that a patch never makes.", "cite": "Benjamin, 2019"}, {"label": "Centre those most affected", "role": "Put the people normally marginalized by the design in the lead, as experts in their own lived experience, not consulted after the fact.", "cite": "Costanza-Chock, 2020"}, {"label": "Judge by impact, not intentions", "role": "Hold the response to its real effect on the community rather than to the designer's good intentions, so a well-meaning fix that still harms does not pass.", "cite": "Costanza-Chock, 2020"}, {"label": "Build with community-led innovation", "role": "Treat the affected community, including Black youth, as designers and builders of their own tools, so the alternative is built by those closest to the harm.", "cite": "Tanksley, 2023"}, {"label": "Apply the reform-or-repair test", "role": "Check the assembled toolkit against one question: after this, who still decides? If power has not moved, it is a reform, not a real repair.", "cite": "Benjamin, 2019"}]}}, "youcan": ["You can now explain design justice and name several of its principles in your own words.", "You can now tell the difference between a patch and an abolitionist tool, and between a reform and a real repair.", "You can now bring a response, not only a diagnosis, to a system in your own Personal Cartography."], "reflectPrompt": "You have spent a term learning to see harm. Resistance asks something harder: to build. What is the difference between refusing a bad system and creating a better one, and which is being asked of you, in your own field, right now?"},
-      12: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week12", "overview": "This is the last content week of the course, and it lifts the question up a level. So far you have named harmful systems, measured the harm, and proposed fixes for single tools. This week asks what holds technology accountable at the scale of law, institutions, and international human rights, because an individual fix does not last if the rules above it still permit the harm. You will use AIDA as a historical policy case: it was proposed in 2022 as part of Bill C-27, but committee work ceased with prorogation in January 2025 and it did not become law. You will compare a 2023 critical brief with the official status record, then weigh what future policy could include.", "purpose": "Week 12 lifts the course to the level of accountability and policy. You examine how Canadian law, international human rights, and decolonial frameworks each try to govern technology, and you judge where each one succeeds and where it falls short. The point is to see accountability as a stack and to work the levels above the single system, where lasting change is made.", "outcomes": ["By the end of this week you can explain why accountability for technology must operate at the level of law and institutions, not only individual fixes.", "By the end of this week you can explain one gap argued in Attard-Frost's 2023 brief and state that AIDA was a proposal that did not become law.", "By the end of this week you can summarise how the UN frames racial discrimination in digital technologies as a human rights issue.", "By the end of this week you can describe what it means to build justice into AI governance from the start, and add a policy entry to your Personal Cartography."], "guiding": ["Why are individual fixes not enough when the rules themselves permit the harm?", "Attard-Frost's 2023 brief argues that AIDA contained five gaps. What evidence and recommendations support one of those claims, and what changed when the bill did not become law?", "The UN frames techno-racism as a human rights issue. What changes when harm is named as a rights violation?", "For a technology you use, what rule or policy would you change, and who would have to be at the table?"], "checks": [{"t": "Accountability as a stack: why fixing one system does not last when the rules above it still permit the harm", "look": "the Key Concepts and the Attard-Frost reading"}, {"t": "One gap argued in Attard-Frost's 2023 brief, plus the official record that AIDA did not become law", "look": "the Attard-Frost reading"}, {"t": "How the UN frames racial discrimination in digital technologies as a human rights issue, and what that changes", "look": "the United Nations Human Rights Council reading"}, {"t": "What it means to build justice into AI governance from the start, with affected communities at the table", "look": "the activity and the Key Concepts"}, {"t": "Naming a technology in your own life and what rule or policy you would change, and who would need to be at the table", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Accountability is a stack, not a patch", "body": "Accountability for technology operates at several levels: the single system at the bottom, then institutions and frameworks, then national law, then international human rights at the top. A fix aimed at one system does not last if the rules above it still permit the harm, because the next company can ship the same design. That is why this week works the top three levels, where lasting change is made.", "cite": "Attard-Frost, 2023"}, {"h": "AI governance and its gaps", "body": "AI governance is the set of laws, rules, and institutions that try to constrain how AI is built and used. AIDA was proposed in 2022 as part of Bill C-27. In a 2023 brief to a House committee, Blair Attard-Frost argued that the proposal had five categories of gaps affecting artists and creators. This is the author's policy analysis, not a court or committee finding. Official records show that committee work ceased with prorogation in January 2025 and AIDA did not become law, so the course uses it as a historical policy case rather than current Canadian law.", "cite": "Attard-Frost, 2023"}, {"h": "Techno-racism as a human rights issue", "body": "In a 2020 report, the UN Special Rapporteur on contemporary forms of racism analysed racial discrimination in emerging digital technologies as a human rights matter. Naming techno-racism as a rights violation, rather than a technical glitch, changes what it asks of governments. It creates obligations on states and gives affected communities a stronger basis to demand change and redress.", "cite": "United Nations Human Rights Council, 2020"}, {"h": "Building justice in from the start", "body": "Building justice in means accountability is designed into a system from the beginning, with the communities most affected at the table, rather than added after harm has already happened. It is the governance counterpart to design justice: not only how we build a tool, but how we govern it, and with whom. Attard-Frost's 2023 brief argues for specificity, transparency, consultation, enforcement, policy capacity, and broader jurisdiction. The official status record adds a separate limit: the proposal did not become law.", "cite": "Attard-Frost, 2023"}], "terms": [{"term": "AI governance", "def": "the laws, rules, standards, institutions, and oversight processes that shape how AI is built and used; AIDA is studied here as a 2022-2025 Canadian proposal that did not become law.", "cite": "Attard-Frost, 2023"}, {"term": "Argued policy gap", "def": "a place where a policy proposal may leave a problem insufficiently addressed; Attard-Frost argued that AIDA had five such categories, and the course evaluates that argument alongside the bill's official status.", "cite": "Attard-Frost, 2023"}, {"term": "Techno-racism as a human rights issue", "def": "naming racial discrimination in digital technologies as a rights violation rather than a technical glitch, which creates obligations on states and gives affected communities a stronger basis to demand change.", "cite": "United Nations Human Rights Council, 2020"}, {"term": "Building justice in from the start", "def": "designing accountability into a system from the beginning, with affected communities at the table, rather than regulating only after harm.", "cite": "Attard-Frost, 2023"}], "readings": [{"apa": "Attard-Frost, B. (2023). Generative AI systems: Impacts on artists and creators and related gaps in the Artificial Intelligence and Data Act. Brief submitted to the House of Commons Standing Committee on Industry and Technology.", "scope": "Open access", "id": "attard2023"}, {"apa": "United Nations Human Rights Council. (2020). Racial discrimination and emerging digital technologies: A human rights analysis (A/HRC/44/57). Report of the Special Rapporteur on contemporary forms of racism.", "scope": "Open access", "id": "unhrc2020", "url": "https://undocs.org/A/HRC/44/57"}, {"apa": "Innovation, Science and Economic Development Canada. (2025). Consultation on copyright in the age of generative artificial intelligence: What we heard report.", "scope": "Official status context: parliamentary work on AIDA ceased with prorogation.", "id": "ised2025aida", "url": "https://ised-isde.canada.ca/site/strategic-policy-sector/en/marketplace-framework-policy/consultation-copyright-age-generative-artificial-intelligence-what-we-heard-report"}], "activity": {"screen": "activity", "archetype": "lab", "title": "Draft the policy", "what": "You take a historical policy case, choose two policy levers to apply to it, and weigh what each one would fix and what evidence, trade-offs, and implementation limits each one would require.", "why": "so accountability stops being an abstract word and becomes a set of real trade-offs you have to reason through, the kinds of choices a regulator may face.", "data": {"case": "Historical-policy teaching scenario: while Bill C-27 was before Parliament, decision-makers considered how generative AI and creators' work should be governed. Attard-Frost's 2023 brief proposed five gap categories; AIDA ultimately did not become law.", "levers": [{"label": "Outright ban", "effect": "Prohibits a specified system or use within the rule's scope; coverage, enforcement, and displacement to other uses still have to be tested.", "tradeoff": "A broad prohibition may also capture beneficial uses; a narrow one may leave adjacent uses untouched.", "cite": "Attard-Frost, 2023"}, {"label": "Audit mandate", "effect": "Requires independent, ongoing testing of the system for discriminatory or harmful effects before and after it is deployed.", "tradeoff": "Only as strong as who runs the audit and what they are allowed to see; an audit can find harm yet still leave the rules that permit it untouched.", "cite": "United Nations Human Rights Council, 2020"}, {"label": "Transparency requirement", "effect": "Requires disclosure of specified training-data and use information so affected people and regulators can examine the system.", "tradeoff": "Visibility is not redress; people can see exactly how they are harmed and still have no power to stop it without enforcement behind it.", "cite": "Attard-Frost, 2023"}, {"label": "Right to redress", "effect": "Gives the people harmed a real, enforceable way to demand correction or compensation, treating the harm as a rights violation.", "tradeoff": "Acts after the harm has already landed, and is only as strong as the body meant to enforce it.", "cite": "United Nations Human Rights Council, 2020"}, {"label": "Moratorium", "effect": "Pauses deployment until proper governance and affected communities are in place, buying time before harm becomes entrenched.", "tradeoff": "Temporary by design; if the pause is not used to write better rules with the right people at the table, the harm simply resumes.", "cite": "United Nations Human Rights Council, 2020"}, {"label": "Justice built in from the start", "effect": "Designs and governs the system with affected communities at the table from the beginning, so accountability is built in rather than bolted on.", "tradeoff": "Meaningful participation requires defined decision-making authority, accessible processes, time, and resources; consultation without power can become symbolic.", "cite": "Attard-Frost, 2023"}], "pick": 2}}, "youcan": ["You can now explain why accountability has to operate above the single system, at institutions, national law, and human rights", "You can now explain one gap argued in Attard-Frost's 2023 brief and distinguish that argument from AIDA's official status", "You can now describe what it means to build justice into AI governance from the start"], "reflectPrompt": "Laws move slower than the systems they try to govern, and they are often written by some people about others. Think of one technology in your own life: who would have to be at the table for a rule about it to be written with you, not just about you?"},
+      12: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "BFS218_Week12", "overview": "This is the last content week of the course, and it lifts the question up a level. So far you have named harmful systems, measured the harm, and proposed fixes for single tools. This week asks what holds technology accountable at the scale of law, institutions, and international human rights, because an individual fix does not last if the rules above it still permit the harm. You will use AIDA as a historical policy case: it was proposed in 2022 as part of Bill C-27, but committee work ceased with prorogation in January 2025 and it did not become law. You will compare a 2023 critical brief with the official status record, then weigh what future policy could include.", "purpose": "Week 12 lifts the course to the level of accountability and policy. You examine how Canadian law, international human rights, and decolonial frameworks each try to govern technology, and you judge where each one succeeds and where it falls short. The point is to see accountability as a stack and to work the levels above the single system, where lasting change is made.", "outcomes": ["By the end of this week you can explain why accountability for technology must operate at the level of law and institutions, not only individual fixes.", "By the end of this week you can explain one gap argued in Attard-Frost's 2023 brief and state that AIDA was a proposal that did not become law.", "By the end of this week you can summarise how the UN frames racial discrimination in digital technologies as a human rights issue.", "By the end of this week you can describe what it means to build justice into AI governance from the start, and add a policy entry to your Personal Cartography."], "guiding": ["Why are individual fixes not enough when the rules themselves permit the harm?", "Attard-Frost's 2023 brief argues that AIDA contained five gaps. What evidence and recommendations support one of those claims, and what changed when the bill did not become law?", "The UN frames techno-racism as a human rights issue. What changes when harm is named as a rights violation?", "For a technology you use, what rule or policy would you change, and who would have to be at the table?"], "checks": [{"t": "Accountability as a stack: why fixing one system does not last when the rules above it still permit the harm", "look": "the Key Concepts and the Attard-Frost reading"}, {"t": "One gap argued in Attard-Frost's 2023 brief, plus the official record that AIDA did not become law", "look": "the Attard-Frost reading"}, {"t": "How the UN frames racial discrimination in digital technologies as a human rights issue, and what that changes", "look": "the United Nations Human Rights Council reading"}, {"t": "What it means to build justice into AI governance from the start, with affected communities at the table", "look": "the activity and the Key Concepts"}, {"t": "Naming a technology in your own life and what rule or policy you would change, and who would need to be at the table", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "Accountability is a stack, not a patch", "body": "Accountability for technology operates at several levels: the single system at the bottom, then institutions and frameworks, then national law, then international human rights at the top. A fix aimed at one system does not last if the rules above it still permit the harm, because the next company can ship the same design. That is why this week works the top three levels, where lasting change is made.", "cite": "Attard-Frost, 2023"}, {"h": "AI governance and its gaps", "body": "AI governance is the set of laws, rules, and institutions that try to constrain how AI is built and used. AIDA was proposed in 2022 as part of Bill C-27. In a 2023 brief to a House committee, Blair Attard-Frost argued that the proposal had five categories of gaps affecting artists and creators. This is the author's policy analysis, not a court or committee finding. Official records show that committee work ceased with prorogation in January 2025 and AIDA did not become law, so the course uses it as a historical policy case rather than current Canadian law.", "cite": "Attard-Frost, 2023"}, {"h": "Techno-racism as a human rights issue", "body": "In a 2020 report, the UN Special Rapporteur on contemporary forms of racism analysed racial discrimination in emerging digital technologies as a human rights matter. Naming techno-racism as a rights violation, rather than a technical glitch, changes what it asks of governments. It creates obligations on states and gives affected communities a stronger basis to demand change and redress.", "cite": "United Nations Human Rights Council, 2020"}, {"h": "Building justice in from the start", "body": "Building justice in means accountability is designed into a system from the beginning, with the communities most affected at the table, rather than added after harm has already happened. It is the governance counterpart to design justice: not only how we build a tool, but how we govern it, and with whom. Attard-Frost's 2023 brief argues for specificity, transparency, consultation, enforcement, policy capacity, and broader jurisdiction. The official status record adds a separate limit: the proposal did not become law.", "cite": "Attard-Frost, 2023"}], "terms": [{"term": "AI governance", "def": "the laws, rules, standards, institutions, and oversight processes that shape how AI is built and used; AIDA is studied here as a 2022-2025 Canadian proposal that did not become law.", "cite": "Attard-Frost, 2023"}, {"term": "Argued policy gap", "def": "a place where a policy proposal may leave a problem insufficiently addressed; Attard-Frost argued that AIDA had five such categories, and the course evaluates that argument alongside the bill's official status.", "cite": "Attard-Frost, 2023"}, {"term": "Techno-racism as a human rights issue", "def": "naming racial discrimination in digital technologies as a rights violation rather than a technical glitch, which creates obligations on states and gives affected communities a stronger basis to demand change.", "cite": "United Nations Human Rights Council, 2020"}, {"term": "Building justice in from the start", "def": "designing accountability into a system from the beginning, with affected communities at the table, rather than regulating only after harm.", "cite": "Attard-Frost, 2023"}], "readings": [{"apa": "Attard-Frost, B. (2023). Generative AI systems: Impacts on artists and creators and related gaps in the Artificial Intelligence and Data Act. Brief submitted to the House of Commons Standing Committee on Industry and Technology.", "scope": "Open access", "id": "attard2023"}, {"apa": "United Nations Human Rights Council. (2020). Racial discrimination and emerging digital technologies: A human rights analysis (A/HRC/44/57). Report of the Special Rapporteur on contemporary forms of racism.", "scope": "Open access", "id": "unhrc2020", "url": "https://undocs.org/A/HRC/44/57"}, {"apa": "Parliament of Canada. (2022-2025). Bill C-27, Digital Charter Implementation Act, 2022. LEGISinfo, 44th Parliament, 1st Session.", "scope": "Official status record: committee consideration was not completed before the session ended on January 6, 2025.", "id": "parliamentc27", "url": "https://www.parl.ca/legisinfo/en/bill/44-1/c-27"}], "activity": {"screen": "activity", "archetype": "lab", "title": "Draft the policy", "what": "You take a historical policy case, choose two policy levers to apply to it, and weigh what each one would fix and what evidence, trade-offs, and implementation limits each one would require.", "why": "so accountability stops being an abstract word and becomes a set of real trade-offs you have to reason through, the kinds of choices a regulator may face.", "data": {"case": "Historical-policy teaching scenario: while Bill C-27 was before Parliament, decision-makers considered how generative AI and creators' work should be governed. Attard-Frost's 2023 brief proposed five gap categories; AIDA ultimately did not become law.", "levers": [{"label": "Outright ban", "effect": "Prohibits a specified system or use within the rule's scope; coverage, enforcement, and displacement to other uses still have to be tested.", "tradeoff": "A broad prohibition may also capture beneficial uses; a narrow one may leave adjacent uses untouched.", "cite": "Attard-Frost, 2023"}, {"label": "Audit mandate", "effect": "Requires independent, ongoing testing of the system for discriminatory or harmful effects before and after it is deployed.", "tradeoff": "Only as strong as who runs the audit and what they are allowed to see; an audit can find harm yet still leave the rules that permit it untouched.", "cite": "United Nations Human Rights Council, 2020"}, {"label": "Transparency requirement", "effect": "Requires disclosure of specified training-data and use information so affected people and regulators can examine the system.", "tradeoff": "Visibility is not redress; people can see exactly how they are harmed and still have no power to stop it without enforcement behind it.", "cite": "Attard-Frost, 2023"}, {"label": "Right to redress", "effect": "Gives the people harmed a real, enforceable way to demand correction or compensation, treating the harm as a rights violation.", "tradeoff": "Acts after the harm has already landed, and is only as strong as the body meant to enforce it.", "cite": "United Nations Human Rights Council, 2020"}, {"label": "Moratorium", "effect": "Pauses deployment until proper governance and affected communities are in place, buying time before harm becomes entrenched.", "tradeoff": "Temporary by design; if the pause is not used to write better rules with the right people at the table, the harm simply resumes.", "cite": "United Nations Human Rights Council, 2020"}, {"label": "Justice built in from the start", "effect": "Designs and governs the system with affected communities at the table from the beginning, so accountability is built in rather than bolted on.", "tradeoff": "Meaningful participation requires defined decision-making authority, accessible processes, time, and resources; consultation without power can become symbolic.", "cite": "Attard-Frost, 2023"}], "pick": 2}}, "youcan": ["You can now explain why accountability has to operate above the single system, at institutions, national law, and human rights", "You can now explain one gap argued in Attard-Frost's 2023 brief and distinguish that argument from AIDA's official status", "You can now describe what it means to build justice into AI governance from the start"], "reflectPrompt": "Laws move slower than the systems they try to govern, and they are often written by some people about others. Think of one technology in your own life: who would have to be at the table for a rule about it to be written with you, not just about you?"},
       13: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "", "overview": "This is not a new topic; it is a return. For twelve weeks the course travelled out, into the anatomy of the New Jim Code, into Canada, agency, resistance, and policy. Now Part IV turns back toward you, and you reread your Personal Cartography from the first entry to the most recent, with the eyes you have grown over the term. This week you also record the Personal Cartography, the final project of the course, which is due at the end of this week.", "purpose": "The point of this week is to make your own growth visible to you. By rereading your whole map across the term, you can see your analysis deepening week by week and name how your seeing changed since Week 1. That rereading is the ground your final video grows from.", "outcomes": ["Read your own Personal Cartography across the whole term as one connected analysis, not a set of separate entries.", "Name how your seeing has changed since Week 1, pointing to specific entries that show the change.", "Identify which of the four dimensions, or which response from Part III, most changed how you read technology.", "Complete and submit the Personal Cartography, including one commitment you carry into your own field."], "guiding": ["Read your Week 1 entry beside your most recent one. What can you name now that you could not name in Week 1?", "Which of the four dimensions most changed how you read technology, and why?", "Which single entry in your map changed the most across the term?", "Where, in your own map, did harms compound across race, gender, class, or status?"], "checks": [{"t": "The Personal Cartography read in order as one record of your own seeing changing, not only a list of harmful systems", "look": "the Key Concepts and the Benjamin reading"}, {"t": "The four dimensions held together as a single lens you can read any system across at once", "look": "the Benjamin reading"}, {"t": "Naming which of the four dimensions, or which Part III response, most changed how you read technology", "look": "the activity and your Personal Cartography"}, {"t": "Moving from seeing to commitment: naming something you will carry into your own field, after design justice", "look": "the Costanza-Chock reading"}, {"t": "Setting your Week 1 entry beside your most recent one and naming what you can see now that you could not then", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "The Personal Cartography as a record of change", "body": "Your map is not only a record of harmful systems; it is a record of you learning to see them. Reread in order from Week 1, it shows your own analysis deepening week by week: the language sharpens, the examples get closer to home, and the responses you imagined in Part III start to appear. The technologies did not change between your first entry and your last. You did, and the point of the return is to make that growth visible to you.", "cite": "Benjamin, 2019"}, {"h": "The four dimensions, as a single lens", "body": "Engineered inequity, default discrimination, coded exposure, and technological benevolence are not four separate tests you run one at a time. Together they are one way of reading any system, and by now you can hold all four at once and ask which are at work in a given case. Rereading your map, you can see yourself moving from naming one dimension at a time toward reading a system across all four together.", "cite": "Benjamin, 2019"}, {"h": "From seeing to commitment", "body": "Seeing clearly is where this course began; it is not where it ends. Part III moved you from naming harm toward imagining response, and the return asks you to name a commitment, something you will carry into your own field now that you cannot unsee what you have learned. Costanza-Chock's design justice gives that commitment a shape: not only seeing a harmful system, but asking who should be at the table when a better one is built.", "cite": "Costanza-Chock, 2020"}], "terms": [{"term": "Personal Cartography", "def": "the map you have kept all term, one entry per week, recording the techno-racism you found and how you read it; reread in order, it is also a record of your own seeing changing across the course.", "cite": "Benjamin, 2019"}, {"term": "The four dimensions of the New Jim Code", "def": "engineered inequity, default discrimination, coded exposure, and technological benevolence, the four ways Benjamin shows technology can carry racism; together they form one lens for reading any system.", "cite": "Benjamin, 2019"}, {"term": "The return", "def": "the move that opens Part IV, where the course turns back toward you and your own map, so that rereading your earlier entries beside your later ones shows how your analysis deepened.", "cite": "Benjamin, 2019"}, {"term": "Commitment", "def": "the thing you decide to carry into your own field now that you can see techno-racism, naming not only a harmful system but who should be at the table when a better one is built.", "cite": "Costanza-Chock, 2020"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. (The four dimensions and the New Jim Code, your spine for rereading the whole map.)", "scope": "Read this on Blackboard", "id": "benjamin2019"}, {"apa": "Costanza-Chock, S. (2020). Design justice: Community-led practices to build the worlds we need. MIT Press. (For what an alternative looks like, and the commitment you carry forward.)", "scope": "Read this on Blackboard", "id": "costanza2020"}], "activity": {"screen": "activity", "archetype": "capstone", "title": "Reread your map", "what": "You revisit your Personal Cartography one dimension at a time, comparing what you saw at the start of the term with what you can see now.", "why": "so your final video grows out of a real rereading of your own map, not a summary of the lectures.", "data": {"prompt": "Reread your cartography across the four dimensions of the New Jim Code. Mark each as you revisit it.", "items": [{"label": "Engineered inequity", "prompt": "Find an early entry and a later entry where you wrote about a system that was built to advantage some people over others. What did you see in the early entry, and what can you name now that you could not name then?", "cite": "Benjamin, 2019"}, {"label": "Default discrimination", "prompt": "Where in your map did you describe harm that ran on through old patterns without anyone choosing it again? Compare your earliest reading of it with your most recent. How did your language for it sharpen?", "cite": "Benjamin, 2019"}, {"label": "Coded exposure", "prompt": "Trace where you wrote about who a system makes very visible and who it makes invisible. Read your first entry on this beside your last. What can you see now about who is watched and who is missed?", "cite": "Benjamin, 2019"}, {"label": "Technological benevolence", "prompt": "Find an entry about a tool that was sold as helpful or fair. How did your reading of that promise change as the term went on, and what do you notice now that you missed at first?", "cite": "Benjamin, 2019"}], "callout": "Open your Personal Cartography from the tools menu and reread your Week 1 entry beside your most recent one. Then record your Personal Cartography (instructions on Blackboard). It is due at the end of this week (Week 13)."}}, "youcan": ["You can now read your whole Personal Cartography across the term as one connected analysis", "You can now name how your seeing changed since Week 1, pointing to specific entries", "You can now begin the Personal Cartography, including one commitment you carry forward"], "reflectPrompt": "Reread your Personal Cartography in order and find the single entry that changed the most across the term. Which entry is it, and why did it change more than the others?"},
-      14: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "", "overview": "This is the last week, and it closes the course the way it opened, with a single question. Your graded work for the term is already in; this week you answer together the question from the very first day: can a machine be racist? You answer it now in your own words, with your own map as the evidence, not from a textbook. What you carry forward is the lens you built and a commitment to use it in your own field.", "purpose": "Week 14 completes the course. You answer the opening question with evidence from your Personal Cartography, summarise the whole arc from seeing to return, and name one commitment you carry into your own work. The point is to leave able to say plainly what you could only sense in Week 1.", "outcomes": ["By the end of this week you can answer, in your own words and with an entry from your map as evidence, whether a machine can be racist.", "By the end of this week you can summarise the whole arc of the course: seeing, anatomy, response, and return.", "By the end of this week you can name one concrete commitment to equitable, accountable technology that you carry into your own field.", "By the end of this week you can use your completed Personal Cartography to answer the course's opening question in your own words."], "guiding": ["Can a machine be racist? Answer it now in your own words, and name one entry in your map as your evidence.", "Of everything you learned, what will you find hardest to unsee?", "What is the one commitment you are willing to make to your own field?", "When a future system arrives looking neutral, what will you do that you would not have done in Week 1?"], "checks": [{"t": "Answering can a machine be racist in your own words, with an entry from your own map as the evidence", "look": "the Key Concepts and the Benjamin reading"}, {"t": "Summarising the whole arc of the course in one breath: seeing, anatomy, response, and return", "look": "the Benjamin reading"}, {"t": "Why the answer does not end in despair: the same course that named the harm also named the tools to respond", "look": "the Costanza-Chock reading"}, {"t": "The map as yours to keep: carrying the four-dimension lens and the habit of asking who is harmed into your own field", "look": "the activity and your Personal Cartography"}, {"t": "Naming one concrete commitment to equitable, accountable technology that you carry forward", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "The whole arc, in one breath", "body": "Part I taught you to see: a harm needs no hatred, only a design, some data, and a default. Part II took the New Jim Code apart into four dimensions, engineered inequity, default discrimination, coded exposure, and technological benevolence. Part III turned to response, with data sovereignty, abolitionist tools, design justice, and policy. Part IV brought it home to your own map. Seeing, anatomy, response, return.", "cite": "Benjamin, 2019"}, {"h": "The question, answered", "body": "Can a machine be racist? Yes. It can carry racism forward through its design and defaults, inside a society already structured by racism, with no one intending it. But the answer does not end in despair, because the same course that showed you the harm also showed you the tools to respond: design justice, abolitionist tools, data sovereignty, and policy. The harm is real, and so is the response. Naming it clearly is where change begins.", "cite": "Benjamin, 2019"}, {"h": "The map is yours to keep", "body": "Your Personal Cartography does not end with the course. The lens you built, the four dimensions, the response, and the habit of asking who is harmed and who is accountable, goes with you into your field. The final task is not to finish a map but to keep one, so that when a future system arrives looking neutral you have somewhere to mark what you see.", "cite": "Benjamin, 2019"}], "terms": [{"term": "The four dimensions", "def": "the single lens for any system you will meet: engineered inequity, default discrimination, coded exposure, and technological benevolence, the four ways the New Jim Code carries racism without anyone having to hate.", "cite": "Benjamin, 2019"}, {"term": "The harm needs no hatred", "def": "the idea that a system can carry racism through a design, some data, and a default, inside a society already structured by racism, with no one intending it.", "cite": "Benjamin, 2019"}, {"term": "The response is real", "def": "the answer to the harm is not despair, because design justice, abolitionist tools, data sovereignty, and policy futures are concrete ways to respond that you can now name.", "cite": "Costanza-Chock, 2020"}, {"term": "Personal Cartography", "def": "your own completed map of techno-racism, the record of a term spent learning to see, which is yours to keep and to keep adding to beyond the course.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. The spine of the course and a book to keep.", "scope": "Read this on Blackboard", "id": "benjamin2019"}, {"apa": "Costanza-Chock, S. (2020). Design justice: Community-led practices to build the worlds we need. MIT Press. The response, for the work ahead.", "scope": "Read this on Blackboard", "id": "costanza2020"}], "activity": {"screen": "activity", "archetype": "capstone", "title": "The question, re-answered", "what": "You walk your whole map one last time and answer the question the course opened with, using your own entries as the evidence.", "why": "so the course closes the way it opened, with your own seeing, now able to say plainly what you could only sense in Week 1.", "data": {"prompt": "Walk your cartography one last time. Mark each part as you finish your final video.", "items": [{"label": "The harm, named", "prompt": "Name how a machine can carry racism through the four dimensions, engineered inequity, default discrimination, coded exposure, or technological benevolence, and point to one entry in your map that shows it.", "cite": "Benjamin, 2019"}, {"label": "The response, real", "prompt": "Point to one response you can now name, design justice, an abolitionist tool, data sovereignty, or policy, and say what it would change for the harm you just named.", "cite": "Costanza-Chock, 2020"}, {"label": "Your sharpest entry", "prompt": "Find the one entry in your map that changed the most from Week 1 to now, and say in a sentence what you can see in it today that you could not see then.", "cite": "Benjamin, 2019"}, {"label": "Your commitment", "prompt": "Name the one commitment you carry into your own field, the thing you will do that you would not have done before this course.", "cite": "Benjamin, 2019"}], "callout": "Your graded work for the term is already in. Walk your map one last time and answer the opening question for yourself. Your Personal Cartography and your commitment are yours to keep beyond the course."}}, "youcan": ["You can now answer the opening question, whether a machine can be racist, in your own words and with your own map as the evidence", "You can now summarise the whole arc of the course in one breath: seeing, anatomy, response, and return", "You can now name one commitment to equitable, accountable technology that you carry into your own field"], "reflectPrompt": "The course ends, but the map does not. Name the one commitment about technology and racism that you carry into your own field, in a sentence you would be willing to stand behind a year from now."},
+      14: {"time": "Flexible pacing: work in manageable blocks and use breaks and accessibility supports as needed.", "deck": "", "overview": "This is the last week, and it closes the course the way it opened, with a single question. Your Personal Cartography was due Friday, December 11. This week you complete the Final Learning Reflection, worth 5 percent and due Tuesday, December 15 at 11:59 p.m. Eastern. Use your own map as evidence, answer the opening question in your own words, and name a commitment to use the course lens in your field.", "purpose": "Week 14 completes the course. You answer the opening question with evidence from your Personal Cartography, summarise the whole arc from seeing to return, and name one commitment you carry into your own work. The point is to leave able to say plainly what you could only sense in Week 1.", "outcomes": ["By the end of this week you can answer, in your own words and with an entry from your map as evidence, whether a machine can be racist.", "By the end of this week you can summarise the whole arc of the course: seeing, anatomy, response, and return.", "By the end of this week you can name one concrete commitment to equitable, accountable technology that you carry into your own field.", "By the end of this week you can use your completed Personal Cartography to answer the course's opening question in your own words."], "guiding": ["Can a machine be racist? Answer it now in your own words, and name one entry in your map as your evidence.", "Of everything you learned, what will you find hardest to unsee?", "What is the one commitment you are willing to make to your own field?", "When a future system arrives looking neutral, what will you do that you would not have done in Week 1?"], "checks": [{"t": "Answering can a machine be racist in your own words, with an entry from your own map as the evidence", "look": "the Key Concepts and the Benjamin reading"}, {"t": "Summarising the whole arc of the course in one breath: seeing, anatomy, response, and return", "look": "the Benjamin reading"}, {"t": "Why the answer does not end in despair: the same course that named the harm also named the tools to respond", "look": "the Costanza-Chock reading"}, {"t": "The map as yours to keep: carrying the four-dimension lens and the habit of asking who is harmed into your own field", "look": "the activity and your Personal Cartography"}, {"t": "Naming one concrete commitment to equitable, accountable technology that you carry forward", "look": "the activity and your Personal Cartography"}], "concepts": [{"h": "The whole arc, in one breath", "body": "Part I taught you to see: a harm needs no hatred, only a design, some data, and a default. Part II took the New Jim Code apart into four dimensions, engineered inequity, default discrimination, coded exposure, and technological benevolence. Part III turned to response, with data sovereignty, abolitionist tools, design justice, and policy. Part IV brought it home to your own map. Seeing, anatomy, response, return.", "cite": "Benjamin, 2019"}, {"h": "The question, answered", "body": "Can a machine be racist? Yes. It can carry racism forward through its design and defaults, inside a society already structured by racism, with no one intending it. But the answer does not end in despair, because the same course that showed you the harm also showed you the tools to respond: design justice, abolitionist tools, data sovereignty, and policy. The harm is real, and so is the response. Naming it clearly is where change begins.", "cite": "Benjamin, 2019"}, {"h": "The map is yours to keep", "body": "Your Personal Cartography does not end with the course. The lens you built, the four dimensions, the response, and the habit of asking who is harmed and who is accountable, goes with you into your field. The final task is not to finish a map but to keep one, so that when a future system arrives looking neutral you have somewhere to mark what you see.", "cite": "Benjamin, 2019"}], "terms": [{"term": "The four dimensions", "def": "the single lens for any system you will meet: engineered inequity, default discrimination, coded exposure, and technological benevolence, the four ways the New Jim Code carries racism without anyone having to hate.", "cite": "Benjamin, 2019"}, {"term": "The harm needs no hatred", "def": "the idea that a system can carry racism through a design, some data, and a default, inside a society already structured by racism, with no one intending it.", "cite": "Benjamin, 2019"}, {"term": "The response is real", "def": "the answer to the harm is not despair, because design justice, abolitionist tools, data sovereignty, and policy futures are concrete ways to respond that you can now name.", "cite": "Costanza-Chock, 2020"}, {"term": "Personal Cartography", "def": "your own completed map of techno-racism, the record of a term spent learning to see, which is yours to keep and to keep adding to beyond the course.", "cite": "Benjamin, 2019"}], "readings": [{"apa": "Benjamin, R. (2019). Race after technology: Abolitionist tools for the New Jim Code. Polity Press. The spine of the course and a book to keep.", "scope": "Read this on Blackboard", "id": "benjamin2019"}, {"apa": "Costanza-Chock, S. (2020). Design justice: Community-led practices to build the worlds we need. MIT Press. The response, for the work ahead.", "scope": "Read this on Blackboard", "id": "costanza2020"}], "activity": {"screen": "activity", "archetype": "capstone", "title": "The question, re-answered", "what": "You walk your whole map one last time and answer the question the course opened with, using your own entries as the evidence.", "why": "so the course closes the way it opened, with your own seeing, now able to say plainly what you could only sense in Week 1.", "data": {"prompt": "Walk your cartography one last time. Mark each part as you finish your final video.", "items": [{"label": "The harm, named", "prompt": "Name how a machine can carry racism through the four dimensions, engineered inequity, default discrimination, coded exposure, or technological benevolence, and point to one entry in your map that shows it.", "cite": "Benjamin, 2019"}, {"label": "The response, real", "prompt": "Point to one response you can now name, design justice, an abolitionist tool, data sovereignty, or policy, and say what it would change for the harm you just named.", "cite": "Costanza-Chock, 2020"}, {"label": "Your sharpest entry", "prompt": "Find the one entry in your map that changed the most from Week 1 to now, and say in a sentence what you can see in it today that you could not see then.", "cite": "Benjamin, 2019"}, {"label": "Your commitment", "prompt": "Name the one commitment you carry into your own field, the thing you will do that you would not have done before this course.", "cite": "Benjamin, 2019"}], "callout": "Use your completed Personal Cartography to submit the 5 percent Final Learning Reflection in Blackboard by Tuesday, December 15 at 11:59 p.m. Eastern. Your Personal Cartography and your commitment are yours to keep beyond the course."}}, "youcan": ["You can now answer the opening question, whether a machine can be racist, in your own words and with your own map as the evidence", "You can now summarise the whole arc of the course in one breath: seeing, anatomy, response, and return", "You can now name one commitment to equitable, accountable technology that you carry into your own field"], "reflectPrompt": "The course ends, but the map does not. Name the one commitment about technology and racism that you carry into your own field, in a sentence you would be willing to stand behind a year from now."},
     }
   };
+  (function strengthenBFS218WeeksTwoThroughFourteen() {
+    var weeks = WEEKPAGE.BFS218;
+    if (!weeks) return;
+    var policingConcept = (weeks[6].concepts || []).filter(function (item) { return item.h === 'Algorithmic policing'; })[0];
+    if (policingConcept) policingConcept.body = 'Algorithmic policing is the use of data-driven tools by law enforcement, including predictive policing, facial recognition, and social-media surveillance. Robertson, Khoo, and Song documented Canadian examples and possible uses while stating that their factual record was incomplete and that widespread use did not appear established at the time. Their legal analysis identifies a patchwork of Charter, privacy, human-rights, and criminal-law safeguards, then recommends clearer rules, public reporting, independent review, and stronger oversight.';
+    var policingTerm = (weeks[6].terms || []).filter(function (item) { return item.term === 'Algorithmic policing'; })[0];
+    if (policingTerm) policingTerm.def = 'the use of data-driven tools by law enforcement, including predictive policing, facial recognition, and social-media surveillance; Canadian oversight draws on a patchwork of Charter, privacy, human-rights, and criminal-law safeguards rather than one complete governing framework.';
+    var oversightTerm = (weeks[6].terms || []).filter(function (item) { return item.term === 'Oversight gap'; })[0];
+    if (oversightTerm) oversightTerm.def = 'the accountability space left when rules, public reporting, independent review, and remedies do not keep pace with a technology\'s use.';
+    weeks[6].guiding = (weeks[6].guiding || []).map(function (question) {
+      return /^Singh notes much algorithmic policing is authorized by courts/.test(question)
+        ? 'Canadian algorithmic policing is governed through a patchwork of legal safeguards. Why do clear rules, public reporting, independent review, and accessible remedies matter?'
+        : question;
+    });
+    var sovereigntyConcept = (weeks[8].concepts || []).filter(function (item) { return item.h === 'Indigenous data sovereignty'; })[0];
+    if (sovereigntyConcept) {
+      sovereigntyConcept.body = 'Indigenous data sovereignty is the principle that Indigenous Peoples have rights and interests in governing data about their peoples, lands, and knowledge. In Canada, First Nations, Inuit, and M\u00e9tis governance must be treated as distinct rather than folded into one model. This week uses CARE as a broad people-and-purpose framework and OCAP\u00ae only as the specifically First Nations framework stewarded by the First Nations Information Governance Centre.';
+      sovereigntyConcept.cite = 'Global Indigenous Data Alliance, 2019; First Nations Information Governance Centre, 2014';
+    }
+    var ocapConcept = (weeks[8].concepts || []).filter(function (item) { return /^OCAP:/.test(item.h); })[0];
+    if (ocapConcept) {
+      ocapConcept.h = 'OCAP\u00ae: Ownership, Control, Access, Possession';
+      ocapConcept.body = 'OCAP\u00ae names four specifically First Nations principles for data governance, stewarded by the First Nations Information Governance Centre. OCAP\u00ae is a registered trademark of the First Nations Information Governance Centre (FNIGC). Ownership means a First Nation collectively owns its information. Control means it controls how data about it is collected and used. Access means the First Nation can reach data about itself. Possession means it physically holds and stewards that data. The principles operate together and each First Nation or region may interpret them in its own way.';
+    }
+    var sovereigntyTerm = (weeks[8].terms || []).filter(function (item) { return item.term === 'Indigenous data sovereignty'; })[0];
+    if (sovereigntyTerm) {
+      sovereigntyTerm.def = 'the right and authority of Indigenous Peoples to govern data about their peoples, lands, and knowledge through the frameworks and protocols they authorize; First Nations, Inuit, and M\u00e9tis governance are not interchangeable.';
+      sovereigntyTerm.cite = 'Global Indigenous Data Alliance, 2019; First Nations Information Governance Centre, 2014';
+    }
+    var ocapTerm = (weeks[8].terms || []).filter(function (item) { return /^OCAP \(/.test(item.term); })[0];
+    if (ocapTerm) ocapTerm.term = 'OCAP\u00ae (Ownership, Control, Access, Possession)';
+    var retiredFigureFiles = {
+      3: ['fig-intersectionality.svg'],
+      6: ['fig-week06.svg', 'fig-week06-b.svg', 'fig-week06-c.svg'],
+      8: ['fig-week08.svg', 'fig-week08-b.svg', 'fig-week08-c.svg'],
+      10: ['fig-week10-b.svg'],
+      12: ['fig-week12.svg', 'fig-week12-b.svg', 'fig-week12-c.svg']
+    };
+    if (window.BFS218_WALKFIGS) Object.keys(retiredFigureFiles).forEach(function (week) {
+      var blocked = retiredFigureFiles[week];
+      window.BFS218_WALKFIGS[week] = (window.BFS218_WALKFIGS[week] || []).filter(function (figure) { return blocked.indexOf(figure.file) < 0; });
+    });
+    weeks[2].reflectPrompt = 'Record a Week 2 Personal Cartography entry about one digital moment from your life, study program, or future field. Name the technology and the outcome, then ask: whose world does the system assume, who pays when it gets that person wrong, and what might an intersectional reading reveal?';
+    weeks[3].reflectPrompt = 'Record a Week 3 Personal Cartography entry about one system you used or encountered that seems to widen an existing gap. Name the gap, the design choice that amplifies it, the person or group carrying the cost, and the evidence you would need to test your claim.';
+    weeks[4].reflectPrompt = 'Record a Week 4 Personal Cartography entry about one default in your life, Seneca program, placement, workplace, or future field. Name who the default assumes, who must adapt, what burden recurs, and why the repeated failure looks systemic rather than like a one-time glitch.';
+    weeks[6].activity.data.caseFiles = [
+      {
+        id: 'clearview', tab: 'RCMP and Clearview AI', institution: 'Royal Canadian Mounted Police',
+        system: 'A police face-search tool built from images scraped from the internet without the people\'s consent.',
+        finding: 'The Office of the Privacy Commissioner of Canada found that the RCMP\'s use of Clearview AI contravened federal privacy law.',
+        lens: 'This course reads the case as coded exposure because people were made searchable by police without agreeing to enter that database.',
+        limit: 'The privacy finding is documented. Coded exposure is the course lens; it is not language used by the Commissioner.',
+        cite: 'Office of the Privacy Commissioner of Canada, 2021'
+      },
+      {
+        id: 'ewert', tab: 'Ewert v Canada', institution: 'Correctional Service Canada',
+        system: 'Actuarial risk-assessment tools used in corrections without adequate evidence that they were valid for Indigenous offenders.',
+        finding: 'The Supreme Court held that CSC breached section 24(1) of the Corrections and Conditional Release Act by failing to take all reasonable steps to ensure the tools\' accuracy for Indigenous offenders.',
+        lens: 'This course reads the unverified institutional default through default discrimination.',
+        limit: 'The Court did not find that the tools were proven inaccurate, did not find a Charter breach, and did not use Benjamin\'s term.',
+        cite: 'Ewert v Canada, 2018 SCC 30'
+      },
+      {
+        id: 'policing', tab: 'Algorithmic policing', institution: 'Canadian policing institutions examined in a public-interest report',
+        system: 'Data-driven policing methods including predictive policing, facial recognition, and social-media surveillance.',
+        finding: 'Robertson, Khoo, and Song documented Canadian examples and possible uses and identified serious human-rights and oversight concerns.',
+        lens: 'The course asks where engineered inequity, default discrimination, or coded exposure could enter each documented use.',
+        limit: 'The authors said their factual record was incomplete and that widespread use did not appear established at the time. The report cannot be used to claim one national system.',
+        cite: 'Robertson, Khoo, and Song, 2020'
+      },
+      {
+        id: 'border', tab: 'Border technologies', institution: 'Border and migration systems studied by Molnar and by Nagra and Maurutto',
+        system: 'Biometric, surveillance, and security practices operating where people may have limited ability to refuse, understand, or challenge them.',
+        finding: 'Molnar documents experimental border technologies and weak oversight. Nagra and Maurutto document how participants experienced racialized security scrutiny.',
+        lens: 'The course uses coded exposure to ask who is watched, classified, and required to manage how they appear to the system.',
+        limit: 'These sources study different evidence and populations. They do not prove that every border encounter works the same way and must not be merged into the RCMP or Ewert cases.',
+        cite: 'Molnar, 2023; Nagra and Maurutto, 2016'
+      }
+    ];
+    weeks[6].youcan = weeks[6].youcan.concat(['You can now record one verified Canadian case in your Personal Cartography without blending its source, law, or oversight body with a different case']);
+    weeks[6].reflectPrompt = 'Record a Week 6 Personal Cartography entry about one verified Canadian system or case. Name the New Jim Code dimension, the harm, the relevant law, court, or oversight body, the evidence supporting each claim, and one important limit on what that evidence proves.';
+    weeks[7].activity.what = 'You take one real system and assemble its records or data, rule or model, deployment, decision, and feedback loop, then identify which dimension of the New Jim Code each stage reveals.';
+    weeks[7].activity.data.goal = 'Assemble five stages of one real system into a single anatomy: records or data, rule or model, deployment, decision, and feedback loop. Then name the New Jim Code dimension each stage reveals so the harm is traced through the whole structure rather than blamed on one bad part.';
+    weeks[7].activity.data.systems = [
+      {
+        id: 'clearview', label: 'RCMP use of Clearview AI', status: 'Documented Canadian case',
+        boundary: 'The first four stages are documented. The available source does not establish a self-reinforcing feedback loop, so the final stage stays explicitly unknown.',
+        parts: [
+          { slot: 'Records or data', label: 'Scraped internet images', detail: 'Clearview AI assembled a face-search database from images collected without the people\'s consent.' },
+          { slot: 'Rule or model', label: 'Face-search matching', detail: 'A submitted image is compared with the database and possible matches are returned.' },
+          { slot: 'Deployment', label: 'RCMP searches', detail: 'The police service used the commercial tool in hundreds of searches.' },
+          { slot: 'Decision', label: 'A search result becomes an investigative lead', detail: 'The technology can make a person newly visible to police attention.' },
+          { slot: 'Feedback loop', label: 'Not established by this source', detail: 'Do not invent the missing link. Record what additional evidence would be needed to show that search outcomes reshape future data or decisions.' }
+        ],
+        lens: 'Coded exposure', lensWhy: 'People who did not consent to a police face-search database were made searchable in it.', cite: 'Office of the Privacy Commissioner of Canada, 2021'
+      },
+      {
+        id: 'ewert', label: 'Ewert v Canada risk tools', status: 'Documented Canadian case',
+        boundary: 'The Court established a statutory breach, not that the tools were proven inaccurate. Default discrimination is the course\'s analytical lens.',
+        parts: [
+          { slot: 'Records or data', label: 'Correctional assessment records', detail: 'Information about an incarcerated person enters actuarial assessment tools.' },
+          { slot: 'Rule or model', label: 'Risk-assessment instruments', detail: 'The instruments interpret the records without adequate validation for Indigenous offenders.' },
+          { slot: 'Deployment', label: 'Correctional Service Canada', detail: 'CSC continued to use the tools in its correctional decision environment.' },
+          { slot: 'Decision', label: 'Risk findings shape correctional treatment', detail: 'Assessment results can matter to decisions affecting an incarcerated person.' },
+          { slot: 'Feedback loop', label: 'Not established by the decision', detail: 'The judgment does not prove that decisions return as future training data. Keep this stage unknown unless another source supports it.' }
+        ],
+        lens: 'Default discrimination', lensWhy: 'The institution continued with an unverified default instead of taking all reasonable steps to establish validity for Indigenous offenders.', cite: 'Ewert v Canada, 2018 SCC 30'
+      },
+      {
+        id: 'tenant', label: 'Tenant-screening teaching model', status: 'Fictional matched-application model',
+        boundary: 'This is the course\'s fictional teaching model, not a claim about a named landlord, vendor, or measured population. It is included because every stage can be inspected clearly.',
+        parts: [
+          { slot: 'Records or data', label: 'Past housing approvals', detail: 'Old approval records carry an unequal institutional history.' },
+          { slot: 'Rule or model', label: 'Name-derived proxy and threshold', detail: 'The screener racializes a name, compares it with past approvals, and changes the risk threshold.' },
+          { slot: 'Deployment', label: 'Automated tenant screening', detail: 'The rule operates before a housing decision-maker reviews the current evidence.' },
+          { slot: 'Decision', label: 'Approval, denial, or extra review', detail: 'Identical current qualifications receive different treatment.' },
+          { slot: 'Feedback loop', label: 'Today\'s decisions become tomorrow\'s records', detail: 'If the institution treats its own outcomes as success data, the unequal pattern can be learned again.' }
+        ],
+        lens: 'Engineered inequity and default discrimination', lensWhy: 'Biased history is converted into a proxy, threshold, and repeated present-day treatment that appears neutral.', cite: 'Fictional course model applying Benjamin, 2019'
+      }
+    ];
+    var anatomy = weeks[7].activity.data.components || [];
+    var decision = anatomy.filter(function (item) { return item.label === 'The border deployment'; })[0];
+    if (decision) {
+      decision.label = 'The decision layer';
+      decision.role = 'turns a score, match, or flag into a real consequence such as extra screening, lost access, investigation, or denial, and determines whether a person can understand or challenge what happened.';
+      decision.cite = 'Benjamin, 2019';
+    }
+    weeks[7].youcan = weeks[7].youcan.concat(['You can now use your Week 2–6 Personal Cartography entries to rehearse a whole-system analysis before Study Week']);
+    weeks[7].reflectPrompt = 'Choose one system from your Week 2–6 Personal Cartography. Trace its records or data, rule or model, deployment, decision, and feedback loop; name every New Jim Code dimension you can support; and decide whether the recurring harm appears designed, incidental, or still uncertain, giving one reason and one evidence limit. Then use the Knowledge Check, Source Practice, and Flashcards to test the parts you cannot yet explain without notes.';
+    weeks[8].activity.what = 'You reconstruct how the real First Nations Regional Health Survey puts OCAP® into practice, then distinguish that documented First Nations case from CARE and from Inuit-specific governance.';
+    weeks[8].activity.why = 'The case makes data sovereignty concrete: who owns the records, who controls the research, who can access the information, and who physically holds it. It also prevents you from turning one Indigenous framework into a generic checklist.';
+    weeks[8].activity.data.realCase = {
+      title: 'First Nations Regional Health Survey (RHS)',
+      status: 'Documented First Nations governance case',
+      context: 'The First Nations Information Governance Centre describes the RHS as a national First Nations health survey conducted with Regional Partners and grounded in First Nations data sovereignty and OCAP®.',
+      source: 'First Nations Information Governance Centre, Our Surveys and OCAP® materials',
+      boundary: 'This case supports how OCAP® operates in a First Nations survey. It does not show that every First Nation uses one identical arrangement, and it cannot be used as an Inuit or Métis governance framework.'
+    };
+    weeks[8].activity.data.principles = [
+      { id: 'ownership', label: 'Ownership', fact: 'First Nations collectively own their survey information.', move: 'The people described by the data hold the collective ownership claim; the outside collector does not become the owner simply by collecting it.' },
+      { id: 'control', label: 'Control', fact: 'First Nations institutions and Regional Partners direct the survey process and its priorities.', move: 'Authority includes what is collected, how the research is carried out, and how results are used.' },
+      { id: 'access', label: 'Access', fact: 'First Nations communities and organizations can reach information about themselves and govern access to it.', move: 'Access is more than receiving a finished report; it includes authority over who may use the collective information.' },
+      { id: 'possession', label: 'Possession', fact: 'First Nations data stewardship provides physical control as a way to protect ownership, control, and access.', move: 'Possession makes the other principles enforceable instead of leaving them as promises held on someone else\'s server.' }
+    ];
+    weeks[8].activity.data.boundaryChoices = [
+      { label: 'Apply OCAP® to every Indigenous community because it is the best-known framework.', correct: false, feedback: 'No. OCAP® is specifically a First Nations framework. Community-specific authority and protocols must be identified rather than imported.' },
+      { label: 'Use the RHS to understand OCAP® in a documented First Nations setting, use CARE as a broader people-and-purpose lens, and verify the framework authorized by any other community.', correct: true, feedback: 'Yes. This keeps the real RHS case, OCAP®\'s First Nations scope, CARE\'s broader role, and community-specific authority distinct.' }
+    ];
+    weeks[8].reflectPrompt = 'Use the real RHS case to write one governance statement: name what Ownership, Control, Access, and Possession each protect, then explain why you must verify the framework authorized by the specific community instead of applying OCAP® to every Indigenous setting.';
+    weeks[9].activity.what = 'You put three documented cases from Benjamin under the benevolence test: electronic monitoring, automated hiring, and health-care hotspotting.';
+    weeks[9].activity.why = 'Each case begins with a real promised benefit. Your job is not to deny that benefit; it is to inspect the added surveillance, sorting, or control and decide whether power and burden actually changed.';
+    weeks[9].activity.data.realCases = [
+      {
+        id: 'monitoring', title: 'Electronic monitoring as an alternative to confinement', setting: 'Criminal and immigration systems discussed by Benjamin',
+        promise: 'Allow a person to leave a jail, prison, or detention setting while the institution still monitors compliance.',
+        benefit: 'Release from physical confinement can be a meaningful benefit.',
+        mechanism: 'An ankle monitor moves institutional surveillance and control into a person\'s daily life and family space.',
+        test: 'Who sets the conditions, who receives the location data, what happens after a violation, and can the person refuse the device without losing release?',
+        boundary: 'Benjamin analyses electronic monitoring as a racial fix. The chapter does not establish one identical contract, vendor, or outcome for every monitored person.', cite: 'Benjamin, 2019, Chapter 4'
+      },
+      {
+        id: 'hiring', title: 'Automated hiring and Amazon\'s scrapped recruitment tool', setting: 'Employment screening cases discussed by Benjamin',
+        promise: 'Reduce recruiter bias and process applications more consistently and efficiently.',
+        benefit: 'A consistent process could reduce some arbitrary human decisions.',
+        mechanism: 'A model trained on past hiring can turn an unequal workforce history into a preferred-candidate pattern. Benjamin notes that Amazon scrapped a recruitment tool after it penalized indicators associated with women.',
+        test: 'What history became the model\'s target, which proxies affected ranking, who was screened out, and could an applicant obtain review?',
+        boundary: 'The Amazon example documents a gender-related failure in one discontinued tool. It illustrates the benevolence test but does not prove that every hiring model works the same way or that this case alone establishes racial discrimination.', cite: 'Benjamin, 2019, Chapter 4'
+      },
+      {
+        id: 'hotspotting', title: 'Health-care hotspotting', setting: 'A real care strategy analysed by Benjamin',
+        promise: 'Use data to direct intensive support toward patients with high health-care use and complex needs.',
+        benefit: 'Coordinated attention to housing, mental health, substance use, and other needs can help patients.',
+        mechanism: 'The strategy uses cost, location, and risk data to target people while leaving the neighbourhood, school, housing, and economic structures producing ill health largely intact.',
+        test: 'Does the intervention change the conditions producing poor health, or does it mainly manage a high-cost population more closely?',
+        boundary: 'Benjamin treats hotspotting as a tension, not a claim that care is fake or that every program has the same effects. The chapter is a critical analysis, not an evaluation of one standardized intervention.', cite: 'Benjamin, 2019, Chapter 4'
+      }
+    ];
+    weeks[9].reflectPrompt = 'Choose one documented case from the activity. State the promised benefit, the added burden or control, who retains decision authority, and the evidence limit. Then answer Benjamin\'s question in plain language: what would have to change for this fix to count as repair?';
+    weeks[10].activity.what = 'You work through the real Bird, Castleman, and Song study as an institutional threshold decision: what the model predicts, where the college sets the support cutoff, and what review the student receives.';
+    weeks[10].activity.why = 'It separates inequality within the model from inequality in the institution\'s use of it, without inventing student scores or pretending the study observed an operational support program.';
+    weeks[10].activity.data.study = {
+      title: 'Predicting community-college success', status: 'Published study and simulated allocation',
+      sample: 'Virginia Community College System administrative data: 5,168,903 student-course observations for course completion and 385,800 students across the degree-completion training and validation samples.',
+      finding: 'At some risk thresholds, prediction errors could make Black students near the cutoff less likely than otherwise similar white students to be classified as at risk and receive support.',
+      boundary: 'The allocation was simulated. The result changed by model, outcome, threshold, and available data; the study did not measure an implemented support program and did not show that a prediction label caused a student to fail.',
+      cite: 'Bird, Castleman, and Song, 2023'
+    };
+    weeks[10].activity.data.thresholds = [
+      { label: 'Broader support', consequence: 'More students receive support, so less depends on a single cutoff. The institution still has to audit whether need and access differ across groups.' },
+      { label: 'Targeted support', consequence: 'The cutoff carries more weight. Students near it can receive different treatment because of small prediction differences.' },
+      { label: 'Narrow support', consequence: 'Fewer students are served and the threshold becomes a stronger gate. This course control illustrates institutional discretion; it does not reproduce a numerical result from the paper.' }
+    ];
+    weeks[10].activity.data.accountability = [
+      { label: 'Within the algorithm', detail: 'Available administrative data and prediction performance can differ across racial groups.', correct: true },
+      { label: 'Without the algorithm', detail: 'The institution chooses the predicted outcome, the threshold, the resource rule, the explanation, and the appeal route.', correct: true },
+      { label: 'Only inside the student', detail: 'Treating the label as the student\'s personal deficit hides both the model error and the college\'s policy choice.', correct: false }
+    ];
+    weeks[10].reflectPrompt = 'Use the Bird, Castleman, and Song study to name one inequality within the algorithm and one inequality without it. Then identify a gate in your own field and state what explanation, human review, and appeal would be needed before a score changed someone\'s access.';
+    weeks[11].activity.what = 'You reconstruct the documented Detroit Community Technology Project case, assigning who learns, designs, builds, maintains, and governs neighbourhood wireless networks.';
+    weeks[11].activity.why = 'The case lets you see design justice as an actual transfer of expertise and authority to community residents, then compare that power shift with a technical patch that leaves the vendor in charge.';
+    weeks[11].activity.data.realCase = {
+      title: 'Detroit Community Technology Project (DCTP)', status: 'Documented community-led design case',
+      context: 'Costanza-Chock describes DCTP digital stewards, themselves community residents, working with residents, local businesses, and anchor institutions to design, install, and maintain wireless mesh networks and develop policies to govern them.',
+      boundary: 'The source documents this organizing and design approach. It does not prove that one model guarantees just outcomes in every neighbourhood or that every participant held equal power.',
+      cite: 'Costanza-Chock, 2020'
+    };
+    weeks[11].activity.data.powerRoles = [
+      { label: 'Learn the infrastructure', community: 'Community residents build the knowledge needed to understand and question the network.', patch: 'A vendor trains residents only to use a finished product.' },
+      { label: 'Design the network', community: 'Digital stewards and residents help decide what the local network must do.', patch: 'A vendor defines the problem and presents one solution.' },
+      { label: 'Install and maintain it', community: 'Residents participate in building and sustaining the mesh network.', patch: 'The community depends on outside technicians for every change.' },
+      { label: 'Govern the network', community: 'Residents and local institutions help develop the policies that govern the network.', patch: 'The vendor retains the rules, data decisions, and final authority.' }
+    ];
+    weeks[11].reflectPrompt = 'Using the DCTP case, explain the difference between participation and power. Name who learned, designed, built, maintained, and governed the network, then apply the same five questions to one harmful system in your Personal Cartography.';
+    weeks[12].activity.what = 'You enter Attard-Frost\'s real 2023 policy brief as a historical committee file, match each argued AIDA gap to the author\'s corresponding recommendation, and keep the later legislative status visible.';
+    weeks[12].activity.why = 'It turns accountability into specific institutional work while preventing a common factual error: AIDA was proposed inside Bill C-27, but it did not become law.';
+    weeks[12].activity.data.policyStatus = 'Historical status: AIDA was proposed in 2022 as part of Bill C-27. Committee work ceased with prorogation in January 2025, and the proposal did not become law.';
+    weeks[12].activity.data.gaps = [
+      { label: 'Specificity and transparency', detail: 'The brief argued that AIDA did not specify enough about requirements for generative AI and risks to artists and creators.', recommendation: 'Remove AIDA from the legislative agenda until adequate public engagement and a stronger proposal could be developed.' },
+      { label: 'Public awareness and consultation', detail: 'The brief argued that the proposal was developed without adequate public awareness and consultation.', recommendation: 'Launch national public-information campaigns and consultations on AI impacts and harms.' },
+      { label: 'Enforcement and public oversight', detail: 'The brief argued that investigation, penalties, independence, and public oversight were inadequate.', recommendation: 'Give a future independent AI and Data Commissioner stronger investigation, enforcement, reporting, and review powers.' },
+      { label: 'AI policy capacity', detail: 'The brief argued that federal institutions lacked sufficient interdisciplinary capacity to research fast-changing AI impacts.', recommendation: 'Allocate resources and broaden the expertise used to build federal AI policy.' },
+      { label: 'Narrow jurisdiction', detail: 'The brief argued that AI impacts extend beyond one minister\'s trade-and-commerce jurisdiction.', recommendation: 'Require federal departments and agencies to coordinate and extend co-regulation into civil society.' }
+    ];
+    weeks[12].activity.data.policyBoundary = 'The five gaps and recommendations are Attard-Frost\'s policy analysis, not findings adopted by a court or parliamentary committee. The later status record establishes that AIDA did not become law.';
+    weeks[12].reflectPrompt = 'Choose one gap from Attard-Frost\'s brief. State the author\'s recommendation, one implementation question it leaves open, the people whose rights or work are at stake, and the historical fact that AIDA did not become law.';
+    weeks[13].activity.what = 'You place one early entry and one later entry from your own saved course notes side by side, then name the change in your language, evidence, mechanism, and proposed response.';
+    weeks[13].activity.why = 'Your own documented learning becomes the case. The activity does not invent an example or write your conclusion; it helps you find the evidence of how your seeing changed.';
+    weeks[13].activity.data.earlyWeeks = [1, 2, 3, 4];
+    weeks[13].activity.data.laterWeeks = [8, 9, 10, 11, 12];
+    weeks[13].reflectPrompt = 'Place the early and later entries you selected beside each other. What changed in the system you named, the evidence you used, the mechanism you could explain, and the response you could imagine? Use those specific changes as the spine of your final Personal Cartography.';
+    weeks[14].activity.what = 'You build an evidence plan for your final answer from one real entry in your Personal Cartography, one course mechanism, one response, and one commitment in your own field.';
+    weeks[14].activity.why = 'The activity checks that your answer is evidence-based and forward-looking without generating the answer for you. Your words remain your own.';
+    weeks[14].activity.data.mechanisms = ['Engineered inequity', 'Default discrimination', 'Coded exposure', 'Technological benevolence'];
+    weeks[14].activity.data.responses = ['Community authority and data sovereignty', 'Design justice and community-led design', 'An abolitionist refusal or redesign', 'Law, oversight, and an enforceable right to redress'];
+    weeks[14].activity.data.commitments = ['Audit outcomes before trusting a neutral claim', 'Ask who controls the data and the decision', 'Require explanation, human review, and appeal', 'Bring affected people into decisions with real authority'];
+    weeks[14].reflectPrompt = 'Answer the opening question in your own words. Use one real entry from your map as evidence, name the New Jim Code mechanism, state one response that would change power or accountability, and finish with the commitment you will carry into your field.';
+    ['case', 'levers', 'pick'].forEach(function (key) { delete weeks[8].activity.data[key]; });
+    ['setup', 'steps'].forEach(function (key) { delete weeks[9].activity.data[key]; });
+    ['system', 'toggles'].forEach(function (key) { delete weeks[10].activity.data[key]; });
+    ['goal', 'components'].forEach(function (key) { delete weeks[11].activity.data[key]; });
+    ['case', 'levers', 'pick'].forEach(function (key) { delete weeks[12].activity.data[key]; });
+    ['prompt', 'items', 'callout'].forEach(function (key) { delete weeks[13].activity.data[key]; delete weeks[14].activity.data[key]; });
+  })();
+  (function alignBfs218AssessmentSupport() {
+    var weeks = WEEKPAGE.BFS218;
+    if (!weeks) return;
+    function replaceLabel(value, from, to) {
+      var key;
+      if (typeof value === 'string') return value.split(from).join(to);
+      if (Array.isArray(value)) return value.map(function (item) { return replaceLabel(item, from, to); });
+      if (value && typeof value === 'object') {
+        for (key in value) if (Object.prototype.hasOwnProperty.call(value, key)) value[key] = replaceLabel(value[key], from, to);
+      }
+      return value;
+    }
+    [3, 4, 5, 6, 7, 8, 9, 10, 11].forEach(function (week) {
+      if (weeks[week]) weeks[week] = replaceLabel(weeks[week], 'Personal Cartography', 'Digital Systems Field Notes Portfolio');
+    });
+    weeks[1].purpose = 'Week 1 answers one question: why would a course about racism spend an entire term on technology? It introduces techno-racism as a specific form of racial inequity that can operate through the design of digital systems, not only through individual attitudes. This week is about learning to look, building the vocabulary for the ungraded Starting Point, and beginning a privacy-safe record of course evidence.';
+    weeks[1].outcomes[weeks[1].outcomes.length - 1] = 'By the end of this week you can notice one privacy-safe moment from your own digital life that may become course evidence later.';
+    weeks[1].checks[weeks[1].checks.length - 1].look = 'the activity and your ungraded course-evidence note';
+    weeks[1].terms = weeks[1].terms.map(function (term) {
+      return term.term === 'Personal Cartography' ? { term: 'Course evidence', def: 'a dated, privacy-safe record of something you actually noticed, did, read, or created in the course. Strong course evidence is specific enough that you can return to it later without inventing details.', cite: 'Course assessment design' } : term;
+    });
+    weeks[1].youcan[weeks[1].youcan.length - 1] = 'You can now notice one privacy-safe digital moment that may become course evidence later.';
+    weeks[1].reflectPrompt = 'For the ungraded Starting Point, notice one ordinary technology that touched your week. What did it sort, score, watch, recommend, approve, or refuse? Keep names, account details, messages, and precise locations out of your note.';
+    weeks[2].overview = 'This week gives you the theory underneath the New Jim Code vocabulary. Critical race theory, or CRT, makes one hard claim: racism is ordinary and structural, built into laws, institutions, and everyday systems, and it can produce racially unequal outcomes even when a system looks neutral. Ruha Benjamin takes that lens to technology and calls the result the New Jim Code: old inequities carried forward by tools that look new, objective, and fair. By the end of the week you can connect CRT to the New Jim Code and practise reading one real example. Digital Systems Field Notes Portfolio 1 opens September 21; this week helps you prepare without asking you to submit a graded note early.';
+    weeks[2].purpose = 'Week 2 gives you the body of thought that techno-racism and the New Jim Code rest on. The point is to help you stop asking only whether a person behind a system is racist and start asking what the system does, to whom, and who pays. You will practise that shift now, then use it in your first private Field Notes journal after it opens.';
+    weeks[2].outcomes[weeks[2].outcomes.length - 1] = 'By the end of this week you can use an outcomes-focused, intersectional lens to prepare for a real technology note in the Digital Systems Field Notes Portfolio.';
+    weeks[2].checks[weeks[2].checks.length - 1].look = 'the activity and your course-evidence note';
+    weeks[2].activity.why = 'so you practise reading technology through outcomes, not intentions, before Portfolio 1 opens.';
+    weeks[2].reflectPrompt = 'Prepare for Portfolio 1 by choosing one privacy-safe digital moment from your life, study program, or future field. Name the technology and the outcome, then ask whose world the system assumes, who pays when it gets that person wrong, and what an intersectional reading might reveal. Do not submit it as a graded note until the Blackboard journal opens.';
+    weeks[13].overview = 'This week is a return, but not to a weekly map. Build Personal Cartography from the evidence you created across the term: all six dated Field Notes plus at least two pieces from Digital Decision Scenarios, the Canadian Technology Investigation, or Design the Repair. Use those anchors to show how your reading of digital systems changed. The final submission is due Friday, December 11.';
+    weeks[13].purpose = 'The point of this week is to make a supported change in your thinking visible. Arrange dated evidence from both halves of the term into five route points, compare an early reading with what you can explain now, and keep one unresolved tension visible. The evidence, not a general claim that you learned a lot, carries the final project.';
+    weeks[13].outcomes = ['Build five connected route points from all six Field Notes and at least two other course pieces.', 'Show one specific then-and-now change using dated evidence from both halves of the term.', 'Use course concepts and evidence accurately across personal and institutional scales.', 'Complete and submit Personal Cartography with a realistic future practice and one unresolved question.'];
+    weeks[13].guiding = ['Which dated Field Note best shows what you noticed early in the course?', 'Which later assessment gives the clearest evidence that your explanation changed?', 'What five route points will let another person follow that change without guessing?', 'What remains unresolved, and what future practice can you realistically carry into your field?'];
+    weeks[13].checks = [{ t: 'A five-point route grounded in the exact dated evidence required by the Blackboard brief', look: 'your saved course evidence and the assignment guide' }, { t: 'A specific then-and-now change rather than a general claim about growth', look: 'the comparison activity' }, { t: 'Course concepts and evidence used accurately across both halves of the term', look: 'your selected evidence and course sources' }, { t: 'One unresolved tension kept visible', look: 'your route plan' }, { t: 'A realistic future practice connected to the change you demonstrated', look: 'the Personal Cartography brief' }];
+    weeks[13].terms = weeks[13].terms.map(function (term) {
+      if (term.term === 'Personal Cartography') term.def = 'the final five-point route through your learning. It uses all six dated Field Notes and at least two other course pieces to show a supported then-and-now change, an unresolved tension, and a realistic future practice.';
+      return term;
+    });
+    weeks[13].activity.title = 'Build the evidence route';
+    weeks[13].activity.what = 'You place selected dated course evidence side by side and identify the exact change it supports before arranging the five-point route.';
+    weeks[13].activity.why = 'so Personal Cartography is built from evidence you actually created, not from an invented story or a general course summary.';
+    weeks[13].activity.data.earlyWeeks = [3, 4, 5, 6];
+    weeks[13].activity.data.laterWeeks = [8, 9, 10, 11, 12];
+    weeks[13].youcan = ['You can now build a five-point route from dated evidence across both halves of the course.', 'You can now show a specific change in your thinking without turning the project into a general course summary.', 'You can now complete Personal Cartography with an unresolved tension and a realistic future practice.'];
+    weeks[13].reflectPrompt = 'Check your five route points against the Blackboard brief. Where does each point come from, what changed between the early and later evidence, what remains unresolved, and what future practice follows from that change?';
+  })();
   function weekData(w) { var c = (D.course && D.course.code) || ''; return (WEEKPAGE[c] && WEEKPAGE[c][w]) || null; }
   (function addFeaturedWeeklySources() {
     var byWeek = window.BFS218_FEATURED_SOURCES_BY_WEEK || {}, records = {};
@@ -2985,13 +3336,14 @@
       }
 
       /* standard / scenario multiple choice */
-      var opts = (m.options || []).map(function (o, oi) {
+      var opts = orderedAnswerOptions(m, 'kc|' + w + '|' + kcVer + '|' + mi).map(function (option, displayIndex) {
+        var o = option.text, oi = option.index;
         var isSel = (sel === oi), isCor = (oi === m.answer);
         var bg = '#fff', bd = 'var(--border)', col = 'var(--ink)', mark = '';
         if (reveal && isCor) { bg = '#E9EFE7'; bd = '#50694C'; col = '#2c3b29'; mark = ' ✓'; }
         else if (reveal && isSel && !isCor) { bg = '#F6E3E1'; bd = 'var(--red)'; col = '#8f1b12'; mark = ' ✗'; }
         else if (isSel) { bg = '#FDF0EE'; bd = 'var(--red)'; col = 'var(--ink)'; mark = ' ●'; }
-        return '<button onclick="SOC.mcPick(\'' + mkey + '\',' + oi + ')" aria-pressed="' + isSel + '" style="display:block;width:100%;text-align:left;border:1.5px solid ' + bd + ';background:' + bg + ';color:' + col + ';border-radius:8px;padding:9px 12px;margin-bottom:7px;font-size:.9rem;cursor:pointer">' + esc(o) + mark + '</button>';
+        return '<button data-option-position="' + displayIndex + '" data-option-index="' + oi + '" onclick="SOC.mcPick(\'' + mkey + '\',' + oi + ')" aria-pressed="' + isSel + '" style="display:block;width:100%;text-align:left;border:1.5px solid ' + bd + ';background:' + bg + ';color:' + col + ';border-radius:8px;padding:9px 12px;margin-bottom:7px;font-size:.9rem;cursor:pointer">' + esc(o) + mark + '</button>';
       }).join('');
       /* confidence prompt appears once answered, before the whole set is revealed */
       var confRow = (done && !reveal) ? '<div style="display:flex;align-items:center;gap:7px;flex-wrap:wrap;margin:2px 0 2px"><span style="font-size:.78rem;color:var(--ink-faint)">How sure?</span>' + [['sure', 'Sure'], ['mid', 'Think so'], ['guess', 'Guessing']].map(function (c) { var on = conf === c[0]; return '<button onclick="SOC.mcConf(\'' + mkey + '\',\'' + c[0] + '\',' + w + ')" aria-pressed="' + on + '" style="border:1px solid ' + (on ? 'var(--red)' : 'var(--border)') + ';background:' + (on ? '#FDF0EE' : '#fff') + ';color:' + (on ? 'var(--red)' : 'var(--ink-dim)') + ';border-radius:999px;padding:4px 11px;font-size:.76rem;font-weight:' + (on ? '700' : '500') + ';cursor:pointer">' + c[1] + '</button>'; }).join('') + '</div>' : '';
@@ -3168,7 +3520,7 @@
     var V = window.BFS218_VISUALS || {};
     var descriptions = V.modelDescriptions || {};
     var styles = V.modelStyles || {};
-    spec.visualDescription = descriptions[spec.kind] || spec.modelNote || spec.scene || '';
+    spec.visualDescription = spec.modelNote || spec.scene || descriptions[spec.kind] || '';
     spec.visualStyle = styles[spec.kind] || ((window.BFS218_HOLO && window.BFS218_HOLO.styleFor) ? window.BFS218_HOLO.styleFor(spec.kind) : 'diorama');
     var steps = (spec.steps || []).slice(0, 3);
     var anchors = visualKindLabelAnchors(spec.kind || 'pipeline');
@@ -3199,6 +3551,28 @@
   function activityVisualSpec(w, a) {
     var base = visualSpec(w, weekData(w));
     var baseKind = base.kind || 'pipeline';
+    var weekKinds = {
+      1: 'startermap', 2: 'mechanismatch', 3: 'decisionpath', 4: 'defaultboard',
+      5: 'audit', 6: 'surveillanceflow', 7: 'toolkit', 8: 'datastory',
+      9: 'promisefunnel', 10: 'thresholdaudit', 11: 'repairtable', 12: 'policydeck',
+      13: 'capstonemap', 14: 'futurecompass'
+    };
+    var weekModels = {
+      1: ['Ordinary-system field table', 'A student stands among ordinary tools. Follow one object from contact, to hidden rule, to a first cartography note.'],
+      2: ['Outcome inspection table', 'Two files meet the same rule while inherited history changes what the rule does. Inspect the result before accepting the neutral procedure.'],
+      3: ['Matched-application audit', 'Three fictional applications hold current qualifications constant so students can see how a name-derived proxy changes institutional treatment.'],
+      4: ['Default control room', 'Preset language, identity, and access settings sit on a control board. Changing a switch reveals who was expected to adapt.'],
+      5: ['Intersectional audit array', 'An audit surface separates an overall result into the groups the average can hide.'],
+      6: ['Canadian flag trail', 'A checkpoint creates a flag, the flag travels to linked records, and the correction route struggles to catch up.'],
+      7: ['System anatomy workbench', 'Separate parts become one inspectable system: data, rule, deployment, decision, and feedback.'],
+      8: ['Data governance table', 'A record, the story it tells, and the people it describes sit around a table where authority can move.'],
+      9: ['Benevolence promise X-ray', 'A helpful promise enters a funnel. The X-ray separates the promise, the mechanism, and the burden it can shift onto others.'],
+      10: ['Threshold and context desk', 'Student records approach a cutoff while a context-review lane shows what the score cannot contain.'],
+      11: ['Patch or repair table', 'A documented harm sits between a technical patch and a repair that changes who has authority over the system.'],
+      12: ['Accountability policy deck', 'Policy levers stack across product, institution, law, and rights while the gaps between layers remain visible.'],
+      13: ['Cartography archive table', 'Early and late map entries sit together so changes in language, evidence, and seeing can be inspected.'],
+      14: ['Future-facing compass room', 'Evidence, response, and commitment become a compass for meeting the next system that claims to be neutral.']
+    };
     var choices = {
       match: ['matchwork'],
       scenario: ['decisionpath'],
@@ -3206,6 +3580,26 @@
       assemble: ['toolkit'],
       lab: ['policydeck'],
       capstone: ['capstonemap']
+    };
+    var weekProfile = {
+      7: {
+        title: 'Activity model: assemble the system anatomy.',
+        scene: 'Five connected parts show records or data, a rule or model, deployment, a decision, and a feedback loop.',
+        steps: [['Place the five parts', 'Identify the data, rule or model, deployment, decision, and feedback loop.'], ['Trace the mechanism', 'Locate where a New Jim Code dimension enters.'], ['Explain the outcome', 'Say how the connected parts produce the result without relying on intent.']],
+        labels: [{ t: 'Data and rule', sub: 'What enters, and how is it interpreted?' }, { t: 'Deployment and decision', sub: 'Where does the system act on a person?' }, { t: 'Feedback loop', sub: 'How does the decision shape future records?' }]
+      },
+      8: {
+        title: 'Activity model: move from agency possession to community governance.',
+        scene: 'An agency-held record sits across from a community governance table where OCAP and CARE principles change what authority and resources must move.',
+        steps: [['Locate present control', 'The agency holds the raw records and controls the server.'], ['Apply two principles', 'Choose two OCAP or CARE principles and say what each changes.'], ['Name the power shift', 'State what data, authority, access, infrastructure, or responsibility must move.']],
+        labels: [{ t: 'Agency-held record', sub: 'Reports are available, but raw data and control are not.' }, { t: 'OCAP + CARE', sub: 'Apply two principles with their proper scope.' }, { t: 'Community governance', sub: 'Name the authority and resources that must move.' }]
+      },
+      10: {
+        title: 'Activity model: test the threshold.',
+        scene: 'A score reaches a cutoff, one person lands just outside support, and a human-review lane adds context the score cannot contain.',
+        steps: [['Find the score', 'Identify what number, category, or label sorts people.'], ['Test the cutoff', 'Check who receives support and who falls just outside.'], ['Add human review', 'Name the need, context, and student voice the score misses.']],
+        labels: [{ t: 'Score or category', sub: 'Identify what the system uses to sort.' }, { t: 'Cutoff and consequence', sub: 'Check who receives support and who just misses it.' }, { t: 'Human review', sub: 'Add need, context, and the student voice.' }]
+      }
     };
     var profile = {
       match: {
@@ -3271,13 +3665,30 @@
     };
     var type = (a && a.archetype) || 'scenario';
     var kinds = choices[type] || ['pipeline', 'review', 'map'];
-    var kind = kinds.filter(function (k) { return k !== baseKind; })[0] || kinds[0] || baseKind;
-    var p = profile[type] || profile.scenario;
+    var kind = weekKinds[w] || kinds.filter(function (k) { return k !== baseKind; })[0] || kinds[0] || baseKind;
+    var p = weekProfile[w] || profile[type] || profile.scenario;
     var custom = base.activity || {};
+    var weekModel = weekModels[w] || [];
+    var evidenceNotes = {
+      8: 'The First Nations Regional Health Survey is a documented governance case. The physical objects interpret four OCAP® responsibilities; they do not reproduce one community\'s server, records, or full governance protocol.',
+      9: 'The model keeps three documented cases separate. It does not claim they share one vendor, contract, mechanism, or measured outcome.',
+      10: 'The study analysed administrative data and simulated allocations. The policy rail illustrates institutional discretion; it is not a study score, threshold, live program, or causal result.',
+      11: 'The model reconstructs roles documented in the Detroit Community Technology Project. It does not imply that one arrangement guarantees equal power or universal success.',
+      12: 'The five gaps and recommendations are Attard-Frost\'s policy analysis. A separate official status record establishes that AIDA did not become law.'
+    };
     return enrichVisualSpec({
       kind: custom.modelKind || kind,
-      title: custom.modelTitle || p.title,
-      scene: custom.modelScene || p.scene,
+      medium: 'three',
+      renderer: 'interactive-3d-task-map',
+      scenarioType: evidenceNotes[w] ? 'documented case reconstruction' : 'semantic activity guide',
+      sourceIds: base.sourceIds || [],
+      evidenceNote: evidenceNotes[w] || 'This activity map explains the task sequence. It is not a simulation of a real institution, person, measured result, or deployed system.',
+      archetype: type,
+      what: (a && a.what) || '',
+      why: (a && a.why) || '',
+      data: (a && a.data) || {},
+      title: custom.modelTitle || weekModel[0] || p.title,
+      scene: custom.modelScene || weekModel[1] || p.scene,
       modelNote: custom.modelNote || p.modelNote,
       learningJob: custom.modelLearningJob || custom.learningJob || p.learningJob,
       display: custom.modelDisplay || p.display,
@@ -3292,16 +3703,31 @@
     var key = (context || 'week') + '|' + w;
     return state.visualView[key] || (context === 'activity' ? 'predict' : 'observe');
   }
+  function documentaryThreeKind(kind) {
+    return ['outcomelens', 'benevolence', 'repair', 'promisefunnel', 'repairtable'].indexOf(String(kind || '')) >= 0;
+  }
+  function evidenceVisualApi() {
+    return (typeof window !== 'undefined' && window.BFS218_EVIDENCE_VISUALS) || null;
+  }
+  function usesEvidenceVisual(spec, context) {
+    return !!(spec && spec.medium === 'evidence');
+  }
   function visualControls(w, spec, context, active) {
     var V = window.BFS218_VISUALS || {}, labels = V.viewLabels || {};
     var custom = spec.controls || {};
     var defs = context === 'activity'
       ? [['predict', custom.predict || labels.predict || 'Predict'], ['try', custom.try || labels.try || 'Try it'], ['explain', custom.explain || labels.explain || 'Explain']]
       : [['observe', custom.observe || labels.observe || 'Observe'], ['path', custom.path || labels.path || 'Follow the path'], ['risk', custom.risk || labels.risk || 'Find the risk']];
-    var lead = context === 'activity' ? 'Choose a model step' : 'Change the display';
-    return '<div class="wk-model-controls" aria-label="' + esc(lead) + '"><span class="wk-model-control-title">' + esc(lead) + '</span>' + defs.map(function (d) {
+    var story = context !== 'activity' && documentaryThreeKind(spec.kind);
+    var lead = context === 'activity' ? 'Choose a model step' : (story ? 'Read the scene in three steps' : 'Change the display');
+    return '<div class="wk-model-controls' + (story ? ' wk-model-controls-story' : '') + '" aria-label="' + esc(lead) + '"><span class="wk-model-control-title">' + esc(lead) + '</span>' + defs.map(function (d, i) {
       var on = active === d[0];
-      return '<button type="button" onmousedown="event.preventDefault()" ontouchstart="this.blur()" onclick="return SOC.visualView(event,' + w + ',\'' + context + '\',\'' + d[0] + '\')" aria-pressed="' + on + '" class="' + (on ? 'on' : '') + '">' + esc(d[1]) + '</button>';
+      var step = (spec.steps || [])[i] || [];
+      var detail = visualShortText(step[1] || '', 96);
+      var content = story
+        ? '<span class="wk-model-control-num" aria-hidden="true">' + (i + 1) + '</span><span class="wk-model-control-copy"><b>' + esc(d[1]) + '</b><small>' + esc(detail) + '</small></span>'
+        : esc(d[1]);
+      return '<button type="button" data-model-view="' + esc(d[0]) + '" onmousedown="event.preventDefault()" ontouchstart="this.blur()" onclick="return SOC.visualView(event,' + w + ',\'' + context + '\',\'' + d[0] + '\')" aria-label="' + esc((story ? ('Step ' + (i + 1) + ': ') : '') + d[1] + (detail ? '. ' + detail : '')) + '" aria-pressed="' + on + '" class="' + (on ? 'on' : '') + '">' + content + '</button>';
     }).join('') + '</div>';
   }
   function visualLearningJob(spec, context) {
@@ -3321,7 +3747,7 @@
     var focus = d.focus || spec.title || 'Read the model as a process.';
     var action = d.action || ((spec.steps && spec.steps[1] && spec.steps[1][1]) || spec.scene || 'Follow the movement from left to right.');
     var learning = d.learning || visualLearningJob(spec, context);
-    return '<div class="wk-holo-display" aria-label="Learning display for this 3D model">'
+    return '<div class="wk-holo-display" aria-label="Learning display for this visual">'
       + '<div class="wk-holo-kicker">' + esc(modeNames[view] || 'Learning display') + '</div>'
       + '<b>' + esc(focus) + '</b>'
       + '<dl><dt>Do</dt><dd>' + esc(action) + '</dd><dt>Learn</dt><dd>' + esc(learning) + '</dd></dl>'
@@ -3350,34 +3776,234 @@
       + '<button type="button" class="wk-step-btn wk-step-next" onclick="return SOC.visualStep(event,' + w + ',\'' + context + '\',1)"' + (idx === order.length - 1 ? ' disabled' : '') + '>Next step &#9654;</button>'
       + '</div>';
   }
+  function visualSceneKey(w, spec, context, view) {
+    var order = context === 'activity' ? ['predict', 'try', 'explain'] : ['observe', 'path', 'risk'];
+    var steps = (spec.steps || []).slice(0, 3);
+    return '<div class="wk-scene-key" role="group" aria-label="Read this three-dimensional scene in three steps">'
+      + '<span class="wk-scene-key-title">The story inside this scene</span>'
+      + order.map(function (mode, i) {
+        var step = steps[i] || [];
+        var title = String(step[0] || ('Step ' + (i + 1))).replace(/\.\s*$/, '');
+        var body = String(step[1] || 'Inspect this part of the scene.');
+        var on = mode === view;
+        return '<button type="button" class="wk-scene-key-step' + (on ? ' on' : '') + '" data-model-view="' + esc(mode) + '" aria-pressed="' + on + '" onclick="return SOC.visualView(event,' + w + ',\'' + context + '\',\'' + mode + '\')">'
+          + '<span aria-hidden="true">' + (i + 1) + '</span><b>' + esc(title) + '</b><small>' + esc(body) + '</small></button>';
+      }).join('') + '</div>';
+  }
+  function applicantAuditHtml() {
+    var applicants = [
+      {
+        id: 'khan', name: 'Ali Khan', token: 'The surname KHAN is converted into a racialized name proxy. The system treats it as a perceived South Asian or Muslim-coded signal, although the name does not prove either identity.',
+        history: 'In the biased past approvals used to build the model, this proxy appears more often among applications sent to extra review.',
+        threshold: 'The proxy adds scrutiny even though the current housing qualifications have not changed.',
+        result: 'Extra review', detail: 'The system requests additional identity and income documents.', tone: 'review'
+      },
+      {
+        id: 'tyrone', name: 'Tyrone Smith', token: 'The given name TYRONE is converted into a racialized name proxy. The system treats it as a perceived Black signal, although the name does not prove anyone\'s identity.',
+        history: 'In the biased past approvals used to build the model, this proxy appears more often among denied applications.',
+        threshold: 'The proxy pushes the file toward rejection even though the current housing qualifications have not changed.',
+        result: 'Denied', detail: 'The system labels the application high risk and closes the route to housing.', tone: 'deny'
+      },
+      {
+        id: 'parker', name: 'Christopher Parker', token: 'The full name CHRISTOPHER PARKER is converted into a racialized name proxy. The system treats it as a perceived White signal, although the name does not prove anyone\'s identity.',
+        history: 'In the biased past approvals used to build the model, this proxy appears more often among automatically approved applications.',
+        threshold: 'The proxy moves the file toward approval even though the current housing qualifications are identical to the other two files.',
+        result: 'Approved', detail: 'The system sends the application directly to the housing offer route.', tone: 'approve'
+      }
+    ];
+    return '<section class="wk-applicant-audit" aria-labelledby="wk-applicant-audit-title">'
+      + '<header><span>Fictional matched-application audit</span><h4 id="wk-applicant-audit-title">Choose an applicant and follow the name through the filter.</h4><p>All three applications have the same verified income, complete references, and no current rent arrears. Only the name changes.</p></header>'
+      + '<div class="wk-applicant-cards" role="group" aria-label="Choose one fictional applicant">' + applicants.map(function (person, i) {
+        return '<button type="button" data-applicant-case="' + esc(person.id) + '" data-applicant-name="' + esc(person.name) + '" data-applicant-token="' + esc(person.token) + '" data-applicant-history="' + esc(person.history) + '" data-applicant-threshold="' + esc(person.threshold) + '" data-applicant-result="' + esc(person.result) + '" data-applicant-detail="' + esc(person.detail) + '" data-applicant-tone="' + esc(person.tone) + '" aria-pressed="false" onclick="return SOC.applicantCase(event)"><span>Application ' + String(i + 1).padStart(2, '0') + '</span><b>' + esc(person.name) + '</b><small>Income verified · References complete · No current arrears</small><i>Not yet screened</i></button>';
+      }).join('') + '</div>'
+      + '<div class="wk-name-filter" data-name-filter aria-live="polite">'
+      + '<div class="wk-name-filter-head"><span>Name filter</span><b data-applicant-selected>Choose one application above.</b><small data-applicant-progress>Step 0 of 4</small></div>'
+      + '<ol class="wk-name-filter-stages">'
+      + '<li data-applicant-stage="1"><span>1</span><div><b>Current application enters</b><small data-applicant-stage-copy>First confirm the current qualifications.</small></div></li>'
+      + '<li data-applicant-stage="2"><span>2</span><div><b>Name becomes a proxy</b><small data-applicant-stage-copy>Then inspect how the system encodes the name.</small></div></li>'
+      + '<li data-applicant-stage="3"><span>3</span><div><b>Biased history becomes a rule</b><small data-applicant-stage-copy>See how past approvals shape the model.</small></div></li>'
+      + '<li data-applicant-stage="4"><span>4</span><div><b>Threshold produces an outcome</b><small data-applicant-stage-copy>Follow the added treatment to its result.</small></div></li>'
+      + '</ol>'
+      + '<button type="button" class="wk-applicant-next" data-applicant-next disabled onclick="return SOC.applicantAdvance(event)">Select an application first</button>'
+      + '<div class="wk-applicant-result" data-applicant-filter-result><b>No result yet.</b><span>Run the selected application through all four stages.</span></div>'
+      + '</div>'
+      + '<div class="wk-applicant-conclusion" data-applicant-conclusion hidden><b>Audit finding: same current evidence, different treatment.</b><span>The model racialized the names, learned unequal patterns from past approvals, and converted those patterns into present-day scrutiny, rejection, and advantage. That added treatment is the engineered inequity.</span></div>'
+      + '<section class="wk-safe-name" aria-labelledby="wk-safe-name-title">'
+      + '<div class="wk-safe-name-head"><span>Optional transfer</span><h5 id="wk-safe-name-title">Inspect a name without predicting a person.</h5><p>After comparing the fictional applications, you may enter your first name or an alias. The activity processes it only on this page and does not save it. It will not infer your race, assign a risk score, or predict a housing result.</p></div>'
+      + '<div class="wk-safe-name-entry"><label for="wk-safe-name-input">Name or fictional alias</label><div><input id="wk-safe-name-input" type="text" maxlength="60" autocomplete="off" autocapitalize="words" spellcheck="false" data-safe-name-input placeholder="For example: Jordan"><button type="button" onclick="return SOC.safeNameAudit(event)">Inspect the filter</button></div></div>'
+      + '<div class="wk-safe-name-output" data-safe-name-output role="status" aria-live="polite"><b>No name entered.</b><span>This tool demonstrates the design problem without classifying you.</span></div>'
+      + '<div class="wk-safe-name-question" data-safe-name-question hidden><b>Should a name-derived signal enter housing-risk scoring?</b><div><button type="button" data-safe-name-decision="allow" aria-pressed="false" onclick="return SOC.safeNameDecision(event)">Yes, if it improves prediction.</button><button type="button" data-safe-name-decision="separate" aria-pressed="false" onclick="return SOC.safeNameDecision(event)">No. Separate identity administration from risk scoring.</button></div><p data-safe-name-feedback>Choose a response to inspect the design decision.</p></div>'
+      + '</section>'
+      + '<p class="wk-applicant-boundary"><b>Important:</b> These applicants and outputs are fictional. A name does not establish a person\'s race, ethnicity, religion, or tenancy risk. The example shows how a system can turn a perceived identity into a proxy and why auditors must test whether names change otherwise identical results. Use the optional field to personalize the investigation, never the approval or denial.</p>'
+      + '</section>';
+  }
+  function causalStoryHtml(w, spec, view) {
+    var story = w === 2 ? {
+      eyebrow: 'How this shows techno-racism',
+      title: 'A neutral-looking tool can carry an unequal racial history forward.',
+      lead: 'This is a fictional housing example. Read the cause-and-effect chain, then use the same outcomes-focused reasoning in the matching activity below.',
+      steps: [
+        ['Existing racial inequality', 'Imagine that racialized tenants have faced unequal access to stable housing. The records created in that unequal setting do not begin as neutral facts.'],
+        ['Technology makes a choice', 'A tenant-screening tool treats an old eviction flag, credit damage, or postal code as present-day risk without examining how that record was produced.'],
+        ['Unequal burden looks objective', 'The score creates denial, delay, or extra proof work. Because the result arrives as data, the racial history inside the process becomes harder to see.']
+      ],
+      question: 'Which question is more likely to reveal techno-racism?',
+      choices: [
+        { id: 'intent', label: 'Did the designer intend racism?', view: 'predict', tone: 'caution', heading: 'Intent is not enough.', result: 'A designer may not intend harm, but that does not tell us what history entered the system or who carries the outcome.' },
+        { id: 'outcome', label: 'What history entered, and who carries the outcome?', view: 'explain', tone: 'strong', heading: 'This is the stronger critical race theory question.', result: 'It connects racialized history, technical design, and unequal outcome. Benjamin calls this kind of neutral-looking reproduction the New Jim Code.' }
+      ],
+      concept: 'Course connection: critical race theory shifts attention from intention alone to structures and outcomes. The New Jim Code names technology that reproduces an existing inequity while appearing objective or progressive.'
+    } : {
+      eyebrow: 'How this shows techno-racism',
+      title: 'A new design choice can turn an existing racial gap into a larger one.',
+      lead: 'This is a fictional matched-application audit. Run all three applicants to see how a supposedly race-neutral screener can racialize names and produce different treatment from the same current evidence.',
+      steps: [
+        ['An unequal pattern already exists', 'Past housing approvals contain an unequal institutional pattern. If designers treat those approvals as the correct model of success, the new system begins with that inequality.'],
+        ['Design turns a name into a proxy', 'The screener converts KHAN, TYRONE, or CHRISTOPHER PARKER into perceived racial signals, compares them with past approvals, and lets the proxy affect the risk threshold.'],
+        ['The system amplifies the burden', 'Identical current qualifications now lead to automatic approval, added proof work, or denial. The new model repeats the old pattern faster and makes the unequal treatment look objective.']
+      ],
+      question: 'What should the new system do with the historical gap?',
+      choices: [
+        { id: 'repeat', label: 'Use names and past approvals to predict success.', view: 'explain', tone: 'caution', heading: 'The old pattern becomes the new target.', result: 'The model converts perceived racial identity into a risk signal and reproduces the historical gap. This is the present-day design choice that engineers or amplifies inequity.' },
+        { id: 'challenge', label: 'Keep names out of risk scoring and audit the outcomes.', view: 'try', tone: 'strong', heading: 'The system stops treating racialized names as risk.', result: 'Separate identity verification from risk scoring, test otherwise identical applications, audit historical training data, and provide human review and appeal.' }
+      ],
+      concept: 'Course connection: engineered inequity is not simply inequality that existed before the technology. It is the additional harm created when designers turn that history into data, proxies, thresholds, and repeated decisions.'
+    };
+    var modes = ['predict', 'try', 'explain'];
+    return '<section class="wk-causal-story" aria-label="Guided explanation of how this activity connects to techno-racism">'
+      + '<header><span>' + esc(story.eyebrow) + '</span><h3>' + esc(story.title) + '</h3><p>' + esc(story.lead) + '</p></header>'
+      + (w === 3 ? applicantAuditHtml() : '')
+      + '<div class="wk-causal-chain" aria-label="Cause and effect chain">' + story.steps.map(function (step, i) {
+        var mode = modes[i];
+        return '<button type="button" class="wk-causal-step' + (view === mode ? ' on' : '') + '" data-model-view="' + mode + '" aria-pressed="' + (view === mode) + '" onclick="return SOC.visualView(event,' + w + ',\'activity\',\'' + mode + '\')"><span>' + (i + 1) + '</span><b>' + esc(step[0]) + '</b><small>' + esc(step[1]) + '</small></button>';
+      }).join('') + '</div>'
+      + '<div class="wk-causal-try"><div><span>Try the decision</span><h4>' + esc(story.question) + '</h4></div><div class="wk-causal-choices">' + story.choices.map(function (choice) {
+        return '<button type="button" data-causal-choice="' + esc(choice.id) + '" data-causal-view="' + esc(choice.view) + '" data-causal-tone="' + esc(choice.tone) + '" data-causal-heading="' + esc(choice.heading) + '" data-causal-result="' + esc(choice.result) + '" aria-pressed="false" onclick="return SOC.causalChoice(event,' + w + ')">' + esc(choice.label) + '</button>';
+      }).join('') + '</div><div class="wk-causal-result" role="status" aria-live="polite"><b>Choose one response.</b><span>The explanation will show what that choice reveals or leaves hidden.</span></div></div>'
+      + '<p class="wk-causal-concept"><b>Why it matters:</b> ' + esc(story.concept) + '</p>'
+      + '</section>';
+  }
   function visualModelHtml(w, spec, context) {
     var view = visualViewFor(w, context);
-    var rotateHelp = 'Click or touch and drag any open space in this 3D picture to turn the scene; there is no drag-and-drop here. The numbered labels below the model explain what to inspect without covering the scene.';
+    var E = evidenceVisualApi();
+    if (usesEvidenceVisual(spec, context)) {
+      var evidenceView = context === 'activity' ? view : visualViewFor(w, 'overview');
+      if (context === 'activity') evidenceView = ({ predict: 'read', try: 'act', explain: 'check' })[view] || view;
+      if (E) {
+        try {
+          var options = { context: context, instanceId: 'bfs-evidence-' + context + '-' + w };
+          return context === 'activity'
+            ? E.renderActivity(w, spec, evidenceView, options)
+            : E.render(w, spec, evidenceView, options);
+        } catch (e) {}
+      }
+      return '<article class="bfs-evidence bfs-evidence-fallback" data-bfs-evidence-visual data-week="' + w + '" data-context="' + esc(context) + '"><div class="mono">TEXT VIEW</div><h3>' + esc(spec.title || weekTitle(w)) + '</h3><p>' + esc(spec.scene || spec.visualDescription || '') + '</p><ol>' + (spec.steps || []).slice(0, 3).map(function (step) { return '<li><b>' + esc(step[0] || '') + ':</b> ' + esc(step[1] || '') + '</li>'; }).join('') + '</ol><p><b>Evidence boundary:</b> ' + esc(spec.evidenceNote || 'Use this as a teaching organizer, not as evidence of a real deployment or measured result.') + '</p></article>';
+    }
+    if (context === 'activity' && ((w === 2 && spec.kind === 'mechanismatch') || (w === 3 && spec.kind === 'decisionpath'))) {
+      return '<div class="wk-model-frame wk-model-frame-guided wk-model-frame-w' + w + '">' + causalStoryHtml(w, spec, view) + '</div>';
+    }
+    var documentary = context !== 'activity' && documentaryThreeKind(spec.kind);
+    var viewOrder = ['observe', 'path', 'risk'];
+    var viewIndex = Math.max(0, viewOrder.indexOf(view));
+    var activeStep = (spec.steps || [])[viewIndex] || [];
+    var renderAsset = context === 'activity' && window.BFS218_HOLO && window.BFS218_HOLO.activityAsset ? window.BFS218_HOLO.activityAsset(spec.kind) : null;
+    var gestureHelp = spec.kind === 'mechanismatch'
+      ? 'Pull the file toward the lens, sweep the lens across the process, and turn the gear. Each gesture reveals the matching reasoning step below.'
+      : spec.kind === 'decisionpath'
+      ? 'Slide the application toward the filter, throw the threshold lever, and pull the fork between approval and burden. Each gesture reinforces one stage of the matched-application audit.'
+      : '';
+    var rotateHelp = renderAsset
+      ? gestureHelp
+      : documentary
+      ? 'Use the arrow buttons or a small horizontal drag to shift the viewpoint. The scene is an evidence environment, not a turntable or drag-and-drop task.'
+      : 'Click or touch and drag any open space in this 3D picture to turn the scene; there is no drag-and-drop here. The numbered labels below the model explain what to inspect without covering the scene.';
     var labelList = (spec.labels || []).map(function (l) { return (l.t || '') + ': ' + (l.sub || ''); }).join('. ');
     var description = spec.visualDescription || spec.modelNote || spec.scene;
+    if (context === 'activity' && window.BFS218_HOLO && window.BFS218_HOLO.activitySignature && window.BFS218_HOLO.activitySignature(spec.kind)) {
+      var activityDescriptions = (window.BFS218_VISUALS && window.BFS218_VISUALS.modelDescriptions) || {};
+      description = activityDescriptions[spec.kind] || description;
+    }
     var label = (context === 'activity' ? 'Activity model for Week ' : 'Visual overview for Week ') + w + ': ' + spec.title + '. ' + description + ' Labels: ' + labelList + '. ' + rotateHelp;
     var noteText = description;
     var shellKind = String(spec.kind || 'pipeline').replace(/[^a-z0-9_-]/gi, '').toLowerCase() || 'pipeline';
-    var shellStyle = String(spec.visualStyle || 'diorama').replace(/[^a-z0-9_-]/gi, '').toLowerCase() || 'diorama';
+    var shellStyle = renderAsset ? 'realist' : (String(spec.visualStyle || 'diorama').replace(/[^a-z0-9_-]/gi, '').toLowerCase() || 'diorama');
     var holoDriven = !!(window.BFS218_HOLO && window.BFS218_HOLO.supports && window.BFS218_HOLO.supports(spec.kind));
+    var dragPositions = spec.kind === 'mechanismatch'
+      ? [[17.2, 75.2], [32.9, 56.7], [71.4, 46.9]]
+      : spec.kind === 'decisionpath'
+      ? [[20.5, 70.2], [50.5, 72.5], [70.5, 43.2]]
+      : [];
+    var dragModes = ['predict', 'try', 'explain'];
+    var dragIndex = Math.max(0, dragModes.indexOf(view));
+    var dragStep = (spec.steps || [])[dragIndex] || [];
+    var dragCues = spec.kind === 'mechanismatch'
+      ? ['Drag right: file to lens', 'Drag sideways: trace the process', 'Drag sideways: turn the gear']
+      : ['Drag right: application enters', 'Drag sideways: trace name filter', 'Drag sideways: compare outcomes'];
+    var dragTypes = spec.kind === 'mechanismatch'
+      ? ['forward', 'sweep', 'turn']
+      : ['forward', 'turn', 'sweep'];
+    var dragResults = spec.kind === 'mechanismatch'
+      ? [
+          'You began with what happened. An unequal outcome matters even when no one intended harm.',
+          'You traced the process. Data, rules, defaults, proxies, and overlapping systems can reproduce the result.',
+          'You named the mechanism. The best match explains how the result is produced and why it can repeat.'
+        ]
+      : [
+          'The selected application enters with the same current qualifications as the other two files.',
+          'This is the engineering choice. The system racializes the name as a proxy, compares it with biased past approvals, and applies a threshold.',
+          'This is amplification. The name-derived proxy turns the same current evidence into approval, added proof work, or denial.'
+        ];
+    var dragLayer = renderAsset ? '<div class="wk-native-drag-layer" aria-label="Direct manipulation controls">' + dragPositions.map(function (pos, i) {
+      var step = (spec.steps || [])[i] || [];
+      var keyboard = ' Press Enter or Space for the same action with a keyboard.';
+      return '<button type="button" class="wk-native-drag-handle" data-drag-view="' + dragModes[i] + '" data-drag-index="' + i + '" data-drag-type="' + dragTypes[i] + '" data-drag-cue="' + esc(dragCues[i]) + '" data-drag-result="' + esc(dragResults[i]) + '" aria-label="Step ' + (i + 1) + '. ' + esc(dragCues[i]) + '. ' + esc(step[1] || '') + esc(keyboard) + '" aria-pressed="' + (dragModes[i] === view) + '" style="left:' + pos[0] + '%;top:' + pos[1] + '%"><span>' + (i + 1) + '</span></button>';
+    }).join('') + '</div><span class="wk-gesture-status" data-gesture-status><b>Step ' + (dragIndex + 1) + ': ' + esc(dragCues[dragIndex] || dragStep[0] || spec.title) + '</b><small>' + esc(dragStep[1] || 'Use this object to inspect the process.') + '</small></span>' : '';
+    var renderMarkup = renderAsset ? '<img class="wk-model-render" src="' + esc(renderAsset) + '" alt="" aria-hidden="true" decoding="async"><span class="wk-render-cue" aria-hidden="true"></span>' + dragLayer + '<div class="wk-shape-instruction"><span data-gesture-progress>Drag is optional</span><button type="button" class="wk-gesture-reset">Reset</button></div>' : '';
+    var renderedPurpose = spec.kind === 'mechanismatch'
+      ? 'Use the guided housing case above. It shows how racialized history can enter a technical process and return as a neutral-looking result. The movable file, lens, and gear are optional ways to inspect that chain.'
+      : 'Use the matched-application audit above. It shows how Ali Khan, Tyrone Smith, and Christopher Parker receive different treatment after the system racializes their names as proxies. The movable file, lever, and fork are optional ways to inspect that chain.';
+    if (documentary) {
+      return '<div class="wk-model-frame wk-model-frame-story">'
+        + visualControls(w, spec, context, view)
+        + '<div class="wk-model-shell wk-model-documentary wk-model-kind-' + esc(shellKind) + ' wk-model-style-' + esc(shellStyle) + '">'
+        + '<canvas class="wk-model-canvas" role="img" aria-label="' + esc(label) + '" data-topic-model="' + esc(context) + '" data-week="' + w + '" data-kind="' + esc(spec.kind || 'pipeline') + '" data-view="' + esc(view) + '"></canvas>'
+        + '<div class="wk-scene-status" aria-hidden="true"><span>Step <i data-scene-number>' + (viewIndex + 1) + '</i> of 3</span><b data-scene-title>' + esc(activeStep[0] || spec.title) + '</b></div>'
+        + '<div class="wk-cam-ctl" role="group" aria-label="3D view controls">'
+        + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',-1)" aria-label="Shift viewpoint left" title="Shift viewpoint left">&#8592;</button>'
+        + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',1)" aria-label="Shift viewpoint right" title="Shift viewpoint right">&#8594;</button>'
+        + '<button type="button" onclick="return SOC.camCtl(event,\'zoom\',-1)" aria-label="Zoom out" title="Zoom out">&#8722;</button>'
+        + '<button type="button" onclick="return SOC.camCtl(event,\'zoom\',1)" aria-label="Zoom in" title="Zoom in">+</button>'
+        + '<button type="button" class="wk-cam-reset" onclick="return SOC.camCtl(event,\'reset\',0)">Reset view</button>'
+        + '<span class="wk-cam-hint">Shift slightly to inspect the scene. Pinch, or click then scroll, to zoom.</span>'
+        + '</div>'
+        + '<div class="wk-model-fallback" role="status" hidden>The 3D model could not load. The explanation below still walks you through the idea.</div>'
+        + '</div>'
+        + visualDisplayHtml(spec, context, view)
+        + (spec.evidenceNote ? '<div class="wk-evidence-boundary"><b>Evidence boundary</b><span>' + esc(spec.evidenceNote) + '</span></div>' : '')
+        + '<details class="wk-model-description"><summary>Visual description</summary><p><b>' + esc(spec.title) + '</b> ' + esc(description) + '</p></details>'
+        + '</div>';
+    }
     return '<div class="wk-model-frame">'
-      + (holoDriven ? '' : visualControls(w, spec, context, view))
-      + '<div class="wk-model-shell wk-model-kind-' + esc(shellKind) + ' wk-model-style-' + esc(shellStyle) + '">'
+      + (!holoDriven || documentary ? visualControls(w, spec, context, view) : '')
+      + (renderAsset ? causalStoryHtml(w, spec, view) : '')
+      + '<div class="wk-model-shell' + (documentary ? ' wk-model-documentary' : '') + ' wk-model-kind-' + esc(shellKind) + ' wk-model-style-' + esc(shellStyle) + '"' + (renderAsset ? ' data-rendered-environment="true" data-render-view="' + esc(view) + '"' : '') + '>'
+      + renderMarkup
       + '<canvas class="wk-model-canvas" role="img" aria-label="' + esc(label) + '" data-topic-model="' + esc(context) + '" data-week="' + w + '" data-kind="' + esc(spec.kind || 'pipeline') + '" data-view="' + esc(view) + '"></canvas>'
       + '<div class="wk-cam-ctl" role="group" aria-label="3D view controls">'
-      + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',-1)" aria-label="Rotate left" title="Rotate left">&#8634;</button>'
-      + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',1)" aria-label="Rotate right" title="Rotate right">&#8635;</button>'
+      + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',-1)" aria-label="' + (documentary ? 'Shift viewpoint left' : 'Rotate left') + '" title="' + (documentary ? 'Shift viewpoint left' : 'Rotate left') + '">' + (documentary ? '&#8592;' : '&#8634;') + '</button>'
+      + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',1)" aria-label="' + (documentary ? 'Shift viewpoint right' : 'Rotate right') + '" title="' + (documentary ? 'Shift viewpoint right' : 'Rotate right') + '">' + (documentary ? '&#8594;' : '&#8635;') + '</button>'
       + '<button type="button" onclick="return SOC.camCtl(event,\'zoom\',-1)" aria-label="Zoom out" title="Zoom out">&#8722;</button>'
       + '<button type="button" onclick="return SOC.camCtl(event,\'zoom\',1)" aria-label="Zoom in" title="Zoom in">+</button>'
       + '<button type="button" class="wk-cam-reset" onclick="return SOC.camCtl(event,\'reset\',0)">Reset view</button>'
-      + '<span class="wk-cam-hint">Drag the scene to turn it. Pinch, or click then scroll, to zoom.</span>'
+      + '<span class="wk-cam-hint">' + (documentary ? 'Shift the viewpoint slightly to inspect the evidence. Pinch, or click then scroll, to zoom.' : 'Drag the scene to turn it. Pinch, or click then scroll, to zoom.') + '</span>'
       + '</div>'
-      + '<div class="wk-model-note"><b>' + esc(spec.title) + '</b><span>' + esc(noteText) + ' The labels inside the scene name each part. You can turn the scene by dragging any open space in the picture; nothing needs to be dropped anywhere. The buttons and the steps below change what the scene shows.</span></div>'
+      + '<div class="wk-model-note"><b>' + esc(renderAsset ? 'Begin with the explanation, then explore the model.' : spec.title) + '</b><span>' + esc(renderAsset ? renderedPurpose : noteText + (documentary ? ' Use the three display states to reveal the argument in sequence; the camera movement is deliberately limited.' : ' The numbered markers establish the reading order without covering the model. Use the story cards below to name each move, and drag any open space in the picture to inspect the scene from another angle.')) + '</span></div>'
+      + (spec.evidenceNote ? '<div class="wk-evidence-boundary"><b>Evidence boundary</b><span>' + esc(spec.evidenceNote) + '</span></div>' : '')
       + visualDisplayHtml(spec, context, view)
       + '<div class="wk-model-fallback" role="status" hidden>The 3D model could not load. The explanation below still walks you through the idea.</div>'
       + '</div>'
-      + visualStepStrip(w, spec, context, view)
-      + visualLabels(spec)
+      + (renderAsset ? '' : visualSceneKey(w, spec, context, view))
+      + (renderAsset ? '' : visualLabels(spec))
       + '</div>';
   }
   function visualGuideHtml(spec) {
@@ -3479,34 +4105,19 @@
   }
   function visualOverviewSection(w, d) {
     var spec = visualSpec(w, d);
-    var V = window.BFS218_VISUALS || {};
-    var vw = V.weeks && V.weeks[w];
-    if (vw && vw.activity && vw.activity.modelKind && d && d.activity && d.activity.screen) {
-      return '';
-    }
-    if (false) {
-      return '<section id="wk-visual" class="node"><h2 class="wk-sec">A Visual Overview</h2>'
-        + '<div class="wk-visual-card"><b>' + esc(spec.title) + '</b>'
-        + '<p>' + esc(spec.scene) + '</p>'
-        + '<p class="wk-hint">This week has one interactive 3D model, and it lives inside the activity, so you explore it while you experiment. You can rotate it, zoom it, and click inside it.</p>'
-        + '<button type="button" class="wk-cta" onclick="SOC.startActivity(\'' + d.activity.screen + '\',' + w + ')">Open the 3D model in this week\'s activity</button>'
-        + '</div></section>';
-    }
+    var evidence = usesEvidenceVisual(spec, 'week');
     return '<section id="wk-visual" class="node"><h2 class="wk-sec">A Visual Overview</h2>'
-      + '<p class="wk-hint">Use this as a labelled, movable teaching diagram. The point is not the picture by itself; the point is the process it helps you explain.</p>'
-      + visualGuideHtml(spec)
-      + visualTaskHtml(spec)
+      + '<p class="wk-hint">' + (evidence ? 'Use the tabs to reveal the evidence in sequence. The visual states what is documented, what is a teaching example, and what the source cannot establish.' : 'Use the three states to inspect this documentary teaching environment. Camera movement is limited so the evidence, not the turntable effect, stays central.') + '</p>'
       + visualModelHtml(w, spec, 'week')
-      + visualStepCards(spec.steps)
-      + weekNoteBox(w, 'visual', 'A Visual Overview Notes', spec.notePrompt || 'Write one sentence that explains what the model helped you see. Focus on the process, not the graphics.')
+      + weekNoteBox(w, 'visual', 'A Visual Overview Notes', spec.notePrompt || 'Write one sentence that explains what the visual helped you see. Focus on the evidence and process, not the graphics.')
       + '</section>';
   }
   function wkNoteKey(w, part) { return w + '|' + part; }
-  function wkNoteValue(w, part) { return String((state.wkNotes && state.wkNotes[wkNoteKey(w, part)]) || '').trim(); }
+  function wkNoteValue(w, part) { return String((state.wkNotes && state.wkNotes[wkNoteKey(w, part)]) || ''); }
   function weekNoteBox(w, part, title, prompt) {
     var key = wkNoteKey(w, part), id = 'wk-note-' + w + '-' + part;
     var val = (state.wkNotes && state.wkNotes[key]) || '';
-    return '<label class="wk-notebox" for="' + id + '"><b>' + esc(title) + '</b><span>' + esc(prompt) + '</span><textarea id="' + id + '" oninput="SOC.wkNote(\'' + key + '\',this.value)" placeholder="Write a short note for your weekly document...">' + esc(val) + '</textarea><small class="wk-save-note">Not submitted to the instructor, and not durable storage: this note is held for this visit and, when browser storage is available, may remain in this browser. Someone using the same browser profile may be able to see it. It can be lost to cleared site data, a different device, or a lab computer reset. To keep it, use Generate Your Weekly Notes.</small></label>';
+    return '<label class="wk-notebox" for="' + id + '"><b>' + esc(title) + '</b><span>' + esc(prompt) + '</span><textarea id="' + id + '" oninput="SOC.wkNote(\'' + key + '\',this.value)" placeholder="Write a short note for your weekly document...">' + esc(val) + '</textarea><small class="wk-save-note">Saved automatically and exactly as typed in layered copies within this browser profile. The site organizes your note under this heading but never rewrites it. It is not submitted. Export your organized Seneca notes before clearing site data, changing devices, or leaving a lab computer.</small></label>';
   }
   function weekActionLine(w, d) {
     var concept = d && d.concepts && d.concepts[0] ? d.concepts[0].h : weekTitle(w);
@@ -3747,9 +4358,10 @@
     var watch = brief.watch.map(function (s) { return '<li>' + esc(s) + '</li>'; }).join('');
     var watchTitle = VID ? 'While you watch, do this' : 'Use this to focus';
     var media = VID
-      ? '<video controls preload="none" playsinline poster="./' + VID.poster + '"><source src="./' + VID.file + '" type="video/mp4">' + (VID.vtt ? '<track kind="captions" srclang="en" label="English" src="./' + VID.vtt + '">' : '') + '</video><p>Made with NotebookLM from this week\'s readings and reviewed by your instructor.</p>'
+      ? '<video controls preload="none" playsinline poster="./' + VID.poster + '"><source src="./' + VID.file + '" type="video/mp4">' + (VID.vtt ? '<track kind="captions" srclang="en" label="English" src="./' + VID.vtt + '" default>' : '') + '</video><p>Made with NotebookLM from this week\'s readings and reviewed by your instructor.</p>'
       : '<div class="wk-video-map"><div class="mono">80 SECOND MAP</div><b>Read this before you start.</b><span>This week does not need a separate video player. Use the orientation beside it as the fast entry point into the readings, visual, and activity.</span></div>';
-    return '<section id="wk-vid" class="node wk-video"><h2 class="wk-sec">This week in 80 seconds</h2><div class="wk-video-grid"><div class="wk-video-media">' + media + '</div><div class="wk-video-copy"><div class="mono">QUICK ORIENTATION</div><h3>' + esc(brief.title) + '</h3><p>' + text + '</p><div class="wk-video-watch"><b>' + esc(watchTitle) + '</b><ul>' + watch + '</ul></div></div></div></section>';
+    var transcript = VID && VID.vtt ? '<details class="wk-video-transcript" data-vtt="./' + esc(VID.vtt) + '" ontoggle="if(this.open)SOC.walkTranscript(this)"><summary>Read the video transcript</summary><p data-walk-transcript>Open this section to load the transcript.</p></details>' : '';
+    return '<section id="wk-vid" class="node wk-video"><h2 class="wk-sec">This week in 80 seconds</h2><div class="wk-video-grid"><div class="wk-video-media">' + media + '</div><div class="wk-video-copy"><div class="mono">QUICK ORIENTATION</div><h3>' + esc(brief.title) + '</h3><p>' + text + '</p><div class="wk-video-watch"><b>' + esc(watchTitle) + '</b><ul>' + watch + '</ul></div>' + transcript + '</div></div></section>';
   }
   function activityStudentPath(w, a) {
     var map = {
@@ -3801,7 +4413,7 @@
     var spec = activityVisualSpec(w, a);
     var guide = spec.steps ? spec.steps.map(function (s) { return Array.isArray(s) ? s[0] + ': ' + s[1] : s; }) : ['Look at the model.', 'Do the activity below.', 'Name what the activity helped you see.'];
     var title = spec.title || 'Use the model before the activity.';
-    return '<section class="activity-model" aria-label="Activity 3D model">'
+    return '<section class="activity-model" aria-label="Activity task map">'
       + '<div class="activity-how"><b>' + esc(title) + '</b><ol>' + guide.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ol></div>'
       + visualModelHtml(w, spec, 'activity')
       + '</section>';
@@ -3813,6 +4425,16 @@
   }
   function activityInteractionGuide(w, a) {
     var d = a.data || {};
+    if (w === 4) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Choose one of the four systems.</li><li>Run its normal default, then challenge it and compare what changes.</li><li>Use Benjamin\'s test to decide whether the repeated failure is systemic.</li></ol></div></section>';
+    if (w === 6) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Choose one documented Canadian case.</li><li>Reveal the institution, system, finding, and course lens in order.</li><li>Keep the evidence limit visible before making your conclusion.</li></ol></div></section>';
+    if (w === 7) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Choose a documented case or the clearly labelled teaching model.</li><li>Click each part to place it in the five-part system anatomy. Nothing needs to be dragged.</li><li>Use the completed chain to explain the mechanism without inventing intent or missing evidence.</li></ol></div></section>';
+    if (w === 8) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Open all four OCAP® principles inside the documented First Nations Regional Health Survey case.</li><li>For each principle, distinguish receiving information from holding authority over it.</li><li>Finish by choosing the conclusion that keeps OCAP®, CARE, and community-specific governance distinct.</li></ol></div></section>';
+    if (w === 9) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Open the promise in each documented case and keep its real benefit visible.</li><li>Inspect the added surveillance, sorting, or control and the question the case still requires.</li><li>Judge whether the benefit alone proves repair or whether power, burden, refusal, and unchanged conditions must also be tested.</li></ol></div></section>';
+    if (w === 10) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Read what the published study did and did not establish.</li><li>Choose how much access to support will depend on a cutoff; the control represents institutional discretion, not a study result.</li><li>Classify responsibility inside the model, around the model, and in the institution\'s treatment of the student.</li></ol></div></section>';
+    if (w === 11) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Hold the documented DCTP case against a vendor-led patch.</li><li>For each role, choose the arrangement that gives community residents knowledge, design work, infrastructure work, or governance authority.</li><li>Use the completed pattern to explain why participation is not the same as power.</li></ol></div></section>';
+    if (w === 12) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Keep the historical status visible: AIDA was proposed but did not become law.</li><li>Open one gap argued by Attard-Frost and match it to the author\'s corresponding recommendation.</li><li>Complete all five without turning the brief into a court or committee finding.</li></ol></div></section>';
+    if (w === 13) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Select one early and one later entry that you actually saved in this browser.</li><li>Read the entries side by side without rewriting either one.</li><li>Mark only changes in language, evidence, mechanism, or response that the two entries support.</li></ol></div></section>';
+    if (w === 14) return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol><li>Choose one real saved entry as evidence.</li><li>Select the mechanism, response, and forward commitment you will explain.</li><li>Use the completed evidence plan to write your own answer; the activity never writes it for you.</li></ol></div></section>';
     var guides = {
       match: ['Read one example at a time.', 'Choose one mechanism button under that example. There is no dragging in this activity.', 'Green shows the best match. Red shows a try that does not fit. You can choose again.'],
       scenario: ['Read the decision point.', 'Choose one option.', 'Read the result, then move to the next decision.'],
@@ -3825,6 +4447,16 @@
     return '<section class="activity-run-guide" aria-label="How this activity works"><div><b>How this activity works</b><ol>' + steps.map(function (g) { return '<li>' + esc(g) + '</li>'; }).join('') + '</ol></div></section>';
   }
   function activityOutputGuide(w, a) {
+    if (w === 4) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write one sentence naming the default, who it expects to fit, who must adapt, and why the repeated burden is systemic. Add it to Activity Notes so it appears in Generate Your Weekly Notes.</p></div></section>';
+    if (w === 6) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write one source-bounded Canadian case statement: documented finding, course lens, and one limit on what the evidence proves. Add it to Activity Notes so it appears in Generate Your Weekly Notes.</p></div></section>';
+    if (w === 7) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write the five-part chain for one system and name the New Jim Code dimension supported by the evidence. If a stage is unknown, keep it unknown. Add the sentence to Activity Notes so it appears in Generate Your Weekly Notes.</p></div></section>';
+    if (w === 8) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write one governance statement that distinguishes ownership, control, access, and possession in the RHS and explains why OCAP® cannot be applied as a generic label to every Indigenous community.</p></div></section>';
+    if (w === 9) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write one case analysis that holds together the promised benefit, added burden or control, location of decision authority, and the source\'s evidence limit.</p></div></section>';
+    if (w === 10) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write one inequality within the model and one institutional choice around it, then name the explanation, human review, and appeal needed before a score changes access.</p></div></section>';
+    if (w === 11) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write a plain-language distinction between participation and power using one concrete DCTP role, then apply that test to one system in your own cartography.</p></div></section>';
+    if (w === 12) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write one argued gap, the author\'s recommendation, an implementation question it leaves open, and the historical fact that AIDA did not become law.</p></div></section>';
+    if (w === 13) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Write the specific change your two entries support. That evidence, not a general claim that you learned a lot, becomes the spine of your final Personal Cartography.</p></div></section>';
+    if (w === 14) return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">Use the four-part evidence plan to answer in your own words: evidence, mechanism, response, and the commitment you will carry into your field.</p></div></section>';
     var map = {
       match: 'Make at least one choice under each example. The useful output is not the score; it is being able to explain why the correct mechanism fits.',
       scenario: 'Work through each decision point. The useful output is a short explanation of which choice reduces harm and which choice hides it.',
@@ -3834,6 +4466,27 @@
       capstone: 'Check each part of your map. The useful output is a final answer grounded in your own evidence.'
     };
     return '<section class="activity-run-guide" aria-label="What to produce from this activity"><div><b>What you should leave with</b><p style="margin:0;font-size:.84rem;line-height:1.52;color:var(--ink-dim)">' + esc(map[a.archetype] || 'Use the controls, read the feedback, and write down what the activity helped you understand.') + ' Add that sentence to Activity Notes so it appears in Generate Your Weekly Notes.</p></div></section>';
+  }
+  function initEvidenceVisuals(root) {
+    var E = evidenceVisualApi();
+    root = root || document;
+    if (!E || !E.bind || !root || !root.querySelector || !root.querySelector('[data-bfs-evidence-visual]')) return;
+    var onView = function (event) {
+      var detail = event && event.detail || {};
+      var week = cleanWeek(Number(detail.week));
+      var context = ['week', 'activity', 'overview'].indexOf(String(detail.context || '')) >= 0 ? String(detail.context) : 'week';
+      var view = String(detail.view || '').replace(/[^a-z0-9_-]/gi, '').slice(0, 40);
+      if (!week || !view) return;
+      state.visualView = state.visualView || {};
+      state.visualView[context + '|' + week] = view;
+      persist();
+    };
+    root.addEventListener('bfs218:evidence-view', onView);
+    var unbind = E.bind(root);
+    registerModelCleanup(function () {
+      root.removeEventListener('bfs218:evidence-view', onView);
+      if (typeof unbind === 'function') unbind();
+    }, root);
   }
   function initTopicModels() {
     var canvases = Array.prototype.slice.call(document.querySelectorAll('canvas[data-topic-model]'));
@@ -3855,6 +4508,7 @@
     var shell = canvas.parentNode, week = Number(canvas.getAttribute('data-week')) || 1;
     var kind = canvas.getAttribute('data-kind') || 'pipeline';
     var view = canvas.getAttribute('data-view') || 'observe';
+    var activityView = canvas.getAttribute('data-topic-model') === 'activity';
     var riskOn = view === 'risk' || view === 'explain';
     var pathOn = view === 'path' || view === 'try';
     var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true, preserveDrawingBuffer: false });
@@ -3862,7 +4516,8 @@
     var topicContextFailed = false;
     function onTopicContextLost() { topicContextFailed = true; show3DFallback(canvas, '.wk-model-fallback'); }
     canvas.addEventListener('webglcontextlost', onTopicContextLost, false);
-    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+    var documentaryModel = documentaryThreeKind(kind);
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, documentaryModel ? (window.innerWidth <= 520 ? 1.25 : 1.5) : 2));
     if (THREE.SRGBColorSpace) renderer.outputColorSpace = THREE.SRGBColorSpace;
     if (THREE.ACESFilmicToneMapping) renderer.toneMapping = THREE.ACESFilmicToneMapping;
     renderer.toneMappingExposure = 1.08;
@@ -4091,6 +4746,11 @@
         var simLast = simCtx && simCtx.history && simCtx.history.length ? simCtx.history[simCtx.history.length - 1] : null;
         var simOutcome = simLast && simLast.dominant;
         holo = window.BFS218_HOLO.build(THREE, { kind: kind, week: week, view: view, riskOn: riskOn || simOutcome === 'burden', pathOn: pathOn || simOutcome === 'positive', root: root, scene: scene, camera: camera, renderer: renderer, canvas: canvas, sun: sun, context: canvas.getAttribute('data-topic-model'), expOptions: expCtx && expCtx.options, expPick: expCtx && expCtx.pick, expRan: expCtx && expCtx.ran, simOutcome: simOutcome, simTotal: simLast && simLast.total });
+        if (holo && root.userData.activityOverhaulSignature) {
+          canvas.setAttribute('data-activity-overhaul', root.userData.activityOverhaulSignature);
+          canvas.setAttribute('data-visual-family', root.userData.visualFamily || 'realist');
+          if (root.userData.renderAsset) canvas.setAttribute('data-render-asset', root.userData.renderAsset);
+        }
       } catch (e) {
         holo = null;
         try { (window.__HOLO_ERRS = window.__HOLO_ERRS || []).push(kind + ': ' + (e && (e.message || e))); } catch (e2) {}
@@ -4450,20 +5110,42 @@
     }
     var fr0 = (window.BFS218_HOLO && window.BFS218_HOLO.frame) ? window.BFS218_HOLO.frame(kind, false) : null;
     var viewAngles = fr0 && fr0.views && fr0.views[view];
+    /* Learning-state changes must preserve the authored composition. Earlier
+       defaults swung the whole diorama by as much as 60 degrees in the risk
+       view, which hid labels and pushed the teaching objects out of frame.
+       Keep a small parallax cue while the scene itself carries the change. */
     var target = viewAngles
       ? { x: viewAngles[0], y: viewAngles[1] }
       : (riskOn && fr0 && fr0.swingRisk)
       ? { x: fr0.swingRisk[0], y: fr0.swingRisk[1] }
-      : { x: pathOn ? -0.02 : (riskOn ? -0.52 : -0.28), y: pathOn ? 0.42 : (riskOn ? -1.05 : -0.5) };
+      : { x: pathOn ? -0.035 : (riskOn ? 0.035 : 0), y: pathOn ? 0.08 : (riskOn ? -0.08 : 0) };
     var cur = { x: target.x, y: target.y }, dragging = false, last = null, animating = false, frames = 0;
     var view0 = { x: target.x, y: target.y };
     var zoom = 1, pinchD = 0, wheelArmed = false;
-    var HOLO_MOTION_WINDOW_MS = 10000;
+    var editorialModel = documentaryThreeKind(kind);
+    var HOLO_MOTION_WINDOW_MS = editorialModel ? 1400 : 10000;
     var motionUntil = performance.now() + HOLO_MOTION_WINDOW_MS;
     var touchOrigin = null, touchMode = '';
+    var modelNarrow = false, editorialCameraReady = false;
     var baseCam = new THREE.Vector3(4.8, 3.4, 6.6), baseLook = new THREE.Vector3(0, 0.55, 0), camTmp = new THREE.Vector3();
+    var goalCam = baseCam.clone(), goalLook = baseLook.clone(), cameraUp = new THREE.Vector3(0, 1, 0);
+    function editorialPreset(nextView, snap) {
+      if (!editorialModel || !holo || !holo.cameraFor) return;
+      var preset = holo.cameraFor(nextView, modelNarrow);
+      if (!preset || !preset.cam || !preset.look) return;
+      goalCam.set(preset.cam[0], preset.cam[1], preset.cam[2]);
+      goalLook.set(preset.look[0], preset.look[1], preset.look[2]);
+      if (!editorialCameraReady || snap) {
+        baseCam.copy(goalCam); baseLook.copy(goalLook);
+      }
+      editorialCameraReady = true;
+    }
     function applyZoom() {
       camTmp.copy(baseCam).sub(baseLook).multiplyScalar(1 / zoom);
+      if (editorialModel) {
+        camTmp.applyAxisAngle(cameraUp, cur.y);
+        camTmp.y += cur.x * 1.25;
+      }
       camera.position.copy(baseLook).add(camTmp);
       camera.lookAt(baseLook);
     }
@@ -4473,9 +5155,17 @@
     function begin(x, y) { dragging = true; last = { x: x, y: y }; wakeMotion(); }
     function move(x, y) {
       if (!dragging || !last) return;
-      target.y += (x - last.x) * 0.014;
-      target.x += (y - last.y) * 0.008;
-      target.x = Math.max(-0.65, Math.min(0.35, target.x));
+      if (holo && holo.manipulate && root.userData.renderAsset) {
+        holo.manipulate(x - last.x, y - last.y);
+        last = { x: x, y: y };
+        canvas.setAttribute('data-dragged', '1');
+        schedule();
+        return;
+      }
+      target.y += (x - last.x) * (editorialModel ? 0.0022 : 0.014);
+      target.x += (y - last.y) * (editorialModel ? 0.0015 : 0.008);
+      target.x = editorialModel ? Math.max(-0.075, Math.min(0.075, target.x)) : Math.max(-0.65, Math.min(0.35, target.x));
+      if (editorialModel) target.y = Math.max(-0.12, Math.min(0.12, target.y));
       last = { x: x, y: y };
       canvas.setAttribute('data-dragged', '1');
       schedule();
@@ -4528,6 +5218,166 @@
       e.preventDefault();
       zoomBy(e.deltaY < 0 ? 1.12 : 0.89);
     }
+    var nativeDragCleanups = [];
+    var nativeHandles = shell ? Array.prototype.slice.call(shell.querySelectorAll('.wk-native-drag-handle[data-drag-view]')) : [];
+    if (holo && holo.manipulate && nativeHandles.length) {
+      canvas.setAttribute('data-native-drag-handles', String(nativeHandles.length));
+      var resetButton = shell.querySelector('.wk-gesture-reset');
+      var progressNode = shell.querySelector('[data-gesture-progress]');
+      function clampDrag(value, low, high) { return Math.max(low, Math.min(high, value)); }
+      function completedGestureCount() {
+        return nativeHandles.filter(function (handle) { return handle.getAttribute('data-complete') === 'true'; }).length;
+      }
+      function updateGestureProgress() {
+        var completed = completedGestureCount();
+        if (progressNode) progressNode.textContent = completed
+          ? completed + ' object' + (completed === 1 ? '' : 's') + ' explored'
+          : 'Drag is optional';
+        if (progressNode && progressNode.parentElement) progressNode.parentElement.classList.toggle('is-complete', completed === nativeHandles.length);
+        canvas.setAttribute('data-gestures-complete', String(completed));
+      }
+      function resetHandlePosition(button) {
+        button.removeAttribute('data-complete');
+        button.removeAttribute('data-drag-x');
+        button.removeAttribute('data-drag-y');
+        button.removeAttribute('data-drag-rotation');
+        button.style.removeProperty('--drag-x');
+        button.style.removeProperty('--drag-y');
+        button.style.removeProperty('--drag-rotation');
+      }
+      nativeHandles.forEach(function (button) {
+        var dragState = null, ignoreClick = false;
+        var dragView = button.getAttribute('data-drag-view');
+        var dragType = button.getAttribute('data-drag-type') || 'sweep';
+        function activateHandle() {
+          SOC.visualView({ currentTarget: button, preventDefault: function () {}, stopPropagation: function () {} }, week, 'activity', dragView);
+        }
+        function showDragInstruction() {
+          var status = shell.querySelector('[data-gesture-status]');
+          var cue = button.getAttribute('data-drag-cue') || 'Drag the selected object';
+          if (status) {
+            status.classList.remove('is-complete');
+            status.innerHTML = '<b>Drag now: ' + esc(cue) + '</b><small>The object under your pointer will move. Release after the model changes.</small>';
+          }
+        }
+        function moveHandleVisual(dx, dy) {
+          var x = Number(button.getAttribute('data-drag-x')) || 0;
+          var y = Number(button.getAttribute('data-drag-y')) || 0;
+          var rotation = Number(button.getAttribute('data-drag-rotation')) || 0;
+          if (dragType === 'forward') {
+            x = clampDrag(x + dx * 0.58, 0, 72);
+            y = clampDrag(y + dy * 0.24, -14, 14);
+          } else if (dragType === 'turn') {
+            rotation = clampDrag(rotation + dx * 1.2, -80, 80);
+          } else {
+            x = clampDrag(x + dx * 0.58, -58, 72);
+            y = clampDrag(y + dy * 0.22, -16, 16);
+          }
+          button.setAttribute('data-drag-x', String(x));
+          button.setAttribute('data-drag-y', String(y));
+          button.setAttribute('data-drag-rotation', String(rotation));
+          button.style.setProperty('--drag-x', x.toFixed(1) + 'px');
+          button.style.setProperty('--drag-y', y.toFixed(1) + 'px');
+          button.style.setProperty('--drag-rotation', rotation.toFixed(1) + 'deg');
+          return dragType === 'turn' ? Math.abs(rotation) : Math.abs(x) + Math.abs(y);
+        }
+        function completeGesture() {
+          button.setAttribute('data-complete', 'true');
+          var status = shell.querySelector('[data-gesture-status]');
+          var result = button.getAttribute('data-drag-result') || 'The model changed. Read the explanation below.';
+          if (status) {
+            status.classList.add('is-complete');
+            status.innerHTML = '<b>Object explored</b><small>' + esc(result) + '</small>';
+          }
+          updateGestureProgress();
+          announce('Object explored. ' + result);
+        }
+        function applyGesture(dx, dy) {
+          var amount = moveHandleVisual(dx, dy);
+          holo.manipulate(dx, dy);
+          canvas.setAttribute('data-dragged', '1');
+          canvas.setAttribute('data-shape-manipulated', dragView);
+          wakeMotion();
+          return amount;
+        }
+        function handleDown(e) {
+          if (e.button != null && e.button !== 0) return;
+          e.preventDefault(); e.stopPropagation();
+          activateHandle();
+          showDragInstruction();
+          dragState = { x: e.clientX, y: e.clientY, amount: 0 };
+          button.classList.add('is-dragging');
+          canvas.setAttribute('data-drag-target', dragView);
+          if (button.setPointerCapture) { try { button.setPointerCapture(e.pointerId); } catch (captureError) {} }
+          if (button.focus) { try { button.focus({ preventScroll: true }); } catch (focusError) { button.focus(); } }
+        }
+        function handleMove(e) {
+          if (!dragState) return;
+          e.preventDefault(); e.stopPropagation();
+          var dx = e.clientX - dragState.x, dy = e.clientY - dragState.y;
+          dragState.x = e.clientX; dragState.y = e.clientY;
+          dragState.amount = applyGesture(dx, dy);
+        }
+        function handleUp(e) {
+          if (!dragState) return;
+          e.preventDefault(); e.stopPropagation();
+          var completed = dragState.amount >= 14;
+          dragState = null; ignoreClick = true;
+          button.classList.remove('is-dragging');
+          if (completed) completeGesture();
+          wakeMotion();
+        }
+        function handleKey(e) {
+          if (['Enter', ' ', 'ArrowRight', 'ArrowLeft'].indexOf(e.key) < 0) return;
+          e.preventDefault(); e.stopPropagation();
+          activateHandle();
+          showDragInstruction();
+          applyGesture(dragType === 'forward' ? 48 : (e.key === 'ArrowLeft' ? -48 : 48), 0);
+          completeGesture();
+          ignoreClick = true;
+        }
+        function handleClick(e) {
+          if (ignoreClick) { ignoreClick = false; e.preventDefault(); return; }
+          activateHandle();
+        }
+        button.addEventListener('pointerdown', handleDown);
+        button.addEventListener('pointermove', handleMove);
+        button.addEventListener('pointerup', handleUp);
+        button.addEventListener('pointercancel', handleUp);
+        button.addEventListener('keydown', handleKey);
+        button.addEventListener('click', handleClick);
+        nativeDragCleanups.push(function () {
+          button.removeEventListener('pointerdown', handleDown);
+          button.removeEventListener('pointermove', handleMove);
+          button.removeEventListener('pointerup', handleUp);
+          button.removeEventListener('pointercancel', handleUp);
+          button.removeEventListener('keydown', handleKey);
+          button.removeEventListener('click', handleClick);
+        });
+      });
+      function resetGestures(e) {
+        if (e) { e.preventDefault(); e.stopPropagation(); }
+        nativeHandles.forEach(resetHandlePosition);
+        if (holo.resetManipulation) holo.resetManipulation();
+        canvas.removeAttribute('data-dragged');
+        canvas.removeAttribute('data-drag-target');
+        canvas.removeAttribute('data-shape-manipulated');
+        updateGestureProgress();
+        var first = nativeHandles[0];
+        if (first) {
+          SOC.visualView({ currentTarget: first, preventDefault: function () {}, stopPropagation: function () {} }, week, 'activity', first.getAttribute('data-drag-view'));
+          var status = shell.querySelector('[data-gesture-status]');
+          if (status) status.innerHTML = '<b>Reset. Start with 1.</b><small>' + esc(first.getAttribute('data-drag-cue') || 'Drag the first object.') + '</small>';
+        }
+        wakeMotion();
+        announce('Model reset. Start with step 1.');
+      }
+      updateGestureProgress();
+      if (resetButton) {
+        resetButton.addEventListener('click', resetGestures);
+        nativeDragCleanups.push(function () { resetButton.removeEventListener('click', resetGestures); });
+      }
+    }
     canvas.addEventListener('pointerdown', onPointer);
     canvas.addEventListener('pointermove', movePointer);
     canvas.addEventListener('pointerup', upPointer);
@@ -4541,9 +5391,68 @@
     canvas.addEventListener('pointerleave', function () { wheelArmed = false; });
     var reduced = false;
     try { reduced = !!document.querySelector('#walk-overlay.walk-reduce') || !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches); } catch (e) {}
+    canvas.__topicViewApi = {
+      set: function (nextView) {
+        nextView = String(nextView || '');
+        var allowedViews = activityView ? ['predict', 'try', 'explain'] : ['observe', 'path', 'risk'];
+        if (allowedViews.indexOf(nextView) < 0) return;
+        view = nextView;
+        pathOn = view === 'path' || view === 'try';
+        riskOn = view === 'risk' || view === 'explain';
+        canvas.setAttribute('data-view', view);
+        if (holo && holo.setView) holo.setView(view);
+        var frame = (window.BFS218_HOLO && window.BFS218_HOLO.frame) ? window.BFS218_HOLO.frame(kind, modelNarrow) : null;
+        var angles = frame && frame.views && frame.views[view];
+        if (angles) {
+          target.x = angles[0]; target.y = angles[1];
+          view0.x = angles[0]; view0.y = angles[1];
+        }
+        editorialPreset(view, reduced);
+        if (reduced) { cur.x = target.x; cur.y = target.y; baseCam.copy(goalCam); baseLook.copy(goalLook); }
+        wakeMotion();
+      }
+    };
+    canvas.__topicMetrics = function () {
+      var info = renderer && renderer.info;
+      var renderedImage = shell && shell.querySelector ? shell.querySelector('.wk-model-render') : null;
+      var interactiveTargets = [];
+      if (holo && holo.pickMeshes && holo.pickMeshes.length) {
+        try {
+          scene.updateMatrixWorld(true);
+          camera.updateMatrixWorld(true);
+          interactiveTargets = holo.pickMeshes.filter(function (item) { return !!item.view; }).map(function (item) {
+            var point = new THREE.Vector3();
+            item.mesh.getWorldPosition(point);
+            var centre = point.clone().project(camera);
+            var cameraRight = new THREE.Vector3(0.37, 0, 0).applyQuaternion(camera.getWorldQuaternion(new THREE.Quaternion()));
+            var edge = point.clone().add(cameraRight).project(camera);
+            return { view: item.view, x: (centre.x + 1) / 2, y: (1 - centre.y) / 2, diameterPx: Math.abs(edge.x - centre.x) * canvas.clientWidth };
+          });
+        } catch (e) {}
+      }
+      return info ? {
+        frames: frames,
+        animating: animating,
+        calls: info.render.calls,
+        triangles: info.render.triangles,
+        points: info.render.points,
+        lines: info.render.lines,
+        geometries: info.memory.geometries,
+        textures: info.memory.textures,
+        rotationX: root.rotation.x,
+        rotationY: root.rotation.y,
+        visualFamily: root.userData.visualFamily || null,
+        activityOverhaul: root.userData.activityOverhaulSignature || null,
+        renderAsset: root.userData.renderAsset || null,
+        renderLoaded: !!(renderedImage && renderedImage.complete && renderedImage.naturalWidth > 0),
+        interactiveShapes: root.userData.interactiveShapes || 0,
+        interactiveTargets: interactiveTargets,
+        manipulationState: holo && holo.manipulationState ? holo.manipulationState() : []
+      } : null;
+    };
     canvas.__camApi = {
       zoom: function (dir) { zoomBy(dir > 0 ? 1.18 : 0.85); },
-      spin: function (dir) { target.y += dir * 0.45; if (reduced) { cur.x = target.x; cur.y = target.y; } canvas.setAttribute('data-dragged', '1'); wakeMotion(); },
+      spin: function (dir) { target.y += dir * (editorialModel ? 0.08 : 0.45); if (editorialModel) target.y = Math.max(-0.12, Math.min(0.12, target.y)); if (reduced) { cur.x = target.x; cur.y = target.y; } canvas.setAttribute('data-dragged', '1'); wakeMotion(); },
       reset: function () {
         zoom = 1; target.x = view0.x; target.y = view0.y;
         if (reduced) { cur.x = target.x; cur.y = target.y; }
@@ -4553,10 +5462,12 @@
       }
     };
     function resize() {
-      var wd = Math.max(320, shell.clientWidth || canvas.clientWidth || 720);
-      var focusModel = kind === 'outcomelens' || kind === 'mechanismatch';
+      var wd = Math.max(1, Math.round(shell.clientWidth || canvas.clientWidth || 720));
+      var focusModel = documentaryThreeKind(kind) || kind === 'mechanismatch';
       var narrow = wd <= 520;
-      var ht = narrow ? (focusModel ? 430 : 420) : Math.max(300, Math.round(wd * 0.56));
+      modelNarrow = narrow;
+      var compactActivity = activityView && [4, 7, 8, 9, 10, 11, 12].indexOf(week) >= 0;
+      var ht = root.userData.renderAsset ? Math.max(220, Math.round(wd * 941 / 1672)) : (compactActivity ? (narrow ? 340 : Math.max(280, Math.min(350, Math.round(wd * 0.46)))) : (narrow ? (focusModel ? 430 : 420) : Math.max(300, Math.round(wd * 0.56))));
       if (holo && window.BFS218_HOLO && window.BFS218_HOLO.frame) {
         var hf = window.BFS218_HOLO.frame(kind, narrow);
         root.scale.set(hf.scale, hf.scale, hf.scale);
@@ -4579,6 +5490,7 @@
         baseCam.set(4.8, 3.4, 6.6);
         baseLook.set(0, 0.55, 0);
       }
+      if (editorialModel) editorialPreset(view, true);
       applyZoom();
       renderer.setSize(wd, ht, false);
       camera.aspect = wd / ht;
@@ -4617,7 +5529,10 @@
       canvas.removeEventListener('touchcancel', onTouchEnd);
       canvas.removeEventListener('wheel', onWheel);
       document.removeEventListener('visibilitychange', onVisibilityChange);
+      nativeDragCleanups.splice(0).forEach(function (cleanup) { try { cleanup(); } catch (e) {} });
       canvas.__camApi = null;
+      canvas.__topicViewApi = null;
+      canvas.__topicMetrics = null;
       if (holo && holo.dispose) { try { holo.dispose(); } catch (e) {} }
       disposeThreeScene(scene);
       renderer.dispose();
@@ -4628,22 +5543,46 @@
       var pickDown = null;
       var pickCaster = new THREE.Raycaster();
       var pickVec = new THREE.Vector2();
-      canvas.addEventListener('pointerdown', function (e) { pickDown = [e.clientX, e.clientY]; }, true);
-      canvas.addEventListener('click', function (e) {
-        if (pickDown && (Math.abs(e.clientX - pickDown[0]) > 7 || Math.abs(e.clientY - pickDown[1]) > 7)) return;
+      function pickEntryAt(e) {
         var r = canvas.getBoundingClientRect();
         pickVec.x = ((e.clientX - r.left) / r.width) * 2 - 1;
         pickVec.y = -((e.clientY - r.top) / r.height) * 2 + 1;
         pickCaster.setFromCamera(pickVec, camera);
         var hits = pickCaster.intersectObjects(holo.pickMeshes.map(function (pm) { return pm.mesh; }), false);
-        if (!hits.length) return;
+        canvas.setAttribute('data-last-pick-count', String(hits.length));
+        canvas.setAttribute('data-last-pick-position', pickVec.x.toFixed(3) + ',' + pickVec.y.toFixed(3));
+        if (!hits.length) return null;
         var first = hits[0].object;
         for (var pi = 0; pi < holo.pickMeshes.length; pi++) {
-          if (holo.pickMeshes[pi].mesh === first) { SOC.expPick(week, holo.pickMeshes[pi].idx); break; }
+          if (holo.pickMeshes[pi].mesh === first) return holo.pickMeshes[pi];
         }
+        return null;
+      }
+      function activatePick(entry, announceSelection) {
+        if (!entry) return;
+        if (entry.view) {
+          SOC.visualView({
+            currentTarget: canvas,
+            preventDefault: function () {},
+            stopPropagation: function () {}
+          }, week, 'activity', entry.view);
+          if (announceSelection && entry.announcement) announce(entry.announcement);
+        } else SOC.expPick(week, entry.idx);
+      }
+      canvas.addEventListener('pointerdown', function (e) {
+        pickDown = [e.clientX, e.clientY];
+        var entry = pickEntryAt(e);
+        if (entry && entry.view) {
+          canvas.setAttribute('data-drag-target', entry.view);
+          activatePick(entry, false);
+        }
+      }, true);
+      canvas.addEventListener('click', function (e) {
+        if (pickDown && (Math.abs(e.clientX - pickDown[0]) > 7 || Math.abs(e.clientY - pickDown[1]) > 7)) return;
+        activatePick(pickEntryAt(e), true);
       });
     }
-    registerModelCleanup(cleanupTopicModel);
+    registerModelCleanup(cleanupTopicModel, canvas);
     function animate() {
       if (topicContextFailed) { animating = false; return; }
       if (!canvas.isConnected || canvas.__topicStamp !== auditRenderStamp) {
@@ -4653,11 +5592,18 @@
       }
       var now = performance.now();
       frames++;
-      if (!dragging && !reduced && frames < 150) target.y += 0.0015 + (week % 3) * 0.0004;
+      if (!dragging && !reduced && !editorialModel && frames < 150) target.y += 0.0015 + (week % 3) * 0.0004;
       if (reduced) { cur.x = target.x; cur.y = target.y; }
       else { cur.x += (target.x - cur.x) * 0.08; cur.y += (target.y - cur.y) * 0.08; }
-      root.rotation.x = cur.x;
-      root.rotation.y = cur.y;
+      if (editorialModel) {
+        root.rotation.set(0, 0, 0);
+        baseCam.lerp(goalCam, reduced ? 1 : 0.085);
+        baseLook.lerp(goalLook, reduced ? 1 : 0.085);
+        applyZoom();
+      } else {
+        root.rotation.x = cur.x;
+        root.rotation.y = cur.y;
+      }
       if (holo && holo.tick && !reduced) holo.tick(now / 1000);
       renderer.render(scene, camera);
       updateTopicLabels();
@@ -4680,7 +5626,7 @@
       {
         week: 6,
         id: 'compass-check',
-        focus: 'Complete Weeks 2 to 6 before you begin. Review the concept trail, then take the timed Compass Check in Blackboard and examine your own choices.'
+        focus: 'Complete Weeks 2 to 6 before you begin. Review the concept trail, then take the timed Digital Decision Scenarios in Blackboard and examine your own choices.'
       },
       {
         week: 6,
@@ -4767,7 +5713,7 @@
       + '<h3 style="margin:16px 0 4px">Now, what do you think?</h3><p class="wk-hint" style="margin-bottom:8px">The same ideas from the start. Rate them again to see where your understanding sits now, and how far it moved.</p>' + wkChecks(w, 'post', d)
       + '<h3 style="margin:16px 0 4px">Your reflection</h3><p style="margin:0 0 8px;font-size:.95rem">' + esc(d.reflectPrompt) + '</p>'
       + '<textarea oninput="SOC.wkReflect(' + w + ',this.value)" aria-label="Week ' + w + ' reflection" class="wk-ta" placeholder="Your reflection...">' + esc(state.wkReflect[w] || '') + '</textarea>'
-      + '<div style="margin-top:12px;border:1px solid var(--border);border-left:4px solid var(--red);border-radius:0 10px 10px 0;background:#fff;padding:12px 15px"><div class="mono" style="font-size:.64rem;letter-spacing:.07em;color:var(--red);font-weight:700;margin-bottom:5px">CARRY THIS INTO YOUR MAP</div><p style="margin:0 0 8px;font-size:.85rem;line-height:1.5;color:var(--ink-dim)">Your Personal Cartography is built from exactly this kind of thinking. Copy a starter that combines this week\'s reflection with the week\'s anchor concept, then shape it into your own words on Blackboard.</p><button type="button" class="wk-scope" onclick="SOC.mapStarter(' + w + ')">Copy a starter for your map</button><span id="mapstarter-msg-' + w + '" role="status" style="font-size:.78rem;color:var(--ink-faint);margin-left:8px"></span></div>'
+      + '<div style="margin-top:12px;border:1px solid var(--border);border-left:4px solid var(--red);border-radius:0 10px 10px 0;background:#fff;padding:12px 15px"><div class="mono" style="font-size:.64rem;letter-spacing:.07em;color:var(--red);font-weight:700;margin-bottom:5px">SAVE THIS AS COURSE EVIDENCE</div><p style="margin:0 0 8px;font-size:.85rem;line-height:1.5;color:var(--ink-dim)">This reflection may support a Blackboard journal or later assessment when its prompt fits. Copy your own words and compare them with the official Blackboard instructions before using them.</p><button type="button" class="wk-scope" onclick="SOC.mapStarter(' + w + ')">Copy my reflection and anchor</button><span id="mapstarter-msg-' + w + '" role="status" style="font-size:.78rem;color:var(--ink-faint);margin-left:8px"></span></div>'
       + weekNoteBox(w, 'revisit', 'What I Still Need to Revisit', 'Name anything you want to return to before the assessment or discussion.')
       + '</section>';
     var notes = '<section id="wk-notes" class="node"><h2 class="wk-sec">Generate Your Weekly Notes</h2>'
@@ -4819,7 +5765,7 @@
     ];
     return '<div class="rise path-page">'
       + '<section class="path-hero"><div><div class="mono">HOW EACH WEEK WORKS</div><h1>The weekly page is your classroom</h1><p>There is no live class. Each week is a complete, self-paced learning room. Here is how to move through it, at your own speed.</p></div></section>'
-      + '<section class="path-summary"><div><span class="path-mark">1</span><b>Everything is here</b><p>Readings, the weekly experience, activity, and concepts, all in the weekly page.</p></div><div><span class="path-mark">2</span><b>Your own pace</b><p>Move ahead or catch up. The only fixed points are the two due dates.</p></div><div><span class="path-mark">3</span><b>One weekly record</b><p>Each week ends with Generate Your Weekly Notes.</p></div></section>'
+      + '<section class="path-summary"><div><span class="path-mark">1</span><b>Everything is here</b><p>Readings, the weekly experience, activity, and concepts, all in the weekly page.</p></div><div><span class="path-mark">2</span><b>Your own pace</b><p>Move ahead or catch up within the staged Blackboard opening dates and deadlines.</p></div><div><span class="path-mark">3</span><b>One weekly record</b><p>Each week ends with Generate Your Weekly Notes.</p></div></section>'
       + '<div class="path-routes">' + route('async', 'The weekly rhythm', 'Five moves, every week.', asyncSteps) + '</div>'
       + '<section class="path-close"><h2>Where to start</h2><p>Enter the Week 2 learning room and work through the whole module. Re-enter the weekly experience whenever you want to examine an idea again. When you are ready, plan the graded work.</p><div class="path-actions"><button type="button" class="primary" onclick="SOC.station(2)"><b>Enter Week 2 Learning Room</b><small>Start the full module.</small></button><button type="button" onclick="SOC.assignmentPage(\'program\')"><b>Understand your Program\'s Connection to the Course</b><small>Preview field examples.</small></button><button type="button" onclick="SOC.careerChoices()"><b>Career Choices</b><small>See how BFS218 connects to your path.</small></button><button type="button" class="guide" onclick="SOC.assignmentPage(\'assignments\')"><b>Starting Your Assignment</b><small>Plan the graded work.</small></button></div></section>'
       + '</div>';
@@ -4867,12 +5813,256 @@
     }).join('');
     return actCaseBox('THE SYSTEM', d.system) + '<p style="margin:0 0 14px;color:var(--ink-dim)">Flip each default and watch what changes, and who pays for it. A default is never neutral.</p>' + rows;
   }
+  function actDefaultControl(w, a) {
+    var d = a.data || {}, items = d.toggles || [], names = ['Map voice', 'Hiring screen', 'Neighbourhood surveillance', 'Name field'];
+    var selectKey = 'a|' + w + '|default|selected';
+    var selectedValue = state.act[selectKey];
+    var selected = typeof selectedValue === 'number' ? selectedValue : 0;
+    selected = Math.max(0, Math.min(items.length - 1, selected));
+    var item = items[selected] || {};
+    var runKey = 'a|' + w + '|t|' + selected, running = !!state.act[runKey];
+    var judgementKey = 'a|' + w + '|default|judgement|' + selected;
+    var judgement = state.act[judgementKey];
+    var reviewed = items.filter(function (unused, i) { return typeof state.act['a|' + w + '|default|judgement|' + i] === 'number'; }).length;
+    var tabs = items.map(function (entry, i) {
+      var active = selected === i;
+      var judged = typeof state.act['a|' + w + '|default|judgement|' + i] === 'number';
+      return '<button type="button" class="wk-default-case' + (active ? ' on' : '') + '" aria-pressed="' + active + '" onclick="SOC.actPick(\'' + selectKey + '\',' + i + ')"><span>System ' + (i + 1) + (judged ? ' · reviewed' : '') + '</span><b>' + esc(names[i] || entry.label) + '</b></button>';
+    }).join('');
+    var stateLabel = running ? 'DEFAULT RUNNING' : 'DEFAULT CHALLENGED';
+    var stateCopy = running ? item.on : item.off;
+    var switchCopy = running ? 'Challenge this default' : 'Run this default';
+    var judgementPanel = '';
+    if (typeof judgement === 'number') {
+      judgementPanel = '<div class="wk-default-finding ' + (judgement === 1 ? 'is-strong' : 'is-caution') + '" role="status"><b>' + (judgement === 1 ? 'Stronger reading: the failure is systemic.' : 'Look again: “glitch” is too narrow here.') + '</b><span>' + (judgement === 1
+        ? 'The same preset applies repeatedly, assigns the burden to the same people, and keeps operating until someone changes the design. That pattern is default discrimination.'
+        : 'A one-time glitch is temporary and incidental. This example begins with a standing rule that repeatedly decides who fits and who must adapt.') + '</span></div>';
+    }
+    return actCaseBox('THE SYSTEMS', d.system)
+      + '<section class="wk-default-lab" aria-label="Default discrimination control board">'
+      + '<header><div><span>DEFAULT CONTROL BOARD</span><h3>Change one preset, then test whether the failure is systemic.</h3><p>Select a system. Run its normal default, inspect who carries the burden, then decide whether “glitch” explains the pattern.</p></div><b>' + reviewed + ' of ' + items.length + ' reviewed</b></header>'
+      + '<div class="wk-default-cases" role="group" aria-label="Choose a system">' + tabs + '</div>'
+      + '<div class="wk-default-workbench">'
+      + '<article class="wk-default-setting"><span>1. THE PRESET</span><h4>' + esc(item.label) + '</h4><button type="button" class="wk-default-switch ' + (running ? 'is-running' : '') + '" aria-pressed="' + running + '" onclick="SOC.actToggle(\'' + runKey + '\')"><i aria-hidden="true"></i><b>' + esc(switchCopy) + '</b></button><small>Run the preset to see the burden it produces. Challenge it to see that the outcome was a design choice, not an inevitability.</small></article>'
+      + '<article class="wk-default-output ' + (running ? 'is-running' : '') + '"><span>2. WHAT HAPPENS</span><b>' + stateLabel + '</b><p>' + esc(stateCopy) + '</p></article>'
+      + '<article class="wk-default-burden"><span>3. WHO MUST ADAPT</span><b>' + (running ? 'The cost is assigned here' : 'This burden is reduced') + '</b><p>' + esc(item.whoHarmed) + '</p>' + actCite(item.cite) + '</article>'
+      + '</div>'
+      + '<div class="wk-default-test"><div><span>4. APPLY BENJAMIN\'S TEST</span><h4>Is this a one-time glitch, or a systemic default?</h4></div><div role="group" aria-label="Judge the default"><button type="button" class="' + (judgement === 0 ? 'on' : '') + '" aria-pressed="' + (judgement === 0) + '" onclick="SOC.actPick(\'' + judgementKey + '\',0)">A one-time glitch</button><button type="button" class="' + (judgement === 1 ? 'on' : '') + '" aria-pressed="' + (judgement === 1) + '" onclick="SOC.actPick(\'' + judgementKey + '\',1)">A systemic default</button></div>' + judgementPanel + '</div>'
+      + (reviewed === items.length ? '<div class="wk-default-complete"><b>Area of understanding reached:</b> a default becomes discriminatory when its standing assumptions repeatedly make one group fit and another group carry the work, delay, surveillance, or exclusion.</div>' : '')
+      + '</section>';
+  }
+  function actCanadaCaseTrail(w, a) {
+    var d = a.data || {}, files = d.caseFiles || [];
+    var selectKey = 'a|' + w + '|case|selected';
+    var selectedValue = state.act[selectKey];
+    var selected = typeof selectedValue === 'number' ? selectedValue : 0;
+    selected = Math.max(0, Math.min(files.length - 1, selected));
+    var file = files[selected] || {};
+    var stageKey = 'a|' + w + '|case|stage|' + selected;
+    var revealed = Math.max(0, Math.min(4, Number(state.act[stageKey]) || 0));
+    var claimKey = 'a|' + w + '|case|claim|' + selected, claim = state.act[claimKey];
+    var tabs = files.map(function (entry, i) {
+      var active = selected === i;
+      var complete = Number(state.act['a|' + w + '|case|stage|' + i]) >= 4 && state.act['a|' + w + '|case|claim|' + i] === 1;
+      return '<button type="button" class="wk-case-file-tab' + (active ? ' on' : '') + '" aria-pressed="' + active + '" onclick="SOC.actPick(\'' + selectKey + '\',' + i + ')"><span>CASE ' + (i + 1) + (complete ? ' · checked' : '') + '</span><b>' + esc(entry.tab) + '</b></button>';
+    }).join('');
+    var stages = [
+      ['Institution', file.institution],
+      ['Documented system', file.system],
+      ['Documented finding', file.finding],
+      ['Course lens and evidence limit', file.lens + ' ' + file.limit]
+    ];
+    var trail = stages.map(function (entry, i) {
+      var open = revealed > i;
+      return '<li class="' + (open ? 'is-revealed' : '') + '"><span>' + (i + 1) + '</span><div><b>' + esc(entry[0]) + '</b><p>' + (open ? esc(entry[1]) : 'Reveal the earlier evidence first.') + '</p></div></li>';
+    }).join('');
+    var check = '';
+    if (revealed >= 4) {
+      var feedback = typeof claim === 'number' ? '<div class="wk-case-claim-result ' + (claim === 1 ? 'is-strong' : 'is-caution') + '" role="status"><b>' + (claim === 1 ? 'Source boundary held.' : 'That claim merges evidence the sources keep separate.') + '</b><span>' + (claim === 1 ? 'State the documented finding first, name the course lens second, and keep the limit visible. That is a defensible Canadian case analysis.' : 'These cases involve different institutions, evidence, laws, and populations. Similar course themes do not turn them into one deployment or prove more than each source reports.') + '</span></div>' : '';
+      check = '<section class="wk-case-claim"><span>MAKE THE EVIDENCE MOVE</span><h4>Which conclusion can you defend?</h4><div role="group" aria-label="Choose the defensible conclusion"><button type="button" class="' + (claim === 0 ? 'on' : '') + '" aria-pressed="' + (claim === 0) + '" onclick="SOC.actPick(\'' + claimKey + '\',0)">These cases prove one connected Canadian surveillance pipeline.</button><button type="button" class="' + (claim === 1 ? 'on' : '') + '" aria-pressed="' + (claim === 1) + '" onclick="SOC.actPick(\'' + claimKey + '\',1)">Keep the documented finding, course lens, and evidence limit separate.</button></div>' + feedback + '</section>';
+    }
+    return '<section class="wk-canada-case-trail" aria-label="Canadian evidence case trail">'
+      + '<header><div><span>CANADIAN CASEFILE</span><h3>Follow one source without blending the cases.</h3><p>Choose a file and reveal it in order. The last step separates what the source documents from the course lens applied to it.</p></div><b>' + revealed + ' of 4 stops open</b></header>'
+      + '<div class="wk-case-file-tabs" role="group" aria-label="Choose a Canadian case">' + tabs + '</div>'
+      + '<div class="wk-case-file-desk"><div class="wk-case-file-cover"><span>' + esc(file.tab || '') + '</span><b>' + esc(file.institution || '') + '</b><small>' + esc(file.cite || '') + '</small></div><ol class="wk-case-evidence-trail">' + trail + '</ol>'
+      + (revealed < 4 ? '<button type="button" class="wk-case-reveal" onclick="SOC.actPick(\'' + stageKey + '\',' + (revealed + 1) + ')">Reveal stop ' + (revealed + 1) + ' of 4</button>' : '<div class="wk-case-source-open">Complete evidence trail open</div>') + '</div>'
+      + check + '</section>';
+  }
   function actAssemble(w, a) {
     var d = a.data || {}, comps = d.components || [], key = 'a|' + w + '|asm', added = state.act[key] || [];
     var avail = comps.map(function (c, i) { return added.indexOf(i) >= 0 ? '' : '<button onclick="SOC.actAdd(\'' + key + '\',' + i + ')" style="display:block;width:100%;text-align:left;border:1px dashed var(--border);background:#fff;color:var(--ink);border-radius:9px;padding:10px 13px;font-size:.9rem;font-weight:600;cursor:pointer;margin:0 0 7px">+ ' + esc(c.label) + '</button>'; }).join('');
     var built = added.map(function (idx, n) { var c = comps[idx] || {}; return '<div style="border-left:3px solid var(--red);background:#fff;border:1px solid var(--border);border-radius:9px;padding:10px 13px;margin:0 0 8px"><div style="font-size:.92rem;font-weight:700;color:var(--ink)">' + (n + 1) + '. ' + esc(c.label) + '</div><div style="font-size:.85rem;color:var(--ink-dim);margin-top:3px">' + esc(c.role) + actCite(c.cite) + '</div></div>'; }).join('');
     var done = (added.length >= comps.length && comps.length) ? '<div style="margin-top:14px;background:#E7F3EC;border:1px solid #1C7A43;border-radius:10px;padding:12px 15px;font-size:.9rem;color:#155f34;font-weight:600">You have assembled the whole picture. Seeing the parts together is the point: the harm is not one bad piece, it is how the pieces work as a system.</div>' : '';
     return actCaseBox('THE GOAL', d.goal) + '<div style="display:grid;grid-template-columns:1fr 1fr;gap:18px"><div><div style="font-size:.7rem;font-weight:700;color:var(--ink-faint);margin-bottom:8px">PARTS TO ADD</div>' + (avail || '<div style="font-size:.85rem;color:var(--ink-faint)">All parts added.</div>') + '</div><div><div style="font-size:.7rem;font-weight:700;color:var(--red);margin-bottom:8px">WHAT YOU HAVE BUILT</div>' + (built || '<div style="font-size:.85rem;color:var(--ink-faint)">Nothing yet. Add parts from the left.</div>') + '</div></div>' + done;
+  }
+  function actSystemAnatomy(w, a) {
+    var d = a.data || {}, systems = d.systems || [];
+    var selectKey = 'a|' + w + '|anatomy|system';
+    var selectedValue = state.act[selectKey];
+    var selected = typeof selectedValue === 'number' ? selectedValue : 0;
+    selected = Math.max(0, Math.min(systems.length - 1, selected));
+    var system = systems[selected] || {}, parts = system.parts || [];
+    var assembleKey = 'a|' + w + '|anatomy|asm|' + (system.id || selected), added = state.act[assembleKey] || [];
+    var lensKey = 'a|' + w + '|anatomy|lens|' + (system.id || selected), lensChoice = state.act[lensKey];
+    var tabs = systems.map(function (entry, i) {
+      var active = selected === i;
+      var count = (state.act['a|' + w + '|anatomy|asm|' + entry.id] || []).length;
+      return '<button type="button" class="wk-anatomy-case' + (active ? ' on' : '') + '" aria-pressed="' + active + '" onclick="SOC.actPick(\'' + selectKey + '\',' + i + ')"><span>' + esc(entry.status) + '</span><b>' + esc(entry.label) + '</b><small>' + count + ' of 5 parts placed</small></button>';
+    }).join('');
+    var trayOrder = [2, 4, 0, 3, 1];
+    var tray = trayOrder.map(function (idx) {
+      var part = parts[idx] || {}, placed = added.indexOf(idx) >= 0;
+      return '<button type="button" class="wk-anatomy-part' + (placed ? ' is-placed' : '') + '" ' + (placed ? 'disabled' : '') + ' onclick="SOC.actAdd(\'' + assembleKey + '\',' + idx + ')"><span>' + esc(part.slot || '') + '</span><b>' + (placed ? 'Placed: ' : 'Place: ') + esc(part.label || '') + '</b></button>';
+    }).join('');
+    var track = parts.map(function (part, i) {
+      var placed = added.indexOf(i) >= 0;
+      return '<li class="' + (placed ? 'is-placed' : '') + '"><span>' + (i + 1) + '</span><div><b>' + esc(part.slot || '') + '</b><strong>' + (placed ? esc(part.label || '') : 'Waiting for this part') + '</strong><p>' + (placed ? esc(part.detail || '') : 'Choose the matching part from the tray above.') + '</p></div></li>';
+    }).join('');
+    var complete = parts.length && added.length >= parts.length;
+    var analysis = '';
+    if (complete) {
+      var feedback = typeof lensChoice === 'number' ? '<div class="wk-anatomy-reading ' + (lensChoice === 1 ? 'is-strong' : 'is-caution') + '" role="status"><b>' + (lensChoice === 1 ? esc(system.lens) : 'That explanation stops at one person.') + '</b><span>' + (lensChoice === 1 ? esc(system.lensWhy) : 'The assembled chain shows records, a rule, institutional deployment, a consequence, and either a feedback loop or a documented unknown. Explain the connected mechanism instead of inventing hostile intent.') + '</span>' + (lensChoice === 1 ? actCite(system.cite) : '') + '</div>' : '';
+      analysis = '<section class="wk-anatomy-analysis"><span>READ THE WHOLE SYSTEM</span><h4>Which explanation uses the assembled evidence?</h4><div role="group" aria-label="Choose the stronger whole-system explanation"><button type="button" class="' + (lensChoice === 0 ? 'on' : '') + '" aria-pressed="' + (lensChoice === 0) + '" onclick="SOC.actPick(\'' + lensKey + '\',0)">The harm comes from one bad person operating the tool.</button><button type="button" class="' + (lensChoice === 1 ? 'on' : '') + '" aria-pressed="' + (lensChoice === 1) + '" onclick="SOC.actPick(\'' + lensKey + '\',1)">Trace the records, rule, deployment, decision, and supported feedback evidence.</button></div>' + feedback + '</section>';
+    }
+    return actCaseBox('THE GOAL', d.goal)
+      + '<section class="wk-anatomy-lab" aria-label="System anatomy assembly workbench">'
+      + '<header><div><span>SYSTEM ASSEMBLY BENCH</span><h3>Build the mechanism, not a pile of parts.</h3><p>Choose a case, then click each part to place it in its correct system role. Nothing needs to be dragged.</p></div><b>' + added.length + ' of ' + parts.length + ' placed</b></header>'
+      + '<div class="wk-anatomy-cases" role="group" aria-label="Choose a system to assemble">' + tabs + '</div>'
+      + '<div class="wk-anatomy-boundary"><b>Evidence boundary</b><span>' + esc(system.boundary || '') + '</span></div>'
+      + '<div class="wk-anatomy-tray" aria-label="Parts tray">' + tray + '</div>'
+      + '<ol class="wk-anatomy-track" aria-label="Five connected system roles">' + track + '</ol>'
+      + analysis + '</section>';
+  }
+  function actRhsGovernance(w, a) {
+    var d = a.data || {}, realCase = d.realCase || {}, principles = d.principles || [], boundaryChoices = d.boundaryChoices || [];
+    var opened = 0;
+    var principleCards = principles.map(function (p) {
+      var key = 'a|' + w + '|rhs|principle|' + p.id, on = !!state.act[key];
+      if (on) opened++;
+      return '<article class="wk-rhs-principle ' + (on ? 'is-open' : '') + '"><button type="button" aria-expanded="' + on + '" onclick="SOC.actToggle(\'' + key + '\')"><span>' + esc(p.label) + '</span><b>' + esc(p.fact) + '</b><i aria-hidden="true">' + (on ? '&#8722;' : '+') + '</i></button>'
+        + (on ? '<div><strong>What moves in practice</strong><p>' + esc(p.move) + '</p></div>' : '') + '</article>';
+    }).join('');
+    var boundaryKey = 'a|' + w + '|rhs|boundary', boundaryChoice = state.act[boundaryKey];
+    var boundary = boundaryChoices.map(function (choice, i) {
+      var on = boundaryChoice === i;
+      return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="SOC.actPick(\'' + boundaryKey + '\',' + i + ')">' + esc(choice.label) + '</button>';
+    }).join('');
+    var selectedBoundary = typeof boundaryChoice === 'number' ? boundaryChoices[boundaryChoice] : null;
+    var feedback = selectedBoundary ? '<div class="wk-case-claim-result ' + (selectedBoundary.correct ? 'is-strong' : 'is-caution') + '" role="status"><b>' + (selectedBoundary.correct ? 'The governance boundary is intact.' : 'That move erases an important boundary.') + '</b><span>' + esc(selectedBoundary.feedback) + '</span></div>' : '';
+    return '<section class="wk-rhs-lab" aria-label="First Nations Regional Health Survey governance table">'
+      + '<header><div><span>DOCUMENTED CASE</span><h3>' + esc(realCase.title || '') + '</h3><p>' + esc(realCase.context || '') + '</p></div><b>' + opened + ' of ' + principles.length + ' principles opened</b></header>'
+      + '<div class="wk-rhs-record"><div><span>WHOSE INFORMATION?</span><b>First Nations people and communities represented in the RHS</b></div><div><span>GOVERNANCE QUESTION</span><b>Who owns, controls, accesses, and possesses the information?</b></div></div>'
+      + '<div class="wk-rhs-principles">' + principleCards + '</div>'
+      + '<div class="wk-rhs-boundary"><b>Evidence boundary</b><span>' + esc(realCase.boundary || '') + '</span><small>' + esc(realCase.source || '') + '</small></div>'
+      + '<section class="wk-rhs-scope"><span>APPLY WITHOUT APPROPRIATING</span><h4>Which conclusion respects the scope of the evidence?</h4><div role="group" aria-label="Choose the defensible governance conclusion">' + boundary + '</div>' + feedback + '</section>'
+      + (opened === principles.length && selectedBoundary && selectedBoundary.correct ? '<div class="wk-activity-complete"><b>Governance reading complete.</b> Access to a report is not the same as ownership, control, access authority, and possession of the underlying information.</div>' : '')
+      + '</section>';
+  }
+  function actBenevolenceCases(w, a) {
+    var cases = (a.data && a.data.realCases) || [], judged = 0;
+    var cards = cases.map(function (item, i) {
+      var openKey = 'a|' + w + '|benevolence|open|' + i, open = !!state.act[openKey];
+      var judgeKey = 'a|' + w + '|benevolence|judge|' + i, judge = state.act[judgeKey];
+      if (judge === 1) judged++;
+      var response = typeof judge === 'number' ? '<div class="wk-benevolence-result ' + (judge === 1 ? 'is-strong' : 'is-caution') + '" role="status"><b>' + (judge === 1 ? 'Stronger reading: test the mechanism and power.' : 'The benefit is real, but it is not enough evidence.') + '</b><span>' + (judge === 1 ? 'A benevolence test holds the benefit and the burden together, then asks who retains authority and what structural condition remains.' : 'A promised or real benefit does not by itself show that surveillance, sorting, or control has been repaired.') + '</span></div>' : '';
+      return '<article class="wk-benevolence-case ' + (open ? 'is-open' : '') + '"><div class="wk-benevolence-case-head"><span>DOCUMENTED CASE ' + (i + 1) + '</span><h3>' + esc(item.title) + '</h3><small>' + esc(item.setting) + '</small></div>'
+        + '<div class="wk-benevolence-promise"><span>THE PROMISE</span><p>' + esc(item.promise) + '</p><button type="button" aria-expanded="' + open + '" onclick="SOC.actToggle(\'' + openKey + '\')">' + (open ? 'Close the X-ray' : 'Open the X-ray') + '</button></div>'
+        + (open ? '<div class="wk-benevolence-xray"><div><span>REAL BENEFIT</span><p>' + esc(item.benefit) + '</p></div><div><span>ADDED MECHANISM</span><p>' + esc(item.mechanism) + '</p></div><div><span>HARD TEST</span><p>' + esc(item.test) + '</p></div></div><div class="wk-benevolence-boundary"><b>Evidence limit</b><span>' + esc(item.boundary) + '</span>' + actCite(item.cite) + '</div><section class="wk-benevolence-judgement"><h4>What can you conclude?</h4><div role="group" aria-label="Judge whether the intervention repairs the structure"><button type="button" class="' + (judge === 0 ? 'on' : '') + '" aria-pressed="' + (judge === 0) + '" onclick="SOC.actPick(\'' + judgeKey + '\',0)">The benefit proves the structure is repaired.</button><button type="button" class="' + (judge === 1 ? 'on' : '') + '" aria-pressed="' + (judge === 1) + '" onclick="SOC.actPick(\'' + judgeKey + '\',1)">Test burden, authority, refusal, and the condition left unchanged.</button></div>' + response + '</section>' : '')
+        + '</article>';
+    }).join('');
+    return '<section class="wk-benevolence-lab" aria-label="Technological benevolence case X-rays"><header><div><span>THREE REAL CASES</span><h3>Do not confuse a real benefit with a complete repair.</h3><p>Open each promise. Keep what genuinely helps in view while you inspect the surveillance, sorting, or control that comes with it.</p></div><b>' + judged + ' of ' + cases.length + ' tested</b></header><div class="wk-benevolence-grid">' + cards + '</div>'
+      + (judged === cases.length && cases.length ? '<div class="wk-activity-complete"><b>Benevolence test complete.</b> You kept the benefit visible without allowing helpful language to end the analysis.</div>' : '') + '</section>';
+  }
+  function actThresholdStudy(w, a) {
+    var d = a.data || {}, study = d.study || {}, thresholds = d.thresholds || [], accountability = d.accountability || [];
+    var thresholdKey = 'a|' + w + '|threshold|policy', thresholdChoice = state.act[thresholdKey];
+    var thresholdButtons = thresholds.map(function (t, i) { var on = thresholdChoice === i; return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="SOC.actPick(\'' + thresholdKey + '\',' + i + ')"><span>' + (i + 1) + '</span><b>' + esc(t.label) + '</b></button>'; }).join('');
+    var thresholdResult = typeof thresholdChoice === 'number' && thresholds[thresholdChoice] ? '<div class="wk-threshold-consequence" role="status"><b>What this institutional choice changes</b><p>' + esc(thresholds[thresholdChoice].consequence) + '</p></div>' : '';
+    var answered = 0, correct = 0;
+    var accountabilityRows = accountability.map(function (item, i) {
+      var key = 'a|' + w + '|threshold|accountability|' + i, answer = state.act[key];
+      var expected = item.correct ? 0 : 1;
+      if (typeof answer === 'number') { answered++; if (answer === expected) correct++; }
+      var feedback = typeof answer === 'number' ? '<p class="' + (answer === expected ? 'is-strong' : 'is-caution') + '">' + (answer === expected ? 'Yes. ' : 'Look again. ') + esc(item.detail) + '</p>' : '';
+      return '<article><div><span>' + esc(item.label) + '</span><p>' + esc(item.detail) + '</p></div><div role="group" aria-label="Classify ' + esc(item.label) + '"><button type="button" class="' + (answer === 0 ? 'on' : '') + '" aria-pressed="' + (answer === 0) + '" onclick="SOC.actPick(\'' + key + '\',0)">Include in the accountability analysis</button><button type="button" class="' + (answer === 1 ? 'on' : '') + '" aria-pressed="' + (answer === 1) + '" onclick="SOC.actPick(\'' + key + '\',1)">Treat as only the student\'s deficit</button></div>' + feedback + '</article>';
+    }).join('');
+    return '<section class="wk-threshold-lab" aria-label="Community college prediction threshold study"><header><div><span>PUBLISHED STUDY</span><h3>' + esc(study.title || '') + '</h3><p>' + esc(study.sample || '') + '</p></div><b>' + esc(study.status || '') + '</b></header>'
+      + '<div class="wk-threshold-finding"><span>WHAT THE STUDY FOUND</span><p>' + esc(study.finding || '') + '</p><small>' + esc(study.boundary || '') + '</small>' + actCite(study.cite) + '</div>'
+      + '<section class="wk-threshold-policy"><span>INSTITUTIONAL DECISION</span><h4>How much support will depend on a cutoff?</h4><div role="group" aria-label="Choose a support allocation policy">' + thresholdButtons + '</div>' + thresholdResult + '</section>'
+      + '<section class="wk-threshold-accountability"><div><span>ACCOUNTABILITY MAP</span><h4>Where does responsibility belong?</h4><p>The paper separates prediction from policy. Classify all three claims.</p></div><div class="wk-threshold-rows">' + accountabilityRows + '</div></section>'
+      + (typeof thresholdChoice === 'number' && answered === accountability.length && correct === accountability.length ? '<div class="wk-activity-complete"><b>Threshold reading complete.</b> The model matters, but the institution still chooses the target, cutoff, support rule, explanation, review, and appeal.</div>' : '') + '</section>';
+  }
+  function actDctpPowerShift(w, a) {
+    var d = a.data || {}, realCase = d.realCase || {}, roles = d.powerRoles || [], correct = 0, answered = 0;
+    var rows = roles.map(function (role, i) {
+      var key = 'a|' + w + '|dctp|role|' + i, choice = state.act[key];
+      if (typeof choice === 'number') { answered++; if (choice === 1) correct++; }
+      var feedback = typeof choice === 'number' ? '<div class="wk-dctp-result ' + (choice === 1 ? 'is-strong' : 'is-caution') + '" role="status"><b>' + (choice === 1 ? 'Documented power shift' : 'Useful training, but not community authority') + '</b><span>' + esc(choice === 1 ? role.community : role.patch) + '</span></div>' : '';
+      return '<article><div class="wk-dctp-role"><span>ROLE ' + (i + 1) + '</span><b>' + esc(role.label) + '</b></div><div class="wk-dctp-choice" role="group" aria-label="Choose who holds the role ' + esc(role.label) + '"><button type="button" class="' + (choice === 0 ? 'on' : '') + '" aria-pressed="' + (choice === 0) + '" onclick="SOC.actPick(\'' + key + '\',0)"><small>VENDOR-LED PATCH</small><span>' + esc(role.patch) + '</span></button><button type="button" class="' + (choice === 1 ? 'on' : '') + '" aria-pressed="' + (choice === 1) + '" onclick="SOC.actPick(\'' + key + '\',1)"><small>DOCUMENTED DCTP MOVE</small><span>' + esc(role.community) + '</span></button></div>' + feedback + '</article>';
+    }).join('');
+    return '<section class="wk-dctp-lab" aria-label="Detroit Community Technology Project power shift"><header><div><span>DOCUMENTED COMMUNITY-LED CASE</span><h3>' + esc(realCase.title || '') + '</h3><p>' + esc(realCase.context || '') + '</p></div><b>' + correct + ' of ' + roles.length + ' roles reconstructed</b></header><div class="wk-dctp-boundary"><b>Evidence boundary</b><span>' + esc(realCase.boundary || '') + '</span>' + actCite(realCase.cite) + '</div><div class="wk-dctp-roles">' + rows + '</div>'
+      + (answered === roles.length && correct === roles.length ? '<div class="wk-activity-complete"><b>Power shift reconstructed.</b> Residents do not merely receive a finished network: they build knowledge, shape the design, help sustain the infrastructure, and develop governance.</div>' : '') + '</section>';
+  }
+  function actAidaHearing(w, a) {
+    var d = a.data || {}, gaps = d.gaps || [];
+    var labels = ['Pause and rebuild the proposal', 'National public engagement', 'Independent commissioner', 'Interdisciplinary policy capacity', 'Coordinated co-regulation'];
+    var selectKey = 'a|' + w + '|aida|gap', selectedValue = state.act[selectKey], selected = typeof selectedValue === 'number' ? selectedValue : 0;
+    selected = Math.max(0, Math.min(gaps.length - 1, selected));
+    var gap = gaps[selected] || {}, answerKey = 'a|' + w + '|aida|answer|' + selected, answer = state.act[answerKey];
+    var tabs = gaps.map(function (item, i) { var on = selected === i, done = state.act['a|' + w + '|aida|answer|' + i] === i; return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="SOC.actPick(\'' + selectKey + '\',' + i + ')"><span>GAP ' + (i + 1) + (done ? ' · matched' : '') + '</span><b>' + esc(item.label) + '</b></button>'; }).join('');
+    var options = gaps.map(function (item, i) { var on = answer === i; return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="SOC.actPick(\'' + answerKey + '\',' + i + ')"><b>' + esc(labels[i] || ('Recommendation ' + (i + 1))) + '</b><span>' + esc(item.recommendation) + '</span></button>'; }).join('');
+    var result = typeof answer === 'number' ? '<div class="wk-aida-result ' + (answer === selected ? 'is-strong' : 'is-caution') + '" role="status"><b>' + (answer === selected ? 'Recommendation matched to the author\'s gap.' : 'That recommendation answers a different gap.') + '</b><span>' + esc(answer === selected ? gap.recommendation : 'Compare what the gap says is missing with the institutional change each recommendation proposes.') + '</span></div>' : '';
+    var matched = gaps.filter(function (unused, i) { return state.act['a|' + w + '|aida|answer|' + i] === i; }).length;
+    return '<section class="wk-aida-lab" aria-label="AIDA historical policy hearing"><header><div><span>HISTORICAL POLICY FILE</span><h3>AIDA: test an argued gap against a recommendation.</h3><p>' + esc(d.policyStatus || '') + '</p></div><b>' + matched + ' of ' + gaps.length + ' matched</b></header><div class="wk-aida-status"><b>Do not write about AIDA as current law.</b><span>' + esc(d.policyBoundary || '') + '</span></div><div class="wk-aida-tabs" role="group" aria-label="Choose an argued AIDA gap">' + tabs + '</div><div class="wk-aida-docket"><article><span>ARGUED GAP</span><h4>' + esc(gap.label || '') + '</h4><p>' + esc(gap.detail || '') + '</p></article><section><span>WHICH RECOMMENDATION RESPONDS?</span><div role="group" aria-label="Match the recommendation">' + options + '</div>' + result + '</section></div>'
+      + (matched === gaps.length && gaps.length ? '<div class="wk-activity-complete"><b>Policy file complete.</b> You connected five criticisms to five institutional responses while keeping the author\'s analysis separate from the proposal\'s later status.</div>' : '') + '</section>';
+  }
+  function cartographyEntry(w) {
+    var reflection = String((state.wkReflect && state.wkReflect[w]) || '').trim();
+    if (reflection) return { week: w, source: 'Weekly reflection', text: reflection };
+    var preferred = ['activity', 'visual', 'walkthrough', 'simulation'];
+    for (var i = 0; i < preferred.length; i++) {
+      var value = wkNoteValue(w, preferred[i]).trim();
+      if (value) return { week: w, source: preferred[i].charAt(0).toUpperCase() + preferred[i].slice(1) + ' notes', text: value };
+    }
+    var prefix = w + '|', keys = Object.keys(state.wkNotes || {});
+    for (var k = 0; k < keys.length; k++) {
+      if (keys[k].indexOf(prefix) === 0 && String(state.wkNotes[keys[k]] || '').trim()) return { week: w, source: 'Saved week notes', text: String(state.wkNotes[keys[k]]).trim() };
+    }
+    return null;
+  }
+  function cartographyExcerpt(entry) {
+    var text = entry ? String(entry.text || '') : '';
+    return text.length > 640 ? text.slice(0, 637).replace(/\s+\S*$/, '') + '...' : text;
+  }
+  function actCartographyArchive(w, a) {
+    var d = a.data || {}, earlyWeeks = d.earlyWeeks || [], laterWeeks = d.laterWeeks || [];
+    var earlyKey = 'a|' + w + '|archive|early', laterKey = 'a|' + w + '|archive|later';
+    var earlyChoice = state.act[earlyKey], laterChoice = state.act[laterKey];
+    function weekButtons(weeks, key, choice) {
+      return weeks.map(function (week, i) { var entry = cartographyEntry(week), on = choice === i; return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="SOC.actPick(\'' + key + '\',' + i + ')"' + (!entry ? ' disabled' : '') + '><span>WEEK ' + week + '</span><b>' + esc(weekTitle(week)) + '</b><small>' + (entry ? esc(entry.source) : 'No saved entry yet') + '</small></button>'; }).join('');
+    }
+    var earlyEntry = typeof earlyChoice === 'number' ? cartographyEntry(earlyWeeks[earlyChoice]) : null;
+    var laterEntry = typeof laterChoice === 'number' ? cartographyEntry(laterWeeks[laterChoice]) : null;
+    var dimensions = ['Language became more precise', 'Evidence became more source-bounded', 'The mechanism became clearer', 'The response moved closer to changing power'];
+    var marked = 0;
+    var dimensionButtons = dimensions.map(function (label, i) { var key = 'a|' + w + '|archive|dimension|' + i, on = !!state.act[key]; if (on) marked++; return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="SOC.actToggle(\'' + key + '\')"><span aria-hidden="true">' + (on ? '&#10003;' : '') + '</span>' + esc(label) + '</button>'; }).join('');
+    var comparison = earlyEntry && laterEntry ? '<div class="wk-archive-compare"><article><span>EARLY ENTRY · WEEK ' + earlyEntry.week + '</span><b>' + esc(earlyEntry.source) + '</b><p>' + esc(cartographyExcerpt(earlyEntry)) + '</p></article><article><span>LATER ENTRY · WEEK ' + laterEntry.week + '</span><b>' + esc(laterEntry.source) + '</b><p>' + esc(cartographyExcerpt(laterEntry)) + '</p></article></div><section class="wk-archive-change"><span>WHAT CHANGED?</span><p>Mark only changes that the two entries actually support. The activity does not infer growth for you.</p><div role="group" aria-label="Mark supported changes">' + dimensionButtons + '</div></section>' : '<div class="wk-archive-empty"><b>Select one saved early entry and one saved later entry.</b><span>If a week is unavailable, return to it and save an Activity Note or weekly reflection first.</span></div>';
+    return '<section class="wk-archive-lab" aria-label="Personal Cartography archive comparison"><header><div><span>YOUR SAVED COURSE EVIDENCE</span><h3>Compare what you actually wrote, not a model answer.</h3><p>Your entries stay in this browser. This activity displays them exactly as saved and does not assess your beliefs or rewrite your conclusion.</p></div><b>' + marked + ' changes marked</b></header><div class="wk-archive-pickers"><section><h4>Choose an early entry</h4><div role="group" aria-label="Choose an early course entry">' + weekButtons(earlyWeeks, earlyKey, earlyChoice) + '</div></section><section><h4>Choose a later entry</h4><div role="group" aria-label="Choose a later course entry">' + weekButtons(laterWeeks, laterKey, laterChoice) + '</div></section></div>' + comparison
+      + (earlyEntry && laterEntry && marked ? '<div class="wk-activity-complete"><b>Comparison built from your evidence.</b> Use the exact change you can defend as the spine of your final Personal Cartography.</div>' : '') + '</section>';
+  }
+  function actCourseAnswer(w, a) {
+    var d = a.data || {}, entries = [];
+    for (var week = 1; week <= 13; week++) { var entry = cartographyEntry(week); if (entry) entries.push(entry); }
+    var sourceKey = 'a|' + w + '|compass|source', mechanismKey = 'a|' + w + '|compass|mechanism', responseKey = 'a|' + w + '|compass|response', commitmentKey = 'a|' + w + '|compass|commitment';
+    var sourceChoice = state.act[sourceKey], mechanismChoice = state.act[mechanismKey], responseChoice = state.act[responseKey], commitmentChoice = state.act[commitmentKey];
+    var sourceOptions = '<option value="">Choose one saved entry</option>' + entries.map(function (entry, i) { return '<option value="' + i + '"' + (sourceChoice === i ? ' selected' : '') + '>Week ' + entry.week + ': ' + esc(weekTitle(entry.week)) + ' · ' + esc(entry.source) + '</option>'; }).join('');
+    function choiceButtons(items, key, choice) { return items.map(function (label, i) { var on = choice === i; return '<button type="button" class="' + (on ? 'on' : '') + '" aria-pressed="' + on + '" onclick="SOC.actPick(\'' + key + '\',' + i + ')">' + esc(label) + '</button>'; }).join(''); }
+    var source = typeof sourceChoice === 'number' ? entries[sourceChoice] : null;
+    var complete = source && typeof mechanismChoice === 'number' && typeof responseChoice === 'number' && typeof commitmentChoice === 'number';
+    var plan = complete ? '<section class="wk-compass-plan"><span>YOUR EVIDENCE PLAN</span><div><article><b>1. Evidence you selected</b><small>Week ' + source.week + ' · ' + esc(source.source) + '</small><p>' + esc(cartographyExcerpt(source)) + '</p></article><article><b>2. Mechanism to explain</b><p>' + esc(d.mechanisms[mechanismChoice]) + '</p></article><article><b>3. Response to evaluate</b><p>' + esc(d.responses[responseChoice]) + '</p></article><article><b>4. Commitment to carry forward</b><p>' + esc(d.commitments[commitmentChoice]) + '</p></article></div><footer><b>This is a plan, not your final answer.</b><span>You still have to explain how the evidence shows the mechanism, whether the response changes power or accountability, and why the commitment matters in your field.</span></footer></section>' : '';
+    return '<section class="wk-compass-lab" aria-label="Final course answer evidence planner"><header><div><span>FINAL COURSE SYNTHESIS</span><h3>Build the evidence spine; keep the answer in your own words.</h3><p>The course began by asking whether racism can be built into technology. Use one real entry from your map to answer with evidence, mechanism, response, and commitment.</p></div><b>' + (complete ? 'Plan complete' : 'Four decisions required') + '</b></header>'
+      + (!entries.length ? '<div class="wk-archive-empty"><b>No saved cartography entry is available yet.</b><span>Return to an earlier week and save an Activity Note or weekly reflection. This activity will not invent evidence for you.</span></div>' : '<div class="wk-compass-builder"><label><span>1. CHOOSE YOUR EVIDENCE</span><select aria-label="Choose a saved Personal Cartography entry" onchange="SOC.actPick(\'' + sourceKey + '\',this.value === \'\' ? -1 : Number(this.value))">' + sourceOptions + '</select></label><section><span>2. NAME THE MECHANISM</span><div role="group" aria-label="Choose a New Jim Code mechanism">' + choiceButtons(d.mechanisms || [], mechanismKey, mechanismChoice) + '</div></section><section><span>3. CHOOSE A RESPONSE</span><div role="group" aria-label="Choose a response">' + choiceButtons(d.responses || [], responseKey, responseChoice) + '</div></section><section><span>4. MAKE A COMMITMENT</span><div role="group" aria-label="Choose a forward commitment">' + choiceButtons(d.commitments || [], commitmentKey, commitmentChoice) + '</div></section></div>')
+      + plan + '</section>';
   }
   function actLab(w, a) {
     var d = a.data || {}, levers = d.levers || [], pick = d.pick || 2, key = 'a|' + w + '|lab', chosen = state.act[key] || [];
@@ -4956,6 +6146,7 @@
     state.simLab = state.simLab || {};
     state.simLab[w] = state.simLab[w] || { caseIndex: 0, systemIndex: 0, safeguardIndex: 0, history: [] };
     if (!Array.isArray(state.simLab[w].history)) state.simLab[w].history = [];
+    state.simLab[w].history = state.simLab[w].history.filter(function (item) { return item && item.mode === 'configuration'; });
     return state.simLab[w];
   }
   function simChoiceOptions(items, selected) {
@@ -4964,9 +6155,9 @@
     }).join('');
   }
   function simOutcomeCopy(kind) {
-    if (kind === 'positive') return 'The person moves through without added burden in this run.';
-    if (kind === 'neutral') return 'The case pauses for review. The outcome remains open.';
-    return 'The system adds delay, denial, exposure, or extra proof in this run.';
+    if (kind === 'positive') return 'This configuration lowers the risk that the system adds an avoidable burden. It still needs evidence, monitoring, and a real correction route.';
+    if (kind === 'neutral') return 'This configuration leaves important judgment unresolved. A human review may help, but only if the reviewer has context and authority to change the outcome.';
+    return 'This configuration combines conditions that can add delay, denial, exposure, or extra proof. The model is directing you to the institutional choices that create that risk.';
   }
   function simulationSection(w) {
     var SIM = window.BFS218_SIMULATIONS || {};
@@ -4975,49 +6166,89 @@
     var st = simLabState(w);
     var hist = st.history || [];
     var last = hist.length ? hist[hist.length - 1] : null;
+    var chosenCase = spec.cases[st.caseIndex] || spec.cases[0] || ['No record condition selected'];
+    var chosenSystem = spec.systems[st.systemIndex] || spec.systems[0] || ['No institutional rule selected'];
+    var chosenGuard = spec.safeguards[st.safeguardIndex] || spec.safeguards[0] || ['No review path selected'];
     var result = '';
     if (last) {
-      var total = last.total || 1;
-      var pos = Math.round((last.positive || 0) / total * 100);
-      var neu = Math.round((last.neutral || 0) / total * 100);
-      var bur = Math.max(0, 100 - pos - neu);
-      result = '<div class="sim-result" role="status" aria-live="polite">'
-        + '<div class="sim-result-head"><span>Most recent run</span><b>' + total + (total === 1 ? ' case' : ' cases') + '</b></div>'
-        + '<div class="sim-bars" aria-label="Simulation outcome distribution">'
-        + '<div><b>Moved through</b><span><i style="width:' + pos + '%"></i></span><strong>' + pos + '%</strong></div>'
-        + '<div><b>Held for review</b><span><i style="width:' + neu + '%"></i></span><strong>' + neu + '%</strong></div>'
-        + '<div class="risk"><b>Added burden</b><span><i style="width:' + bur + '%"></i></span><strong>' + bur + '%</strong></div>'
-        + '</div>'
-        + (total === 1 ? '<p>' + esc(simOutcomeCopy(last.dominant)) + ' One case can surprise. Run a larger batch before you make a claim about the pattern.</p>' : '<p>The batch shows the pattern created by the settings you chose. Change one condition, run it again, and compare the distributions.</p>')
+      var bandLabel = last.dominant === 'positive' ? 'Lower risk of added burden' : last.dominant === 'neutral' ? 'Judgment remains unresolved' : 'Higher risk of added burden';
+      result = '<div class="sim-result sim-reading ' + esc(last.dominant) + '" role="status" aria-live="polite">'
+        + '<div class="sim-result-head"><span>Teaching-model reading</span><b>' + esc(bandLabel) + '</b></div>'
+        + '<p>' + esc(simOutcomeCopy(last.dominant)) + '</p>'
+        + '<div class="sim-question"><b>Now ask:</b> Which selected condition produced that reading, and what evidence would you need before making the same claim about a real system?</div>'
         + '</div>';
     }
     var history = hist.slice(-4).reverse().map(function (h) {
-      var t = h.total || 1;
-      return '<li><b>' + t + (t === 1 ? ' case' : ' cases') + '</b><span>' + Math.round((h.positive || 0) / t * 100) + '% moved through, ' + Math.round((h.neutral || 0) / t * 100) + '% reviewed, ' + Math.round((h.burden || 0) / t * 100) + '% added burden</span></li>';
+      var hc = spec.cases[h.caseIndex] || spec.cases[0] || ['Record'];
+      var hs = spec.systems[h.systemIndex] || spec.systems[0] || ['Rule'];
+      var hg = spec.safeguards[h.safeguardIndex] || spec.safeguards[0] || ['Review'];
+      var label = h.dominant === 'positive' ? 'lower risk' : h.dominant === 'neutral' ? 'unresolved' : 'higher risk';
+      return '<li><b>' + esc(label) + '</b><span>' + esc(hc[0]) + ' | ' + esc(hs[0]) + ' | ' + esc(hg[0]) + '</span></li>';
     }).join('');
-    return '<section class="sim-lab" aria-label="Interactive systems simulation">'
-      + '<div class="sim-head"><div><span class="mono">SYSTEMS SIMULATION</span><h2>' + esc(spec.title) + '</h2></div><p>You are changing a fictional institution, not predicting a person\'s life. The percentages are produced by this teaching model and are not real-world population estimates.</p></div>'
+    return '<section class="sim-lab" aria-label="Interactive system design comparison">'
+      + '<div class="sim-head"><div><span class="mono">SYSTEM DESIGN STUDIO</span><h2>' + esc(spec.title) + '</h2></div><p>Build one fictional configuration, then read the institutional pattern it creates. This is a qualitative teaching model: it produces no fake people, random cases, or population percentages.</p></div>'
       + '<div class="sim-controls">'
       + '<label><b>' + esc(spec.caseLabel) + '</b><select onchange="SOC.simChoose(' + w + ',\'caseIndex\',Number(this.value))">' + simChoiceOptions(spec.cases, st.caseIndex) + '</select></label>'
       + '<label><b>' + esc(spec.systemLabel) + '</b><select onchange="SOC.simChoose(' + w + ',\'systemIndex\',Number(this.value))">' + simChoiceOptions(spec.systems, st.systemIndex) + '</select></label>'
       + '<label><b>' + esc(spec.safeguardLabel) + '</b><select onchange="SOC.simChoose(' + w + ',\'safeguardIndex\',Number(this.value))">' + simChoiceOptions(spec.safeguards, st.safeguardIndex) + '</select></label>'
       + '</div>'
-      + '<div class="sim-actions"><button type="button" onclick="SOC.simRun(' + w + ',1)">Run one case</button><button type="button" class="primary" onclick="SOC.simRun(' + w + ',100)">Run 100 cases</button><button type="button" onclick="SOC.simReset(' + w + ')">Clear comparison</button></div>'
-      + '<p class="sim-principle"><b>What to look for:</b> one run contains uncertainty. Repeated runs reveal what the system makes more likely. A safeguard can reduce risk without making every outcome identical.</p>'
+      + '<div class="sim-story" aria-label="Selected system configuration"><div><span>1. What enters</span><b>' + esc(chosenCase[0]) + '</b></div><div><span>2. What the institution does</span><b>' + esc(chosenSystem[0]) + '</b></div><div><span>3. What recourse exists</span><b>' + esc(chosenGuard[0]) + '</b></div></div>'
+      + '<div class="sim-actions"><button type="button" class="primary" onclick="SOC.simRun(' + w + ',1)">Interpret this configuration</button><button type="button" onclick="SOC.simReset(' + w + ')">Clear comparison</button></div>'
+      + '<p class="sim-principle"><b>What to look for:</b> change one institutional condition at a time. Compare how the rule and the correction path alter who must wait, appeal, provide extra proof, or carry the error.</p>'
       + result
-      + (history ? '<details class="sim-history"><summary>Compare recent runs</summary><ol>' + history + '</ol></details>' : '')
-      + weekNoteBox(w, 'simulation', 'Simulation note', 'Change one condition. What changed across the larger batch, and which institutional choice caused the shift?')
+      + (history ? '<details class="sim-history"><summary>Compare configurations you interpreted</summary><ol>' + history + '</ol></details>' : '')
+      + weekNoteBox(w, 'simulation', 'System comparison note', 'Change one condition. What changed in the model\'s reading, and which institutional choice caused the shift?')
       + '</section>';
+  }
+  function activityRoomProfile(w, a) {
+    var profiles = {
+      1: ['FIELD SCANNER', 'Notice before you diagnose', 'Scan an ordinary system, commit to a prediction, and make the hidden rule visible.', ['model', 'experiment', 'action']],
+      2: ['OUTCOME LENS', 'Hold the rule against its outcomes', 'Match concrete cases to the mechanism they reveal, then change one institutional condition and compare.', ['model', 'action', 'compare']],
+      3: ['DECISION MAZE', 'Trace the design choice', 'Enter one decision at a time. Each fork shows how a neutral-looking design can widen an existing gap.', ['experiment', 'model', 'action']],
+      4: ['DEFAULT CONTROL ROOM', 'Change what happens before anyone clicks', 'Run each preset, compare the burden before and after the change, and test whether the repeated failure is systemic.', ['action', 'model']],
+      5: ['INTERSECTIONAL AUDIT LAB', 'Break the average apart', 'Inspect the result by overlapping groups until the people hidden by an overall score become visible.', ['model', 'action']],
+      6: ['CANADIAN CASEFILE', 'Follow the evidence without merging the cases', 'Open one documented file at a time and keep the institution, finding, course lens, and evidence limit distinct.', ['action']],
+      7: ['SYSTEM ASSEMBLY BENCH', 'Build the anatomy', 'Assemble the parts on the bench. The point is the relationship among them, not one dramatic bad component.', ['action', 'model']],
+      8: ['GOVERNANCE TABLE', 'Move authority, not only information', 'Reconstruct OCAP® inside the real First Nations Regional Health Survey, then keep its First Nations scope distinct from other governance frameworks.', ['action', 'model']],
+      9: ['PROMISE X-RAY', 'Inspect the fix behind the promise', 'Open three documented cases, keep the benefit visible, and test the surveillance, sorting, control, and power behind the claim of help.', ['action', 'model']],
+      10: ['THRESHOLD LAB', 'Separate prediction from institutional choice', 'Use the published community-college study to see how a model, cutoff, support rule, review, and appeal distribute responsibility.', ['model', 'action']],
+      11: ['COMMUNITY NETWORK STUDIO', 'Reconstruct a documented power shift', 'Use the Detroit Community Technology Project to distinguish residents receiving a finished tool from residents learning, designing, building, maintaining, and governing it.', ['action', 'model']],
+      12: ['POLICY HEARING', 'Match each argued gap to institutional work', 'Use a historical AIDA file to connect five criticisms to five recommendations while keeping the proposal\'s later status visible.', ['action', 'model']],
+      13: ['MAP ARCHIVE', 'Read your own change as evidence', 'Place real saved early and later entries together and mark only the changes those entries support.', ['action']],
+      14: ['COMPASS ROOM', 'Build the evidence spine of your own answer', 'Choose one saved entry, one mechanism, one response, and one commitment without asking the site to write your conclusion.', ['action']]
+    };
+    var p = profiles[w] || ['ACTIVITY ROOM', (a && a.title) || 'Work the weekly idea', (a && a.why) || 'Use the activity to make the week concrete.', ['model', 'action']];
+    return { room: p[0], title: p[1], lead: p[2], order: p[3] };
+  }
+  function activityRoomSequence(w, a, inner) {
+    var p = activityRoomProfile(w, a);
+    var blocks = {
+      model: activityModelSection(w, a),
+      experiment: experimentSection(w),
+      compare: simulationSection(w),
+      action: '<section class="activity-primary" aria-label="Primary weekly activity"><div class="mono activity-primary-kicker">YOUR MOVE THIS WEEK</div><h2>' + esc(a.title) + '</h2><p class="activity-primary-lead">' + esc(a.what) + '</p>' + inner + activityOutputGuide(w, a) + '</section>'
+    };
+    var routeLabels = { model: 'Explore the scene', experiment: 'Commit and reveal', compare: 'Compare designs', action: 'Make the move' };
+    var route = p.order.map(function (key, i) { return '<span><b>' + (i + 1) + '</b>' + esc(routeLabels[key] || key) + '</span>'; }).join('');
+    var mission = '<section class="activity-mission activity-mission-w' + w + '"><div><span class="mono">WEEK ' + w + ' &middot; ' + esc(p.room) + '</span><h1>' + esc(a.title) + '</h1><p class="activity-mission-directive"><b>' + esc(p.title) + '.</b> ' + esc(p.lead) + '</p></div><div class="activity-mission-route" aria-label="This activity\'s route">' + route + '</div></section>';
+    return mission + p.order.map(function (key, i) { var content = blocks[key] || ''; return content ? '<div class="activity-zone activity-zone-' + esc(key) + '" data-zone-number="' + (i + 1) + '">' + content + '</div>' : ''; }).join('');
   }
   function activityScreen() {
     var w = state.activityReturn, d = weekData(w);
     if (!d || !d.activity) return '<div style="padding:30px 0;color:var(--ink-dim)">No activity here. <button onclick="SOC.go(\'journey\')" style="background:none;border:none;color:var(--red);font-weight:600;cursor:pointer">Back to your journey</button></div>';
     var a = d.activity;
-    var head = '<section class="jhero" style="margin:0 0 18px;padding:26px 28px"><div class="mono" style="font-size:.7rem;letter-spacing:.06em;color:var(--red);font-weight:700;margin-bottom:7px">WEEK ' + w + ' ACTIVITY</div><h1 style="font-size:1.7rem;line-height:1.15;font-weight:700;margin:0 0 12px;color:var(--ink)">' + esc(a.title) + '</h1><div class="wk-whatwhy" style="margin:0"><b>What this is:</b> ' + esc(a.what) + '<br><br><b>Why you are doing it:</b> ' + esc(a.why) + '</div></section>' + lensActivityBlock(w, a, true) + activityStudentPath(w, a) + activityModelSection(w, a);
+    var head = lensActivityBlock(w, a, true);
     var inner = '';
-    switch (a.archetype) { case 'match': inner = actMatch(w, a); break; case 'scenario': inner = actScenario(w, a); break; case 'toggle': inner = actToggle(w, a); break; case 'assemble': inner = actAssemble(w, a); break; case 'lab': inner = actLab(w, a); break; case 'capstone': inner = actCapstone(w, a); break; default: inner = '<p style="color:var(--ink-dim)">This activity is not set up yet.</p>'; }
+    if (w === 8) inner = actRhsGovernance(w, a);
+    else if (w === 9) inner = actBenevolenceCases(w, a);
+    else if (w === 10) inner = actThresholdStudy(w, a);
+    else if (w === 11) inner = actDctpPowerShift(w, a);
+    else if (w === 12) inner = actAidaHearing(w, a);
+    else if (w === 13) inner = actCartographyArchive(w, a);
+    else if (w === 14) inner = actCourseAnswer(w, a);
+    else switch (a.archetype) { case 'match': inner = actMatch(w, a); break; case 'scenario': inner = w === 6 ? actCanadaCaseTrail(w, a) : actScenario(w, a); break; case 'toggle': inner = w === 4 ? actDefaultControl(w, a) : actToggle(w, a); break; case 'assemble': inner = w === 7 ? actSystemAnatomy(w, a) : actAssemble(w, a); break; case 'lab': inner = actLab(w, a); break; case 'capstone': inner = actCapstone(w, a); break; default: inner = '<p style="color:var(--ink-dim)">This activity is not set up yet.</p>'; }
     var foot = '<div style="margin-top:22px;padding-top:18px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap"><div style="font-size:.86rem;color:var(--ink-dim)">When you are done, go back to the week to answer the reflection and save your work.</div><button onclick="SOC.station(' + w + ')" class="wk-cta" style="margin:0">Back to Week ' + w + ' ' + ic('chevron', 16, 2.4) + '</button></div>';
-    return '<div class="rise" style="margin:0 auto">' + mobileActivityActions(w, d) + head + experimentSection(w) + simulationSection(w) + '<div class="exp-workbench-head"><span class="mono">THE WORKBENCH</span><b>Now practise the idea the experiment and simulation showed you</b></div>' + activityInteractionGuide(w, a) + activityOutputGuide(w, a) + inner + weekNoteBox(w, 'activity', 'Activity Notes', 'What did this activity make you notice about the week\'s idea?') + foot + '</div>';
+    return '<div class="rise activity-room activity-room-w' + w + '" style="margin:0 auto">' + mobileActivityActions(w, d) + head + activityRoomSequence(w, a, inner) + weekNoteBox(w, 'activity', 'Activity Notes', 'What did this activity make you notice about the week\'s idea?') + foot + '</div>';
   }
   function activitySummary(w, d) {
     var a = d.activity || {};
@@ -5027,6 +6258,16 @@
       return audited.length ? ('You audited ' + audited.length + ' of 3 systems. Every system you tested failed darker-skinned women the most (up to 34.7 percent), against near-zero error for lighter-skinned men. The disparity was hidden by overall accuracy and only an intersectional cut revealed it.') : '(activity not run yet)';
     }
     var data = a.data || {};
+    if (w === 4) { var defaults = data.toggles || [], reviewedDefaults = 0; defaults.forEach(function (unused, i) { if (typeof actMap['a|4|default|judgement|' + i] === 'number') reviewedDefaults++; }); return reviewedDefaults ? ('You reviewed ' + reviewedDefaults + ' of ' + defaults.length + ' defaults and tested whether their repeated burden is systemic.') : '(activity not started yet)'; }
+    if (w === 6) { var files = data.caseFiles || [], checkedFiles = 0; files.forEach(function (unused, i) { if (actMap['a|6|case|claim|' + i] === 1) checkedFiles++; }); return checkedFiles ? ('You completed a source-bounded reading of ' + checkedFiles + ' Canadian case' + (checkedFiles === 1 ? '' : 's') + ' without merging their findings.') : '(activity not started yet)'; }
+    if (w === 7) { var systems = data.systems || [], systemIndex = Number(actMap['a|7|anatomy|system']) || 0, chosenSystem = systems[systemIndex] || systems[0] || {}, assembled = (actMap['a|7|anatomy|asm|' + (chosenSystem.id || systemIndex)] || []).length; return assembled ? ('You assembled ' + assembled + ' of 5 parts for ' + (chosenSystem.label || 'the selected system') + ' and kept its evidence boundary visible.') : '(activity not started yet)'; }
+    if (w === 8) { var principles = data.principles || [], openedPrinciples = principles.filter(function (p) { return !!actMap['a|8|rhs|principle|' + p.id]; }).length, rhsBoundary = actMap['a|8|rhs|boundary']; return openedPrinciples ? ('You opened ' + openedPrinciples + ' of ' + principles.length + ' OCAP® principles in the RHS case' + (rhsBoundary === 1 ? ' and kept the First Nations and community-specific governance boundary intact.' : '.') ) : '(activity not started yet)'; }
+    if (w === 9) { var realCases = data.realCases || [], testedCases = realCases.filter(function (unused, i) { return actMap['a|9|benevolence|judge|' + i] === 1; }).length; return testedCases ? ('You applied the benevolence test to ' + testedCases + ' of ' + realCases.length + ' documented cases while keeping both benefit and burden visible.') : '(activity not started yet)'; }
+    if (w === 10) { var threshold = actMap['a|10|threshold|policy'], acc = data.accountability || [], accAnswered = acc.filter(function (unused, i) { return typeof actMap['a|10|threshold|accountability|' + i] === 'number'; }).length; return typeof threshold === 'number' || accAnswered ? ('You tested one institutional support threshold and classified ' + accAnswered + ' of ' + acc.length + ' accountability claims without treating the study as an operational result.') : '(activity not started yet)'; }
+    if (w === 11) { var roles = data.powerRoles || [], reconstructed = roles.filter(function (unused, i) { return actMap['a|11|dctp|role|' + i] === 1; }).length; return reconstructed ? ('You reconstructed ' + reconstructed + ' of ' + roles.length + ' documented DCTP power roles and distinguished community authority from a vendor-led patch.') : '(activity not started yet)'; }
+    if (w === 12) { var gaps = data.gaps || [], matched = gaps.filter(function (unused, i) { return actMap['a|12|aida|answer|' + i] === i; }).length; return matched ? ('You matched ' + matched + ' of ' + gaps.length + ' argued AIDA gaps to the author\'s recommendations and kept the failed proposal\'s status visible.') : '(activity not started yet)'; }
+    if (w === 13) { var early = actMap['a|13|archive|early'], later = actMap['a|13|archive|later'], dimensions = 0; for (var di = 0; di < 4; di++) if (actMap['a|13|archive|dimension|' + di]) dimensions++; return typeof early === 'number' || typeof later === 'number' ? ('You placed saved early and later cartography entries into comparison and marked ' + dimensions + ' evidence-supported change' + (dimensions === 1 ? '' : 's') + '.') : '(activity not started yet)'; }
+    if (w === 14) { var chosenParts = ['source', 'mechanism', 'response', 'commitment'].filter(function (part) { return typeof actMap['a|14|compass|' + part] === 'number' && actMap['a|14|compass|' + part] >= 0; }).length; return chosenParts ? ('You selected ' + chosenParts + ' of 4 parts for an evidence-based final answer plan. The course did not write the answer for you.') : '(activity not started yet)'; }
     if (a.archetype === 'match') { var pairs = data.pairs || [], uniq = [], seen = {}, done = 0, correct = 0; pairs.forEach(function (q) { if (!seen[q.match]) { seen[q.match] = 1; uniq.push(q.match); } }); pairs.forEach(function (p, i) { var s = actMap['a|' + w + '|m|' + i]; if (s != null) { done++; if (uniq[s] === p.match) correct++; } }); return done ? ('You matched ' + correct + ' of ' + pairs.length + ' examples to the mechanism each one shows.') : '(activity not started yet)'; }
     if (a.archetype === 'scenario') { var steps = data.steps || [], n = 0; steps.forEach(function (st, i) { if (actMap['a|' + w + '|s|' + i] != null) n++; }); return n ? ('You worked through ' + n + ' of ' + steps.length + ' decision points and saw which design choices lead to harm.') : '(activity not started yet)'; }
     if (a.archetype === 'toggle') { var tgs = data.toggles || [], n2 = 0; tgs.forEach(function (t, i) { if (actMap['a|' + w + '|t|' + i]) n2++; }); return 'You explored the system defaults and saw who each one harms (' + n2 + ' of ' + tgs.length + ' turned on).'; }
@@ -5058,7 +6299,7 @@
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:8px">WEEK ' + w + ' · ' + esc(weekDate(w)) + ' · ' + (isFinal ? 'FINAL WEEK' : 'FINAL PROJECT WEEK') + '</div>'
       + '<h1 style="font-size:2rem;line-height:1.12;font-weight:700;margin:0 0 12px;color:var(--ink)">' + esc(weekTitle(w)) + '</h1>'
       + (d.overview ? '<p style="font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0 0 4px;">' + esc(d.overview) + '</p>' : '')
-      + '<div style="font-size:1.02rem;font-weight:600;color:var(--ink);border-left:3px solid var(--red);padding-left:14px;margin:16px 0">No new teaching material this week. This time is yours: focus on your work' + (isFinal ? ' and close out the course. Nothing is due.' : '. Your final project is due this week.') + ((d.readings && d.readings.length) ? ' The readings below are revisit anchors from earlier weeks, not new assignments.' : '') + '</div>'
+      + '<div style="font-size:1.02rem;font-weight:600;color:var(--ink);border-left:3px solid var(--red);padding-left:14px;margin:16px 0">No new teaching material this week. This time is yours: focus on your work' + (isFinal ? ' and close out the course. The 5 percent Final Learning Reflection is due Tuesday, December 15.' : '. Your final project is due this week.') + ((d.readings && d.readings.length) ? ' The readings below are revisit anchors from earlier weeks, not new assignments.' : '') + '</div>'
       + '</div></section>';
     var path = capstoneLearningPath(w, d);
     var outcomes = (d.outcomes && d.outcomes.length) ? '<section id="wk-out" class="node"><h2 class="wk-sec">Learning outcomes</h2><p style="margin:0 0 8px;font-size:.9rem">By the end of this week, you will be able to:</p>' + d.outcomes.map(function (o) { return '<div class="wk-oc"><span class="b"></span>' + esc(o) + '</div>'; }).join('') + '</section>' : '';
@@ -5096,7 +6337,7 @@
       + (d.overview ? '<p style="font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0 0 4px;">' + esc(d.overview) + '</p>' : '')
       + '</div></section>';
     var how = '<section id="wk-how" class="node"><h2 class="wk-sec">How this course works</h2>'
-      + '<p style="margin:0 0 10px;font-size:1rem;line-height:1.6">Each teaching week opens a module with its readings, a short interactive activity, and optional practice, a study guide and a knowledge check, that are never graded or submitted to the instructor. When browser storage is available, practice entries may remain locally for review. You work through the week at your own pace. A Study Week (October 26 to 30) falls between Weeks 7 and 8, a break with no new work, and nothing is due in the final week. Blackboard remains the official Seneca course platform for announcements, submissions, discussions, grades, course records, and administrative functions.</p>'
+      + '<p style="margin:0 0 10px;font-size:1rem;line-height:1.6">Each teaching week opens a module with its readings, a short interactive activity, and optional practice, a study guide and a knowledge check, that are never graded or submitted to the instructor. When browser storage is available, practice entries may remain locally for review. You work through the week at your own pace. A Study Week (October 26 to 30) falls between Weeks 7 and 8 with no new work. The 5 percent Final Learning Reflection is due in Week 14. Blackboard remains the official Seneca course platform for announcements, submissions, discussions, grades, course records, and administrative functions.</p>'
       + '<p style="margin:0;font-size:1rem;line-height:1.6">This week is your orientation. There are no readings and nothing to submit. When you are ready, begin with Week ' + (next != null ? next : 2) + '.</p></section>';
     var audioPk = audioPackSection(w);
     var visual = visualOverviewSection(w, d);
@@ -6184,16 +7425,28 @@
       + '</div>';
   }
   function keyDatesList() {
-    /* schema: [label, subtext, category, assignmentId?]  category = 'due' | 'open' | 'class' (finalized ASYNC due dates) */
-    /* Stable assignment IDs keep public links correct if assignment cards are reordered. */
+    /* Stable assignment IDs keep public links correct if titles change. Blackboard remains official. */
     return [
       { d: '2026-09-08', it: [['Course opens', 'Week 1 material is available', 'class']] },
-      { d: '2026-09-21', it: [['Map Exchange opens', 'weekly, Weeks 3 to 12', 'open', 'map-exchange'], ['Compass Check opens', 'complete Weeks 2 to 6 before beginning', 'open', 'compass-check'], ['Canadian Case File opens', 'first-half window', 'open', 'case-file']] },
-      { d: '2026-10-25', it: [['Map Exchange checkpoint', 'due, first-half entries', 'due', 'map-exchange'], ['Compass Check', 'due, 20 percent', 'due', 'compass-check'], ['Canadian Case File', 'due, 20 percent', 'due', 'case-file']] },
-      { d: '2026-10-26', it: [['Study Week', 'Oct 26 to 30. No new material.', 'class']] },
-      { d: '2026-11-02', it: [['Design the Repair opens', 'second-half window', 'open', 'repair'], ['Personal Cartography opens', 'final project', 'open', 'cartography']] },
-      { d: '2026-12-11', it: [['Design the Repair', 'due, 20 percent', 'due', 'repair'], ['Map Exchange final close', 'due, full-term map', 'due', 'map-exchange'], ['Personal Cartography', 'final project due, 20 percent', 'due', 'cartography']] },
-      { d: '2026-12-16', it: [['Last day of classes', 'Nothing is due in Week 14', 'class']] }
+      { d: '2026-09-14', it: [['Starting Point: Digital Systems Vocabulary', 'ungraded check due', 'due']] },
+      { d: '2026-09-21', it: [['Digital Systems Field Notes Portfolio 1 opens', 'three private notes from Weeks 3 to 6', 'open', 'map-exchange'], ['Canadian Technology Investigation case preview opens', 'choose a pathway before the full room opens', 'open', 'case-file'], ['Practice: Engineered Inequality in Tenant Screening', 'ungraded practice due', 'due']] },
+      { d: '2026-10-13', it: [['Digital Decision Scenarios opens', 'complete Weeks 2 to 6 before beginning', 'open', 'compass-check'], ['Canadian Technology Investigation full room opens', 'source bundle and submission area', 'open', 'case-file']] },
+      { d: '2026-10-18', it: [['Digital Systems Field Notes Portfolio 1', 'three-note journal due; 10 percent', 'due', 'map-exchange']] },
+      { d: '2026-10-23', it: [['Digital Decision Scenarios', 'due; 20 percent', 'due', 'compass-check']] },
+      { d: '2026-10-25', it: [['Canadian Technology Investigation', 'due; 20 percent', 'due', 'case-file']] },
+      { d: '2026-10-26', it: [['Study Week', 'October 26 to 30. No new material or graded deadline.', 'support']] },
+      { d: '2026-11-02', it: [['Digital Systems Field Notes Portfolio 2 opens', 'three private notes from Weeks 8 to 11', 'open', 'map-exchange'], ['Design the Repair anchor choice opens', 'identify the earlier evidence you will repair', 'open', 'repair'], ['Personal Cartography Milestone 1 opens', 'first route plan', 'open', 'cartography']] },
+      { d: '2026-11-08', it: [['Personal Cartography Milestone 1', 'due; milestone is not separately graded', 'due', 'cartography']] },
+      { d: '2026-11-16', it: [['Personal Cartography Milestone 2 opens', 'develop the route across both halves', 'open', 'cartography']] },
+      { d: '2026-11-22', it: [['Personal Cartography Milestone 2', 'due; milestone is not separately graded', 'due', 'cartography']] },
+      { d: '2026-11-23', it: [['Design the Repair full studio opens', 'prototype and stress tests', 'open', 'repair']] },
+      { d: '2026-11-29', it: [['Digital Systems Field Notes Portfolio 2', 'three-note journal due; 10 percent', 'due', 'map-exchange']] },
+      { d: '2026-11-30', it: [['Personal Cartography Milestone 3 and final area open', 'final route development', 'open', 'cartography']] },
+      { d: '2026-12-02', it: [['Personal Cartography Milestone 3', 'due; milestone is not separately graded', 'due', 'cartography']] },
+      { d: '2026-12-06', it: [['Design the Repair', 'due; 20 percent', 'due', 'repair']] },
+      { d: '2026-12-11', it: [['Personal Cartography', 'final project due; 15 percent', 'due', 'cartography']] },
+      { d: '2026-12-15', it: [['Final Learning Reflection', 'due; 5 percent', 'due', 'final-reflection']] },
+      { d: '2026-12-16', it: [['Last day of classes', 'Final assessment period ends', 'support']] }
     ];
   }
   var KD_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
@@ -6308,7 +7561,7 @@
     return '<section class="node kd-cal" aria-label="Key dates for this course">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">DUE DATES</div>'
       + '<h2 class="wk-sec" style="margin:0 0 4px">What you hand in, and when</h2>'
-      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">There are two due dates. Roughly half of the work is due at the first, half at the second. Nothing is due in the final week. These are your due dates.</p>'
+      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">The assessment work opens in stages from September 21 to November 30. The dated journals, scenario analysis, investigation, repair, milestones, and final project each have their own deadline; Blackboard remains the official source.</p>'
       + '<div class="kd-list">' + keyDatesRows(['due']) + '</div>'
       + '<h2 class="wk-sec" style="margin:24px 0 4px">When each assignment opens on Blackboard</h2>'
       + '<p style="font-size:.85rem;line-height:1.5;color:var(--ink-faint);margin:0 0 10px">These are opening dates, not deadlines.</p>'
@@ -6384,229 +7637,250 @@
   function assignmentsData() { return assignmentsAll(); }
   function assignmentsAll() {
     return [
-
       {
         id: 'map-exchange',
-        title: 'Map Exchange',
-        short: 'Share one located observation each week',
-        weight: '20 marks (20%)',
-        timing: 'Ongoing Weeks 3-12. Graded at the October 25 checkpoint and again at the end of Week 13.',
-        opens: 'Starts Week 3',
+        title: 'Digital Systems Field Notes Portfolio',
+        short: 'Build six private field notes from real digital encounters',
+        weight: '20 marks (20%): two private journals worth 10% each',
+        timing: 'Portfolio 1 opens September 21 and is due October 18. Portfolio 2 opens November 2 and is due November 29.',
+        opens: 'Portfolio 1: Week 3. Portfolio 2: Week 8.',
         release: '2026-09-21',
-        due: 'Checkpoint due by October 25, 2026. Final close due by December 11, 2026.',
-        sectionDue: {
-          async: 'Checkpoint due by October 25, 2026; final close due by December 11, 2026.',
-          sync: 'Weekly Weeks 2 to 12; closes in Week 12.'
-        },
-        purpose: 'This assignment builds the habit that makes the rest of the course possible: noticing how ordinary digital systems shape people differently.',
-        role: 'This is the weekly habit. You keep noticing where technology sorts, watches, helps, hides, or misreads people in everyday life.',
+        due: 'Portfolio 1 due Sunday, October 18, 2026. Portfolio 2 due Sunday, November 29, 2026.',
+        purpose: 'Build a private record of how ordinary digital systems appear in your life, then move from noticing an interface or decision to explaining its design, data, power, and consequences.',
+        role: 'This is the observation spine of the course. Your six notes give later assessments dated, privacy-safe evidence that comes from your own encounters.',
         really: [
-          'Post one specific observation from your digital life, community, workplace, or field: what you encountered, roughly when, and where.',
-          'Connect it to a specific point, example, or passage from the week\'s reading, then name who is affected.',
-          'Reply to one classmate with a question, addition, or respectful challenge that responds to something specific in their entry.',
-          'At the October 25 checkpoint and the Week 13 close, answer one unscripted instructor question about your own map. Point to two entries by week and explain what you noticed and how the reading shaped them.'
+          'Complete three dated field notes in each private Blackboard Journal.',
+          'Begin each note with one ordinary digital encounter you actually had and one privacy-safe trace or precise interface description.',
+          'Explain what you did, what the system did next, who was affected, and who could question or change the result.',
+          'Use one course concept and one specific source anchor, then name what changed in your thinking and what remains uncertain.'
         ],
         submit: [
-          'A short weekly Blackboard contribution: text, a captioned image you personally encountered or captured, or a 30-second audio note.',
-          'One brief peer reply each week.',
-          'At each grading point, a 45 to 60 second recorded answer to the instructor question, or the short timed written alternative.'
+          'Portfolio 1: three notes using prompts from Weeks 3 to 6.',
+          'Portfolio 2: three new notes using prompts from Weeks 8 to 11.',
+          'Each note may be 150 to 250 words, one to two minutes of audio, or a captioned visual note with the required labels and source anchor.'
         ],
         criteria: [
-          ['Consistency', 5, 'You show up across the term instead of posting everything at the end.'],
-          ['Located specificity', 5, 'Your entries come from your own digital life, community, or field, not generic examples.'],
-          ['Connection to reading', 4, 'You name the week\'s concept accurately and connect it to a specific point in the reading.'],
-          ['Exchange', 3, 'Your reply responds to a peer with more than agreement: a question, extension, or respectful challenge.'],
-          ['Growth', 3, 'Your later posts show sharper noticing than your early posts.']
+          ['Specific encounter and trace', 2, 'Records a concrete encounter and includes a safe, original trace or precise interface description.'],
+          ['Course concept and source', 2, 'Uses one concept accurately and points to a specific course source.'],
+          ['Consequence and power', 2, 'Explains who is affected, what follows, and who can change or challenge the system.'],
+          ['Reflection and growth', 2, 'Shows what changed, became more complicated, or remains uncertain.'],
+          ['Complete, clear, and privacy-safe', 2, 'Keeps all three notes understandable, accessible, and carefully redacted.']
         ],
         strong: [
-          'Names the exact technology or digital setting.',
-          'Uses one course term correctly.',
-          'Shows who carries the harm or who benefits from the default.'
+          'Dates and locates a real, low-risk encounter without revealing a precise location.',
+          'Uses a specific course source instead of a general internet summary.',
+          'Shows a change, complication, or uncertainty instead of forcing a success story.'
         ],
         misses: [
-          'Posting a general opinion with no real example.',
-          'Forgetting the reading connection.',
-          'Leaving the peer reply until the end.'
+          'Using a generic or invented example.',
+          'Posting names, account details, addresses, messages, or other identifying information.',
+          'Describing the interface without explaining consequence, power, or a course concept.'
         ],
-        checks: ['I named a real tool or digital moment.', 'I connected it to a specific point in the week\'s reading.', 'I replied to a classmate in a useful way.', 'For a grading point, I can point to two of my own entries and account for them in my own words.']
+        checks: ['I used a real encounter from my own week.', 'My trace is original and safely redacted.', 'I named a course concept and specific source.', 'I explained consequence and power.', 'I completed the correct three-note journal in Blackboard.']
       },
       {
         id: 'compass-check',
-        title: 'Compass Check: Scenario Decisions and Your Mirror',
-        short: 'Make 25 scenario decisions, then examine your own pattern',
+        title: 'Digital Decision Scenarios',
+        short: 'Make 15 scenario choices, then examine your reasoning',
         weight: '20 marks (20%)',
-        timing: 'Available Monday, September 21. Complete Weeks 2 to 6 before you begin. Due Sunday, October 25, 2026, at 11:59 p.m., before Study Week.',
-        opens: 'Week 3',
-        release: '2026-09-21',
-        due: 'Due by Sunday, October 25, 2026, at 11:59 p.m.',
-        sectionDue: {
-          async: 'Due by Sunday, October 25, 2026, at 11:59 p.m.',
-          sync: 'Due by Friday, October 23, 2026, at 11:59 p.m.'
-        },
-        purpose: 'This assessment helps you notice how you currently interpret techno-racism and how carefully you can examine your own choices. Part A records your present judgment. Part B is where you use the Weeks 2 to 6 concepts to analyse that judgment.',
-        role: 'This is your first-half synthesis. The ungraded scenario choices show where your thinking begins; the four mirror responses ask you to examine that pattern with the course lenses.',
+        timing: 'Opens Tuesday, October 13. Due Friday, October 23, 2026, at 11:59 p.m. Eastern.',
+        opens: 'Week 6',
+        release: '2026-10-13',
+        due: 'Due Friday, October 23, 2026, at 11:59 p.m. Eastern.',
+        purpose: 'Use the first-half course ideas to examine how you make decisions about technology, evidence, responsibility, and repair. Honest analysis matters more than choosing a preferred attitude.',
+        role: 'This is a private, timed first-half synthesis. The choices record where you begin; the four reflections show how carefully you can analyse your own reasoning.',
         really: [
-          'Complete the learning for Weeks 2 to 6 before you begin, then choose a stable connection and a quiet period within the assessment window.',
-          'Open the assessment in Blackboard only when you are ready to begin the standard 90-minute window or your approved accommodated time.',
-          'Answer 25 required single-answer scenarios as you actually think. Every Part A option carries zero points; no choice is treated as a correct attitude.',
-          'Answer all four mirror reflections in 3 to 5 focused sentences each. Begin with the required scenario titles and the exact options you selected, then analyse your choices.',
-          'In one reflection, name a Part A selection you would now revisit and why. That becomes an anchor for your final Personal Cartography project.'
+          'Complete Weeks 2 to 6 before opening the Blackboard assessment.',
+          'Set aside the full 90-minute standard window or your approved accommodated time.',
+          'Answer 15 realistic multiple-choice scenarios. These choices are required but are not graded as right or wrong.',
+          'Complete four mirror reflections using the scenario names and choices recorded in your own attempt.'
         ],
         submit: [
-          'One completed Blackboard assessment: 25 required zero-point scenario choices and 4 written mirror responses worth 5 marks each.'
+          'One independent Blackboard attempt with 15 scenario choices and four mirror reflections.',
+          'Write three to five focused sentences for each reflection.'
         ],
-        technical: 'If Blackboard or your connection fails, capture the time and error message if possible, stop repeated submissions, and contact the instructor promptly. Verified access or platform failures follow the course and accessibility procedures; they are not treated as a second attempt by default.',
+        technical: 'If Blackboard or your connection fails, record the time and error if possible, stop repeated submissions, and contact the instructor promptly.',
         criteria: [
-          ['Reflection 1', 5, 'Name three scenarios and the selected option in each, then identify and explain a pattern.'],
-          ['Reflection 2', 5, 'Name the scenario, selected option, and almost-picked option, then examine the hesitation.'],
-          ['Reflection 3', 5, 'Name the scenario and selected option, then use one Weeks 2 to 6 concept accurately to reread it.'],
-          ['Reflection 4', 5, 'Name two scenarios and both selected options, compare responsibility across the settings, and identify a forward move.']
+          ['Mirror reflection 1', 5, 'Uses three recorded choices to identify and explain a pattern.'],
+          ['Mirror reflection 2', 5, 'Examines one hesitation and the values or concerns behind it.'],
+          ['Mirror reflection 3', 5, 'Uses one Weeks 2 to 6 concept to reread and complicate a recorded choice.'],
+          ['Mirror reflection 4', 5, 'Compares responsibility across two settings and names a practice to carry forward.']
         ],
         strong: [
-          'Names the exact scenarios and options recorded in your Blackboard attempt.',
-          'Uses a Weeks 2 to 6 concept accurately to reread a choice.',
-          'Examines a pattern or hesitation honestly instead of guessing a preferred attitude.',
-          'Names a concrete selection to revisit or a practice to carry forward.'
+          'Names the exact scenarios and choices recorded in the Blackboard attempt.',
+          'Uses a Weeks 2 to 6 concept accurately.',
+          'Examines a pattern or hesitation without guessing what the instructor wants to hear.'
         ],
         misses: [
           'Starting before completing Weeks 2 to 6.',
-          'Treating the zero-point scenarios as a hunt for the instructor\'s preferred attitude.',
-          'Writing general reflections that do not identify your own recorded choices.',
-          'Using generative AI or second-device help during the timed assessment.'
+          'Treating the ungraded choices as a hunt for a correct attitude.',
+          'Using generative AI, another person, or a second device during the attempt.'
         ],
-        checks: ['I completed Weeks 2 to 6.', 'I understand all Part A choices carry zero points.', 'I protected the full standard 90-minute window or my approved accommodated time.', 'My approved accommodations appear correctly in Blackboard.', 'I know all four reflections must cite choices from my own attempt.']
+        checks: ['I completed Weeks 2 to 6.', 'I protected the full attempt window.', 'My approved accommodations appear correctly in Blackboard.', 'I know the 15 choices are ungraded and all four reflections earn the marks.']
       },
       {
         id: 'case-file',
-        title: 'Canadian Case File',
-        short: 'Investigate one real Canadian system',
+        title: 'Canadian Technology Investigation',
+        short: 'Investigate one documented Canadian technology case',
         weight: '20 marks (20%)',
-        timing: 'Opens with the first-half window in Week 3. Due Sunday, October 25, 2026, at 11:59 p.m., before Study Week.',
-        opens: 'Week 3',
-        release: '2026-09-21',
-        due: 'Due by Sunday, October 25, 2026, at 11:59 p.m.',
-        purpose: 'This assignment moves from personal observation to a documented Canadian system so your analysis is grounded in real evidence.',
-        role: 'This turns the course outward. You investigate one real Canadian system and connect it to your own city, community, field, or likely professional world.',
+        timing: 'Case preview opens September 21. The full room opens October 13. Due Sunday, October 25, 2026, at 11:59 p.m. Eastern.',
+        opens: 'Preview: Week 3. Full room: Week 6.',
+        release: '2026-10-13',
+        due: 'Due Sunday, October 25, 2026, at 11:59 p.m. Eastern.',
+        purpose: 'Move from a course concept to a real Canadian institutional decision, distinguish evidence from inference, and make a specific accountability recommendation.',
+        role: 'This assessment widens the scale from your own encounters to a documented Canadian system and decision-maker.',
         really: [
-          'Choose one real Canadian system from Week 6: facial recognition, predictive or algorithmic policing, or a border or immigration algorithm.',
-          'Build a short dossier explaining what the system is, how it works, and how it can create or hide racial harm.',
-          'Use three source types: an official system, oversight, or court source; one news source; and one scholarly source.',
-          'Connect the case to a specific, checkable detail from your own city, community, area of study, or work.',
-          'Answer the assigned probe in a 60 to 90 second recorded brief, or the timed written alternative when recording is a barrier.'
+          'Choose one case pathway released in Blackboard and review its source bundle.',
+          'Build four evidence cards covering the system and decision, strongest official or court evidence, course mechanism, and the people and accountability at stake.',
+          'Use one official, court, or oversight source, one credible news source, and one scholarly source.',
+          'Recommend what should happen next, who must act, and what remedy or review should follow.'
         ],
         submit: [
-          'A short case dossier of about two pages, with three cited source types and a specific local connection.',
-          'A 60 to 90 second recorded brief in your own words, or the timed written alternative described in Blackboard.'
+          'One evidence board: one page, four slides, or an accessible equivalent.',
+          'One 90 to 120 second briefing, or a 300 to 450 word written equivalent.',
+          'A reference list for the three required source types.'
         ],
         criteria: [
-          ['Dossier', 5, 'The three required source types are credible, correctly cited, and actually about the chosen system.'],
-          ['Lens application', 5, 'You apply the Week 6 concepts accurately to analyse the case, not only describe it.'],
-          ['Local connection', 4, 'You connect the system to a specific, real detail in your city, community, field, or likely professional world.'],
-          ['Recorded brief', 4, 'Your short brief is clear, answers the assigned probe, and is in your own words.'],
-          ['Integrity', 2, 'The case connects coherently to your Map Exchange and earlier work.']
+          ['Evidence quality', 5, 'Uses the three required source types accurately and separates documented evidence from inference.'],
+          ['System and mechanism', 4, 'Explains what the system does and how an unequal outcome can be produced.'],
+          ['Course analysis', 4, 'Applies the relevant New Jim Code or intersectional concepts accurately.'],
+          ['Decision and accountability', 4, 'Makes a specific recommendation and names action, challenge, and remedy.'],
+          ['Clear briefing', 3, 'Communicates the case in a focused, accessible form.']
         ],
         strong: [
-          'Uses sources to build evidence, not decoration.',
-          'Explains the mechanism before judging it.',
-          'Makes a concrete Canadian and local connection.',
-          'Says plainly what the evidence does not prove.'
+          'Explains the mechanism before making a judgment.',
+          'Uses verifiable Canadian evidence from all three required source types.',
+          'Names a realistic actor, review route, and remedy.'
         ],
         misses: [
-          'Choosing a non-Canadian case when the task asks for Canada.',
-          'Using only news sources.',
-          'Making a general local connection with no detail the instructor could check.',
-          'Reading a prepared script that does not answer the assigned probe.'
+          'Using a generic technology example instead of the selected Canadian pathway.',
+          'Blending evidence and inference.',
+          'Making a broad recommendation without naming who acts.'
         ],
-        checks: ['I chose one Week 6 Canadian system.', 'I have all three required source types.', 'I explained how the system works and where the evidence stops.', 'I named a checkable local connection.', 'My brief answers the assigned probe.']
+        checks: ['I used the Blackboard case pathway.', 'I have all three source types.', 'My four evidence cards are labelled.', 'My recommendation names an actor and remedy.']
       },
       {
         id: 'repair',
         title: 'Design the Repair',
-        short: 'Propose a concrete response to one harm',
+        short: 'Turn a documented harm into a concrete system change',
         weight: '20 marks (20%)',
-        timing: 'Opens with the whole second half in Week 8, right after Study Week. Due by the end of Week 13.',
-        opens: 'Week 8',
-        release: '2026-11-02',
-        due: 'Due by December 11, 2026.',
-        sectionDue: {
-          async: 'Due by December 11, 2026.',
-          sync: 'Due in Week 12.'
-        },
-        purpose: 'This assignment asks you to stop at neither critique nor outrage. You design a concrete response to a harm you can explain.',
-        role: 'This is where the course refuses to stop at critique. You design a response that fits one harm you already mapped.',
+        timing: 'Early anchor choice appears November 2. The full studio opens November 23. Due Sunday, December 6, 2026, at 11:59 p.m. Eastern.',
+        opens: 'Anchor: Week 8. Full studio: Week 11.',
+        release: '2026-11-23',
+        due: 'Due Sunday, December 6, 2026, at 11:59 p.m. Eastern.',
+        purpose: 'Turn one harm you already documented into a repair that changes power, process, design, oversight, or remedy.',
+        role: 'This is the course turn from diagnosis to action. A stronger repair changes the system, not only its technical accuracy.',
         really: [
-          'Choose one harm from your Compass Check reflection or Canadian Case File. Quote the exact Compass Check scenario and option, or the specific Case File finding.',
-          'Design a concrete response using design justice, abolitionist tools, policy, accountability, or community governance.',
-          'Explain who the response serves, who it asks something of, why it fits the harm, and which Week 11 or 12 reading grounds it.'
+          'Choose one exact anchor from your Field Notes Portfolio or Canadian Technology Investigation.',
+          'Show the current system as input, decision, outcome, person affected, and route to challenge.',
+          'Design and show a changed system with a clear appeal, review, or remedy.',
+          'Complete the three Blackboard stress tests and name one measure of success and one sign of failure.'
         ],
         submit: [
-          'A one-page, peer-facing written brief, or the visual-proposal or recorded-pitch accessibility format described in Blackboard.',
-          'If you submit the written brief, a short recorded pitch is optional.'
+          'One repair model in an accessible format.',
+          'Three short stress-test responses in Blackboard.',
+          'A 300 to 500 word rationale or a two to three minute narrated explanation.'
         ],
         criteria: [
-          ['Grounding', 5, 'The repair answers a harm you mapped and points to its exact anchor in your earlier work.'],
-          ['Use of reading', 4, 'A Week 11 or 12 reading shapes the response.'],
-          ['Specificity and feasibility', 5, 'The repair is concrete enough that a reader can picture what changes.'],
-          ['Justice awareness', 3, 'You name who the repair serves and what it asks of whom.'],
-          ['Argument', 3, 'You persuade a peer with evidence that this repair fits the harm.']
+          ['Grounding in earlier evidence', 4, 'Uses a specific earlier anchor and describes the harm accurately.'],
+          ['Repair changes the system', 5, 'Changes power, process, design, oversight, or remedy.'],
+          ['Scenario stress test', 4, 'Responds to the three stakeholder scenarios and improves the design where needed.'],
+          ['Accountability and success measure', 4, 'Names action, appeal, remedy, and signs of success or failure.'],
+          ['Clear creative communication', 3, 'Makes the repair easy to understand in an accessible format.']
         ],
         strong: [
-          'Starts from a documented harm.',
-          'Names a real change in design, policy, governance, review, or accountability.',
-          'Explains trade-offs without giving up on repair.'
+          'Shows the before and after system clearly.',
+          'Builds an appeal, review, or remedy into the change.',
+          'Revises the design after realistic pressure tests.'
         ],
         misses: [
-          'Offering a slogan instead of a design.',
-          'Inventing a new harm instead of using earlier work.',
-          'Saying "raise awareness" without naming what changes.'
+          'Offering awareness or better accuracy as the whole repair.',
+          'Losing the link to the earlier documented harm.',
+          'Claiming success without a measure or failure signal.'
         ],
-        checks: ['I pointed back to the original harm.', 'My repair changes a process, rule, design, or accountability path.', 'I used at least one Week 11 or Week 12 idea.']
+        checks: ['I named the exact earlier anchor.', 'My repair changes the system.', 'I completed all three stress tests.', 'I named an appeal or remedy and a success measure.']
       },
       {
         id: 'cartography',
-        title: 'Personal Cartography (final project)',
-        short: 'Tell the story of your map',
-        weight: '20 marks (20%)',
-        timing: 'Opens with the whole second half in Week 8, right after Study Week. Due by the end of Week 13. Nothing is due in the final week.',
-        opens: 'Week 8',
-        release: '2026-11-02',
-        due: 'Due by December 11, 2026. Nothing is due in Week 14.',
-        sectionDue: {
-          async: 'Due by December 11, 2026. Nothing is due in Week 14.',
-          sync: 'Due by Sunday, December 13, 2026. Nothing is due in Week 14.'
-        },
-        purpose: 'This assignment gathers the whole course into one map and asks you to explain how your way of seeing changed.',
-        role: 'This is the final integration. You gather the pieces and show how your way of seeing changed across the term.',
+        title: 'Personal Cartography',
+        short: 'Map how your reading of digital systems changed',
+        weight: '15 marks (15%)',
+        timing: 'Milestones run November 2 to December 2. The final submission opens November 30 and is due Friday, December 11, 2026.',
+        opens: 'Milestone 1: Week 8. Final area: Week 12.',
+        release: '2026-11-30',
+        due: 'Final project due Friday, December 11, 2026, at 11:59 p.m. Eastern.',
+        purpose: 'Show how your way of reading digital systems changed across the course by mapping your own encounters, course choices, investigation, and repair into one coherent journey.',
+        role: 'This is the final integration. It uses your dated course record, not private disclosure, to show a credible then-and-now shift.',
         really: [
-          'Gather your four earlier pieces: Map Exchange, Compass Check, Canadian Case File, and Design the Repair.',
-          'Weave exact anchors from those pieces into one coherent map in a visual, written, or audio-described format, with a short narrative tracing how your thinking changed.',
-          'Record a two to three minute walkthrough in your own voice, or use the accessible equivalent described in Blackboard. Text-to-speech, AI voice generation, and voice cloning are not permitted.',
-          'After you submit, answer one or two questions drawn from your own work within the short Blackboard window, as a short recording or timed written response.'
+          'Use exact anchors from all six Field Notes and at least two of Digital Decision Scenarios, Canadian Technology Investigation, or Design the Repair.',
+          'Build five route points: early encounter, concept shift, institutional or Canadian case, repair or accountability move, and a future practice.',
+          'Include one clear then-and-now comparison and name what remains unresolved.',
+          'Complete the three Blackboard milestones as the project develops.'
         ],
         submit: [
-          'Your integrated Personal Cartography as a visual map, written map, or audio-described map.',
-          'A reflective narrative tracing your before and after.',
-          'A two to three minute recorded walkthrough, or the audio-described or written equivalent described in Blackboard.',
-          'One or two required answers to questions posted after you submit, as a short recording or timed written response.'
+          'The Personal Cartography in an accessible format of your choice.',
+          'A three to four minute narrated walkthrough or a 600 to 900 word guided narrative.',
+          'Milestone 1 due November 8, Milestone 2 due November 22, and Milestone 3 due December 2.'
         ],
         criteria: [
-          ['Integration', 5, 'The earlier pieces connect into one map rather than sitting as separate assignments.'],
-          ['Coherence', 4, 'A viewer can follow the story of your thinking.'],
-          ['Reflection', 5, 'You show what changed in how you notice technology and racism.'],
-          ['Walkthrough', 4, 'You speak to your own map fluently and answer the unscripted probe.'],
-          ['Ownership', 2, 'The work is authored by you and remains consistent with your earlier submissions.']
+          ['Personal anchors and continuity', 4, 'Uses exact earlier course work to build a credible map.'],
+          ['Reflection and change', 3, 'Shows a specific then-and-now shift and explains what changed.'],
+          ['Course analysis', 3, 'Uses course concepts and evidence accurately across individual and institutional scales.'],
+          ['Repair and future practice', 3, 'Connects diagnosis to accountability, repair, and a realistic future practice.'],
+          ['Coherent and accessible form', 2, 'Guides the reader or listener through a purposeful map.']
         ],
         strong: [
-          'Shows a before-and-after in your own thinking.',
-          'Uses specific earlier evidence.',
-          'Ends with a commitment you can carry into your field.'
+          'Uses dated anchors from both halves of the term.',
+          'Shows a specific change instead of offering a general course summary.',
+          'Connects personal encounters to institutional scale, accountability, and future practice.'
         ],
         misses: [
-          'Making a pretty map with no explanation.',
-          'Summarizing the course instead of tracing your own learning.',
-          'Submitting only the recording or only the map when both are required.'
+          'Inventing a personal story or disclosing sensitive information.',
+          'Leaving the earlier course pieces unnamed.',
+          'Treating the map as decoration without a clear learning route.'
         ],
-        checks: ['I used exact anchors from all four earlier pieces.', 'My map tells one connected story and traces how my thinking changed.', 'My walkthrough is in my own voice and within the time range.', 'I am ready to answer the required post-submission questions in the short Blackboard window.']
+        checks: ['I used all six Field Notes and at least two other assessment pieces.', 'I included five route points and a then-and-now pair.', 'I completed the milestones.', 'My map and walkthrough are accessible and privacy-safe.']
+      },
+      {
+        id: 'final-reflection',
+        title: 'Final Learning Reflection',
+        short: 'Answer the opening question with your own map as evidence',
+        weight: '5 marks (5%)',
+        timing: 'Opens Monday, December 14 and is due Tuesday, December 15, 2026.',
+        opens: 'Week 14.',
+        release: '2026-12-14',
+        due: 'Due Tuesday, December 15, 2026, at 11:59 p.m. Eastern.',
+        purpose: 'Close the course by answering the opening question in your own words, using one specific Personal Cartography entry as evidence, and naming how you will carry the course lens into your field.',
+        role: 'This is a short, separate final-week assessment. It is not the ungraded Reflection Corner and does not reopen Personal Cartography.',
+        really: [
+          'Answer whether a machine can be racist in your own words.',
+          'Name one specific Personal Cartography entry as evidence.',
+          'Explain what became difficult to unsee.',
+          'Name one concrete commitment for your field and where you will use the lens next.'
+        ],
+        submit: [
+          'Approximately 250 to 350 words submitted through Blackboard.',
+          'Use the five closing prompts in the Blackboard guide.',
+          'Keep identifiable people and private account details out of the reflection.'
+        ],
+        criteria: [
+          ['Opening question', 1, 'Answers the course opening question in the student\'s own words.'],
+          ['Specific evidence', 1, 'Uses one exact Personal Cartography entry as evidence.'],
+          ['Changed seeing', 1, 'Explains what became difficult to unsee.'],
+          ['Field commitment', 1, 'Names one concrete commitment for the student\'s field.'],
+          ['Future application', 1, 'Explains where or how the course lens will be used next.']
+        ],
+        strong: [
+          'Uses a specific course-created example instead of a general statement.',
+          'Connects the example, the changed understanding, and the future commitment.',
+          'Stays concise, personal, and privacy-safe.'
+        ],
+        misses: [
+          'Summarising the whole course without answering the opening question.',
+          'Making a claim without pointing to a specific cartography entry.',
+          'Naming a vague intention instead of a concrete field commitment.'
+        ],
+        checks: ['I answered the opening question.', 'I named one exact cartography entry.', 'I explained what changed.', 'I named a concrete commitment and future use.', 'I will submit in Blackboard by December 15.']
       }
     ];
   }
@@ -6615,7 +7889,7 @@
       ['Where do I submit?', 'Submit in Blackboard. This companion site helps you understand, practise, and prepare; it is not the submission system and it does not record grades.'],
       ['Where can I access the complete assignments?', 'The complete assignments will be opened on Blackboard. This page explains the assignment arc and helps you prepare, but Blackboard is the official place for the full instructions, files, dropboxes, due dates, feedback, and grades.'],
       ['Can I email my assignment or send a link?', 'No. The assessment briefs say Blackboard submission only. Email submissions or email-only links are not accepted.'],
-      ['Are all five assignments separate?', 'They are graded separately, but they build one thing: your Personal Cartography. Each assignment adds another layer to the same map.'],
+      ['Are all seven graded components separate?', 'They are graded separately, but they build one learning arc. The Final Learning Reflection closes that arc after Personal Cartography.'],
       ['What if I miss a deadline?', 'The course assessment documents describe firm deadlines. Check Blackboard for the exact date and time, and ask the instructor early if you are unsure.'],
       ['Can I use generative AI?', 'Only as study support. You may use it to brainstorm, check clarity, or organize your own notes, but you must disclose the tool, date, and purpose. Do not submit AI-written or AI-rewritten work as your own. Use How to Use AI Properly for examples.'],
       ['What happens if AI writes my paper?', 'Submitting AI-written or AI-rewritten work as your own can be treated as academic misconduct. That can lead to a zero on the assignment, a formal academic-integrity process, and further course or institutional penalties. If you are unsure, do not submit the AI text. Ask first and disclose.'],
@@ -6720,7 +7994,7 @@
       ['Late and wrong-channel work', 'Blackboard is the official submission space. Late work and email submissions follow the course rules posted in Blackboard.']
     ];
     return '<section id="asg-quality" class="asg-qualitypath" aria-label="How I Grade"><div><div class="mono">HOW I GRADE</div><h2>What I read for</h2><p>Each of the five assessments is worth 20 percent and is marked out of 20. The exact criteria change by assignment, but the standard stays consistent: accurate course thinking, specific evidence where the task calls for it, your own voice, and a clear connection to why the system matters.</p></div>'
-      + '<div class="asg-grade-note"><b>How Compass Check is different</b><p>All 25 Part A choices are required but carry zero points. They have no right or wrong answer. The four written mirror responses earn 5 marks each and carry all 20 marks. Your choices are evidence for reflection; their content is not graded as a preferred attitude. Every cited scenario title and selected option is checked against the recorded Blackboard attempt.</p></div>'
+      + '<div class="asg-grade-note"><b>How Digital Decision Scenarios is different</b><p>All 15 scenario choices are required but carry zero points. They have no right or wrong answer. The four written mirror reflections earn 5 marks each and carry all 20 marks. Your choices are evidence for reflection; their content is not graded as a preferred attitude. Every cited scenario title and selected option is checked against the recorded Blackboard attempt.</p></div>'
       + '<div class="asg-grade-note"><b>The short version</b><p>I am looking for the part of the work that could only have come from you: the example you noticed, the evidence you chose, the course idea you used, and the connection you made. Feedback is help, not punishment.</p></div>'
       + '<div class="asg-qualitypath-grid">' + levels.map(function (l) {
       return '<article><b>' + esc(l[0]) + '</b><p>' + esc(l[1]) + '</p></article>';
@@ -6842,8 +8116,8 @@
     profile = profile || assignmentLensProfile(L);
     var t = profile.topics || [], a = profile.artifacts || [];
     return [
-            ['Compass Check', 'Connect the first-half concept trail', 'Use your program setting to rehearse how a rule, default, data choice, visibility pattern, or Canadian system can shape an outcome. The graded scenarios remain in Blackboard.'],
-      ['Canadian Case File', 'Move from example to system', 'Find a Canadian system connected to ' + (t[1] || ctx.setting) + '. Use sources to explain what the system does before you make the argument about harm.'],
+            ['Digital Decision Scenarios', 'Connect the first-half concept trail', 'Use your program setting to rehearse how a rule, default, data choice, visibility pattern, or Canadian system can shape an outcome. The graded scenarios remain in Blackboard.'],
+      ['Canadian Technology Investigation', 'Move from example to system', 'Find a Canadian system connected to ' + (t[1] || ctx.setting) + '. Use sources to explain what the system does before you make the argument about harm.'],
             ['Cartography', 'Connect the term', 'Choose earlier pieces that show how your thinking about ' + ctx.label + ' changed. The goal is not to list work. It is to tell the story of how your analysis grew.']
     ];
   }
@@ -6907,7 +8181,7 @@
     };
     var byId = {
       'map-exchange': {
-        intro: 'For Map Exchange, your program gives you a place to notice one small moment each week. Do not solve it yet. Learn to see it clearly.',
+        intro: 'For Digital Systems Field Notes Portfolio, your program gives you a place to notice one small moment each week. Do not solve it yet. Learn to see it clearly.',
         cards: [
           ['Where to look', 'Watch for ' + topic + ', ' + topic2 + ', or another routine system in ' + ctx.setting + '.'],
           ['What to capture', 'Record the screen, rule, wording, score, form field, checklist, or decision point that shaped what happened.'],
@@ -6921,7 +8195,7 @@
         starter: 'This week, I noticed ' + topic + ' in ' + field + '. The system mattered because it shaped what happened to ' + ctx.people + '.'
       },
       'compass-check': {
-        intro: 'For Compass Check, your program lens gives you a familiar setting for practice. The graded scenarios stay in Blackboard and are not stored on this site.',
+        intro: 'For Digital Decision Scenarios, your program lens gives you a familiar setting for practice. The graded scenarios stay in Blackboard and are not stored on this site.',
         cards: [
           ['Review the concept trail', 'Connect New Jim Code, engineered inequity, default discrimination, coded exposure, and Canadian algorithmic systems.'],
           ['Use your field as rehearsal', 'Ask how ' + topic + ', ' + artifact + ', or another routine system in ' + ctx.place + ' might sort, expose, delay, or protect people.'],
@@ -6935,7 +8209,7 @@
         starter: 'In ' + field + ', I will watch for the rule, data, default, or visibility pattern that shapes what happens to ' + ctx.people + '.'
       },
       'case-file': {
-        intro: 'For Canadian Case File, your program helps you choose a public system that has documents, reports, policy, or news coverage you can verify.',
+        intro: 'For Canadian Technology Investigation, your program helps you choose a public system that has documents, reports, policy, or news coverage you can verify.',
         cards: [
           ['Find the Canadian system', 'Look for a Canadian example connected to ' + topic + ', ' + topic2 + ', or a public system your field depends on.'],
           ['Use source evidence', 'Bring in a report, policy page, public notice, article, legal document, dataset note, or institutional statement.'],
@@ -7000,7 +8274,7 @@
     };
     var byId = {
       'map-exchange': {
-        intro: 'For Map Exchange, the framework helps you notice one small weekly moment. It does not tell you what to post. You still choose the moment, describe what happened, connect it to that week, and write a peer reply that moves the conversation forward.',
+        intro: 'For the Digital Systems Field Notes Portfolio, the framework helps you notice one small weekly moment. It does not choose the encounter or write the note. You still document a real, privacy-safe trace, explain what the system did, use a course source, and reflect on consequence and power.',
         rows: [
           ['Use the guide to find', 'A small moment involving ' + topic + ', a screen, a rule, a setting, or a decision that actually appeared in your week.'],
           ['You still have to write', 'What happened, who was affected, which weekly idea helps explain it, and why the example is more than a personal opinion.'],
@@ -7008,15 +8282,15 @@
         ]
       },
       'compass-check': {
-        intro: 'For Compass Check, this page can help you review where course mechanisms might appear in your field. It does not preview the graded scenarios. The assessment itself is a closed, timed Blackboard sitting.',
+        intro: 'For Digital Decision Scenarios, this page can help you review where course mechanisms might appear in your field. It does not preview the graded scenarios. The assessment itself is a closed, timed Blackboard sitting.',
         rows: [
           ['Use the guide to rehearse', 'How ' + topic + ', ' + artifact + ', a rule, a default, a data choice, or a visibility pattern could affect people in ' + field + '.'],
-          ['You still have to do', 'The Weeks 2 to 6 learning, 25 honest scenario choices, and four written mirror responses on your own pattern.'],
+          ['You still have to do', 'The Weeks 2 to 6 learning, 15 honest scenario choices, and four written mirror reflections on your own pattern.'],
           ['Do not use AI during the assessment', 'Generative AI, outside answers, and shared response banks are not permitted in the timed sitting.']
         ]
       },
       'case-file': {
-        intro: 'For Canadian Case File, the framework helps you move from an example to a documented Canadian system. It does not choose the case or sources for you. You must verify the case, use different source types, and explain the system before making the argument.',
+        intro: 'For Canadian Technology Investigation, the framework helps you move from an example to a documented Canadian system. It does not choose the case or sources for you. You must verify the case, use different source types, and explain the system before making the argument.',
         rows: [
           ['Use the guide to find', 'A Canadian system connected to ' + topic + ', a public institution, an oversight report, a court case, a policy document, or a documented media report.'],
           ['You still have to verify', 'The source trail, what the system actually does, who is affected, and how the course concept changes the reading of the case.'],
@@ -7132,15 +8406,15 @@
       ['Clarity check', 'I used Grammarly or Microsoft Editor on [date] to check grammar and sentence clarity. I did not use it to add course concepts, sources, claims, or analysis.']
     ];
     var assignmentExamples = [
-      ['Map Exchange', 'I used ChatGPT on [date] to list possible digital systems I might notice in my program area. I chose the example myself, connected it to my own life, and wrote the entry in my own words.'],
-      ['Compass Check: Scenario Decisions and Your Mirror', 'I used ChatGPT on [date] only before the timed assessment to check my understanding of one course concept. I did not use generative AI or second-device help during the assessment.'],
-      ['Canadian Case File', 'I used Perplexity on [date] to find search terms for Canadian oversight reports. I read the reports myself, checked the facts, and wrote the case file in my own words.'],
+      ['Digital Systems Field Notes Portfolio', 'I used ChatGPT on [date] to list possible digital systems I might notice in my program area. I chose the example myself, connected it to my own life, and wrote the entry in my own words.'],
+      ['Digital Decision Scenarios', 'I used ChatGPT on [date] only before the timed assessment to check my understanding of one course concept. I did not use generative AI or second-device help during the assessment.'],
+      ['Canadian Technology Investigation', 'I used Perplexity on [date] to find search terms for Canadian oversight reports. I read the reports myself, checked the facts, and wrote the case file in my own words.'],
       ['Design the Repair', 'I used ChatGPT on [date] to brainstorm general accountability mechanisms. I chose the response, verified it against the Week 11 and 12 readings, and wrote the proposal myself.'],
-      ['Personal Cartography (final project)', 'I used Microsoft Editor on [date] for grammar and sentence clarity only. The map, reflection, examples, and recorded walkthrough are my own work.']
+      ['Personal Cartography', 'I used Microsoft Editor on [date] for grammar and sentence clarity only. The map, reflection, examples, and recorded walkthrough are my own work.']
     ];
     var promptPairs = [
       ['Safer prompt', 'Give me five questions I could ask about passenger screening. Do not write my assignment.'],
-      ['Risky prompt', 'Write my Canadian Case File on passenger screening with sources.'],
+      ['Risky prompt', 'Write my Canadian Technology Investigation on passenger screening with sources.'],
       ['Safer prompt', 'Turn these notes I wrote into a checklist. Do not add new claims or examples.'],
       ['Risky prompt', 'Rewrite my draft so it sounds academic and stronger.'],
       ['Safer prompt', 'Explain intersectionality clearly, then tell me what I should verify in Crenshaw before using it.'],
@@ -7321,7 +8595,7 @@
         ['artifact', 'Which course support will you use for that review?', 'Choose the weekly learning room, Key Concepts, Knowledge Checks, flashcards, or your own course notes. The graded items are not on this site.'],
         ['action', 'What conditions do you need for the Blackboard sitting?', 'Plan for the standard 90-minute limit, or your approved accommodated time, a reliable connection, and a place where you can work independently.'],
         ['affected', 'Have you checked your approved accommodations?', 'Confirm the Blackboard timer and any approved settings before you begin. Contact the instructor before starting if something is wrong.'],
-        ['benefit', 'What will help you read carefully without rushing?', 'Use the full allowed window, allow backtracking, and remember that none of the 25 scenarios has a right answer.'],
+        ['benefit', 'What will help you read carefully without rushing?', 'Use the full allowed window, allow backtracking, and remember that none of the 15 scenario choices is graded as right or wrong.'],
         ['burden', 'What could interrupt the sitting?', 'Reduce avoidable interruptions and know how to report a verified access or platform problem.']
       ],
       'case-file': [
@@ -7392,7 +8666,7 @@
   function assignmentPrepPrompt(a, L) {
     var label = L ? (L.program || L.area) : 'General Stream';
     if (a.id === 'compass-check') {
-      return '<section class="asg-prep-prompt" aria-label="Compass Check readiness"><div><div class="mono">BLACKBOARD READINESS</div><h3>Prepare the conditions, not the answers</h3><p>There is no answer-building document for this closed, timed assessment. The Assignment Start Lab can create a personal readiness plan, but it will not generate, preview, or rehearse graded answers. Review Weeks 2 to 6, confirm your accommodations, and protect the full standard 90-minute limit or your approved accommodated time.</p></div><div><button type="button" onclick="location.href=\'assignment-start-lab.html?assignment=compass-check\'">Create a readiness plan</button><button type="button" onclick="SOC.station(2)">Review from Week 2</button><button type="button" onclick="SOC.go(\'cards\')">Review concept flashcards</button></div></section>';
+      return '<section class="asg-prep-prompt" aria-label="Digital Decision Scenarios readiness"><div><div class="mono">BLACKBOARD READINESS</div><h3>Prepare the conditions, not the answers</h3><p>There is no answer-building document for this closed, timed assessment. The Assignment Start Lab can create a personal readiness plan, but it will not generate, preview, or rehearse graded answers. Review Weeks 2 to 6, confirm your accommodations, and protect the full standard 90-minute limit or your approved accommodated time.</p></div><div><button type="button" onclick="location.href=\'assignment-start-lab.html?assignment=compass-check\'">Create a readiness plan</button><button type="button" onclick="SOC.station(2)">Review from Week 2</button><button type="button" onclick="SOC.go(\'cards\')">Review concept flashcards</button></div></section>';
     }
     return '<section class="asg-prep-prompt" aria-label="Outline and preparation choice"><div><div class="mono">OUTLINE AND PREPARATION</div><h3>Would a quick start plan or detailed outline help?</h3><p>The Assignment Start Lab uses your assignment, progress, exact sticking point, and available time to create a personal plan without AI. The Starter Studio uses <b>' + esc(a.title) + '</b> with <b>' + esc(label) + '</b> to build a more detailed Word preparation pack.</p></div><div><button type="button" onclick="location.href=\'assignment-start-lab.html?assignment=' + encodeURIComponent(a.id) + '\'">Create a quick PDF plan</button><button type="button" onclick="SOC.openStarter()">Build a detailed Word outline</button><button type="button" onclick="SOC.skipStarter()">Stay with the brief</button></div></section>';
   }
@@ -7425,7 +8699,7 @@
     var selected = items[idx] || items[0];
     if (selected.id === 'compass-check') {
       return '<div class="rise asg-starter-page">'
-        + '<section class="asg-hero asg-starter-hero"><div class="mono">COMPASS CHECK READINESS</div><h1>No starter pack is used for this assessment</h1><p>Compass Check is a closed, timed Blackboard sitting. The companion site can help you review the Weeks 2 to 6 concepts, but it will not generate an outline, preview a graded scenario, or draft a reflection.</p></section>'
+        + '<section class="asg-hero asg-starter-hero"><div class="mono">DIGITAL DECISION SCENARIOS READINESS</div><h1>No starter pack is used for this assessment</h1><p>Digital Decision Scenarios is a closed, timed Blackboard sitting. The companion site can help you review the Weeks 2 to 6 concepts, but it will not generate an outline, preview a graded scenario, or draft a reflection.</p></section>'
         + assignmentPrepPrompt(selected, L)
         + '<section class="asg-preview-mode"><b>Return to the assignment room</b><p>Use the room for the marking breakdown, assessment conditions, program-based rehearsal, and final readiness check.</p><button type="button" class="wk-cta" onclick="SOC.assignmentPage(\'assignments\')">Return to Assignment Rooms</button></section>'
         + '</div>';
@@ -7464,7 +8738,7 @@
     return assignmentPolicyPanel()
       + assignmentIntegrityProcessNote()
       + summary
-      + '<section id="asg-story" class="asg-story"><div><div class="mono">ASSIGNMENT OVERVIEW</div><h2>You are building one map across the term</h2><p>The assignments are not random separate tasks. You begin by noticing real digital life, use Compass Check to examine your own decisions through the first-half concepts, investigate one Canadian system, design a repair, and finally walk someone through how your thinking changed.</p></div><ol><li>Notice</li><li>Interpret</li><li>Investigate</li><li>Repair</li><li>Integrate</li></ol></section>';
+      + '<section id="asg-story" class="asg-story"><div><div class="mono">ASSIGNMENT OVERVIEW</div><h2>You are building one map across the term</h2><p>The assignments are not random separate tasks. You begin by noticing real digital life, use Digital Decision Scenarios to examine your own decisions through the first-half concepts, investigate one Canadian system, design a repair, and finally walk someone through how your thinking changed.</p></div><ol><li>Notice</li><li>Interpret</li><li>Investigate</li><li>Repair</li><li>Integrate</li></ol></section>';
   }
   function assignmentActivePage() {
     if (state.screen === 'assignment-program') return 'program';
@@ -7489,10 +8763,10 @@
     return '<section class="asg-hero ' + esc(extraClass || '') + '"><div class="mono">' + esc(label) + '</div><h1>' + esc(title) + '</h1><p>' + esc(text) + '</p></section>';
   }
   function assignmentSummaryPanel() {
-    return '<section class="asg-summary" aria-label="Assignment overview"><div><span>5 assessments</span><b>Each is worth 20%</b><small>All five guides are visible from day one; Blackboard controls access and submission.</small></div><div><span>Due windows</span><b>Two course halves</b><small>October 25: Map Exchange checkpoint, Compass Check, and Canadian Case File. December 11: Design the Repair, Map Exchange close, and Personal Cartography final project. Nothing is due in Study Week or Week 14.</small></div></section>';
+    return '<section class="asg-summary" aria-label="Assignment overview"><div><span>7 graded components</span><b>100% across the course</b><small>The two Field Notes portfolios are worth 10% each; three assessments are worth 20% each; Personal Cartography is worth 15%; and the Final Learning Reflection is worth 5%.</small></div><div><span>Staged release</span><b>September 21 to December 15</b><small>Blackboard releases prompts, case rooms, studios, and milestones in sequence. Nothing is due in Study Week; the final reflection is due in Week 14.</small></div></section>';
   }
   function assignmentStartLabIntro() {
-    return '<section class="asg-prep-prompt" aria-label="Assignment Start Lab"><div><div class="mono">PERSONAL PLANNING SUPPORT</div><h3>Need a smaller first step?</h3><p>Add your assignment, progress, exact sticking point, and available time. Fixed course rules create a personal start plan you can print or save as PDF without using AI. For Compass Check, the lab creates readiness steps only and never generates, previews, or rehearses graded answers.</p></div><div><button type="button" onclick="location.href=\'assignment-start-lab.html\'">Open Assignment Start Lab</button><button type="button" onclick="SOC.assignmentPage(\'assignments\')">Open the assignment rooms</button></div></section>';
+    return '<section class="asg-prep-prompt" aria-label="Assignment Start Lab"><div><div class="mono">PERSONAL PLANNING SUPPORT</div><h3>Need a smaller first step?</h3><p>Add your assignment, progress, exact sticking point, and available time. Fixed course rules create a personal start plan you can print or save as PDF without using AI. For Digital Decision Scenarios, the lab creates readiness steps only and never generates, previews, or rehearses graded answers.</p></div><div><button type="button" onclick="location.href=\'assignment-start-lab.html\'">Open Assignment Start Lab</button><button type="button" onclick="SOC.assignmentPage(\'assignments\')">Open the assignment rooms</button></div></section>';
   }
   function assignmentSelectedContext() {
     var items = assignmentsData();
@@ -7504,7 +8778,7 @@
   function assignmentsPage() {
     return '<div class="rise asg-page asg-story-route">'
       + assignmentJumpNav()
-      + assignmentPageHero('OVERVIEW', 'Understanding Your Assignment', 'The five assignments build one map across the term. This page explains the arc before you enter the specific assignment rooms.')
+      + assignmentPageHero('OVERVIEW', 'Understanding Your Assignment', 'The seven graded components build and close one learning map across the term. This page explains the arc before you enter the specific assignment rooms.')
       + deadlineRule()
       + '<div class="asg-tabpanel">' + assignmentStorySection(assignmentSummaryPanel()) + assignmentStartLabIntro() + '</div>'
       + '</div>';
@@ -7690,7 +8964,7 @@
   }
   function walkFig(w, idx) {
     var d = weekData(w);
-    if (!d || !d.deck) return null;
+    if (!d) return null;
     var code = (D.course && D.course.code) || '';
     var man = (typeof window !== 'undefined' && window[code + '_WALKFIGS']) || {};
     var list = man[w] || man[String(w)];
@@ -7699,10 +8973,51 @@
     if (typeof entry === 'string') entry = { file: entry };
     if (!entry || !entry.file) return null;
     return {
-      src: 'walkthroughs/' + d.deck + '/images/' + entry.file + '?v=' + assetBuster(),
+      src: 'walkthroughs/' + (d.deck || ('BFS218_Week' + walkPad(w))) + '/images/' + entry.file + '?v=' + assetBuster(),
       alt: String(entry.alt || ''),
       longText: String(entry.longText || '')
     };
+  }
+  function walkStoryWeek(w) {
+    var all = (typeof window !== 'undefined' && window.BFS218_VISUAL_STORIES && window.BFS218_VISUAL_STORIES.weeks) || {};
+    return all[String(w)] || all[w] || {};
+  }
+  function walkChecks(w, slot) {
+    var checks = walkStoryWeek(w).checks || [];
+    return checks.filter(function (item) { return item && item.slot === slot; }).map(function (item) {
+      return { kind: 'check', title: item.title || 'Knowledge check', prompt: item.prompt || '', options: item.options || [] };
+    });
+  }
+  function walkFigureTitle(w, idx) {
+    var titles = {
+      2: ['From visible rule to neutral-looking system', 'Five questions that expose the outcome', 'Intentions and outcomes are different lenses'],
+      3: ['How inequity enters the pipeline', 'How proxies carry race', 'The average hides the intersection'],
+      4: ['When a glitch is really a default', 'When a name becomes an error', 'Several systems can share one default'],
+      5: ['Too visible and too invisible', 'Exposure carries five meanings', 'Accuracy can hide who is misread'],
+      6: ['Three Canadian institutional addresses', 'Keep the documented cases distinct', 'Match each case to its mechanism'],
+      7: ['Assemble the anatomy', 'One system can carry three dimensions', 'Locate where the course has reached'],
+      8: ['OCAP: four dimensions of community authority', 'Move authority toward the community', 'Compare governance without collapsing it'],
+      9: ['Open the promise of help', 'Look beneath the benevolent frame', 'A real benefit can still extend control'],
+      10: ['Stand at the algorithmic gate', 'Prediction can distribute opportunity', 'Power also lives outside the model'],
+      11: ['Patch the gate or change the structure', 'Test whether power actually moves', 'Ask whether the gate should exist'],
+      12: ['Build an accountability stack', 'Find the gap in the legal wall', 'Use the three-question accountability test'],
+      13: ['See how your map changed', 'Build one bounded claim', 'Turn the evidence into a final route'],
+      14: ['Return to the course question', 'Use a four-direction compass', 'Carry one commitment forward']
+    };
+    return (titles[w] && titles[w][idx]) || 'Read the system as a visual argument';
+  }
+  function walkFigureSlide(w, idx) {
+    var fig = walkFig(w, idx);
+    if (!fig) return null;
+    return { kind: 'figure', h: walkFigureTitle(w, idx), src: fig.src, alt: fig.alt, longText: fig.longText, layout: (w % 3 === 0 ? 'blueprint' : (w % 3 === 1 ? 'casefile' : 'studio')) };
+  }
+  function walkDiagramGallerySlide(w) {
+    var items = [];
+    for (var i = 0; i < 3; i++) {
+      var fig = walkFig(w, i);
+      if (fig) items.push({ h: walkFigureTitle(w, i), src: fig.src, alt: fig.alt, longText: fig.longText });
+    }
+    return items.length ? { kind: 'diagramGallery', title: walkFigureTitle(w, 0), items: items } : null;
   }
   function walkPrefs() {
     var r = rlState();
@@ -7712,6 +9027,252 @@
     r.walkFont = !!r.walkFont;
     r.walkMotion = !!r.walkMotion;
     return r;
+  }
+  var WALK_NOTE_SESSION_KEY = SKEY + '.studentNotesMirror.v1';
+  var WALK_NOTE_DB = 'seneca-student-notes-v1';
+  var WALK_NOTE_STORE = 'walkthrough-notes';
+  var STUDENT_NOTE_SESSION_KEY = SKEY + '.allStudentNotesMirror.v1';
+  var STUDENT_NOTE_IMPORT_MARKER = SKEY + '.restoredBackupNext.v1';
+  var STUDENT_NOTE_STORE = 'student-note-vault';
+  var STUDENT_NOTE_FIELDS = ['cmpNotes', 'rcNotes', 'sgNotes', 'wkReflect', 'wkNotes', 'walkChapterNotes', 'kcShort', 'careerReflect', 'mediaNotes', 'assignmentStarter'];
+  var walkNoteBackupTimers = {};
+  var studentNoteBackupTimer = null;
+  function studentNoteClone(value) {
+    try { return JSON.parse(JSON.stringify(value)); } catch (e) { return {}; }
+  }
+  function studentNoteSnapshot() {
+    var maps = {};
+    STUDENT_NOTE_FIELDS.forEach(function (field) { maps[field] = studentNoteClone(state[field] && typeof state[field] === 'object' ? state[field] : {}); });
+    return { version: 1, savedAt: Number(state.noteVaultUpdated) || 0, maps: maps };
+  }
+  function studentNoteHasContent() {
+    return STUDENT_NOTE_FIELDS.some(function (field) { var value = state[field]; return value && typeof value === 'object' && Object.keys(value).length > 0; });
+  }
+  function studentNoteApplySnapshot(snapshot) {
+    if (!snapshot || typeof snapshot !== 'object' || snapshot.version !== 1 || !snapshot.maps || typeof snapshot.maps !== 'object') return false;
+    var savedAt = Number(snapshot.savedAt) || 0;
+    if (!savedAt || savedAt <= (Number(state.noteVaultUpdated) || 0)) return false;
+    STUDENT_NOTE_FIELDS.forEach(function (field) {
+      var value = snapshot.maps[field];
+      if (value && typeof value === 'object' && !Array.isArray(value)) state[field] = studentNoteClone(value);
+    });
+    state.noteVaultUpdated = savedAt;
+    return true;
+  }
+  function studentNoteSessionWrite(snapshot) {
+    try { sessionStorage.setItem(STUDENT_NOTE_SESSION_KEY, JSON.stringify(snapshot)); return true; } catch (e) { return false; }
+  }
+  function studentNoteSessionRead() {
+    try { var value = JSON.parse(sessionStorage.getItem(STUDENT_NOTE_SESSION_KEY) || 'null'); return value && typeof value === 'object' ? value : null; } catch (e) { return null; }
+  }
+  function studentNoteIdbWrite(snapshot) {
+    return walkIdbOpen().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(STUDENT_NOTE_STORE, 'readwrite');
+        tx.objectStore(STUDENT_NOTE_STORE).put({ id: SKEY, snapshot: snapshot });
+        tx.oncomplete = function () { db.close(); resolve(true); };
+        tx.onerror = function () { db.close(); reject(tx.error || new Error('Note backup failed')); };
+        tx.onabort = tx.onerror;
+      });
+    });
+  }
+  function studentNoteIdbRead() {
+    return walkIdbOpen().then(function (db) {
+      return new Promise(function (resolve) {
+        var tx = db.transaction(STUDENT_NOTE_STORE, 'readonly'), request = tx.objectStore(STUDENT_NOTE_STORE).get(SKEY);
+        request.onsuccess = function () { var result = request.result; db.close(); resolve(result && result.snapshot && typeof result.snapshot === 'object' ? result.snapshot : null); };
+        request.onerror = function () { db.close(); resolve(null); };
+      });
+    }).catch(function () { return null; });
+  }
+  function studentNotesChanged() {
+    state.noteVaultUpdated = Math.max(Date.now(), (Number(state.noteVaultUpdated) || 0) + 1);
+    persist();
+    var snapshot = studentNoteSnapshot();
+    studentNoteSessionWrite(snapshot);
+    if (studentNoteBackupTimer) clearTimeout(studentNoteBackupTimer);
+    studentNoteBackupTimer = setTimeout(function () { studentNoteIdbWrite(studentNoteSnapshot()).catch(function () {}); }, 180);
+  }
+  function studentNoteRecoverSession() {
+    if (!studentNoteApplySnapshot(studentNoteSessionRead())) return false;
+    persist();
+    return true;
+  }
+  function studentNoteRecover() {
+    return studentNoteIdbRead().then(function (snapshot) {
+      if (!studentNoteApplySnapshot(snapshot)) return false;
+      persist();
+      studentNoteSessionWrite(studentNoteSnapshot());
+      return true;
+    });
+  }
+  function studentNoteIdbClear() {
+    return walkIdbOpen().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var stores = [WALK_NOTE_STORE, STUDENT_NOTE_STORE].filter(function (name) { return db.objectStoreNames.contains(name); });
+        if (!stores.length) { db.close(); resolve(true); return; }
+        var tx = db.transaction(stores, 'readwrite');
+        stores.forEach(function (name) { tx.objectStore(name).delete(SKEY); });
+        tx.oncomplete = function () { db.close(); resolve(true); };
+        tx.onerror = function () { db.close(); reject(tx.error || new Error('Could not clear note recovery copies')); };
+        tx.onabort = tx.onerror;
+      });
+    });
+  }
+  function walkNoteBook() {
+    if (!state.walkChapterNotes || typeof state.walkChapterNotes !== 'object' || Array.isArray(state.walkChapterNotes)) state.walkChapterNotes = {};
+    return state.walkChapterNotes;
+  }
+  function walkNoteKeySafe(key) {
+    key = String(key || '').toLowerCase().replace(/[^a-z0-9-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 80);
+    return key || 'note';
+  }
+  function walkNoteDomId(w, key) { return 'walk-note-' + w + '-' + walkNoteKeySafe(key); }
+  function walkNoteEntry(w, key) {
+    var week = walkNoteBook()[String(w)];
+    return week && week[walkNoteKeySafe(key)] && typeof week[walkNoteKeySafe(key)] === 'object' ? week[walkNoteKeySafe(key)] : null;
+  }
+  function walkMigrateLegacyNote(w) {
+    var legacy = walkPrefs().walkNotes && walkPrefs().walkNotes[String(w)];
+    if (typeof legacy !== 'string' || legacy === '' || walkNoteEntry(w, 'exit-reflection')) return false;
+    var book = walkNoteBook();
+    book[String(w)] = book[String(w)] || {};
+    book[String(w)]['exit-reflection'] = { label: 'Exit reflection', prompt: 'Earlier walkthrough reflection', chapter: 'Carry one idea back with you', order: 999, text: legacy, updated: 1 };
+    return true;
+  }
+  function walkNoteField(w, key, label, prompt) {
+    key = walkNoteKeySafe(key);
+    var entry = walkNoteEntry(w, key), id = walkNoteDomId(w, key);
+    var chapter = (_walk && _walk.week === w && _walk.slides[_walk.i]) ? walkSlideName(_walk.slides[_walk.i]) : label;
+    var order = (_walk && _walk.week === w) ? _walk.i : 999;
+    var value = entry && typeof entry.text === 'string' ? entry.text : '';
+    var saved = value !== '' ? 'Saved exactly as typed and included in your Week ' + w + ' notes.' : 'Saved automatically as you type.';
+    return '<label class="walk-note-field" for="' + id + '"><b>' + esc(label) + '</b><span>' + esc(prompt) + '</span>'
+      + '<textarea id="' + id + '" data-note-key="' + esc(key) + '" data-note-label="' + esc(label) + '" data-note-prompt="' + esc(prompt) + '" data-note-chapter="' + esc(chapter) + '" data-note-order="' + order + '" oninput="SOC.walkChapterNote(this)" placeholder="Write in your own words...">' + esc(value) + '</textarea>'
+      + '<small id="' + id + '-status" class="walk-note-status" role="status" aria-live="polite">' + esc(saved) + '</small>'
+      + '<small class="walk-note-integrity">Your wording is stored verbatim. The site adds context headings but never rewrites your note. Notes are private to this browser profile unless you export them.</small></label>';
+  }
+  function walkNoteEntries(w) {
+    var week = walkNoteBook()[String(w)] || {};
+    return Object.keys(week).filter(function (key) { return /^[a-z0-9][a-z0-9-]{0,79}$/.test(key) && week[key] && typeof week[key].text === 'string' && week[key].text !== ''; }).map(function (key) {
+      var entry = week[key];
+      return { key: key, label: String(entry.label || 'Walkthrough note'), prompt: String(entry.prompt || ''), chapter: String(entry.chapter || ''), order: Number(entry.order) || 999, text: entry.text, updated: Number(entry.updated) || 0 };
+    }).sort(function (a, b) { return (a.order - b.order) || a.key.localeCompare(b.key); });
+  }
+  function walkCompiledNotes(w) {
+    var entries = walkNoteEntries(w);
+    if (!entries.length) return '';
+    return entries.map(function (entry) {
+      var context = 'Chapter: ' + (entry.chapter || entry.label) + '\nNote point: ' + entry.label + (entry.prompt ? '\nPrompt: ' + entry.prompt : '');
+      return context + '\n\nStudent-authored note, preserved exactly:\n' + entry.text;
+    }).join('\n\n----------------------------------------\n\n');
+  }
+  function walkCompileNotes(w) {
+    state.wkNotes = state.wkNotes || {};
+    var compiled = walkCompiledNotes(w), key = wkNoteKey(w, 'walkthrough');
+    if (compiled !== '') state.wkNotes[key] = compiled;
+    else if (Object.prototype.hasOwnProperty.call(state.wkNotes, key)) delete state.wkNotes[key];
+    return compiled;
+  }
+  function walkNoteSections(w) {
+    return walkNoteEntries(w).map(function (entry) {
+      return { h: entry.label, t: 'Walkthrough chapter: ' + (entry.chapter || entry.label) + (entry.prompt ? '\nPrompt: ' + entry.prompt : '') + '\n\nStudent-authored note, preserved exactly:\n' + entry.text };
+    });
+  }
+  function walkNotesSummaryHtml(w) {
+    var count = walkNoteEntries(w).length;
+    return '<section class="walk-note-summary"><div><b>Your walkthrough notes</b><p>' + (count ? count + ' saved note' + (count === 1 ? '' : 's') + ' will appear in Generate Your Weekly Notes.' : 'No walkthrough notes saved yet. Any note you add is organized here automatically.') + '</p></div>'
+      + '<button type="button" onclick="SOC.walkExportNotes(' + w + ')"' + (count ? '' : ' disabled') + '>Export Seneca notes (.docx)</button><small>The export is the copy you control outside this browser.</small></section>';
+  }
+  function walkNoteSnapshot() {
+    try { return JSON.parse(JSON.stringify(walkNoteBook())); } catch (e) { return {}; }
+  }
+  function walkIdbOpen() {
+    return new Promise(function (resolve, reject) {
+      if (!window.indexedDB) { reject(new Error('IndexedDB unavailable')); return; }
+      var request = window.indexedDB.open(WALK_NOTE_DB, 2);
+      request.onupgradeneeded = function () { var db = request.result; if (!db.objectStoreNames.contains(WALK_NOTE_STORE)) db.createObjectStore(WALK_NOTE_STORE, { keyPath: 'id' }); if (!db.objectStoreNames.contains(STUDENT_NOTE_STORE)) db.createObjectStore(STUDENT_NOTE_STORE, { keyPath: 'id' }); };
+      request.onsuccess = function () { resolve(request.result); };
+      request.onerror = function () { reject(request.error || new Error('IndexedDB unavailable')); };
+      request.onblocked = function () { reject(new Error('Close another course tab so note recovery storage can update')); };
+    });
+  }
+  function walkIdbWrite(snapshot) {
+    return walkIdbOpen().then(function (db) {
+      return new Promise(function (resolve, reject) {
+        var tx = db.transaction(WALK_NOTE_STORE, 'readwrite');
+        tx.objectStore(WALK_NOTE_STORE).put({ id: SKEY, notes: snapshot, savedAt: Date.now() });
+        tx.oncomplete = function () { db.close(); resolve(true); };
+        tx.onerror = function () { db.close(); reject(tx.error || new Error('Note backup failed')); };
+        tx.onabort = tx.onerror;
+      });
+    });
+  }
+  function walkIdbRead() {
+    return walkIdbOpen().then(function (db) {
+      return new Promise(function (resolve) {
+        var tx = db.transaction(WALK_NOTE_STORE, 'readonly'), request = tx.objectStore(WALK_NOTE_STORE).get(SKEY);
+        request.onsuccess = function () { var result = request.result; db.close(); resolve(result && result.notes && typeof result.notes === 'object' ? result.notes : {}); };
+        request.onerror = function () { db.close(); resolve({}); };
+      });
+    }).catch(function () { return {}; });
+  }
+  function walkNoteStatus(w, key, message) {
+    var status = document.getElementById(walkNoteDomId(w, key) + '-status');
+    if (status) status.textContent = message;
+  }
+  function walkBackupNote(w, key) {
+    var snapshot = walkNoteSnapshot(), localOk = false, sessionOk = false;
+    studentNotesChanged();
+    try {
+      var stored = JSON.parse(localStorage.getItem(SKEY) || '{}');
+      var current = walkNoteEntry(w, key);
+      var saved = stored.walkChapterNotes && stored.walkChapterNotes[String(w)] && stored.walkChapterNotes[String(w)][walkNoteKeySafe(key)];
+      localOk = !!(current && saved && saved.text === current.text && Number(saved.updated) === Number(current.updated));
+    } catch (e) {}
+    try { sessionStorage.setItem(WALK_NOTE_SESSION_KEY, JSON.stringify(snapshot)); sessionOk = JSON.parse(sessionStorage.getItem(WALK_NOTE_SESSION_KEY) || '{}') && true; } catch (e) {}
+    walkNoteStatus(w, key, localOk && sessionOk ? 'Saved exactly as typed in two browser copies. Updating the recovery copy...' : 'Saved in the browser storage currently available. Export a copy before leaving this device.');
+    var timerKey = w + '|' + walkNoteKeySafe(key);
+    if (walkNoteBackupTimers[timerKey]) clearTimeout(walkNoteBackupTimers[timerKey]);
+    walkNoteBackupTimers[timerKey] = setTimeout(function () {
+      walkIdbWrite(walkNoteSnapshot()).then(function () {
+        walkNoteStatus(w, key, 'Saved exactly as typed in three browser copies. Export at the end for a file you control.');
+      }).catch(function () {
+        walkNoteStatus(w, key, 'Saved exactly as typed in the browser storage available here. Export at the end for a file you control.');
+      });
+    }, 180);
+  }
+  function walkMergeNotes(source) {
+    if (!source || typeof source !== 'object' || Array.isArray(source)) return false;
+    var changed = false, book = walkNoteBook();
+    Object.keys(source).forEach(function (weekKey) {
+      if (!/^(?:[1-9]|1[0-4])$/.test(weekKey) || !source[weekKey] || typeof source[weekKey] !== 'object' || Array.isArray(source[weekKey])) return;
+      book[weekKey] = book[weekKey] || {};
+      Object.keys(source[weekKey]).forEach(function (rawKey) {
+        if (!/^[a-z0-9][a-z0-9-]{0,79}$/.test(rawKey)) return;
+        var candidate = source[weekKey][rawKey];
+        if (!candidate || typeof candidate !== 'object' || typeof candidate.text !== 'string') return;
+        var current = book[weekKey][rawKey], candidateTime = Number(candidate.updated) || 0, currentTime = current && (Number(current.updated) || 0);
+        if (!current || candidateTime > currentTime) { book[weekKey][rawKey] = candidate; changed = true; }
+        else if (candidateTime === currentTime && current.text !== candidate.text) {
+          var recoveryKey = (rawKey + '-recovered').slice(0, 70), n = 2;
+          while (book[weekKey][recoveryKey]) { recoveryKey = (rawKey + '-recovered-' + n).slice(0, 80); n++; }
+          book[weekKey][recoveryKey] = { label: String(candidate.label || 'Recovered note') + ' (recovered copy)', prompt: String(candidate.prompt || ''), chapter: String(candidate.chapter || ''), order: Number(candidate.order) || 999, text: candidate.text, updated: candidateTime };
+          changed = true;
+        }
+      });
+    });
+    return changed;
+  }
+  function walkRecoverNotes(w) {
+    var changed = walkMigrateLegacyNote(w), sessionCopy = {};
+    try { sessionCopy = JSON.parse(sessionStorage.getItem(WALK_NOTE_SESSION_KEY) || '{}'); } catch (e) {}
+    if (walkMergeNotes(sessionCopy)) changed = true;
+    return walkIdbRead().then(function (idbCopy) {
+      if (walkMergeNotes(idbCopy)) changed = true;
+      if (changed) { walkCompileNotes(w); studentNotesChanged(); try { sessionStorage.setItem(WALK_NOTE_SESSION_KEY, JSON.stringify(walkNoteSnapshot())); } catch (e) {} }
+      return changed;
+    });
   }
   var walkResumeSanitized = false;
   function cleanWalkRecord(raw, expectedWeek, maxIndex, sessionRecord) {
@@ -7804,8 +9365,20 @@
     if (!s) return 'Chapter';
     if (s.kind === 'cover') return 'Week ' + (_walk ? _walk.week : '') + ': ' + (s.title || 'Introduction');
     if (s.kind === 'scene') return 'Enter the week: ' + (s.title || 'Weekly scene');
+    if (s.kind === 'land') return 'Land acknowledgement: ' + (s.title || 'Begin in relationship');
+    if (s.kind === 'archive') return 'Visual story: ' + (s.title || 'Archive');
+    if (s.kind === 'hotspot') return 'Image investigation: ' + (s.title || 'Inspect the evidence');
+    if (s.kind === 'lens') return 'Change the lens: ' + (s.title || 'Compare the perspectives');
+    if (s.kind === 'layers') return 'Policy layers: ' + (s.title || 'Trace accountability');
+    if (s.kind === 'video') return 'Short video: ' + (s.title || 'Historical context');
+    if (s.kind === 'scholars') return 'Scholar encounter: ' + (s.title || 'Meet the thinker');
+    if (s.kind === 'gallery') return 'Case gallery: ' + (s.title || 'Compare the cases');
+    if (s.kind === 'check') return 'Knowledge check: ' + (s.title || 'Test the idea');
+    if (s.kind === 'diagramGallery') return 'Interactive visual sequence: ' + (s.title || 'Follow the argument');
+    if (s.kind === 'video') return 'Watch the week take shape: ' + (s.title || 'Weekly overview');
+    if (s.kind === 'tour') return 'See how to move through the experience';
     if (s.kind === 'context') return 'What this week asks you to notice';
-    if (s.kind === 'model') return '3D model: ' + (s.title || 'Weekly visual');
+    if (s.kind === 'model') return 'Evidence visual: ' + (s.title || 'Weekly visual');
     if (s.kind === 'concept') return 'Key idea: ' + (s.h || 'Weekly concept');
     if (s.kind === 'figure') return 'Diagram: ' + (s.h || 'Weekly concept');
     if (s.kind === 'terms') return 'The words to know';
@@ -7815,6 +9388,14 @@
     if (s.kind === 'decisions') return 'Choose where to pause';
     if (s.kind === 'close') return 'Carry one idea back with you';
     return String(s.title || s.h || 'Chapter');
+  }
+  function walkNormalizeHeadings(root) {
+    if (!root || !document.createTreeWalker) return;
+    Array.prototype.forEach.call(root.querySelectorAll('h1,h2,h3,h4,h5,h6'), function (heading) {
+      var walker = document.createTreeWalker(heading, NodeFilter.SHOW_TEXT), node, last = null;
+      while ((node = walker.nextNode())) if (/\S/.test(node.nodeValue || '')) last = node;
+      if (last) last.nodeValue = String(last.nodeValue || '').replace(/\.(\s*)$/, '$1');
+    });
   }
   function walkControlSync() {
     var b = document.getElementById('walk-speak'), stop = document.getElementById('walk-stop');
@@ -7860,20 +9441,104 @@
       + '<div class="walk-access-group"><b>Experience</b><div><button id="walk-panel-restart" type="button" onclick="SOC.walkRestart()">Restart from the beginning</button></div></div>'
       + '<p class="walk-access-note">This site does not transmit your accessibility choices. They affect this browser session and any browser storage available on this device; they do not change the course content.</p></section>';
   }
+  function walkTranscriptLoad(details) {
+    if (!details || details.getAttribute('data-loaded') === 'true') return;
+    var src = String(details.getAttribute('data-vtt') || '');
+    var target = details.querySelector('[data-walk-transcript]');
+    if (!src || !target || details.getAttribute('data-loading') === 'true') return;
+    details.setAttribute('data-loading', 'true');
+    target.textContent = 'Loading transcript...';
+    fetch(src, { credentials: 'same-origin' }).then(function (response) {
+      if (!response.ok) throw new Error('Transcript request failed.');
+      return response.text();
+    }).then(function (raw) {
+      var blocks = String(raw || '').replace(/\r/g, '').split(/\n\s*\n/);
+      var cues = [];
+      blocks.forEach(function (block) {
+        var lines = block.split('\n').map(function (line) { return line.trim(); }).filter(Boolean);
+        if (!lines.length || /^WEBVTT/i.test(lines[0]) || /^NOTE(?:\s|$)/i.test(lines[0]) || /^STYLE(?:\s|$)/i.test(lines[0])) return;
+        var cue = lines.filter(function (line) { return !/^\d+$/.test(line) && line.indexOf('-->') < 0; }).join(' ').replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+        if (cue && cue !== cues[cues.length - 1]) cues.push(cue);
+      });
+      target.textContent = cues.join(' ');
+      details.setAttribute('data-loaded', 'true');
+      details.removeAttribute('data-loading');
+    }).catch(function () {
+      target.textContent = 'The transcript could not be loaded here. Turn on captions in the player or open this week on the course page.';
+      details.removeAttribute('data-loading');
+    });
+  }
+  function walkPreviewButton(label, feedback, tone, multi) {
+    return '<button type="button" data-feedback="' + esc(feedback || '') + '" data-tone="' + esc(tone || 'notice') + '"' + (multi ? ' data-multi="true"' : '') + ' aria-pressed="false" onclick="SOC.walkInteract(this)">' + esc(label || 'Choose this') + '</button>';
+  }
+  function walkActivityPreview(s, w) {
+    var d = s.data || {}, type = s.archetype || '', body = '', feedback = 'Make one choice to reveal what that move changes.';
+    if (w === 5 && GS && GS.systems && GS.systems.length) {
+      var auditSystem = GS.systems[0];
+      feedback = 'Select a benchmark group. The error rate comes from the published Gender Shades results for IBM; the full activity lets you repeat the audit across all three systems.';
+      body = '<div class="walk-preview-case"><span>RECREATE THE AUDIT</span><b>IBM reports strong performance overall. Which benchmark tray reveals what the average hides?</b></div><div class="walk-audit-trays" role="group" aria-label="Inspect Gender Shades benchmark groups">'
+        + GS.groups.map(function (group) { var rate = auditSystem.rate[group.id]; return walkPreviewButton(group.label + ' · ' + rate.toFixed(1) + '% error', rate >= 20 ? 'This is the concentrated failure the overall average hides. The intersectional result changes the safety claim and the accountability question.' : 'This result matters, but compare it with every other intersectional group before judging whether the overall figure is safe.', rate >= 20 ? 'risk' : 'notice'); }).join('') + '</div>';
+    } else if (type === 'match' && d.pairs && d.pairs.length) {
+      var pair = d.pairs[0], choices = [], seen = {};
+      d.pairs.forEach(function (item) { if (!seen[item.match]) { seen[item.match] = true; choices.push(item.match); } });
+      body = '<div class="walk-preview-case"><span>CASE CARD</span><b>' + esc(pair.item) + '</b></div><div class="walk-preview-choices" role="group" aria-label="Choose the course idea">' + choices.map(function (choice) { return walkPreviewButton(choice, choice === pair.match ? pair.why : 'That idea does not best explain this case. Try another and compare the mechanism.', choice === pair.match ? 'repair' : 'risk'); }).join('') + '</div>';
+    } else if (type === 'scenario' && d.steps && d.steps.length) {
+      var step = d.steps[0];
+      body = '<div class="walk-preview-case"><span>FIRST DECISION</span><b>' + esc(step.situation) + '</b></div><div class="walk-preview-choices" role="group" aria-label="Choose a decision path">' + (step.choices || []).map(function (choice) { return walkPreviewButton(choice.label, choice.outcome, choice.harm ? 'risk' : 'repair'); }).join('') + '</div>';
+    } else if (type === 'toggle' && d.toggles && d.toggles.length) {
+      feedback = 'Change one default. The status panel will name who carries the cost.';
+      body = '<div class="walk-preview-switches">' + d.toggles.slice(0, 3).map(function (item) { return '<button type="button" aria-pressed="false" data-off="' + esc(item.off || '') + '" data-on="' + esc(item.on || '') + '" data-cost="' + esc(item.whoHarmed || '') + '" onclick="SOC.walkSwitch(this)"><span aria-hidden="true"></span><b>' + esc(item.label) + '</b><small>Switch the default</small></button>'; }).join('') + '</div>';
+    } else if (type === 'assemble' && d.components && d.components.length) {
+      feedback = 'Add a part. The scene becomes a system only when the relationships among the parts are visible.';
+      body = '<div class="walk-preview-parts" role="group" aria-label="Add system parts">' + d.components.slice(0, 4).map(function (item) { return walkPreviewButton('+ ' + item.label, item.role, 'repair', true); }).join('') + '</div>';
+    } else if (type === 'lab' && d.levers && d.levers.length) {
+      feedback = 'Choose one lever to inspect what it can fix and what it leaves unresolved.';
+      body = '<div class="walk-preview-case"><span>POLICY CASE</span><b>' + esc(d['case'] || 'Choose a response to the documented problem.') + '</b></div><div class="walk-preview-choices" role="group" aria-label="Inspect a policy lever">' + d.levers.slice(0, 4).map(function (item) { return walkPreviewButton(item.label, item.effect + ' Trade-off: ' + item.tradeoff, 'notice'); }).join('') + '</div>';
+    } else if (type === 'capstone' && d.items && d.items.length) {
+      feedback = 'Mark the parts you are ready to carry into your final response.';
+      body = '<div class="walk-preview-parts" role="group" aria-label="Mark map sections">' + d.items.slice(0, 4).map(function (item) { return walkPreviewButton(item.label, item.prompt, 'repair', true); }).join('') + '</div>';
+    } else {
+      body = '<div class="walk-preview-case"><span>YOUR MOVE</span><b>' + esc(d.prompt || s.what || 'Apply the weekly idea to one concrete example.') + '</b></div>';
+    }
+    return '<section class="walk-interactive walk-interactive-' + esc(type || 'open') + '">' + body + '<div class="walk-preview-feedback notice" data-walk-feedback role="status" aria-live="polite">' + esc(feedback) + '</div><button type="button" class="walk-open-activity" onclick="SOC.walkToActivity(' + w + ')">' + (w === 5 ? 'Run the full Coded Gaze audit' : 'Open the full activity') + ' <span aria-hidden="true">&#8594;</span></button></section>';
+  }
   function walkSlides(w) {
     var d = weekData(w);
     if (!d) return [];
     var s = [];
     var question = (d.guiding && d.guiding[0]) || journeyQ(w);
-    s.push({ kind: 'cover', title: weekTitle(w), question: question, lead: firstSentence(d.overview || '') });
+    var storyWeek = walkStoryWeek(w), stories = (storyWeek.stories || []).slice(), specialLand = w === 8 && stories.length && stories[0].kind === 'land';
+    if (specialLand) s.push(stories.shift());
+    else s.push({ kind: 'cover', title: weekTitle(w), question: question, lead: firstSentence(d.overview || '') });
+    var postConceptStories = stories.filter(function (story) { return story && story.slot === 'afterConcepts'; });
+    stories = stories.filter(function (story) { return !story || story.slot !== 'afterConcepts'; });
+    Array.prototype.push.apply(s, walkChecks(w, 'afterCover'));
     s.push({ kind: 'scene', title: weekTitle(w), lead: d.purpose || d.overview || '', question: question, src: weekHeroSrc(w), alt: weekHeroAlt(w) });
+    stories.forEach(function (story) { s.push(story); });
+    Array.prototype.push.apply(s, walkChecks(w, 'afterStories'));
     s.push({ kind: 'context', purpose: d.purpose || d.overview || '', outcomes: (d.outcomes || []).slice(0, 4) });
-    try { var _cc = (typeof courseCode === 'function') ? courseCode() : ''; var _HOLO = _cc && (typeof window !== 'undefined') && window[_cc + '_HOLO']; if (_HOLO && _HOLO.supports && typeof visualSpec === 'function') { var _vs = visualSpec(w, d); if (_vs && _HOLO.supports(_vs.kind)) s.push({ kind: 'model', week: w, title: _vs.title || weekTitle(w) }); } } catch (e) {}
+    try {
+      var _cc = (typeof courseCode === 'function') ? courseCode() : '';
+      var _HOLO = _cc && (typeof window !== 'undefined') && window[_cc + '_HOLO'];
+      var _EVID = evidenceVisualApi();
+      if (typeof visualSpec === 'function') {
+        var _vs = visualSpec(w, d);
+        var _hasEvidence = !!(_vs && _vs.medium === 'evidence' && _EVID && _EVID.hasOverview && _EVID.hasOverview(w));
+        var _hasThree = !!(_vs && _vs.medium === 'three' && documentaryThreeKind(_vs.kind) && _HOLO && _HOLO.supports && _HOLO.supports(_vs.kind));
+        if (_hasEvidence || _hasThree) s.push({ kind: 'model', week: w, title: _vs.title || weekTitle(w) });
+      }
+    } catch (e) {}
+    Array.prototype.push.apply(s, walkChecks(w, 'afterModel'));
+    var figureAdded = false;
     (d.concepts || []).forEach(function (c, ci) {
       s.push({ kind: 'concept', h: c.h, body: c.body, cite: c.cite, number: ci + 1 });
-      var fig = walkFig(w, ci);
-      if (fig) s.push({ kind: 'figure', src: fig.src, alt: fig.alt || ('Diagram for ' + c.h), longText: fig.longText, h: c.h });
+      if (ci === 0) {
+        var visual = walkDiagramGallerySlide(w) || walkFigureSlide(w, w === 3 ? 2 : 0);
+        if (visual) { s.push(visual); figureAdded = true; }
+      }
     });
+    if (figureAdded) Array.prototype.push.apply(s, walkChecks(w, 'afterFigure'));
+    postConceptStories.forEach(function (story) { s.push(story); });
     if (d.terms && d.terms.length) s.push({ kind: 'terms', items: d.terms.slice(0, 6) });
     if (d.readings && d.readings.length) s.push({ kind: 'readings', items: d.readings.slice(0, 6) });
     try {
@@ -7886,13 +9551,107 @@
         s.push({ kind: 'program', label: L.program || L.area, intro: frame.intro, concept: topic.concept, conceptMove: frame.concept, focus: frame.focus, questions: (frame.questions || []).slice(0, 4) });
       }
     } catch (e) {}
-    if (d.activity) s.push({ kind: 'activity', title: d.activity.title || 'Try the weekly move', what: d.activity.what || '', why: d.activity.why || '', prompt: d.activity.data && d.activity.data.prompt || '' });
+    Array.prototype.push.apply(s, walkChecks(w, 'beforeActivity'));
+    if (d.activity) s.push({ kind: 'activity', title: d.activity.title || 'Try the weekly move', what: d.activity.what || '', why: d.activity.why || '', prompt: d.activity.data && d.activity.data.prompt || '', archetype: d.activity.archetype || '', data: d.activity.data || {} });
     if (d.guiding && d.guiding.length > 1) s.push({ kind: 'decisions', items: d.guiding.slice(0, 4) });
-    s.push({ kind: 'close', youcan: (d.youcan || []).slice(0, 4), reflect: d.reflectPrompt || '' });
+    s.push({ kind: 'close', youcan: (d.youcan || []).slice(0, 4), reflect: d.reflectPrompt || '', handoff: storyWeek.handoff || '' });
     return s;
   }
   var _walk = null;
+  function walkStorySource(url, label) {
+    if (!url) return '';
+    return '<a class="walk-story-source" href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label || 'Open the source') + ' <span aria-hidden="true">&#8599;</span></a>';
+  }
+  function walkStorySources(story, fallbackLabel) {
+    var items = story && Array.isArray(story.sources) ? story.sources : [];
+    if (items.length) return items.map(function (item) { return walkStorySource(item && item.url, item && item.label); }).join(' ');
+    return walkStorySource(story && story.source, fallbackLabel);
+  }
+  function walkScholarCard(p, i, w) {
+    var scholarId = 'walk-scholar-' + w + '-' + i, lenses = Array.isArray(p.lenses) ? p.lenses : [];
+    var tabs = lenses.map(function (lens, li) {
+      return '<button type="button" role="tab" id="' + scholarId + '-tab-' + li + '" aria-selected="' + (li === 0) + '" aria-controls="' + scholarId + '-panel-' + li + '" data-index="' + li + '" onclick="SOC.walkScholarLens(this)">' + esc(lens.label || ('Lens ' + (li + 1))) + '</button>';
+    }).join('');
+    var panels = lenses.map(function (lens, li) {
+      var label = (p.name || 'Scholar') + ': ' + (lens.label || ('Lens ' + (li + 1)));
+      return '<section id="' + scholarId + '-panel-' + li + '" class="walk-scholar-lens-panel" role="tabpanel" aria-labelledby="' + scholarId + '-tab-' + li + '"' + (li ? ' hidden' : '') + '><b>' + esc(lens.prompt || '') + '</b>'
+        + walkNoteField(w, 'scholar-' + i + '-lens-' + li, label, lens.prompt || 'Use this lens to make your own note.') + '</section>';
+    }).join('');
+    return '<article class="walk-scholar"><button type="button" aria-expanded="false" onclick="SOC.walkStoryToggle(this)"><img src="' + esc(p.image || '') + '" alt="' + esc(p.alt || '') + '"><span><b>' + esc(p.name || '') + '</b><small>' + esc(p.role || '') + '</small><em>Open the scholar lens <span aria-hidden="true">+</span></em></span></button>'
+      + '<div hidden><p>' + esc(p.move || '') + '</p><p class="walk-scholar-instruction">The portrait anchors the person. The interaction begins when you choose how to read the system through their work.</p>'
+      + (lenses.length ? '<div class="walk-scholar-lenses" role="tablist" aria-label="Choose a lens from ' + esc(p.name || 'this scholar') + '">' + tabs + '</div><div class="walk-scholar-lens-stage">' + panels + '</div>' : '')
+      + '<small>' + esc(p.credit || '') + '</small>' + walkStorySource(p.source, 'Open scholar profile') + '</div></article>';
+  }
+  function walkInteractiveStory(s, w) {
+    var kind = s.kind, items = kind === 'hotspot' ? (s.points || []) : kind === 'lens' ? (s.views || []) : (s.layers || []);
+    var id = 'walk-story-' + w + '-' + kind;
+    var tabs = items.map(function (item, i) {
+      var markerStyle = '';
+      if (kind === 'hotspot') markerStyle = ' style="--story-x:' + Math.max(0, Math.min(100, Number(item.x) || 50)) + '%;--story-y:' + Math.max(0, Math.min(100, Number(item.y) || 50)) + '%"';
+      return '<button type="button" role="tab" id="' + id + '-tab-' + i + '" aria-selected="' + (i === 0) + '" aria-controls="' + id + '-panel-' + i + '" data-index="' + i + '" onclick="SOC.walkStoryTab(this)"' + markerStyle + '><span aria-hidden="true">' + (i + 1) + '</span><b>' + esc(item.label || ('Layer ' + (i + 1))) + '</b></button>';
+    }).join('');
+    var panels = items.map(function (item, i) {
+      var label = (s.title || 'Interactive image') + ': ' + (item.label || ('Part ' + (i + 1)));
+      return '<section id="' + id + '-panel-' + i + '" class="walk-story-panel" role="tabpanel" aria-labelledby="' + id + '-tab-' + i + '"' + (i ? ' hidden' : '') + '><small>' + esc(item.label || ('Part ' + (i + 1))) + '</small><h3>' + esc(item.title || '') + '</h3><p>' + esc(item.body || '') + '</p>'
+        + (item.prompt ? '<div class="walk-story-question"><span>Make the next move</span><b>' + esc(item.prompt) + '</b></div>' + walkNoteField(w, kind + '-' + i, label, item.prompt) : '') + '</section>';
+    }).join('');
+    var media = '<figure class="walk-story-image"><img src="' + esc(s.image || '') + '" alt="' + esc(s.alt || '') + '"><figcaption>' + esc(s.credit || '') + ' ' + walkStorySource(s.source, 'Open the source') + '</figcaption>' + (kind === 'hotspot' ? '<div class="walk-hotspot-tabs" role="tablist" aria-label="Select a point on the image">' + tabs + '</div>' : '') + '</figure>';
+    var selector = kind === 'hotspot' ? '' : '<div class="walk-story-tabs walk-story-tabs-' + esc(kind) + '" role="tablist" aria-label="' + esc(kind === 'lens' ? 'Change the interpretive lens' : 'Inspect each accountability layer') + '">' + tabs + '</div>';
+    return '<section class="walk-story-interactive walk-story-' + esc(kind) + '"><header><div class="walk-kicker">' + esc(s.kicker || 'INTERACTIVE VISUAL STORY') + '</div><h2>' + esc(s.title || '') + '</h2><p>' + esc(s.intro || '') + '</p></header><div class="walk-story-workspace">' + media + '<div class="walk-story-analysis">' + selector + '<div class="walk-story-panels">' + panels + '</div>'
+      + (s.handoff ? '<div class="walk-story-bridge"><span>Carry the comparison forward</span><p>' + esc(s.handoff) + '</p></div>' : '')
+      + (s.boundary ? '<div class="walk-story-boundary"><b>Evidence boundary</b><p>' + esc(s.boundary) + '</p></div>' : '') + '</div></div></section>';
+  }
   function walkSlideHtml(s, w) {
+    if (s.kind === 'land') {
+      return '<section class="walk-land">'
+        + '<div class="walk-land-sky">' + (s.image ? '<img src="' + esc(s.image) + '" alt="' + esc(s.imageAlt || '') + '">' : '') + '<span aria-hidden="true"></span><span aria-hidden="true"></span><span aria-hidden="true"></span></div>'
+        + '<div class="walk-land-copy"><div class="walk-kicker">' + esc(s.kicker || 'LAND ACKNOWLEDGEMENT') + '</div>'
+        + '<h2>' + esc(s.title || 'Begin in relationship') + '</h2>'
+        + '<p class="walk-land-body">' + esc(s.body || '') + '</p>'
+        + '<p class="walk-land-responsibility">' + esc(s.responsibility || '') + '</p>'
+        + '<div class="walk-land-prompt"><span>Carry this question</span><b>' + esc(s.prompt || '') + '</b></div>'
+        + walkStorySource(s.source, 'Read Seneca\'s official land acknowledgement')
+        + '<button type="button" class="walk-enter" onclick="SOC.walkEnter()">Enter Week 8 with this responsibility <span aria-hidden="true">&#8594;</span></button></div></section>';
+    }
+    if (s.kind === 'hotspot' || s.kind === 'lens' || s.kind === 'layers') return walkInteractiveStory(s, w);
+    if (s.kind === 'archive') {
+      return '<section class="walk-story walk-story-archive"><figure class="walk-story-media"><img src="' + esc(s.image) + '" alt="' + esc(s.alt || '') + '"><figcaption>' + esc(s.credit || '') + ' ' + walkStorySources(s, 'View record') + '</figcaption></figure>'
+        + '<div class="walk-story-copy"><div class="walk-kicker">' + esc(s.kicker || 'VISUAL STORY') + '</div><h2>' + esc(s.title || '') + '</h2>'
+        + '<p class="walk-story-lead">' + esc(s.body || '') + '</p>'
+        + (s.notice ? '<div class="walk-story-notice"><span>Look before you label</span><p>' + esc(s.notice) + '</p></div>' : '')
+        + (s.bridge ? '<div class="walk-story-bridge"><span>The bridge</span><p>' + esc(s.bridge) + '</p></div>' : '')
+        + (s.boundary ? '<div class="walk-story-boundary"><b>Evidence boundary</b><p>' + esc(s.boundary) + '</p></div>' : '')
+        + '</div></section>';
+    }
+    if (s.kind === 'video') {
+      return '<section class="walk-video-story"><div class="walk-video-copy"><div class="walk-kicker">' + esc(s.kicker || 'SHORT VIDEO') + '</div><h2>' + esc(s.title || '') + '</h2>'
+        + '<div class="walk-video-meta"><span>' + esc(s.provider || '') + '</span><span>' + esc(s.duration || '') + '</span><span>Captions on</span></div>'
+        + '<div class="walk-story-notice"><span>Watch for</span><p>' + esc(s.watchFor || '') + '</p></div>'
+        + '<div class="walk-story-bridge"><span>Then carry this forward</span><p>' + esc(s.handoff || '') + '</p></div>'
+        + '<details class="walk-video-transcript"><summary>Read the excerpt summary</summary><p>' + esc(s.transcript || '') + '</p></details>'
+        + walkStorySource(s.source, 'Open the full source video') + '</div>'
+        + '<div class="walk-video-frame"><button type="button" class="walk-video-load" data-youtube-id="' + esc(s.youtubeId || '') + '" data-start="' + Number(s.start || 0) + '" data-end="' + Number(s.end || 0) + '" data-title="' + esc(s.title || 'Short course video') + '" onclick="SOC.walkVideo(this)"><img src="' + esc(s.poster || '') + '" alt="' + esc(s.posterAlt || '') + '"><span aria-hidden="true">&#9654;</span><b>Play ' + esc(s.duration || 'short excerpt') + '</b><small>Loads the privacy-enhanced YouTube player after you choose play.</small></button></div></section>';
+    }
+    if (s.kind === 'scholars') {
+      return '<section class="walk-scholars"><div class="walk-kicker">' + esc(s.kicker || 'SCHOLAR ANCHOR') + '</div><h2>' + esc(s.title || '') + '</h2><p class="walk-body">' + esc(s.intro || '') + '</p><div class="walk-scholar-grid">'
+        + (s.people || []).map(function (p, i) { return walkScholarCard(p, i, w); }).join('')
+        + '</div></section>';
+    }
+    if (s.kind === 'gallery') {
+      return '<section class="walk-case-gallery"><div class="walk-kicker">' + esc(s.kicker || 'CASE GALLERY') + '</div><h2>' + esc(s.title || '') + '</h2><p class="walk-body">' + esc(s.intro || '') + '</p><div class="walk-case-grid">'
+        + (s.items || []).map(function (item, i) { return '<article class="walk-case"><button type="button" aria-expanded="false" onclick="SOC.walkStoryToggle(this)"><img src="' + esc(item.image || '') + '" alt="' + esc(item.alt || '') + '"><span><small>CASE ' + (i + 1) + '</small><b>' + esc(item.title || '') + '</b><em>Open the story <span aria-hidden="true">+</span></em></span></button><div hidden><p>' + esc(item.body || '') + '</p><div class="walk-story-boundary"><b>Evidence boundary</b><p>' + esc(item.boundary || '') + '</p></div><small>' + esc(item.credit || '') + '</small>' + walkStorySource(item.source, 'Open case source') + '</div></article>'; }).join('')
+        + '</div><div class="walk-gallery-handoff"><span>Compare the cases</span><p>' + esc(s.handoff || '') + '</p></div></section>';
+    }
+    if (s.kind === 'check') {
+      return '<section class="walk-check"><div class="walk-kicker">KNOWLEDGE CHECK</div><h2>' + esc(s.title || 'Test the idea') + '</h2><p class="walk-check-prompt">' + esc(s.prompt || '') + '</p><div class="walk-check-options" role="group" aria-label="Choose one answer">'
+        + (s.options || []).map(function (option, i) { return '<button type="button" data-correct="' + (!!option.correct) + '" data-feedback="' + esc(option.feedback || '') + '" onclick="SOC.walkCheck(this)"><span>' + String.fromCharCode(65 + i) + '</span><b>' + esc(option.text || '') + '</b></button>'; }).join('')
+        + '</div><div class="walk-check-feedback" data-walk-check-feedback role="status" aria-live="polite"><b>Make a choice, then read the reasoning.</b><p>The explanation will name the evidence and the next analytic move.</p></div></section>';
+    }
+    if (s.kind === 'diagramGallery') {
+      return '<section class="walk-diagram-gallery"><div class="walk-kicker">INTERACTIVE VISUAL SEQUENCE</div><h2>' + esc(s.title || '') + '</h2><div class="walk-diagram-tabs" role="tablist" aria-label="Choose a visual argument">'
+        + (s.items || []).map(function (item, i) { return '<button type="button" role="tab" aria-selected="' + (i === 0) + '" aria-controls="walk-diagram-panel-' + i + '" id="walk-diagram-tab-' + i + '" data-index="' + i + '" onclick="SOC.walkGallery(this)">' + (i + 1) + '. ' + esc(item.h || 'Visual') + '</button>'; }).join('')
+        + '</div><div class="walk-diagram-stage">' + (s.items || []).map(function (item, i) { return '<figure id="walk-diagram-panel-' + i + '" role="tabpanel" aria-labelledby="walk-diagram-tab-' + i + '"' + (i ? ' hidden' : '') + '><img src="' + esc(item.src || '') + '" alt="' + esc(item.alt || '') + '"><figcaption><b>' + esc(item.h || '') + '</b><p>' + esc(item.longText || item.alt || '') + '</p></figcaption></figure>'; }).join('') + '</div></section>';
+    }
     if (s.kind === 'scene') {
       return '<div class="walk-scene"><figure class="walk-scene-media"><img src="' + esc(s.src) + '" alt="' + esc(s.alt || '') + '">' + weekHeroCredit(w) + '</figure><div class="walk-scene-copy"><div class="walk-kicker">ENTER THE WEEK</div><h2 class="walk-h">' + esc(s.title) + '</h2><p class="walk-body">' + esc(s.lead) + '</p><div class="walk-q"><span>Your role in this scene</span><b>' + esc(s.question) + '</b></div></div></div>';
     }
@@ -7911,13 +9670,13 @@
       }).join('') + '</div>';
     }
     if (s.kind === 'program') {
-      return '<div class="walk-kicker">YOUR FIELD ENTERS THE STORY</div><h2 class="walk-h">' + esc(s.label) + '</h2><p class="walk-body">' + esc(s.intro) + '</p><div class="walk-program-grid"><div><b>The course idea</b><p>' + esc(s.concept) + ': ' + esc(s.conceptMove) + '</p></div><div><b>The pressure point</b><p>' + esc(s.focus) + '</p></div></div><div class="walk-decisions">' + (s.questions || []).map(function (q, i) { return '<div class="walk-decision"><button type="button" aria-expanded="false" onclick="SOC.walkReveal(this)">Field decision ' + (i + 1) + ': ' + esc(q) + '</button><div hidden>Trace the people, evidence, default, and accountability point before deciding what should happen next.</div></div>'; }).join('') + '</div>';
+      return '<div class="walk-kicker">YOUR FIELD ENTERS THE STORY</div><h2 class="walk-h">' + esc(s.label) + '</h2><p class="walk-body">' + esc(s.intro) + '</p><div class="walk-program-grid"><div><b>The course idea</b><p>' + esc(s.concept) + ': ' + esc(s.conceptMove) + '</p></div><div><b>The pressure point</b><p>' + esc(s.focus) + '</p></div></div><div class="walk-decisions">' + (s.questions || []).map(function (q, i) { var instruction = 'Trace the people, evidence, default, and accountability point before deciding what should happen next.'; return '<div class="walk-decision"><button type="button" aria-expanded="false" onclick="SOC.walkReveal(this)">Field decision ' + (i + 1) + ': ' + esc(q) + '</button><div hidden><p>' + esc(instruction) + '</p>' + walkNoteField(w, 'program-decision-' + i, 'Field decision ' + (i + 1), q + ' ' + instruction) + '</div></div>'; }).join('') + '</div>';
     }
     if (s.kind === 'activity') {
-      return '<div class="walk-kicker">ACTION ROOM</div><h2 class="walk-h">' + esc(s.title) + '</h2><div class="walk-context-grid"><div><b>What you will do</b><p>' + esc(s.what || 'Apply the week\'s central idea to a concrete example.') + '</p></div><div><b>Why this move matters</b><p>' + esc(s.why || 'It turns recognition into a reasoned decision you can explain.') + '</p></div></div>' + (s.prompt ? '<div class="walk-decision" style="margin-top:14px"><button type="button" aria-expanded="false" onclick="SOC.walkReveal(this)">Reveal the activity prompt</button><div hidden>' + esc(s.prompt) + '</div></div>' : '');
+      return '<div class="walk-kicker">ACTION ROOM</div><h2 class="walk-h">' + esc(s.title) + '</h2><div class="walk-context-grid"><div><b>What you will do</b><p>' + esc(s.what || 'Apply the week\'s central idea to a concrete example.') + '</p></div><div><b>Why this move matters</b><p>' + esc(s.why || 'It turns recognition into a reasoned decision you can explain.') + '</p></div></div>' + walkActivityPreview(s, w);
     }
     if (s.kind === 'decisions') {
-      return '<div class="walk-kicker">DECISION POINT</div><h2 class="walk-h">Choose where to pause</h2><p class="walk-body">Open a question. Do not rush to an answer: name the evidence, the uncertainty, and the people affected.</p><div class="walk-decisions">' + (s.items || []).map(function (q) { return '<div class="walk-decision"><button type="button" aria-expanded="false" onclick="SOC.walkReveal(this)">' + esc(q) + '</button><div hidden>Before moving on, state one claim the week supports, one limit on that claim, and one consequence of getting the interpretation wrong.</div></div>'; }).join('') + '</div>';
+      return '<div class="walk-kicker">DECISION POINT</div><h2 class="walk-h">Choose where to pause</h2><p class="walk-body">Open a question. Do not rush to an answer: name the evidence, the uncertainty, and the people affected.</p><div class="walk-decisions">' + (s.items || []).map(function (q, i) { var instruction = 'State one claim the week supports, one limit on that claim, and one consequence of getting the interpretation wrong.'; return '<div class="walk-decision"><button type="button" aria-expanded="false" onclick="SOC.walkReveal(this)">' + esc(q) + '</button><div hidden><p>' + esc(instruction) + '</p>' + walkNoteField(w, 'decision-' + i, 'Decision point ' + (i + 1), q + ' ' + instruction) + '</div></div>'; }).join('') + '</div>';
     }
     if (s.kind === 'cover') {
       return '<div class="walk-kicker">WEEK ' + w + ' EXPERIENCE</div>'
@@ -7932,41 +9691,57 @@
         + (s.cite ? '<div class="walk-cite">' + esc(s.cite) + '</div>' : '');
     }
     if (s.kind === 'figure') {
-      return '<div class="walk-figwrap">'
+      return '<div class="walk-figwrap walk-figure-' + esc(s.layout || 'studio') + '">'
         + '<div class="walk-figtext">'
         + '<div class="walk-kicker">THE DIAGRAM</div>'
         + '<h2 class="walk-fighead">' + esc(s.h) + '</h2>'
-        + '<p class="walk-figcap">' + esc(s.alt || ('Diagram for ' + s.h)) + '</p>'
+        + '<p class="walk-figcap">' + esc(s.alt || ('Diagram for ' + s.h)) + ' Zoom or drag to inspect the visual.</p>'
         + (s.longText ? '<details class="walk-figdesc"><summary>Read a detailed text description</summary><p>' + esc(s.longText) + '</p></details>' : '')
-        + '<div class="walk-figctl" role="group" aria-label="Diagram view controls"><button type="button" onclick="SOC.walkFig(\'zout\')" aria-label="Zoom diagram out">&#8722;</button><button type="button" onclick="SOC.walkFig(\'zin\')" aria-label="Zoom diagram in">+</button><button type="button" onclick="SOC.walkFig(\'rl\')" aria-label="Rotate diagram left">&#8634;</button><button type="button" onclick="SOC.walkFig(\'rr\')" aria-label="Rotate diagram right">&#8635;</button><button type="button" onclick="SOC.walkFig(\'reset\')">Reset view</button></div>'
+        + '<div class="walk-figctl" role="group" aria-label="Diagram view controls"><button type="button" onclick="SOC.walkFig(\'zout\')" aria-label="Zoom diagram out">&#8722;</button><button type="button" onclick="SOC.walkFig(\'zin\')" aria-label="Zoom diagram in">+</button><button type="button" onclick="SOC.walkFig(\'fit\')">Fit image</button></div>'
         + '</div>'
-        + '<div class="walk-figview" aria-label="Pan the diagram with a pointer; use the adjacent buttons for keyboard zoom and rotation"><img class="walk-figimg" src="' + esc(s.src) + '" alt="' + esc(s.alt || ('Diagram for ' + s.h)) + '" onerror="var f=this.closest(&quot;.walk-figwrap&quot;);if(f){var v=f.querySelector(&quot;.walk-figview&quot;);if(v)v.innerHTML=&quot;<p class=walk-fignote>The diagram could not load. Use the detailed text description beside it.</p>&quot;;}"></div>'
+        + '<div class="walk-figview" aria-label="Pan the diagram with a pointer; use the adjacent buttons for keyboard zoom and fit"><img class="walk-figimg" src="' + esc(s.src) + '" alt="' + esc(s.alt || ('Diagram for ' + s.h)) + '" onerror="var f=this.closest(&quot;.walk-figwrap&quot;);if(f){var v=f.querySelector(&quot;.walk-figview&quot;);if(v)v.innerHTML=&quot;<p class=walk-fignote>The diagram could not load. Use the detailed text description beside it.</p>&quot;;}"></div>'
         + '</div>';
     }
     if (s.kind === 'model') {
       var md = weekData(s.week);
       var sp = visualSpec(s.week, md);
       var vw = visualViewFor(s.week, 'overview');
+      var evidenceApi = evidenceVisualApi();
+      if (sp.medium === 'evidence' && evidenceApi && evidenceApi.hasOverview && evidenceApi.hasOverview(s.week)) {
+        return '<div class="walk-evidence-slide"><div class="walk-kicker">EVIDENCE VISUAL</div>'
+          + evidenceApi.render(s.week, sp, vw, { context: 'overview', instanceId: 'walk-evidence-' + s.week })
+          + '</div>';
+      }
+      var documentary = documentaryThreeKind(sp.kind);
       var mt = esc(sp.title || weekTitle(s.week));
-      var modelDescription = sp.visualDescription || sp.modelNote || sp.scene || 'A three-dimensional model of the core idea for this week.';
+      var modelDescription = sp.modelNote || sp.visualDescription || sp.scene || 'A three-dimensional model of the core idea for this week.';
       var modelStyle = String(sp.visualStyle || 'diorama').replace(/[^a-z0-9_-]/gi, '').toLowerCase() || 'diorama';
-      var modelModes = [['observe', 'Observe'], ['path', 'Follow the path'], ['risk', 'Find the risk']];
-      var modelModeButtons = modelModes.map(function (mode) {
-        return '<button id="walk-model-' + mode[0] + '" type="button" onclick="return SOC.walkModelView(event,' + s.week + ',\'' + mode[0] + '\')" aria-pressed="' + (vw === mode[0]) + '"' + (vw === mode[0] ? ' class="on"' : '') + '>' + mode[1] + '</button>';
+      var modelControls = sp.controls || {};
+      var modelModes = [
+        { view: 'observe', label: modelControls.observe || 'Observe', cue: (sp.display && sp.display.observe && sp.display.observe.focus) || 'See the whole system' },
+        { view: 'path', label: modelControls.path || 'Follow the path', cue: (sp.display && sp.display.path && sp.display.path.focus) || 'Trace what changes' },
+        { view: 'risk', label: modelControls.risk || 'Find the risk', cue: (sp.display && sp.display.risk && sp.display.risk.focus) || 'Locate the consequence' }
+      ];
+      var modelModeButtons = modelModes.map(function (mode, modeIndex) {
+        return '<button id="walk-model-' + mode.view + '" data-model-view="' + mode.view + '" type="button" onclick="return SOC.walkModelView(event,' + s.week + ',\'' + mode.view + '\')" aria-label="Step ' + (modeIndex + 1) + ': ' + esc(mode.label) + '. ' + esc(mode.cue) + '" aria-pressed="' + (vw === mode.view) + '"' + (vw === mode.view ? ' class="on"' : '') + '><span class="walk-model-step-number" aria-hidden="true">' + (modeIndex + 1) + '</span><span class="walk-model-step-copy"><strong>' + esc(mode.label) + '</strong><small>' + esc(mode.cue) + '</small></span></button>';
       }).join('');
-      return '<div class="walk-figwrap">'
+      var modelState = (sp.display && sp.display[vw]) || {};
+      var diagramSteps = (sp.accessibleDiagram || (sp.steps || []).map(function (step) { return (step[0] || '') + ': ' + (step[1] || ''); })).slice(0, 3);
+      return '<div class="walk-figwrap' + (documentary ? ' walk-model-documentary' : '') + '">'
         + '<div class="walk-figtext">'
-        + '<div class="walk-kicker">EXAMINE IN 3D</div>'
+        + '<div class="walk-kicker">' + (sp.kind === 'outcomelens' ? 'AUDIT WORKSTATION' : sp.kind === 'benevolence' ? 'DOCUMENTARY INTAKE LOBBY' : sp.kind === 'repair' ? 'CO-DESIGN STUDIO' : 'EXAMINE IN 3D') + '</div>'
         + '<h2 class="walk-fighead">' + mt + '</h2>'
-        + '<p class="walk-figcap">' + esc(modelDescription) + ' Drag the scene to turn it, and use the buttons to zoom or reset.</p>'
-        + '<div class="walk-model-steps" role="group" aria-label="Explore this model in three steps"><span>Explore in three steps</span>' + modelModeButtons + '</div>'
+        + '<p class="walk-figcap">' + esc(modelDescription) + (documentary ? ' Use the states to reveal the argument; shift the viewpoint only when you need another angle.' : ' Drag the scene to turn it, and use the buttons to zoom or reset.') + '</p>'
+        + '<div class="walk-model-steps" role="group" aria-label="Read this model in three steps"><span>Read the scene in three steps</span>' + modelModeButtons + '</div>'
+        + '<div id="walk-model-summary" class="walk-model-summary" role="status" aria-live="polite"><b>' + esc(modelState.focus || sp.title || '') + '</b><p data-model-action>' + esc(modelState.action || '') + '</p><small data-model-learning>' + esc(modelState.learning || '') + '</small></div>'
+        + '<details id="walk-model-diagram" class="walk-model-diagram"><summary>Read this model as a diagram</summary><ol>' + diagramSteps.map(function (line) { return '<li>' + esc(line) + '</li>'; }).join('') + '</ol>' + (sp.evidenceNote ? '<p><b>Evidence boundary:</b> ' + esc(sp.evidenceNote) + '</p>' : '') + '</details>'
         + '</div>'
-        + '<div class="walk-figview walk-modelview"><div class="wk-model-shell walk-modelshell wk-model-style-' + esc(modelStyle) + '">'
-        + '<canvas class="wk-model-canvas" role="img" aria-label="Interactive 3D model for ' + mt + '. ' + esc(modelDescription) + '" data-topic-model="overview" data-week="' + s.week + '" data-kind="' + esc(sp.kind || 'pipeline') + '" data-view="' + esc(vw) + '"></canvas>'
+        + '<div class="walk-figview walk-modelview"><div class="wk-model-shell walk-modelshell' + (documentary ? ' wk-model-documentary' : '') + ' wk-model-kind-' + esc(String(sp.kind || 'pipeline').replace(/[^a-z0-9_-]/gi, '').toLowerCase()) + ' wk-model-style-' + esc(modelStyle) + '">'
+        + '<canvas class="wk-model-canvas" role="img" aria-label="Interactive three-dimensional documentary teaching environment for ' + mt + '. The complete text explanation is beside this model." aria-describedby="walk-model-summary walk-model-diagram" data-topic-model="overview" data-week="' + s.week + '" data-kind="' + esc(sp.kind || 'pipeline') + '" data-view="' + esc(vw) + '"></canvas>'
         + '<div class="wk-model-fallback" role="status" hidden><b>3D view unavailable</b><p>' + esc(modelDescription) + '</p></div>'
         + '<div class="wk-cam-ctl" role="group" aria-label="3D view controls">'
-        + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',-1)" aria-label="Rotate left">&#8634;</button>'
-        + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',1)" aria-label="Rotate right">&#8635;</button>'
+        + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',-1)" aria-label="' + (documentary ? 'Shift view left' : 'Rotate left') + '">' + (documentary ? '&#8592;' : '&#8634;') + '</button>'
+        + '<button type="button" onclick="return SOC.camCtl(event,\'spin\',1)" aria-label="' + (documentary ? 'Shift view right' : 'Rotate right') + '">' + (documentary ? '&#8594;' : '&#8635;') + '</button>'
         + '<button type="button" onclick="return SOC.camCtl(event,\'zoom\',1)" aria-label="Zoom in">+</button>'
         + '<button type="button" onclick="return SOC.camCtl(event,\'zoom\',-1)" aria-label="Zoom out">&#8722;</button>'
         + '<button type="button" onclick="return SOC.camCtl(event,\'reset\')" aria-label="Reset the view">Reset</button>'
@@ -7980,20 +9755,21 @@
     if (s.kind === 'questions') {
       return '<div class="walk-kicker">CARRY THESE QUESTIONS</div><ul class="walk-qlist">' + s.items.map(function (q) { return '<li>' + esc(q) + '</li>'; }).join('') + '</ul>';
     }
-    var notes = walkPrefs().walkNotes || {}, savedNote = notes[String(_walk.week)] || '';
     return '<div class="walk-kicker">EXIT REFLECTION</div><h2 class="walk-h">Carry one idea back with you</h2><ul class="walk-can">' + (s.youcan || []).map(function (y) { return '<li>' + esc(y) + '</li>'; }).join('') + '</ul>'
-      + (s.reflect ? '<div class="walk-reflect"><span>Before you leave</span><p>' + esc(s.reflect) + '</p><textarea class="walk-reflection-box" aria-label="Personal reflection for Week ' + _walk.week + '" oninput="SOC.walkNote(this.value)" placeholder="Write a note for yourself...">' + esc(savedNote) + '</textarea><small>Not submitted to the instructor. When browser storage is available, this note may remain here; another user of the same browser profile may be able to see it.</small></div>' : '')
+      + (s.reflect ? '<div class="walk-reflect"><span>Before you leave</span><p>' + esc(s.reflect) + '</p>' + walkNoteField(w, 'exit-reflection', 'Exit reflection', s.reflect) + '</div>' : '')
+      + ((s.handoff || walkStoryWeek(w).handoff) ? '<div class="walk-handoff"><span>Where this leads</span><p>' + esc(s.handoff || walkStoryWeek(w).handoff) + '</p></div>' : '')
+      + walkNotesSummaryHtml(w)
       + '<button type="button" class="walk-cta" onclick="SOC.walkGoWeek()">Return to Week ' + _walk.week + '</button>';
   }
   function walkFigApply() {
     if (!_walk) return;
     var img = document.querySelector('.walk-slide[aria-hidden="false"] .walk-figimg');
-    if (img && _walk.fig) img.style.transform = 'translate(' + _walk.fig.tx + 'px,' + _walk.fig.ty + 'px) scale(' + _walk.fig.scale + ') rotate(' + _walk.fig.rot + 'deg)';
+    if (img && _walk.fig) img.style.transform = 'translate(' + _walk.fig.tx + 'px,' + _walk.fig.ty + 'px) scale(' + _walk.fig.scale + ')';
   }
   function walkFigWire() {
     var view = document.querySelector('.walk-slide[aria-hidden="false"] .walk-figview'), img = document.querySelector('.walk-slide[aria-hidden="false"] .walk-figimg');
     if (!view || !img) return;
-    _walk.fig = { scale: 1, rot: 0, tx: 0, ty: 0 };
+    _walk.fig = { scale: 1, tx: 0, ty: 0 };
     var drag = null;
     view.addEventListener('pointerdown', function (e) { e.stopPropagation(); drag = { x: e.clientX - _walk.fig.tx, y: e.clientY - _walk.fig.ty }; try { view.setPointerCapture(e.pointerId); } catch (er) {} view.style.cursor = 'grabbing'; });
     view.addEventListener('pointermove', function (e) { if (!drag) return; e.stopPropagation(); _walk.fig.tx = e.clientX - drag.x; _walk.fig.ty = e.clientY - drag.y; walkFigApply(); });
@@ -8007,6 +9783,7 @@
   function walkMount() {
     var ov = document.getElementById('walk-overlay');
     if (!ov || !_walk) return;
+    cleanupModels(ov);
     var slides = _walk.slides, i = Math.max(0, Math.min(slides.length - 1, _walk.i)), s = slides[i], p = walkPrefs();
     var restoreFocusId = _walk.restoreFocusId || (document.activeElement && document.activeElement.id) || '';
     var levels = [100, 115, 130, 150, 175, 200], levelIndex = levels.indexOf(p.walkSize);
@@ -8016,17 +9793,22 @@
     var code = (D.course && D.course.code) || 'COURSE';
     ov.className = 'walk-immersive walk-' + walkTheme() + ' walk-size-' + p.walkSize + (p.walkFont ? ' walk-font' : '') + (p.walkMotion ? ' walk-reduce' : '') + (_walk.viewUpdate ? ' walk-view-update' : '');
     var chapters = slides.map(function (slide, k) {
-      var dense = ['context', 'terms', 'readings', 'program', 'activity', 'decisions', 'close'].indexOf(slide.kind) >= 0;
+      var dense = ['land', 'archive', 'hotspot', 'lens', 'layers', 'video', 'scholars', 'gallery', 'check', 'diagramGallery', 'context', 'terms', 'readings', 'program', 'activity', 'decisions', 'close'].indexOf(slide.kind) >= 0;
       return '<section id="walk-chapter-' + k + '" class="walk-slide wkslide-' + slide.kind + '" aria-label="' + esc(walkSlideName(slide) + '. Chapter ' + (k + 1) + ' of ' + slides.length) + '" aria-hidden="' + (k === i ? 'false' : 'true') + '"' + (k === i ? '' : ' inert') + ' tabindex="' + (k === i ? '0' : '-1') + '"><div class="walk-fit" data-dense="' + dense + '">' + walkSlideHtml(slide, _walk.week) + '</div></section>';
     }).join('');
     var dots = slides.map(function (slide, k) { var disabled = !_walk.entered && k !== 0; return '<button type="button" class="walk-dot' + (k === i ? ' on' : '') + '" onclick="SOC.walkGoto(' + k + ')"' + (disabled ? ' disabled' : '') + (k === i ? ' aria-current="step"' : '') + ' aria-controls="walk-chapter-' + k + '" aria-label="Chapter ' + (k + 1) + ' of ' + slides.length + ': ' + esc(walkSlideName(slide)) + '"></button>'; }).join('');
     var progress = Math.round(((i + 1) / slides.length) * 100);
+    var footer = _walk.entered ? '<footer class="walk-bar"><button type="button" class="walk-prev" onclick="SOC.walkNav(-1)"' + (i === 0 ? ' disabled' : '') + ' aria-label="Previous chapter">' + ic('chevron', 20, 2.4) + '</button><div class="walk-dots">' + dots + '</div><div class="walk-count">' + (i + 1) + ' / ' + slides.length + '</div><button type="button" class="walk-next" onclick="SOC.walkNav(1)"' + (locked || i === slides.length - 1 ? ' disabled' : '') + ' aria-label="Next chapter">' + ic('chevron', 20, 2.4) + '</button></footer>' : '';
     ov.innerHTML = '<header class="walk-head"><div class="walk-brand"><b>' + esc(code) + '</b> | WEEK ' + _walk.week + ' | IMMERSIVE EXPERIENCE</div><div class="walk-progress" role="progressbar" aria-label="Experience progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="' + progress + '" aria-valuetext="Chapter ' + (i + 1) + ' of ' + slides.length + ': ' + esc(walkSlideName(s)) + '"><i style="width:' + progress + '%"></i></div><div class="walk-text-tools" role="group" aria-label="Experience text size and reset"><span>Text size</span><button id="walk-size-down" type="button" onclick="SOC.walkSetting(\'size\',' + smaller + ')"' + (levelIndex === 0 ? ' disabled' : '') + ' aria-label="Make experience text smaller">A&#8722;</button><output aria-live="polite">' + p.walkSize + '%</output><button id="walk-size-up" type="button" onclick="SOC.walkSetting(\'size\',' + larger + ')"' + (levelIndex === levels.length - 1 ? ' disabled' : '') + ' aria-label="Make experience text larger">A+</button><button id="walk-reset" class="walk-reset" type="button" onclick="SOC.walkRestart()" aria-label="Restart this experience">Reset</button></div><button id="walk-access-toggle" type="button" class="walk-theme" onclick="SOC.walkPanel()" aria-expanded="' + (!!_walk.panel) + '" aria-controls="walk-access-panel">Accessibility</button><button type="button" class="walk-close" onclick="SOC.walkClose()" aria-label="Close the experience">' + ic('x', 20) + '</button></header>'
       + walkPanelHtml()
       + '<div id="walk-live" class="vh" role="status" aria-live="polite" aria-atomic="true">Chapter ' + (i + 1) + ' of ' + slides.length + ': ' + esc(walkSlideName(s)) + '</div>'
       + '<div class="walk-viewport"><div class="walk-track" style="--walk-index:' + i + '">' + chapters + '</div></div>'
-      + '<footer class="walk-bar"><button type="button" class="walk-prev" onclick="SOC.walkNav(-1)"' + (i === 0 ? ' disabled' : '') + ' aria-label="Previous chapter">' + ic('chevron', 20, 2.4) + '</button><div class="walk-dots">' + dots + '</div><div class="walk-count">' + (i + 1) + ' / ' + slides.length + '</div><button type="button" class="walk-next" onclick="SOC.walkNav(1)"' + (locked || i === slides.length - 1 ? ' disabled' : '') + ' aria-label="Next chapter">' + ic('chevron', 20, 2.4) + '</button></footer>';
-    if (s.kind === 'model') { try { initTopicModels(); } catch (e) {} }
+      + footer;
+    walkNormalizeHeadings(ov);
+    if (s.kind === 'model') {
+      try { initEvidenceVisuals(ov.querySelector('.walk-slide[aria-hidden="false"]')); } catch (e) {}
+      try { initTopicModels(); } catch (e) {}
+    }
     _walk.viewUpdate = false;
     if (s.kind === 'figure') { try { walkFigWire(); } catch (e) {} }
     walkControlSync();
@@ -8080,13 +9862,16 @@
     document.body.appendChild(ov);
     background.forEach(function (item) { item.node.inert = true; item.node.setAttribute('aria-hidden', 'true'); });
     document.body.style.overflow = 'hidden';
+    if (walkMigrateLegacyNote(w)) { walkCompileNotes(w); persist(); }
     walkMount();
+    walkRecoverNotes(w).then(function (changed) { if (changed && _walk && _walk.week === w) walkMount(); });
     document.addEventListener('keydown', walkKey, true);
   }
   function walkCloseDom() {
     var ret = _walk && _walk.returnFocus, oldOverflow = _walk && _walk.bodyOverflow, background = (_walk && _walk.background) || [];
     walkSpeakStop();
     var ov = document.getElementById('walk-overlay');
+    if (ov) cleanupModels(ov);
     if (ov) ov.remove();
     background.forEach(function (item) {
       if (!item.node || !item.node.isConnected) return;
@@ -8101,7 +9886,7 @@
   }
   function walkthroughsPage() {
     var ws = [];
-    for (var w = 1; w <= 14; w++) { var d = weekData(w); if (d && d.deck) ws.push({ w: w, deck: d.deck }); }
+    for (var w = 1; w <= 14; w++) { var d = weekData(w); if (d && walkSlides(w).length) ws.push({ w: w }); }
     var cards = ws.map(function (it) {
       return '<article class="vid-card experience-card" style="padding:0"><div style="padding:18px 20px">'
         + '<div class="mono" style="font-size:.7rem;letter-spacing:.06em;color:var(--red);font-weight:700;margin-bottom:6px">WEEK ' + it.w + '</div>'
@@ -8140,7 +9925,7 @@
   function backBar() {
     return homeBar();
   }
-  function docBlank(s) { return String(s || '').trim() || '(not written yet)'; }
+  function docBlank(s) { var value = String(s == null ? '' : s); return value === '' ? '(not written yet)' : value; }
   function yesNoDoc(x) { return x ? 'Yes' : 'Not yet'; }
   function readingsDoc(w, d) {
     var refs = ((d && d.readings) || []).map(function (r, i) {
@@ -8187,7 +9972,7 @@
     var lines = records.map(function (r) {
       var mcItems = MC[r.id] || [], ans = 0, cor = 0;
       mcItems.forEach(function (m, mi) { var s = state.mcSel && state.mcSel[r.id + '|mc|' + mi]; if (s !== undefined && s !== null) { ans++; if (s === m.answer) cor++; } });
-      var noteLines = Object.keys(state.rcNotes || {}).filter(function (k) { return k.indexOf(r.id + '|') === 0 && String(state.rcNotes[k] || '').trim(); }).map(function (k) { any = true; return '- ' + String(state.rcNotes[k]).trim(); }).join('\n');
+      var noteLines = Object.keys(state.rcNotes || {}).filter(function (k) { return k.indexOf(r.id + '|') === 0 && String(state.rcNotes[k] == null ? '' : state.rcNotes[k]) !== ''; }).map(function (k) { any = true; return '- ' + String(state.rcNotes[k]); }).join('\n');
       if (ans || noteLines) any = true;
       return r.title + '\nPractice result: ' + cor + ' of ' + mcItems.length + ' correct (' + ans + ' answered).' + (noteLines ? '\nWritten responses:\n' + noteLines : '\nWritten responses: (not written yet)');
     });
@@ -8207,11 +9992,73 @@
   }
   function mediaDoc(w) {
     var mediaText = scholarMedia().filter(function (v) {
-      return v.week === w && state.mediaNotes && String(state.mediaNotes[v.key] || '').trim();
+      return v.week === w && state.mediaNotes && String(state.mediaNotes[v.key] == null ? '' : state.mediaNotes[v.key]) !== '';
     }).map(function (v) {
-      return v.title + ' (' + v.scholar + '):\n' + String(state.mediaNotes[v.key] || '').trim();
+      return v.title + ' (' + v.scholar + '):\n' + String(state.mediaNotes[v.key]);
     }).join('\n\n');
     return mediaText || '(not written yet)';
+  }
+  function noteTextPresent(value) { return typeof value === 'string' && value !== ''; }
+  function studyGuideDoc(w, d) {
+    var rows = [];
+    Object.keys(state.sgNotes || {}).sort().forEach(function (key) {
+      var match = new RegExp('^sg' + w + '\\|(c|r)\\|(\\d+)$').exec(key), value = state.sgNotes[key];
+      if (!match || !noteTextPresent(value)) return;
+      var index = Number(match[2]), label = match[1] === 'c' ? (((d.concepts || [])[index] || {}).h || ('Concept ' + (index + 1))) : (((d.guiding || [])[index]) || ('Guiding question ' + (index + 1)));
+      rows.push(label + '\nStudent-authored note, preserved exactly:\n' + value);
+    });
+    return rows.length ? rows.join('\n\n') : '(not written yet)';
+  }
+  function comparisonNoteSections() {
+    var labels = { sim: 'Similarities', diff: 'Differences', ins: 'Why the differences matter', 'saved-synthesis': 'Saved on-screen synthesis' };
+    return Object.keys(state.cmpNotes || {}).filter(function (key) { return noteTextPresent(state.cmpNotes[key]); }).sort().map(function (key) {
+      return { h: labels[key] || 'Comparison note', t: 'Student-authored note, preserved exactly:\n' + state.cmpNotes[key] };
+    });
+  }
+  function studentMasterNoteSections() {
+    var sections = [], weeklyLabels = { readings: 'Reading notes', visual: 'Visual overview notes', activity: 'Activity notes', revisit: 'What I still need to revisit' };
+    for (var w = 1; w <= 14; w++) {
+      var d = weekData(w), blocks = [];
+      Object.keys(weeklyLabels).forEach(function (part) {
+        var value = state.wkNotes && state.wkNotes[wkNoteKey(w, part)];
+        if (noteTextPresent(value)) blocks.push(weeklyLabels[part] + '\nStudent-authored note, preserved exactly:\n' + value);
+      });
+      walkNoteEntries(w).forEach(function (entry) {
+        blocks.push('Walkthrough · ' + entry.label + '\nChapter: ' + (entry.chapter || entry.label) + (entry.prompt ? '\nPrompt: ' + entry.prompt : '') + '\nStudent-authored note, preserved exactly:\n' + entry.text);
+      });
+      var sg = studyGuideDoc(w, d || {});
+      if (sg !== '(not written yet)') blocks.push('Study guide\n' + sg);
+      Object.keys(state.rcNotes || {}).sort().forEach(function (key) {
+        var parts = key.split('|'), reading = parts.length >= 3 ? rec(parts[0]) : null, value = state.rcNotes[key];
+        if (!reading || reading.week !== w || !noteTextPresent(value)) return;
+        var questions = RC_QUESTIONS[parts[1]] || [], question = questions[Number(parts[2])] || ('Response ' + (Number(parts[2]) + 1));
+        blocks.push('Source practice · ' + reading.title + '\n' + question + '\nStudent-authored note, preserved exactly:\n' + value);
+      });
+      scholarMedia().filter(function (item) { return item.week === w && state.mediaNotes && noteTextPresent(state.mediaNotes[item.key]); }).forEach(function (item) {
+        blocks.push('Scholar media · ' + item.title + ' (' + item.scholar + ')\nStudent-authored note, preserved exactly:\n' + state.mediaNotes[item.key]);
+      });
+      Object.keys(state.kcShort || {}).sort().forEach(function (key) {
+        var match = new RegExp('^wk' + w + '\\|kc(\\d+)\\|short(\\d+)$').exec(key), value = state.kcShort[key];
+        if (!match || !noteTextPresent(value)) return;
+        blocks.push('Knowledge check written response · Set ' + (Number(match[1]) + 1) + ', prompt ' + (Number(match[2]) + 1) + '\nStudent-authored note, preserved exactly:\n' + value);
+      });
+      if (state.wkReflect && noteTextPresent(state.wkReflect[w])) blocks.push('Weekly reflection\nStudent-authored note, preserved exactly:\n' + state.wkReflect[w]);
+      if (blocks.length) sections.push({ h: 'Week ' + w + ': ' + weekTitle(w), t: blocks.join('\n\n----------------------------------------\n\n') });
+    }
+    var comparisons = comparisonNoteSections();
+    if (comparisons.length) sections.push({ h: 'Compare Sources', t: comparisons.map(function (item) { return item.h + '\n' + item.t; }).join('\n\n----------------------------------------\n\n') });
+    var career = Object.keys(state.careerReflect || {}).filter(function (key) { return noteTextPresent(state.careerReflect[key]); }).sort().map(function (key) {
+      var label = key.indexOf('career|') === 0 ? key.slice(7) : key;
+      return 'Program or career lens: ' + label + '\nStudent-authored note, preserved exactly:\n' + state.careerReflect[key];
+    });
+    if (career.length) sections.push({ h: 'Program and Career Reflections', t: career.join('\n\n----------------------------------------\n\n') });
+    assignmentsData().forEach(function (assignment) {
+      var saved = state.assignmentStarter && state.assignmentStarter[assignment.id];
+      if (!saved || !saved.answers) return;
+      var rows = starterRows(assignment, lensParse()).filter(function (row) { return noteTextPresent(row.answer); });
+      if (rows.length) sections.push({ h: 'Assignment Starter · ' + assignment.title, t: rows.map(function (row) { return row.question + '\nStudent-authored note, preserved exactly:\n' + row.answer; }).join('\n\n----------------------------------------\n\n') });
+    });
+    return sections;
   }
   function revisitDoc(w, d) {
     var note = docBlank(wkNoteValue(w, 'revisit'));
@@ -8312,7 +10159,7 @@
       else strong.push(it);
     });
     var items = trShuffle(missed).concat(trShuffle(unseen)).concat(trShuffle(strong)).slice(0, 12);
-    state.trs = { items: items, i: 0, sel: null, conf: null, revealed: false, log: [] };
+    state.trs = { items: items, i: 0, sel: null, conf: null, revealed: false, log: [], optionSeed: Date.now().toString(36) };
   }
   function trReport() {
     var S = state.trs, b = { mastered: [], fragile: [], confmiss: [], growing: [] };
@@ -8341,7 +10188,8 @@
     if (!S.items.length) return '<div class="rise">' + head + '<section class="node"><p style="font-size:.95rem;color:var(--ink)">No practice items are available yet. Come back once the first content weeks are open.</p></section></div>';
     if (S.i >= S.items.length) return '<div class="rise">' + head + trReport() + '</div>';
     var it = S.items[S.i], m = it.m;
-    var opts = m.options.map(function (o, oi) {
+    var opts = orderedAnswerOptions(m, 'term|' + (S.optionSeed || '') + '|' + S.i).map(function (option, displayIndex) {
+      var o = option.text, oi = option.index;
       var st = 'display:block;width:100%;text-align:left;border:1.5px solid var(--border);background:#fff;border-radius:10px;padding:10px 14px;margin:0 0 8px;cursor:pointer;font-size:.92rem;line-height:1.45;color:var(--ink)';
       if (S.revealed && oi === m.answer) st += ';border-color:#1E7B34;background:#F0F7F1';
       else if (S.revealed && S.sel === oi) st += ';border-color:#B11722;background:#FBE9EA';
@@ -8349,7 +10197,7 @@
       var tail = '';
       if (S.revealed && oi === m.answer && m.why) tail = '<div style="font-size:.8rem;color:#1E7B34;margin-top:5px">' + esc(m.why) + '</div>';
       else if (S.revealed && S.sel === oi && m.whyWrong && m.whyWrong[oi]) tail = '<div style="font-size:.8rem;color:var(--ink-faint);margin-top:5px">' + esc(m.whyWrong[oi]) + '</div>';
-      return '<button type="button"' + (S.revealed ? ' disabled' : '') + ' onclick="SOC.trPick(' + oi + ')" style="' + st + '">' + esc(o) + tail + '</button>';
+      return '<button type="button" data-option-position="' + displayIndex + '" data-option-index="' + oi + '"' + (S.revealed ? ' disabled' : '') + ' onclick="SOC.trPick(' + oi + ')" style="' + st + '">' + esc(o) + tail + '</button>';
     }).join('');
     var confRow = '<div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:10px 0"><span style="font-size:.82rem;color:var(--ink-dim)">How sure are you?</span>'
       + [['Guessing', 0], ['Think so', 1], ['Sure', 2]].map(function (c) { return '<button type="button"' + (S.revealed ? ' disabled' : '') + ' onclick="SOC.trConf(' + c[1] + ')" class="wk-scope" style="' + (S.conf === c[1] ? 'border-color:var(--red);color:var(--red);font-weight:700' : '') + '">' + c[0] + '</button>'; }).join('') + '</div>';
@@ -8363,15 +10211,16 @@
     return '<section class="node" id="wk-access" style="background:#fff;border:1px solid var(--border);border-left:4px solid var(--red);border-radius:0 12px 12px 0;padding:16px 18px;margin:18px 0 0">'
       + '<h2 style="font-size:1.05rem;margin:0 0 6px;color:var(--ink)">Accessibility on this site</h2>'
       + '<p style="font-size:.88rem;line-height:1.6;color:var(--ink-dim);margin:0 0 8px">This site is built to work for every student: it adapts to any screen size, works with keyboard navigation, keeps text resizable, gives every image a text description, and never puts course content behind a timed or scored gate. Professor-voice audio lectures include full text transcripts. When a weekly overview video is available, check its player or Blackboard for the current caption or transcript options. The immersive weekly experiences include adjustable text size, an accessibility panel, optional voice narration, and keyboard and touch movement.</p>'
-      + '<p style="font-size:.88rem;line-height:1.6;color:var(--ink-dim);margin:0">When a current page walkthrough video is available, it is silent with on-screen captions by design. If any material is not accessible to you, use the report link on this page or contact your professor through Blackboard; barriers get fixed, not explained away.</p>'
+      + '<p style="font-size:.88rem;line-height:1.6;color:var(--ink-dim);margin:0">If any material is not accessible to you, use the report link on this page or contact your professor through Blackboard; barriers get fixed, not explained away.</p>'
       + '</section>';
   }
   /* ---------- saved-work export/restore (2026-07-25): device-bound loss fix ---------- */
   function dataPortSection() {
     return '<section class="node" id="wk-dataport" style="background:#fff;border:1px solid var(--border);border-left:4px solid var(--red);border-radius:0 12px 12px 0;padding:16px 18px;margin:18px 0 0">'
       + '<h2 style="font-size:1.05rem;margin:0 0 6px;color:var(--ink)">Take your saved work with you</h2>'
-      + '<p style="font-size:.88rem;line-height:1.55;color:var(--ink-dim);margin:0 0 10px">When browser storage is available, what you type and rate may remain in this browser. That local copy can be unavailable or disappear, especially on a shared or lab computer. Download a backup file, then restore it on another device if needed. This site creates the file on your device and does not upload it to an application backend.</p>'
+      + '<p style="font-size:.88rem;line-height:1.55;color:var(--ink-dim);margin:0 0 10px">The site saves student-authored text exactly as typed in layered browser recovery copies. Those copies stay on this browser profile and can still be removed by cleared site data or a lab reset. Download the organized Seneca notes document for a readable record, and the saved-work backup when you need to restore your in-site progress on another device. Neither file is uploaded by this site.</p>'
       + '<div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">'
+      + '<button type="button" class="wk-save" onclick="SOC.exportAllNotes()">Download all organized notes (.docx)</button>'
       + '<button type="button" class="wk-save" onclick="SOC.exportWork()">Download my saved work</button>'
       + '<label class="wk-scope" style="cursor:pointer;display:inline-block">Restore from a backup file<input type="file" accept="application/json,.json" style="display:none" onchange="SOC.importWork(this)"></label>'
       + '</div><p id="dataport-msg" role="status" style="font-size:.8rem;color:var(--ink-faint);margin:8px 0 0"></p></section>';
@@ -8397,10 +10246,9 @@
       var d = H.byScreen[key];
       state.howtoOpen = state.howtoOpen || {};
       var open = !!state.howtoOpen[key];
-      var vidSrc = d.video || ((H.tour && H.tour.file && d.clip) ? H.tour.file + '#t=' + d.clip : '');
       var bar = '<button type="button" onclick="SOC.howtoToggle(\'' + key + '\')" aria-expanded="' + (open ? 'true' : 'false') + '" style="display:flex;align-items:center;gap:10px;width:100%;text-align:left;background:#fff;border:1px solid var(--border);border-left:4px solid var(--red);border-radius:' + (open ? '10px 10px 0 0' : '10px') + ';padding:10px 16px;cursor:pointer">'
         + '<span aria-hidden="true" style="display:inline-flex;align-items:center;justify-content:center;width:24px;height:24px;flex:none;border-radius:50%;background:var(--red);color:#fff;font-weight:700;font-size:.85rem">?</span>'
-        + '<span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:.92rem;color:var(--ink)">How to use this page</span><span style="display:block;font-size:.78rem;color:var(--ink-dim)">' + esc(d.title || 'Step-by-step guide and walkthrough video') + '</span></span>'
+        + '<span style="flex:1;min-width:0"><span style="display:block;font-weight:700;font-size:.92rem;color:var(--ink)">How to use this page</span><span style="display:block;font-size:.78rem;color:var(--ink-dim)">' + esc(d.title || 'Step-by-step guide') + '</span></span>'
         + '<span aria-hidden="true" style="font-size:.8rem;color:var(--ink-faint)">' + (open ? 'Close' : 'Open') + '</span></button>';
       var inner = '';
       if (open) {
@@ -8409,10 +10257,7 @@
           + '<ol style="margin:0 0 12px;padding-left:20px">' + (d.steps || []).map(function (s2) { return '<li style="margin:0 0 8px;font-size:.9rem;line-height:1.5;color:var(--ink)"><b>' + esc(s2.do) + '</b>' + (s2.detail ? ' <span style="color:var(--ink-dim)">' + esc(s2.detail) + '</span>' : '') + '</li>'; }).join('') + '</ol>'
           + (d.saves ? '<p style="margin:0 0 6px;font-size:.82rem;line-height:1.5;color:var(--ink-dim)"><b style="color:var(--ink)">On this device:</b> ' + esc(d.saves) + '</p>' : '')
           + (d.graded ? '<p style="margin:0 0 6px;font-size:.82rem;line-height:1.5;color:var(--ink-dim)"><b style="color:var(--ink)">Grading:</b> ' + esc(d.graded) + '</p>' : '')
-          + (d.next ? '<p style="margin:0 0 10px;font-size:.82rem;line-height:1.5;color:var(--ink-dim)"><b style="color:var(--ink)">Where next:</b> ' + esc(d.next) + '</p>' : '')
-          + (vidSrc
-            ? '<div style="border-top:1px solid var(--border);padding-top:10px"><div class="mono" style="font-size:.66rem;letter-spacing:.07em;color:var(--red);font-weight:700;margin-bottom:6px">WATCH THE VIDEO TOUR</div><video controls preload="none" src="' + esc(vidSrc) + '" style="width:100%;max-width:760px;border-radius:8px;border:1px solid var(--border);background:#000" aria-label="Captioned video tour of this page">' + (d.captions ? '<track kind="captions" srclang="en" label="English" src="' + esc(d.captions) + '">' : '') + '</video><p style="margin:6px 0 0;font-size:.76rem;color:var(--ink-faint)">' + esc((H.tour && H.tour.note) || 'Silent walkthrough with on-screen captions.') + '</p></div>'
-            : '<div style="border-top:1px solid var(--border);padding-top:10px"><div class="mono" style="font-size:.66rem;letter-spacing:.07em;color:var(--ink-faint);font-weight:700">VIDEO TOUR COMING SOON</div></div>')
+          + (d.next ? '<p style="margin:0;font-size:.82rem;line-height:1.5;color:var(--ink-dim)"><b style="color:var(--ink)">Where next:</b> ' + esc(d.next) + '</p>' : '')
           + '</div>';
       }
       return '<div id="howto-panel" style="margin:0 0 18px">' + bar + inner + '</div>';
@@ -8564,15 +10409,48 @@
     return '<div class="rise career-page">' + hero + impact + out + '</div>';
   }
   var __fromPop = false, __lastNavKey = null, __pushed = false;
+  function routeUrl(v) {
+    v = v || viewSnapshot();
+    var p = new URLSearchParams(), screen = cleanScreen(v.screen);
+    if (screen === 'station') {
+      var stationWeek = cleanWeek(v.stationWeek || v.journeyWeek);
+      if (stationWeek) p.set('week', String(stationWeek));
+    } else if (screen === 'activity' || screen === 'sandbox') {
+      var activityWeek = cleanWeek(v.activityReturn || v.stationWeek || v.journeyWeek);
+      p.set('screen', screen);
+      if (activityWeek) p.set('week', String(activityWeek));
+    } else if (screen !== 'journey') {
+      p.set('screen', screen);
+      if (screen === 'detail' && v.detailId && rec(v.detailId)) p.set('item', v.detailId);
+      if (screen === 'reading' && v.rcReading && rec(v.rcReading)) p.set('item', v.rcReading);
+      if (screen === 'compare') {
+        var ids = (v.compareIds || []).filter(function (id, idx, all) { return !!rec(id) && all.indexOf(id) === idx; }).slice(0, 3);
+        if (ids.length) p.set('items', ids.join(','));
+      }
+      if (screen === 'assignment-details') {
+        var assignments = assignmentsData(), assignment = assignments[Number(v.assignmentIndex) || 0];
+        if (assignment && assignment.id) p.set('asg', assignment.id);
+      }
+    }
+    try {
+      var marker = new URL(location.href).searchParams.get('_bf_build');
+      if (marker) p.set('_bf_build', marker);
+    } catch (e) {}
+    var query = p.toString();
+    return location.pathname + (query ? '?' + query : '');
+  }
   function navKey() {
-    return [state.screen, state.stationWeek, state.journeyWeek, state.detailId, state.cardWeek, state.activeWeek, state.galWeek, state.galTopic, state.assignmentTab, state.assignmentFaq, state.rcReading, state.showSynthesis ? 1 : 0, (state.compareIds || []).length].join('~');
+    return [state.screen, state.stationWeek, state.journeyWeek, state.detailId, state.cardWeek, state.activeWeek, state.galWeek, state.galTopic, state.assignmentTab, state.assignmentIndex, state.assignmentFaq, state.rcReading, state.showSynthesis ? 1 : 0, (state.compareIds || []).join(',')].join('~');
   }
   function navHistorySync() {
     if (__fromPop) return;
     var k = navKey();
     try {
-      if (__lastNavKey === null) history.replaceState(viewSnapshot(), '');
-      else if (k !== __lastNavKey) { history.pushState(viewSnapshot(), '', location.pathname); __pushed = true; }
+      var snapshot = viewSnapshot();
+      if (__lastNavKey === null) {
+        var initialUrl = route0 && !route0.invalid ? location.pathname + location.search : routeUrl(snapshot);
+        history.replaceState(snapshot, '', initialUrl);
+      } else if (k !== __lastNavKey) { history.pushState(snapshot, '', routeUrl(snapshot)); __pushed = true; }
     } catch (e) {}
     __lastNavKey = k;
   }
@@ -8670,6 +10548,7 @@
     saveView();
     initAuditModels();
     wkEnhanceSections();
+    initEvidenceVisuals(document.getElementById('app'));
     initTopicModels();
     navHistorySync();
     try { SOC.auDockRefresh(); } catch (e) {}
@@ -8938,7 +10817,7 @@
   function starterRows(a, L) {
     var data = starterData(a), answers = data.answers || {};
     return assignmentStarterQuestions(a, L).concat(assignmentStarterOptionalQuestions(a, L)).map(function (q) {
-      return { key: q[0], question: q[1], answer: String(answers[q[0]] || '').trim() };
+      return { key: q[0], question: q[1], answer: String(answers[q[0]] == null ? '' : answers[q[0]]) };
     });
   }
   function starterTextOutput(rows) {
@@ -9174,9 +11053,9 @@
     viewProgram: function (v) { state.programViewField = normalizeLensRaw(v); renderKeepScroll(); },
     viewProgramAssignment: function (v) { state.programViewAssignment = v || 'all'; renderKeepScroll(); },
     assignCheck: function (id, i) { state.assignmentChecks = state.assignmentChecks || {}; state.assignmentChecks[id] = state.assignmentChecks[id] || {}; state.assignmentChecks[id][i] = !state.assignmentChecks[id][i]; renderKeepScroll(); },
-    starterAnswer: function (id, key, value) { state.assignmentStarter = state.assignmentStarter || {}; state.assignmentStarter[id] = state.assignmentStarter[id] || { format: 'all', answers: {} }; state.assignmentStarter[id].answers = state.assignmentStarter[id].answers || {}; state.assignmentStarter[id].answers[key] = value; persist(); },
+    starterAnswer: function (id, key, value) { state.assignmentStarter = state.assignmentStarter || {}; state.assignmentStarter[id] = state.assignmentStarter[id] || { format: 'all', answers: {} }; state.assignmentStarter[id].answers = state.assignmentStarter[id].answers || {}; state.assignmentStarter[id].answers[key] = String(value == null ? '' : value); studentNotesChanged(); },
     starterFormat: function (id, fmt) { state.assignmentStarter = state.assignmentStarter || {}; state.assignmentStarter[id] = state.assignmentStarter[id] || { format: 'all', answers: {} }; state.assignmentStarter[id].format = cleanStarterFormat(fmt); persist(); renderKeepScroll(); },
-    clearStarter: function (id) { state.assignmentStarter = state.assignmentStarter || {}; state.assignmentStarter[id] = { format: 'all', answers: {} }; persist(); renderKeepScroll(); flash('Starter answers cleared.'); },
+    clearStarter: function (id) { state.assignmentStarter = state.assignmentStarter || {}; state.assignmentStarter[id] = { format: 'all', answers: {} }; studentNotesChanged(); renderKeepScroll(); flash('Starter answers cleared.'); },
     saveStarter: function () { saveAssignmentStarterDoc(); },
     skipStarter: function () { flashKeep('No problem. Stay with the brief and return when you want a preparation document.'); },
     videoWeek: function (w) { state.videoWeek = w || 'all'; render(); topScroll(); },
@@ -9202,6 +11081,11 @@
         var xm = document.getElementById('dataport-msg'); if (xm) xm.textContent = 'Backup file downloaded. Keep it somewhere you can find it again.';
       } catch (e) { var xe = document.getElementById('dataport-msg'); if (xe) xe.textContent = 'The download did not work in this browser.'; }
     },
+    exportAllNotes: function () {
+      var sections = studentMasterNoteSections();
+      if (!sections.length) { flashKeep('Add a note first. The organized document will include every student-authored note without rewriting it.'); return; }
+      senecaDoc('BFS218', 'My Organized Course Notes', ['Racism and the Digital Age', 'Student-authored notes preserved verbatim and organized by context'], sections, 'BFS218_all_organized_notes', { assignmentName: 'BFS218 Organized Course Notes' });
+    },
     importWork: function (inp) {
       try {
         var f = inp.files && inp.files[0]; if (!f) return;
@@ -9215,8 +11099,11 @@
             if (!data || typeof data !== 'object' || Array.isArray(data) || data.site !== SKEY || !keysOk || importKeys.length > 64) { if (xm) xm.textContent = 'That file is not a saved-work backup for this site.'; return; }
             var n = 0;
             importKeys.forEach(function (xk) { var value = data.keys[xk]; if (isPortableWorkKey(xk) && typeof value === 'string') { localStorage.setItem(xk, value); n++; } });
+            if (studentNoteBackupTimer) { clearTimeout(studentNoteBackupTimer); studentNoteBackupTimer = null; }
+            Object.keys(walkNoteBackupTimers).forEach(function (key) { clearTimeout(walkNoteBackupTimers[key]); delete walkNoteBackupTimers[key]; });
+            try { sessionStorage.removeItem(WALK_NOTE_SESSION_KEY); sessionStorage.removeItem(STUDENT_NOTE_SESSION_KEY); sessionStorage.setItem(STUDENT_NOTE_IMPORT_MARKER, '1'); } catch (e3) {}
             if (xm) xm.textContent = 'Restored ' + n + ' saved records. Reloading the site with your work in place.';
-            setTimeout(function () { location.reload(); }, 900);
+            studentNoteIdbClear().then(function () { setTimeout(function () { location.reload(); }, 900); }, function () { setTimeout(function () { location.reload(); }, 900); });
           } catch (e2) { var xe2 = document.getElementById('dataport-msg'); if (xe2) xe2.textContent = 'That file could not be read.'; }
         };
         rd.readAsText(f);
@@ -9227,11 +11114,11 @@
         var d = weekData(w) || {};
         var c = (d.concepts && d.concepts[0]) ? d.concepts[0].h : (weekTitle(w) || '');
         var refl = (state.wkReflect && state.wkReflect[w]) ? state.wkReflect[w] : '';
-        var txt = 'Week ' + w + ' map entry (draft to shape in your own words)\n'
+        var txt = 'Week ' + w + ' course-evidence note (review against the Blackboard prompt)\n'
           + 'Anchor idea: ' + c + '\n'
           + (refl ? ('My reflection this week: ' + refl + '\n') : 'My reflection this week: (write two or three honest sentences)\n')
-          + 'What this changes on my map: ';
-        var done = function (ok) { var el = document.getElementById('mapstarter-msg-' + w); if (el) el.textContent = ok ? 'Copied. Paste it into your Personal Cartography draft on Blackboard.' : 'Copy did not work in this browser; select and copy your reflection above instead.'; };
+          + 'What this helps me notice or explain: ';
+        var done = function (ok) { var el = document.getElementById('mapstarter-msg-' + w); if (el) el.textContent = ok ? 'Copied. Compare it with the official Blackboard prompt before deciding whether to use it.' : 'Copy did not work in this browser; select and copy your reflection above instead.'; };
         if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(txt).then(function () { done(true); }, function () { done(false); });
         else done(false);
       } catch (e) {}
@@ -9252,7 +11139,7 @@
     trAgain: function () { trStart(); render(); topScroll(); },
     careerField: function (v) { state.careerField = cleanText(v); persist(); render(); topScroll(); },
     lensOff: function () { state.careerField = ''; persist(); render(); },
-    careerReflect: function (k, v) { state.careerReflect = state.careerReflect || {}; state.careerReflect[k] = v; persist(); },
+    careerReflect: function (k, v) { state.careerReflect = state.careerReflect || {}; state.careerReflect[k] = String(v == null ? '' : v); studentNotesChanged(); },
     station: function (w) { w = cleanWeek(w); if (!w) { SOC.go('journey'); return; } if (state.screen !== 'station' || state.stationWeek !== w) rememberPrevious(); state.navOpen = false; state.stationWeek = w; state.journeyWeek = w; state.activityReturn = null; state.screen = 'station'; trackVisit(w); persist(); focusTarget = 'soc-main'; render(); topScroll(); },
     jumpWeek: function (w, part) { w = cleanWeek(w); if (!w) { SOC.go('journey'); return; } if (state.screen !== 'station' || state.stationWeek !== w) rememberPrevious(); state.navOpen = false; state.stationWeek = w; state.journeyWeek = w; state.activityReturn = null; state.screen = 'station'; trackVisit(w); persist(); focusTarget = 'soc-main'; render(); scrollWeekPart(part); },
     startActivity: function (s, w) { w = cleanWeek(w); var d = w && weekData(w); if (!w || !d || !d.activity) { SOC.go('journey'); return; } rememberPrevious(); keepActivityRoute(w, s); focusTarget = 'soc-main'; render(); topScroll(); },
@@ -9504,6 +11391,15 @@
     dismissIntro: function () { state.introOpen = false; persist(); render(); },
     save: function (id) { var a = state.saved, i = a.indexOf(id); var msg; if (i >= 0) { a.splice(i, 1); msg = 'Removed from your shelf.'; } else { a.push(id); msg = 'Added to your shelf for this session. Browser storage may keep it for your next visit.'; } persist(); flash(msg); },
     compare: function (id) { var a = state.compareIds, i = a.indexOf(id); if (i >= 0) { a.splice(i, 1); persist(); flash('Removed from compare.'); } else { if (a.length >= 3) { flash('Compare holds three at a time.'); return; } a.push(id); persist(); flash('Added to compare.'); } render(); },
+    cmpNote: function (key, value) { state.cmpNotes = state.cmpNotes || {}; state.cmpNotes[String(key || 'comparison-note')] = String(value == null ? '' : value); studentNotesChanged(); },
+    toggleExample: function () { state.exampleOpen = !state.exampleOpen; renderKeepScroll(); },
+    revealModel: function () { state.showModel = true; renderKeepScroll(); },
+    hideModel: function () { state.showModel = false; renderKeepScroll(); },
+    saveComparison: function () {
+      var sections = comparisonNoteSections();
+      if (!sections.length) { flashKeep('Write at least one comparison note before saving.'); return; }
+      senecaDoc('BFS218', 'Compare Sources Notes', ['Racism and the Digital Age', 'Student-authored notes preserved verbatim'], sections, 'BFS218_compare_sources_notes', { assignmentName: 'BFS218 Compare Sources Notes' });
+    },
     synCopy: function () {
       var el = document.getElementById('syn-body');
       var txt = el ? el.textContent.replace(/\s+\n/g, '\n').trim() : '';
@@ -9535,6 +11431,170 @@
     walkEnter: function () { if (!_walk) return; _walk.entered = true; _walk.i = Math.min(1, _walk.slides.length - 1); _walk.focusSlide = true; walkMount(); announce('You entered the Week ' + _walk.week + ' experience.'); },
     walkRestart: function () { if (!_walk) return; walkSpeakStop(); _walk.i = 0; _walk.entered = false; _walk.panel = false; _walk.focusSlide = true; walkSaveResume(_walk.week, 0, false); persist(); walkMount(); announce('Week ' + _walk.week + ' experience restarted. Select Enter the experience to begin.'); },
     walkReveal: function (btn) { if (!btn) return; var panel = btn.nextElementSibling, open = btn.getAttribute('aria-expanded') === 'true'; btn.setAttribute('aria-expanded', String(!open)); if (panel) panel.hidden = open; },
+    walkStoryToggle: function (btn) {
+      if (!btn) return;
+      var card = btn.closest ? btn.closest('article') : null, group = card && card.parentElement, panel = btn.nextElementSibling;
+      var open = btn.getAttribute('aria-expanded') === 'true';
+      if (group) Array.prototype.forEach.call(group.querySelectorAll('article>button[aria-expanded="true"]'), function (other) {
+        if (other === btn) return;
+        other.setAttribute('aria-expanded', 'false');
+        if (other.nextElementSibling) other.nextElementSibling.hidden = true;
+      });
+      btn.setAttribute('aria-expanded', String(!open));
+      if (panel) panel.hidden = open;
+      announce(open ? 'Story closed.' : 'Story opened: ' + String(btn.innerText || '').replace(/\s+/g, ' ').trim());
+    },
+    walkScholarLens: function (btn) {
+      if (!btn) return false;
+      var host = btn.closest ? btn.closest('.walk-scholar>div') : null;
+      if (!host) return false;
+      var index = Number(btn.getAttribute('data-index')) || 0;
+      Array.prototype.forEach.call(host.querySelectorAll('.walk-scholar-lenses [role="tab"]'), function (tab) { tab.setAttribute('aria-selected', String(tab === btn)); });
+      Array.prototype.forEach.call(host.querySelectorAll('.walk-scholar-lens-panel'), function (panel, i) { panel.hidden = i !== index; });
+      var panel = host.querySelectorAll('.walk-scholar-lens-panel')[index];
+      announce('Scholar lens selected. ' + (panel ? String(panel.querySelector('b') && panel.querySelector('b').textContent || '') : ''));
+      return false;
+    },
+    walkStoryTab: function (btn) {
+      if (!btn) return false;
+      var host = btn.closest ? btn.closest('.walk-story-interactive') : null;
+      if (!host) return false;
+      var index = Number(btn.getAttribute('data-index')) || 0;
+      Array.prototype.forEach.call(host.querySelectorAll('[data-index][role="tab"]'), function (tab) { tab.setAttribute('aria-selected', String(tab === btn)); });
+      Array.prototype.forEach.call(host.querySelectorAll('.walk-story-panel'), function (panel, i) { panel.hidden = i !== index; });
+      var panel = host.querySelectorAll('.walk-story-panel')[index];
+      announce('Visual story view selected. ' + (panel ? String(panel.querySelector('h3') && panel.querySelector('h3').textContent || '') : ''));
+      return false;
+    },
+    walkChapterNote: function (textarea) {
+      if (!_walk || !textarea) return;
+      var w = _walk.week, key = walkNoteKeySafe(textarea.getAttribute('data-note-key'));
+      var book = walkNoteBook();
+      book[String(w)] = book[String(w)] || {};
+      book[String(w)][key] = {
+        label: String(textarea.getAttribute('data-note-label') || 'Walkthrough note'),
+        prompt: String(textarea.getAttribute('data-note-prompt') || ''),
+        chapter: String(textarea.getAttribute('data-note-chapter') || walkSlideName(_walk.slides[_walk.i])),
+        order: Number(textarea.getAttribute('data-note-order')) || _walk.i || 999,
+        text: String(textarea.value == null ? '' : textarea.value),
+        updated: Date.now()
+      };
+      walkCompileNotes(w);
+      walkBackupNote(w, key);
+      var summary = document.querySelector('#walk-overlay .walk-note-summary');
+      if (summary) summary.outerHTML = walkNotesSummaryHtml(w);
+    },
+    walkExportNotes: function (w) {
+      w = cleanWeek(w);
+      if (!w) return;
+      var sections = walkNoteSections(w);
+      if (!sections.length) { announce('Add a walkthrough note before exporting.'); return; }
+      senecaDoc('BFS218', 'Week ' + w + ' Walkthrough Notes', ['Racism and the Digital Age', weekTitle(w), 'Student-authored notes preserved verbatim'], sections, 'BFS218_Week' + w + '_walkthrough_notes', { assignmentName: 'BFS218 Week ' + w + ' Walkthrough Notes' });
+    },
+    walkVideo: function (btn) {
+      if (!btn) return false;
+      var id = String(btn.getAttribute('data-youtube-id') || '');
+      if (!/^[A-Za-z0-9_-]{6,20}$/.test(id)) { announce('This video could not be loaded. Use the source link instead.'); return false; }
+      var start = Math.max(0, Number(btn.getAttribute('data-start')) || 0), requestedEnd = Number(btn.getAttribute('data-end')) || (start + 179);
+      var end = Math.min(requestedEnd, start + 179), title = String(btn.getAttribute('data-title') || 'Short course video');
+      var frame = document.createElement('iframe');
+      frame.src = 'https://www.youtube-nocookie.com/embed/' + id + '?start=' + Math.round(start) + '&end=' + Math.round(end) + '&cc_load_policy=1&rel=0&modestbranding=1&autoplay=1';
+      frame.title = title + ', excerpt under three minutes';
+      frame.loading = 'eager';
+      frame.referrerPolicy = 'strict-origin-when-cross-origin';
+      frame.allow = 'accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture';
+      frame.allowFullscreen = true;
+      btn.replaceWith(frame);
+      announce('Short captioned video loaded.');
+      return false;
+    },
+    walkGallery: function (btn) {
+      if (!btn) return false;
+      var host = btn.closest ? btn.closest('.walk-diagram-gallery') : null;
+      if (!host) return false;
+      var index = Number(btn.getAttribute('data-index')) || 0;
+      Array.prototype.forEach.call(host.querySelectorAll('[role="tab"]'), function (tab) { tab.setAttribute('aria-selected', String(tab === btn)); });
+      Array.prototype.forEach.call(host.querySelectorAll('[role="tabpanel"]'), function (panel, i) { panel.hidden = i !== index; });
+      announce('Visual ' + (index + 1) + ' selected: ' + String(btn.textContent || '').trim());
+      return false;
+    },
+    walkCheck: function (btn) {
+      if (!btn) return false;
+      var host = btn.closest ? btn.closest('.walk-check') : null;
+      if (!host) return false;
+      var correct = btn.getAttribute('data-correct') === 'true';
+      Array.prototype.forEach.call(host.querySelectorAll('.walk-check-options button'), function (option) {
+        option.classList.toggle('selected', option === btn);
+        option.setAttribute('aria-pressed', String(option === btn));
+      });
+      btn.classList.toggle('correct', correct);
+      btn.classList.toggle('incorrect', !correct);
+      var feedback = host.querySelector('[data-walk-check-feedback]'), message = String(btn.getAttribute('data-feedback') || '');
+      if (feedback) {
+        feedback.classList.toggle('correct', correct);
+        feedback.classList.toggle('incorrect', !correct);
+        feedback.innerHTML = '<b>' + (correct ? 'Strong reading.' : 'Reconsider the mechanism.') + '</b><p>' + esc(message) + '</p>';
+      }
+      announce((correct ? 'Strong reading. ' : 'Reconsider the mechanism. ') + message);
+      return false;
+    },
+    walkInteract: function (btn) {
+      if (!btn) return;
+      var host = btn.closest ? btn.closest('.walk-interactive') : null;
+      if (!host) return;
+      var multi = btn.getAttribute('data-multi') === 'true';
+      if (!multi) {
+        Array.prototype.forEach.call(host.querySelectorAll('button[data-feedback]'), function (other) {
+          var selected = other === btn;
+          other.setAttribute('aria-pressed', String(selected));
+          other.classList.toggle('on', selected);
+        });
+      } else {
+        var next = btn.getAttribute('aria-pressed') !== 'true';
+        btn.setAttribute('aria-pressed', String(next));
+        btn.classList.toggle('on', next);
+      }
+      var feedback = host.querySelector('[data-walk-feedback]');
+      var message = String(btn.getAttribute('data-feedback') || 'Compare this move with another option.');
+      var tone = String(btn.getAttribute('data-tone') || 'notice');
+      if (['notice', 'risk', 'repair'].indexOf(tone) < 0) tone = 'notice';
+      if (feedback) {
+        feedback.classList.remove('notice', 'risk', 'repair');
+        feedback.classList.add(tone);
+        feedback.textContent = message;
+      }
+      announce(message);
+    },
+    walkSwitch: function (btn) {
+      if (!btn) return;
+      var on = btn.getAttribute('aria-pressed') !== 'true';
+      btn.setAttribute('aria-pressed', String(on));
+      btn.classList.toggle('on', on);
+      var host = btn.closest ? btn.closest('.walk-interactive') : null;
+      var feedback = host ? host.querySelector('[data-walk-feedback]') : null;
+      var message = String(btn.getAttribute(on ? 'data-on' : 'data-off') || 'The default changed.');
+      var cost = String(btn.getAttribute('data-cost') || '');
+      if (cost) message += ' Who carries the cost: ' + cost;
+      if (feedback) {
+        feedback.classList.remove('notice', 'risk', 'repair');
+        feedback.classList.add(on ? 'risk' : 'repair');
+        feedback.textContent = message;
+      }
+      var status = btn.querySelector('small');
+      if (status) status.textContent = on ? 'Default on. Switch it off.' : 'Default off. Switch it on.';
+      announce(message);
+    },
+    walkToActivity: function (w) {
+      w = cleanWeek(w);
+      var d = w && weekData(w);
+      if (!w || !d || !d.activity) return;
+      walkSpeakStop();
+      walkCloseDom();
+      _walk = null;
+      refreshExperienceEntryLabels();
+      SOC.startActivity(d.activity.screen || 'activity', w);
+    },
+    walkTranscript: function (details) { walkTranscriptLoad(details); },
     walkModelView: function (ev, w, view) {
       if (ev && ev.preventDefault) ev.preventDefault();
       if (ev && ev.stopPropagation) ev.stopPropagation();
@@ -9542,16 +11602,41 @@
       if (!_walk || !w || _walk.week !== w || ['observe', 'path', 'risk'].indexOf(view) < 0) return false;
       state.visualView = state.visualView || {};
       state.visualView['overview|' + w] = view;
+      var activeSlide = document.querySelector('#walk-overlay .walk-slide[aria-hidden="false"]');
+      var canvas = activeSlide ? activeSlide.querySelector('canvas[data-topic-model="overview"]') : null;
+      if (canvas && canvas.__topicViewApi) {
+        canvas.__topicViewApi.set(view);
+        Array.prototype.slice.call(activeSlide.querySelectorAll('.walk-model-steps button[data-model-view]')).forEach(function (button) {
+          var on = button.getAttribute('data-model-view') === view;
+          button.setAttribute('aria-pressed', String(on));
+          button.classList.toggle('on', on);
+        });
+        var spec = visualSpec(w, weekData(w));
+        var detail = (spec.display && spec.display[view]) || {};
+        var summary = activeSlide.querySelector('.walk-model-summary');
+        if (summary) {
+          var heading = summary.querySelector('b');
+          var action = summary.querySelector('[data-model-action]');
+          var learning = summary.querySelector('[data-model-learning]');
+          if (heading) heading.textContent = detail.focus || spec.title || '';
+          if (action) action.textContent = detail.action || '';
+          if (learning) learning.textContent = detail.learning || '';
+        }
+        var focusButton = document.getElementById('walk-model-' + view);
+        if (focusButton && focusButton.focus) { try { focusButton.focus({ preventScroll: true }); } catch (e) { focusButton.focus(); } }
+        announce((detail.focus || (view === 'observe' ? 'Compare files' : (view === 'path' ? 'Trace the data' : 'See the burden'))) + '.');
+        return false;
+      }
       _walk.viewUpdate = true;
       _walk.restoreFocusId = 'walk-model-' + view;
       walkMount();
       announce(view === 'observe' ? 'Observe view.' : (view === 'path' ? 'Path view.' : 'Risk view.'));
       return false;
     },
-    walkNote: function (value) { if (!_walk) return; var p = walkPrefs(); p.walkNotes = p.walkNotes || {}; p.walkNotes[String(_walk.week)] = String(value || '').slice(0, 4000); persist(); },
+    walkNote: function (value) { if (!_walk) return; var p = walkPrefs(); p.walkNotes = p.walkNotes || {}; p.walkNotes[String(_walk.week)] = String(value == null ? '' : value); persist(); },
     walkNav: function (dir) { if (!_walk || (!_walk.entered && _walk.i === 0 && dir > 0)) return; var n = Math.max(0, Math.min(_walk.slides.length - 1, _walk.i + dir)); if (n === _walk.i) return; walkSpeakStop(); _walk.i = n; _walk.focusSlide = true; walkMount(); announce('Chapter ' + (n + 1) + ' of ' + _walk.slides.length + ': ' + walkSlideName(_walk.slides[n]) + '.'); },
     walkGoto: function (k) { if (!_walk || (!_walk.entered && k !== 0)) return; walkSpeakStop(); _walk.i = Math.max(0, Math.min(_walk.slides.length - 1, k)); _walk.focusSlide = true; walkMount(); announce('Chapter ' + (_walk.i + 1) + ' of ' + _walk.slides.length + ': ' + walkSlideName(_walk.slides[_walk.i]) + '.'); },
-    walkClose: function () { walkCloseDom(); _walk = null; refreshExperienceEntryLabels(); try { if (/[?&](?:walk|experience)=/i.test(location.search)) history.replaceState(viewSnapshot(), '', location.pathname); } catch (e) {} },
+    walkClose: function () { walkCloseDom(); _walk = null; refreshExperienceEntryLabels(); try { if (/[?&](?:walk|experience)=/i.test(location.search)) history.replaceState(viewSnapshot(), '', routeUrl(viewSnapshot())); } catch (e) {} },
     walkGoWeek: function () { var w = _walk && _walk.week; walkCloseDom(); _walk = null; if (w) SOC.station(w); },
     walkPanel: function () { if (!_walk) return; _walk.panel = !_walk.panel; _walk.restoreFocusId = _walk.panel ? 'walk-panel-close' : 'walk-access-toggle'; walkMount(); announce(_walk.panel ? 'Accessibility settings opened.' : 'Accessibility settings closed.'); },
     walkSetting: function (key, value) { if (!_walk) return; _walk.restoreFocusId = (document.activeElement && document.activeElement.id) || 'walk-access-toggle'; var p = walkPrefs(); if (key === 'theme') p.walkTheme = String(value); else if (key === 'size') p.walkSize = Number(value); else if (key === 'font') p.walkFont = !!value; else if (key === 'motion') p.walkMotion = !!value; persist(); walkMount(); announce('Experience display updated.'); },
@@ -9564,16 +11649,14 @@
       if (!_walk || !_walk.fig) return;
       if (op === 'zin') _walk.fig.scale = Math.min(6, _walk.fig.scale * 1.2);
       else if (op === 'zout') _walk.fig.scale = Math.max(0.4, _walk.fig.scale / 1.2);
-      else if (op === 'rl') _walk.fig.rot -= 90;
-      else if (op === 'rr') _walk.fig.rot += 90;
-      else { _walk.fig = { scale: 1, rot: 0, tx: 0, ty: 0 }; }
+      else { _walk.fig = { scale: 1, tx: 0, ty: 0 }; }
       walkFigApply();
     },
     hideSynthesis: function () { state.showSynthesis = false; render(); },
     setLens: function (l) { state.lens = l; render(); },
     rcPick: function (id) { state.rcReading = id; state.lens = 'thematic'; persist(); render(); topScroll(); },
     rcClear: function () { state.rcReading = null; render(); topScroll(); },
-    rcNote: function (k, v) { state.rcNotes[k] = v; persist(); },
+    rcNote: function (k, v) { state.rcNotes[k] = String(v == null ? '' : v); studentNotesChanged(); },
     wkCheck: function (k, o) {
       if (state.wkCheck[k] === o) delete state.wkCheck[k]; else state.wkCheck[k] = o;
       persist();
@@ -9585,7 +11668,7 @@
       d.checks.forEach(function (c, i) { delete state.wkCheck[phase + '|' + w + '|' + i]; });
       persist(); refreshWeekChecks(w, d);
     },
-    wkReflect: function (w, v) { state.wkReflect[w] = v; persist(); },
+    wkReflect: function (w, v) { state.wkReflect[w] = String(v == null ? '' : v); studentNotesChanged(); },
     wkStep: function (w, i) {
       state.wkSteps = state.wkSteps || {};
       var s = state.wkSteps[w] = state.wkSteps[w] || {};
@@ -9594,10 +11677,12 @@
       if (btn) { var on = !!s[i]; btn.classList.toggle('on', on); btn.setAttribute('aria-pressed', on ? 'true' : 'false'); var box = btn.querySelector('.wk-step-box'); if (box) box.innerHTML = on ? '&#10003;' : (i + 1); }
       var cnt = document.getElementById('wk-drive-count-' + w); if (cnt) { var n = 0, k; for (k in s) { if (s[k]) n++; } cnt.textContent = n + ' of ' + btns.length + ' done'; }
     },
-    wkNote: function (k, v) { state.wkNotes = state.wkNotes || {}; state.wkNotes[k] = v; persist(); },
+    wkNote: function (k, v) { state.wkNotes = state.wkNotes || {}; state.wkNotes[k] = String(v == null ? '' : v); studentNotesChanged(); },
     clearMyWork: function () {
       if (!window.confirm('Remove all notes, check answers, and settings saved by this site in this browser? Downloaded files are not affected.')) return;
       var cleared = true;
+      if (studentNoteBackupTimer) { clearTimeout(studentNoteBackupTimer); studentNoteBackupTimer = null; }
+      Object.keys(walkNoteBackupTimers).forEach(function (key) { clearTimeout(walkNoteBackupTimers[key]); delete walkNoteBackupTimers[key]; });
       try {
         Object.keys(localStorage).forEach(function (k) {
           if (!isPortableWorkKey(k) && k !== 'bfs218.au') return;
@@ -9606,12 +11691,16 @@
       } catch (e) { cleared = false; }
       try { sessionStorage.removeItem(VKEY); } catch (e) { cleared = false; }
       try { sessionStorage.removeItem(WKKEY); } catch (e) { cleared = false; }
+      try { sessionStorage.removeItem(WALK_NOTE_SESSION_KEY); } catch (e) { cleared = false; }
+      try { sessionStorage.removeItem(STUDENT_NOTE_SESSION_KEY); } catch (e) { cleared = false; }
+      try { sessionStorage.removeItem(STUDENT_NOTE_IMPORT_MARKER); } catch (e) { cleared = false; }
       try { sessionStorage.removeItem(SKEY + '.upcomingReminder.session.v1'); } catch (e) { cleared = false; }
       try { sessionStorage.setItem(HKEY, '1'); } catch (e) { cleared = false; }
-      if (!cleared) {
-        window.alert('Some browser data could not be removed because storage is unavailable. Before using a shared device, close this tab and clear this site\'s data in your browser settings.');
-      }
-      location.reload();
+      var finishClear = function (recoveryCleared) {
+        if (!cleared || !recoveryCleared) window.alert('Some browser data could not be removed because storage is unavailable. Before using a shared device, close this tab and clear this site\'s data in your browser settings.');
+        location.reload();
+      };
+      studentNoteIdbClear().then(function () { finishClear(true); }, function () { finishClear(false); });
     },
     tickerPause: function () {
       state.tickerPaused = !state.tickerPaused;
@@ -9678,42 +11767,29 @@
       var max = key === 'caseIndex' ? spec.cases.length : key === 'systemIndex' ? spec.systems.length : spec.safeguards.length;
       st[key] = Math.max(0, Math.min(max - 1, Number(value) || 0));
       persist(); renderKeepScroll();
-      announce('Simulation setting changed. Run the system to observe a new outcome.');
+      announce('System condition changed. Interpret the configuration when you are ready.');
     },
     simRun: function (w, total) {
       var SIM = window.BFS218_SIMULATIONS || {}, spec = SIM[w];
       if (!spec) return;
       var st = simLabState(w);
-      total = total === 100 ? 100 : 1;
       var c = spec.cases[st.caseIndex] || spec.cases[0];
       var s = spec.systems[st.systemIndex] || spec.systems[0];
       var g = spec.safeguards[st.safeguardIndex] || spec.safeguards[0];
-      var burdenChance = Math.max(0.04, Math.min(0.74, 0.22 + Number(c[1] || 0) + Number(s[1] || 0) + Number(g[1] || 0)));
-      var reviewChance = Math.max(0.1, Math.min(0.32, 0.16 + Math.max(0, -Number(g[1] || 0)) * 0.45));
-      if (burdenChance + reviewChance > 0.88) reviewChance = 0.88 - burdenChance;
-      function randomUnit() {
-        try { var a = new Uint32Array(1); crypto.getRandomValues(a); return a[0] / 4294967296; } catch (e) { return Math.random(); }
-      }
-      var counts = { positive: 0, neutral: 0, burden: 0 };
-      for (var i = 0; i < total; i++) {
-        var r = randomUnit();
-        if (r < burdenChance) counts.burden++;
-        else if (r < burdenChance + reviewChance) counts.neutral++;
-        else counts.positive++;
-      }
-      var dominant = counts.positive >= counts.neutral && counts.positive >= counts.burden ? 'positive' : counts.neutral >= counts.burden ? 'neutral' : 'burden';
-      st.history.push({ total: total, positive: counts.positive, neutral: counts.neutral, burden: counts.burden, dominant: dominant, caseIndex: st.caseIndex, systemIndex: st.systemIndex, safeguardIndex: st.safeguardIndex });
+      var designReading = Number(c[1] || 0) + Number(s[1] || 0) + Number(g[1] || 0);
+      var dominant = designReading >= 0.2 ? 'burden' : designReading <= -0.13 ? 'positive' : 'neutral';
+      st.history.push({ mode: 'configuration', reading: designReading, dominant: dominant, caseIndex: st.caseIndex, systemIndex: st.systemIndex, safeguardIndex: st.safeguardIndex });
       st.history = st.history.slice(-8);
       state.visualView = state.visualView || {};
       state.visualView['activity|' + w] = dominant === 'burden' ? 'explain' : dominant === 'positive' ? 'try' : 'predict';
       persist(); renderKeepScroll();
-      announce(total === 1 ? 'One simulated case complete. Run a larger batch to inspect the pattern.' : 'One hundred simulated cases complete. Compare the outcome distribution with another setting.');
+      announce('Configuration interpreted. Read the institutional pattern, then change one condition to compare.');
     },
     simReset: function (w) {
       var st = simLabState(w);
       st.history = [];
       persist(); renderKeepScroll();
-      announce('Simulation comparison cleared. Your selected settings remain.');
+      announce('System comparison cleared. Your selected conditions remain.');
     },
     wkColl: function (id) {
       var nowColl = wkOpenHas(id);
@@ -9775,6 +11851,168 @@
       var nxt = Math.max(0, Math.min(order.length - 1, (cur < 0 ? 0 : cur) + dir));
       return SOC.visualView(ev, w, context, order[nxt]);
     },
+    safeNameAudit: function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      var button = ev && ev.currentTarget;
+      var panel = button && button.closest ? button.closest('.wk-safe-name') : null;
+      var input = panel && panel.querySelector('[data-safe-name-input]');
+      var output = panel && panel.querySelector('[data-safe-name-output]');
+      var question = panel && panel.querySelector('[data-safe-name-question]');
+      if (!panel || !input || !output || !question) return false;
+      var entered = String(input.value || '').replace(/\s+/g, ' ').trim().slice(0, 60);
+      if (!entered) {
+        output.className = 'wk-safe-name-output is-caution';
+        output.innerHTML = '<b>Enter a name or fictional alias first.</b><span>No information has been processed or saved.</span>';
+        question.hidden = true;
+        input.focus();
+        announce('Enter a name or fictional alias first.');
+        return false;
+      }
+      input.value = entered;
+      var tokens = entered.toLocaleUpperCase().split(' ').filter(Boolean).join(' · ');
+      output.className = 'wk-safe-name-output is-stopped';
+      output.innerHTML = '<b>The investigation stops before classification.</b><ol>'
+        + '<li><strong>Text tokens:</strong> ' + esc(tokens) + '</li>'
+        + '<li><strong>Potential misuse:</strong> A harmful system could compare these tokens with biased past approvals and treat the correlation as a racial proxy.</li>'
+        + '<li><strong>Safety boundary:</strong> This course tool does not infer identity, calculate risk, or produce approval or denial.</li>'
+        + '</ol>';
+      question.hidden = false;
+      Array.prototype.slice.call(question.querySelectorAll('[data-safe-name-decision]')).forEach(function (choice) {
+        choice.classList.remove('on');
+        choice.setAttribute('aria-pressed', 'false');
+      });
+      var feedback = question.querySelector('[data-safe-name-feedback]');
+      if (feedback) { feedback.className = ''; feedback.textContent = 'Choose a response to inspect the design decision.'; }
+      announce('Name tokenized for inspection. This tool stopped before classification and did not produce a housing result.');
+      return false;
+    },
+    safeNameDecision: function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      var button = ev && ev.currentTarget;
+      var question = button && button.closest ? button.closest('[data-safe-name-question]') : null;
+      if (!button || !question) return false;
+      var decision = button.getAttribute('data-safe-name-decision');
+      Array.prototype.slice.call(question.querySelectorAll('[data-safe-name-decision]')).forEach(function (choice) {
+        var on = choice === button;
+        choice.classList.toggle('on', on);
+        choice.setAttribute('aria-pressed', String(on));
+      });
+      var feedback = question.querySelector('[data-safe-name-feedback]');
+      var heading = decision === 'separate' ? 'Stronger design choice.' : 'That recreates the problem.';
+      var detail = decision === 'separate'
+        ? 'Use a name only where identity administration requires it. Keep it out of risk scoring, audit matched applications, and provide review and appeal.'
+        : 'Predictive usefulness does not make a racial proxy fair or relevant to tenancy. The system would turn perceived identity into unequal housing treatment.';
+      if (feedback) { feedback.className = decision === 'separate' ? 'is-strong' : 'is-caution'; feedback.innerHTML = '<b>' + esc(heading) + '</b> ' + esc(detail); }
+      announce(heading + ' ' + detail);
+      return false;
+    },
+    applicantCase: function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      var button = ev && ev.currentTarget;
+      var audit = button && button.closest ? button.closest('.wk-applicant-audit') : null;
+      if (!button || !audit) return false;
+      Array.prototype.slice.call(audit.querySelectorAll('[data-applicant-case]')).forEach(function (choice) {
+        var on = choice === button;
+        choice.classList.toggle('on', on);
+        choice.setAttribute('aria-pressed', String(on));
+      });
+      audit.setAttribute('data-applicant-stage-current', '0');
+      var selected = audit.querySelector('[data-applicant-selected]');
+      if (selected) selected.textContent = button.getAttribute('data-applicant-name') + ' selected';
+      var progress = audit.querySelector('[data-applicant-progress]');
+      if (progress) progress.textContent = 'Step 0 of 4';
+      var copies = [
+        'Income verified, references complete, and no current rent arrears. These current qualifications are identical in all three files.',
+        button.getAttribute('data-applicant-token') || '',
+        button.getAttribute('data-applicant-history') || '',
+        button.getAttribute('data-applicant-threshold') || ''
+      ];
+      Array.prototype.slice.call(audit.querySelectorAll('[data-applicant-stage]')).forEach(function (stage, index) {
+        stage.classList.remove('is-revealed', 'is-current');
+        var copy = stage.querySelector('[data-applicant-stage-copy]');
+        if (copy) copy.textContent = copies[index];
+      });
+      var next = audit.querySelector('[data-applicant-next]');
+      if (next) { next.disabled = false; next.textContent = 'Start with the current application'; }
+      var result = audit.querySelector('[data-applicant-filter-result]');
+      if (result) {
+        result.className = 'wk-applicant-result';
+        result.innerHTML = '<b>Application selected.</b><span>Move through each stage to see whether the name changes the treatment of the same current evidence.</span>';
+      }
+      announce(button.getAttribute('data-applicant-name') + ' selected. Start with the current application.');
+      return false;
+    },
+    applicantAdvance: function (ev) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      var next = ev && ev.currentTarget;
+      var audit = next && next.closest ? next.closest('.wk-applicant-audit') : null;
+      var selected = audit && audit.querySelector('[data-applicant-case].on');
+      if (!next || !audit || !selected) return false;
+      var stageNumber = Math.min(4, (Number(audit.getAttribute('data-applicant-stage-current')) || 0) + 1);
+      audit.setAttribute('data-applicant-stage-current', String(stageNumber));
+      Array.prototype.slice.call(audit.querySelectorAll('[data-applicant-stage]')).forEach(function (stage) {
+        var number = Number(stage.getAttribute('data-applicant-stage')) || 0;
+        stage.classList.toggle('is-revealed', number <= stageNumber);
+        stage.classList.toggle('is-current', number === stageNumber);
+      });
+      var progress = audit.querySelector('[data-applicant-progress]');
+      if (progress) progress.textContent = 'Step ' + stageNumber + ' of 4';
+      var stageCopy = audit.querySelector('[data-applicant-stage="' + stageNumber + '"] [data-applicant-stage-copy]');
+      var result = audit.querySelector('[data-applicant-filter-result]');
+      var headings = ['Current evidence checked.', 'The name is racialized by the system.', 'Biased history enters the model.', 'The threshold turns the proxy into treatment.'];
+      if (result) {
+        result.className = 'wk-applicant-result' + (stageNumber === 4 ? ' is-' + String(selected.getAttribute('data-applicant-tone') || '').replace(/[^a-z]/g, '') : '');
+        result.innerHTML = '<b>' + esc(headings[stageNumber - 1]) + '</b><span>' + esc(stageCopy ? stageCopy.textContent : '') + '</span>';
+      }
+      var nextLabels = ['Continue: encode the name', 'Continue: compare biased history', 'Continue: apply the threshold'];
+      if (stageNumber < 4) {
+        next.textContent = nextLabels[stageNumber - 1];
+      } else {
+        selected.setAttribute('data-complete', 'true');
+        var status = selected.querySelector('i');
+        if (status) status.textContent = 'Screened: ' + selected.getAttribute('data-applicant-result');
+        next.disabled = true;
+        next.textContent = 'Choose another application';
+        if (result) result.innerHTML = '<b>' + esc(selected.getAttribute('data-applicant-result')) + '</b><span>' + esc(selected.getAttribute('data-applicant-detail')) + ' ' + esc(selected.getAttribute('data-applicant-threshold')) + '</span>';
+        var completed = audit.querySelectorAll('[data-applicant-case][data-complete="true"]').length;
+        if (progress) progress.textContent = completed + ' of 3 applications compared';
+        var conclusion = audit.querySelector('[data-applicant-conclusion]');
+        if (conclusion) conclusion.hidden = completed < 3;
+      }
+      announce((result && result.innerText) || headings[stageNumber - 1]);
+      return false;
+    },
+    causalChoice: function (ev, w) {
+      if (ev && ev.preventDefault) ev.preventDefault();
+      if (ev && ev.stopPropagation) ev.stopPropagation();
+      var button = ev && ev.currentTarget;
+      var story = button && button.closest ? button.closest('.wk-causal-story') : null;
+      if (!button || !story) return false;
+      var view = button.getAttribute('data-causal-view') || 'explain';
+      SOC.visualView(
+        { currentTarget: button, preventDefault: function () {}, stopPropagation: function () {} },
+        w, 'activity', view
+      );
+      Array.prototype.slice.call(story.querySelectorAll('[data-causal-choice]')).forEach(function (choice) {
+        var on = choice === button;
+        choice.classList.toggle('on', on);
+        choice.setAttribute('aria-pressed', String(on));
+      });
+      var result = story.querySelector('.wk-causal-result');
+      var tone = button.getAttribute('data-causal-tone') || 'caution';
+      var heading = button.getAttribute('data-causal-heading') || 'Read the result.';
+      var detail = button.getAttribute('data-causal-result') || '';
+      if (result) {
+        result.className = 'wk-causal-result is-' + String(tone).replace(/[^a-z]/g, '');
+        result.innerHTML = '<b>' + esc(heading) + '</b><span>' + esc(detail) + '</span>';
+      }
+      announce(heading + ' ' + detail);
+      return false;
+    },
     visualView: function (ev, w, context, v) {
       if (typeof ev === 'number') { v = context; context = w; w = ev; ev = null; }
       if (ev && ev.preventDefault) ev.preventDefault();
@@ -9784,13 +12022,65 @@
         var cls = String(ev.currentTarget.className || '');
         if (cls.indexOf('wk-step-next') >= 0) focusSel = '.wk-step-next';
         else if (cls.indexOf('wk-step-prev') >= 0) focusSel = '.wk-step-prev';
+        else if (cls.indexOf('wk-scene-key-step') >= 0) focusSel = '.wk-scene-key-step[data-model-view="' + v + '"]';
       }
       var m = document.getElementById('soc-main'), top = m ? m.scrollTop : 0;
       var wy = window.pageYOffset || 0;
       state.visualView = state.visualView || {};
       state.visualView[(context || 'week') + '|' + w] = v;
       if (context === 'activity') keepActivityRoute(w, 'activity');
-      render();
+      var liveFrame = ev && ev.currentTarget && ev.currentTarget.closest ? ev.currentTarget.closest('.wk-model-frame') : null;
+      var liveCanvas = liveFrame ? liveFrame.querySelector('canvas[data-topic-model]') : null;
+      var guidedStory = liveFrame ? liveFrame.querySelector('.wk-causal-story') : null;
+      var liveKind = liveCanvas && liveCanvas.getAttribute('data-kind');
+      var renderedActivity = !!(liveCanvas && window.BFS218_HOLO && window.BFS218_HOLO.activityAsset && window.BFS218_HOLO.activityAsset(liveKind));
+      var persistent = !!(liveCanvas && (documentaryThreeKind(liveKind) || renderedActivity) && liveCanvas.__topicViewApi);
+      if (persistent) {
+        liveCanvas.__topicViewApi.set(v);
+        Array.prototype.slice.call(liveFrame.querySelectorAll('.wk-model-controls button[data-model-view]')).forEach(function (button) {
+          var on = button.getAttribute('data-model-view') === v;
+          button.setAttribute('aria-pressed', String(on));
+          button.classList.toggle('on', on);
+        });
+        Array.prototype.slice.call(liveFrame.querySelectorAll('.wk-scene-key-step[data-model-view],.wk-causal-step[data-model-view]')).forEach(function (button) {
+          var on = button.getAttribute('data-model-view') === v;
+          button.setAttribute('aria-pressed', String(on));
+          button.classList.toggle('on', on);
+        });
+        var renderedShell = liveFrame.querySelector('.wk-model-shell[data-rendered-environment]');
+        if (renderedShell) renderedShell.setAttribute('data-render-view', v);
+        var liveWeek = weekData(w);
+        var liveSpec = context === 'activity' ? activityVisualSpec(w, liveWeek && liveWeek.activity) : visualSpec(w, liveWeek);
+        var storyOrder = context === 'activity' ? ['predict', 'try', 'explain'] : ['observe', 'path', 'risk'];
+        var storyIndex = Math.max(0, storyOrder.indexOf(v));
+        var storyStep = (liveSpec.steps || [])[storyIndex] || [];
+        var sceneNumber = liveFrame.querySelector('[data-scene-number]');
+        var sceneTitle = liveFrame.querySelector('[data-scene-title]');
+        if (sceneNumber) sceneNumber.textContent = String(storyIndex + 1);
+        if (sceneTitle) sceneTitle.textContent = storyStep[0] || liveSpec.title || '';
+        Array.prototype.slice.call(liveFrame.querySelectorAll('.wk-native-drag-handle[data-drag-view]')).forEach(function (handle) {
+          handle.setAttribute('aria-pressed', String(handle.getAttribute('data-drag-view') === v));
+        });
+        var gestureStatus = liveFrame.querySelector('[data-gesture-status]');
+        if (gestureStatus) {
+          gestureStatus.classList.remove('is-complete');
+          gestureStatus.innerHTML = '<b>Step ' + (storyIndex + 1) + ': ' + esc(storyStep[0] || liveSpec.title || '') + '</b><small>' + esc(storyStep[1] || 'Use this object to inspect the process.') + '</small>';
+        }
+        var displayNode = liveFrame.querySelector('.wk-holo-display');
+        if (displayNode) displayNode.outerHTML = visualDisplayHtml(liveSpec, context, v);
+        var stepNode = liveFrame.querySelector('.wk-step-strip');
+        if (stepNode) stepNode.outerHTML = visualStepStrip(w, liveSpec, context, v);
+        var stateText = liveSpec.display && liveSpec.display[v] && liveSpec.display[v].focus;
+        announce(stateText || 'Model view updated.');
+      } else if (guidedStory) {
+        Array.prototype.slice.call(guidedStory.querySelectorAll('.wk-causal-step[data-model-view]')).forEach(function (stepButton) {
+          var on = stepButton.getAttribute('data-model-view') === v;
+          stepButton.setAttribute('aria-pressed', String(on));
+          stepButton.classList.toggle('on', on);
+        });
+      } else {
+        render();
+      }
       var restore = function () { var m2 = document.getElementById('soc-main'); if (m2) m2.scrollTop = top; window.scrollTo(0, wy); };
       restore();
       if (window.requestAnimationFrame) window.requestAnimationFrame(restore);
@@ -9816,6 +12106,7 @@
         { h: 'Activity Notes and Results', t: 'Activity: ' + ((d.activity && d.activity.title) || 'This week\'s activity') + '\nResult: ' + activitySummary(w, d) + '\n\nYour notes:\n' + docBlank(wkNoteValue(w, 'activity')) },
         { h: 'Knowledge Check Results', t: kcDoc(w) },
         { h: 'Reading Comprehension Practice Results', t: readingCompDoc(w, d) },
+        { h: 'Study Guide Notes', t: studyGuideDoc(w, d) },
         { h: 'Before and After Understanding Check', t: checksDoc(w, d) },
         { h: 'Scholar Media Notes', t: mediaDoc(w) },
         { h: 'Reflection', t: docBlank(state.wkReflect[w]) },
@@ -9824,9 +12115,9 @@
       ];
       senecaDoc('BFS218', 'BFS218 Week ' + w + ': ' + weekTitle(w), ['Racism and the Digital Age', 'Your weekly notes and personal practice results'], sections, 'BFS218_Week' + w + '_weekly_notes');
     },
-    mediaNote: function (k, v) { state.mediaNotes = state.mediaNotes || {}; state.mediaNotes[k] = v; persist(); },
+    mediaNote: function (k, v) { state.mediaNotes = state.mediaNotes || {}; state.mediaNotes[k] = String(v == null ? '' : v); studentNotesChanged(); },
     rcReveal: function (k) { var m = document.getElementById('soc-main'); var top = m ? m.scrollTop : 0; state.revealed[k] = !state.revealed[k]; render(); var m2 = document.getElementById('soc-main'); if (m2) m2.scrollTop = top; },
-    sgNote: function (k, v) { state.sgNotes = state.sgNotes || {}; state.sgNotes[k] = v; persist(); },
+    sgNote: function (k, v) { state.sgNotes = state.sgNotes || {}; state.sgNotes[k] = String(v == null ? '' : v); studentNotesChanged(); },
     sgCompare: function (k, w) { state.sgShow = state.sgShow || {}; state.sgShow[k] = !state.sgShow[k]; replaceOuterKeepingFocus('wk-sg', sgSection(w).html, 'soc-main'); },
     sgFlip: function (k, w) { state.sgFlip = state.sgFlip || {}; state.sgFlip[k] = !state.sgFlip[k]; replaceOuterKeepingFocus('wk-sg', sgSection(w).html, 'soc-main'); },
     sgTickRung: function (k, w) { state.sgTick = state.sgTick || {}; state.sgTick[k] = true; persist(); replaceOuterKeepingFocus('wk-sg', sgSection(w).html, 'soc-main'); },
@@ -9847,7 +12138,7 @@
     mcConf: function (k, c, w) { state.mcConf = state.mcConf || {}; if (state.mcConf[k] === c) delete state.mcConf[k]; else state.mcConf[k] = c; persist(); replaceOuterKeepingFocus('wk-kc', kcSection(w).html, 'soc-main'); },
     mcPickSel: function (k, v) { v = Number(v); if (isNaN(v) || v < 0) delete state.mcSel[k]; else state.mcSel[k] = v; persist(); var kcm = /^wk(\d+)\|kc/.exec(k); if (kcm && replaceOuterKeepingFocus('wk-kc', kcSection(Number(kcm[1])).html, 'soc-main')) return; render(); },
     kcShow: function (w) { var v = (state.kcVersion && state.kcVersion[w]) || 0; state.kcReveal = state.kcReveal || {}; state.kcReveal[w + '|' + v] = true; persist(); replaceOuterKeepingFocus('wk-kc', kcSection(w).html, 'soc-main'); },
-    kcShortText: function (k, v) { state.kcShort = state.kcShort || {}; state.kcShort[k] = v; persist(); },
+    kcShortText: function (k, v) { state.kcShort = state.kcShort || {}; state.kcShort[k] = String(v == null ? '' : v); studentNotesChanged(); },
     kcShortReveal: function (k, w) { state.kcShortShown = state.kcShortShown || {}; state.kcShortShown[k] = !state.kcShortShown[k]; replaceOuterKeepingFocus('wk-kc', kcSection(w).html, 'soc-main'); },
     kcShortRate: function (k, r, w) { state.kcShortRate = state.kcShortRate || {}; state.kcShortRate[k] = r; persist(); replaceOuterKeepingFocus('wk-kc', kcSection(w).html, 'soc-main'); },
     mcReset: function (id) { var m = document.getElementById('soc-main'); var top = m ? m.scrollTop : 0; var keep = {}; Object.keys(state.mcSel).forEach(function (k) { if (k.indexOf(id + '|mc|') !== 0) keep[k] = state.mcSel[k]; }); state.mcSel = keep; persist(); render(); var m2 = document.getElementById('soc-main'); if (m2) m2.scrollTop = top; },
@@ -9855,7 +12146,7 @@
       var r = state.rcReading && rec(state.rcReading); if (!r) { flash('Pick a reading first.'); return; }
       var cc = (D.course && D.course.code) || 'Course';
       var L = (LENSES[state.lens] || LENSES.thematic).label, qs = RC_QUESTIONS[state.lens] || RC_QUESTIONS.thematic;
-      var sections = qs.map(function (q, i) { return { h: q, t: (state.rcNotes[r.id + '|' + state.lens + '|' + i] || '').trim() }; });
+      var sections = qs.map(function (q, i) { var value = state.rcNotes[r.id + '|' + state.lens + '|' + i]; return { h: q, t: String(value == null ? '' : value) }; });
       var mcItems = MC[r.id] || [];
       if (mcItems.length) {
         var ans = 0, cor = 0, miss = [];
@@ -9937,7 +12228,16 @@
   };
 
   state.wkOpen = {};
+  studentNoteRecoverSession();
+  var restoredBackup0 = false;
+  try { restoredBackup0 = sessionStorage.getItem(STUDENT_NOTE_IMPORT_MARKER) === '1'; sessionStorage.removeItem(STUDENT_NOTE_IMPORT_MARKER); } catch (e) {}
+  if (restoredBackup0 || (!state.noteVaultUpdated && studentNoteHasContent())) studentNotesChanged();
   render();
+  studentNoteRecover().then(function (changed) {
+    if (!changed) return;
+    if (_walk) { walkCompileNotes(_walk.week); walkMount(); }
+    else renderKeepScroll();
+  });
   try {
     if (location.search) {
       if (route0 && route0.invalid) {
@@ -9950,7 +12250,7 @@
   } catch (e) {}
   window.addEventListener('popstate', function (e) {
     var __ov = document.getElementById('walk-overlay');
-    if (__ov) { try { walkCloseDom(); _walk = null; } catch (er) {} try { history.pushState(viewSnapshot(), '', location.pathname); } catch (er) {} return; }
+    if (__ov) { try { walkCloseDom(); _walk = null; } catch (er) {} try { history.pushState(viewSnapshot(), '', routeUrl(viewSnapshot())); } catch (er) {} return; }
     __fromPop = true;
     try { restoreView(e.state && typeof e.state === 'object' && e.state.screen ? e.state : { screen: 'journey' }); } catch (er) {}
     __lastNavKey = navKey();

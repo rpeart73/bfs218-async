@@ -160,24 +160,24 @@ window.BFS218_EXPERIMENTS = {
     reflect: 'In your field, who holds data about people who cannot refuse its use? One sentence.'
   },
   9: {
-    title: 'Who gets accused?',
-    setup: 'Three students submit essays for the same assignment. Amara Osei wrote hers in English, her third language, using the careful academic style she spent years learning. Jordan Miller drafted his with an AI chatbot and lightly edited the result. Thu Nguyen, bilingual since childhood, wrote hers unaided the night before it was due. The college runs every submission through an AI-writing detector that advertises near-perfect accuracy.',
-    commit: 'The detector flags at least one essay. Which one?',
+    title: 'Put the promise under an X-ray',
+    setup: 'A fictional college introduces CareBridge, a system promoted as a caring way to identify students who may need help. It reads existing records, assigns a support score, and can place students into mandatory check-ins before they have asked for support.',
+    commit: 'Before the college adopts it, which question should come first?',
     options: [
-      { label: 'The AI-assisted essay. Catching that is the whole point of the tool.', lens: 'trust', tag: 'THE AI ESSAY' },
-      { label: 'The strongest essay. Polished writing is what looks machine-made.', lens: 'polish', tag: 'THE POLISHED ONE' },
-      { label: 'The multilingual writers. The tool reads learned English as machine English.', lens: 'bias', tag: 'MULTILINGUAL WRITERS' }
+      { label: 'How accurate is the score?', lens: 'accuracy', tag: 'TEST ACCURACY' },
+      { label: 'How much staff time will it save?', lens: 'efficiency', tag: 'COUNT SAVINGS' },
+      { label: 'Who defined help, who can refuse it, and what changes in the institution?', lens: 'power', tag: 'TRACE POWER' }
     ],
     outcome: {
-      headline: 'The detector flagged the two human writers and passed the AI essay.',
-      body: 'This is the documented pattern, not a thought experiment. Liang and colleagues (2023) ran human-written essays through seven widely used AI detectors: on average the detectors wrongly flagged 61 percent of essays by non-native English writers as machine-generated, while judging native speakers\' essays almost perfectly, and nearly one in five of those human essays was flagged by every single detector. The reason sits in the tool\'s own logic. Detectors score how predictable the wording is, and carefully learned academic English is predictable in exactly that way. Meanwhile lightly edited AI text can slip under the same threshold. A tool marketed as protecting fairness quietly redistributes suspicion along lines of language, culture, and race, and the accused student is left to prove a negative.'
+      headline: 'The promise is not the mechanism.',
+      body: 'Accuracy and efficiency matter, but neither tells us whether the system\'s version of help changes the conditions producing need or simply watches, sorts, and manages students more closely. Benjamin\'s technological-benevolence lens asks us to separate the caring promise from the mechanism, the burden, and the power to refuse or change it. The hard test is not whether the tool means well. It is whether the fix changes the harm it claims to solve (Benjamin, 2019).'
     },
     mirrors: {
-      trust: 'You trusted the tool to do what its marketing says, which is the reasonable default. It is also exactly the gap Week 9 names: a benevolent purpose does not guarantee a benevolent mechanism. Ask what the tool actually measures, not what it promises to catch.',
-      polish: 'You guessed the tell would be quality. Close to the mechanism, but inverted: detectors do not flag good writing, they flag predictable writing, and the writers most likely to sound predictable are the ones who learned academic English by the book. The suspicion lands on effort, not on polish.',
-      bias: 'You saw where the suspicion would land, which is the Week 9 lens working. The harder second step: the harm is not only the wrong flag, it is the process after it. The flagged student faces an accusation that is nearly impossible to disprove, while the actual AI user walks away. Name both the error and the burden it assigns.'
+      accuracy: 'You reached for measurement quality, an important check. The Week 9 complication is that a perfectly accurate score could still impose help students did not choose and leave the institution unchanged. Accuracy can test the instrument without testing the politics of the intervention.',
+      efficiency: 'You looked at what the system saves the institution. That exposes one beneficiary, but it can leave the student\'s burden outside the calculation. Benevolent systems often describe institutional convenience as if it were automatically care for the people being managed.',
+      power: 'You opened the promise, the mechanism, and the power relationship at once. That is the Week 9 move. Keep one more question beside it: if the system identifies a pattern of need, does the response change the conditions producing it or only ask the individual to adapt?'
     },
-    reflect: 'One sentence: knowing the detector fails in this patterned way, what should a fair first step be when a submission gets flagged?'
+    reflect: 'Think of one technology offered as help. In one sentence, name the promise, the mechanism, and who can refuse it.'
   },
   11: {
     title: 'Fix the gate',
@@ -220,4 +220,3 @@ window.BFS218_EXPERIMENTS = {
     reflect: 'Pick one harm from this course. Which level is currently holding it back, and which level is missing? One sentence.'
   }
 };
-

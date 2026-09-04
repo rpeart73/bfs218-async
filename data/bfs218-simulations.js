@@ -1,7 +1,7 @@
-/* BFS218 Systems Simulation Labs v1.
-   These are transparent instructional models, not population forecasts.
-   The student changes institutional conditions, runs one case or a batch,
-   and compares patterns. No student identity is collected or transmitted. */
+/* BFS218 system-design studios.
+   These are transparent qualitative teaching models, not simulations,
+   population forecasts, or evidence about real people. Students compare
+   authored institutional configurations. No identity data is collected. */
 window.BFS218_SIMULATIONS = {
   1: {
     title: 'Run an ordinary-tool field test',
@@ -71,13 +71,13 @@ window.BFS218_SIMULATIONS = {
     safeguards: [['One-time consent', 0], ['Ongoing review', -0.1], ['Purpose limits, return, correction, and withdrawal', -0.21]]
   },
   9: {
-    title: 'Test a helpful promise',
-    caseLabel: 'Fictional user',
-    cases: [['Matches the tool\'s training norm', -0.07], ['Writes or speaks outside the training norm', 0.15], ['Has limited power to challenge an accusation', 0.2]],
-    systemLabel: 'What the tool measures',
-    systems: [['Opaque proxy sold as certainty', 0.2], ['Proxy score shown with limits', 0.08], ['Tool cannot make the final decision', -0.1]],
-    safeguardLabel: 'Response to a flag',
-    safeguards: [['User must prove innocence', 0], ['Human checks source evidence', -0.12], ['No adverse action without independent evidence', -0.24]]
+    title: 'Open the helpful promise',
+    caseLabel: 'Relationship to the promised help',
+    cases: [['The person asked for this support', -0.07], ['The institution assumes what the person needs', 0.15], ['The person has little practical ability to refuse', 0.2]],
+    systemLabel: 'What the intervention changes',
+    systems: [['Helpful promise, mechanism left opaque', 0.18], ['Monitors individual compliance more closely', 0.2], ['Changes an institutional condition producing the burden', -0.12]],
+    safeguardLabel: 'Who holds authority',
+    safeguards: [['No refusal or appeal route', 0], ['Transparent review and a real opt-out', -0.12], ['Affected people share authority over design and use', -0.24]]
   },
   10: {
     title: 'Run the threshold laboratory',

@@ -1,26 +1,25 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 440" font-family="'IBM Plex Sans', 'Segoe UI', system-ui, sans-serif">
   <rect width="680" height="440" fill="#ffffff"/>
-  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">Safety for whom?</text>
-  <text x="40" y="74" font-size="16" fill="#666">Raising Robots: the helper framed as safety</text>
+  <text x="40" y="46" font-size="26" font-weight="700" fill="#15171C">A benefit can extend control</text>
+  <text x="40" y="74" font-size="16" fill="#666">Electronic monitoring as a racial fix</text>
 
-  <!-- Framed-as label -->
-  <rect x="14" y="130" width="200" height="90" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
-  <text x="114" y="168" text-anchor="middle" font-size="17" font-weight="600" fill="#15171C">Police throwbot</text>
-  <text x="114" y="192" text-anchor="middle" font-size="14" fill="#474C57">framed as safety</text>
+  <rect x="24" y="112" width="274" height="102" rx="14" fill="#e8f4ec" stroke="#77a884" stroke-width="1.5"/>
+  <text x="161" y="144" text-anchor="middle" font-size="14" font-weight="700" fill="#245b35">PROMISED BENEFIT</text>
+  <text x="161" y="174" text-anchor="middle" font-size="18" font-weight="700" fill="#15171C">Release from detention</text>
+  <text x="161" y="198" text-anchor="middle" font-size="14" fill="#474C57">More mobility and family contact</text>
 
-  <line x1="218" y1="175" x2="244" y2="175" stroke="#8a909c" stroke-width="3"/>
-  <polygon points="244,168 256,175 244,182" fill="#8a909c"/>
+  <line x1="302" y1="163" x2="376" y2="163" stroke="#8a909c" stroke-width="3"/>
+  <polygon points="376,155 390,163 376,171" fill="#8a909c"/>
 
-  <!-- The question -->
-  <rect x="260" y="130" width="220" height="90" rx="12" fill="#DA291C"/>
-  <text x="370" y="170" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">Ask: safety</text>
-  <text x="370" y="196" text-anchor="middle" font-size="18" font-weight="700" fill="#ffffff">for whom?</text>
+  <rect x="394" y="112" width="262" height="102" rx="14" fill="#fff2f0" stroke="#DA291C" stroke-width="1.5"/>
+  <text x="525" y="144" text-anchor="middle" font-size="14" font-weight="700" fill="#9b1c13">ADDED CONDITION</text>
+  <text x="525" y="174" text-anchor="middle" font-size="18" font-weight="700" fill="#15171C">Tracking enters daily life</text>
+  <text x="525" y="198" text-anchor="middle" font-size="14" fill="#474C57">Rules, data, costs, threat of return</text>
 
-  <!-- Mechanism box -->
-  <rect x="14" y="252" width="652" height="96" rx="12" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
-  <text x="40" y="284" font-size="15" fill="#15171C">Sent in first, so officers can own the real estate with their eyes</text>
-  <text x="40" y="310" font-size="15" fill="#15171C">before paying with their bodies. The disposability of robots travels</text>
-  <text x="40" y="336" font-size="15" fill="#15171C">with the denigration of racialized people.</text>
+  <rect x="24" y="248" width="632" height="116" rx="14" fill="#f5f7f9" stroke="#cfd4db" stroke-width="1.5"/>
+  <text x="50" y="280" font-size="15" font-weight="700" fill="#15171C">RUN THE BENEVOLENCE TEST</text>
+  <text x="50" y="310" font-size="15" fill="#15171C">What changes, and for whom? Who carries the added burden?</text>
+  <text x="50" y="336" font-size="15" fill="#15171C">Who can refuse the condition, who receives the data, and who decides?</text>
 
-  <text x="40" y="392" font-size="13" fill="#666">Benjamin (2019), Raising Robots.</text>
+  <text x="40" y="406" font-size="13" fill="#666">Benjamin (2019), Chapter 4: Technological Benevolence, Do Fixes Fix Us?</text>
 </svg>

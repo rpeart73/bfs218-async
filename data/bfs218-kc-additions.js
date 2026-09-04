@@ -564,16 +564,16 @@ window.BFS218_KC_SETC_ADDITIONS = {
         "Technology promoted as a fix, an upgrade, or an act of help that still carries existing harms",
         "The difficulty this dimension creates: a tool sold as the solution is harder to question than one that is openly harmful",
         "Benjamin's working test: ask what a proposed solution actually changes and for whom",
-        "The section where Benjamin shows how the disposability of machines framed as helpers travels with the denigration of racialized people" ],
+        "An intervention offered as a solution that can address one problem while preserving or producing another form of racialized control" ],
       why: "Will the fix fix it? is Benjamin's working test for any proposed solution: ask what it actually changes and for whom." }, // grounded in: WEEKPAGE.BFS218[9] term "Will the fix fix it?"
     { kind: "match", mgroup: "w9m2", diff: 2,
-      q: "Raising Robots", answer: 3,
+      q: "Racial fix", answer: 3,
       options: [
         "Technology promoted as a fix, an upgrade, or an act of help that still carries existing harms",
         "The difficulty this dimension creates: a tool sold as the solution is harder to question than one that is openly harmful",
         "Benjamin's working test: ask what a proposed solution actually changes and for whom",
-        "The section where Benjamin shows how the disposability of machines framed as helpers travels with the denigration of racialized people" ],
-      why: "Raising Robots is the section where Benjamin examines machines framed as helpers, including police throwbots, and shows how the disposability of robots travels with the denigration of racialized people." }, // grounded in: WEEKPAGE.BFS218[9] term "Raising Robots"
+        "An intervention offered as a solution that can address one problem while preserving or producing another form of racialized control" ],
+      why: "A racial fix can address one immediate problem while preserving or producing another form of racialized control. Benjamin's electronic-monitoring example shows why the benefit and the added burden must be examined together." }, // grounded in: WEEKPAGE.BFS218[9] term "Racial fix"
     { kind: "match", mgroup: "w9m2", diff: 2,
       q: "The benevolence trap (what makes it dangerous)", answer: 1,
       options: [
@@ -1224,41 +1224,41 @@ window.BFS218_KC_W349_ADDITIONS = {
       diff: 1
     }, // Grounding: app.js WEEKPAGE BFS218[9] concept "Will the fix fix it?" and term "Will the fix fix it?"
     {
-      q: "What does Benjamin argue in Raising Robots?",
+      q: "What does Benjamin mean by a racial fix?",
       options: [
-        "Robots should be given legal rights as workers",
-        "Robots will eventually replace all dangerous jobs, which ends the debate about risk",
-        "Robots are too expensive for most institutions to deploy",
-        "Robots and automation are imagined as helpers and even servants, and the disposability of robots travels with the denigration of racialized people"
+        "A repair that removes every racialized burden from a system",
+        "A technical patch that matters only when it reduces an error rate",
+        "An intervention offered as a solution that can address one problem while preserving or producing another form of racialized control",
+        "A policy that prohibits institutions from using technology"
       ],
-      answer: 3,
-      why: "In Raising Robots, Benjamin shows how robots and automation are imagined as helpers and even servants, and how the disposability of robots travels with the denigration of racialized people.",
+      answer: 2,
+      why: "A racial fix can provide a real immediate benefit and still preserve or extend another racialized burden. The Week 9 task is to examine the benefit, the added control, and who can refuse or challenge it together.",
       whyWrong: {
-        0: "Robot rights are not her argument here. Her focus is what the helper and servant framing reveals about race and disposability.",
-        1: "The chapter section questions the safety framing rather than endorsing it. The right question becomes safety for whom.",
-        2: "Cost is not the argument. The argument is about the language of helpers, servants, and disposability."
+        0: "A racial fix is not a complete repair. It can reduce one burden while another form of control remains or grows.",
+        1: "An error-rate patch may be one intervention, but Benjamin's concept asks what the solution does socially and institutionally, not only technically.",
+        3: "The concept is not a general technology ban. It is a way to examine the costs carried inside a proposed solution."
       },
       skill: "concepts",
       diff: 2
-    }, // Grounding: app.js WEEKPAGE BFS218[9] concept "Raising Robots connects disposability to race" and term "Raising Robots"
+    }, // Grounding: app.js WEEKPAGE BFS218[9] concept "A racial fix can help and constrain at once" and term "Racial fix"
     {
-      q: "In Benjamin's police throwbots example, the machine is framed as safety. What question does this week say becomes the right one to ask?",
+      q: "Why does Chapter 4's electronic-monitoring example count as a racial fix?",
       options: [
-        "Safety for whom",
-        "How much does each throwbot cost",
-        "How fast can the throwbot move",
-        "Which company manufactured the throwbot"
+        "It can permit release while extending surveillance and control into daily life",
+        "It uses the newest available monitoring hardware",
+        "It guarantees that every monitored person receives the same outcome",
+        "It replaces an institutional decision with a purely technical one"
       ],
       answer: 0,
-      why: "The throwbots are sent in first so officers can own the real estate with their eyes before paying with their bodies. Because the machine is framed as safety, the right question becomes safety for whom.",
+      why: "Electronic monitoring can reduce the immediate burden of confinement while extending surveillance and control into daily life. The benefit is real, and the added burden is real; examining both is the racial-fix analysis.",
       whyWrong: {
-        1: "Price does not touch the framing problem. The question is who the promised safety actually serves.",
-        2: "Speed is a technical detail. The week's question is about who benefits and who carries the risk.",
-        3: "The manufacturer's name does not answer whose safety the machine protects."
+        1: "The device's novelty does not explain the racial fix. The issue is the relationship between the promised solution and the control it extends.",
+        2: "Uniform procedure does not settle who carries the burden or whether the intervention extends an unequal system.",
+        3: "The example does not make the decision purely technical; it shows how institutional control can travel through a technical intervention."
       },
       skill: "concepts",
       diff: 2
-    }, // Grounding: app.js WEEKPAGE BFS218[9] concept "Raising Robots connects disposability to race" (police throwbots, "safety for whom")
+    }, // Grounding: app.js WEEKPAGE BFS218[9] concept "A racial fix can help and constrain at once"
     {
       q: "Why is the benevolent framing of a harmful tool not just a side effect?",
       options: [

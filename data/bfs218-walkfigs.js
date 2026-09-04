@@ -136,8 +136,8 @@ window.BFS218_WALKFIGS = {
     },
     {
       file: "fig-week09-c.svg",
-      alt: "Police throwbot framed as safety, followed by the question safety for whom.",
-      longText: "Read left to right. A police throwbot is framed as safety. An arrow leads to the question, safety for whom? The explanation below says the robot is sent in first so officers can survey a place before risking their bodies, while the disposability assigned to robots travels with the denigration of racialized people. The diagram concludes that a safety claim must be examined for whose safety it protects and whose disposability it assumes."
+      alt: "Electronic monitoring shown as a real benefit that can also extend surveillance and control.",
+      longText: "Read from the promised benefit to the added condition. Electronic monitoring can permit release from detention, which is a real benefit. It can also extend location tracking, rules, costs, and the threat of return into daily life. Benjamin uses this tension to explain a racial fix: an intervention can address one burden while preserving or producing another. The diagram ends by asking what changes, who carries the added burden, who can refuse, and who holds authority."
     }
   ],
   "10": [
@@ -189,6 +189,40 @@ window.BFS218_WALKFIGS = {
       file: "fig-week12-c.svg",
       alt: "Three-question accountability checklist for evaluating any technology.",
       longText: "Read the three numbered columns from left to right. First ask what rule governs the technology: which law, framework, or institution should hold it accountable? Second ask where the gap is and whom the rule leaves exposed, as AIDA leaves artists and creators. Third ask who was at the table and who was absent when the rule was written. Together, the questions form an accountability lens that examines rules, omissions, and participation."
+    }
+  ],
+  "13": [
+    {
+      file: "fig-week13.svg",
+      alt: "A layered evidence trail connects an early observation, a later source, and a changed interpretation.",
+      longText: "Read from left to right. The Week 1 entry records what the student first noticed. The Week 12 entry adds a named source and documented mechanism. The final card states what changed in the student's interpretation. A continuous route connects all three, showing that reflection is evidence of learning only when the change can be traced."
+    },
+    {
+      file: "fig-week13-b.svg",
+      alt: "Four pieces assemble into one bounded course claim: case, mechanism, evidence, and limit.",
+      longText: "Four evidence pieces surround a central claim. The case names the specific system and setting. The mechanism explains what rule or decision produces the outcome. The evidence points to a source. The boundary states what remains uncertain or outside the example. Together they form a claim strong enough to defend without pretending to prove more than the source supports."
+    },
+    {
+      file: "fig-week13-c.svg",
+      alt: "A four-stage route moves from noticing to tracing, verifying, and responding.",
+      longText: "Follow the path from Notice to Trace to Verify to Respond. Notice identifies a concrete system. Trace follows data, rules, and outcomes. Verify tests the claim against a source and its limits. Respond proposes a repair or accountability move that fits the evidence. The route ends at the final cartography plan."
+    }
+  ],
+  "14": [
+    {
+      file: "fig-week14.svg",
+      alt: "The course question passes through the student's evidence map and points toward a future professional field.",
+      longText: "Read left to right. The course question asks whether the technologies we build reproduce existing inequities or help imagine a more just world. The student's evidence map sits in the centre, turning that question into a method grounded in cases, sources, and reflection. An arrow points into the student's future field, where the question becomes a professional responsibility."
+    },
+    {
+      file: "fig-week14-b.svg",
+      alt: "A four-direction compass asks about evidence, power, impact, and repair.",
+      longText: "The compass has four directions. Evidence asks what is known and what remains uncertain. Power asks who decides and who can challenge. Impact asks who benefits and who carries the risk. Repair asks what would move authority or change the governing structure. The centre asks the student to use all four before acting."
+    },
+    {
+      file: "fig-week14-c.svg",
+      alt: "Evidence, response, and commitment become stepping stones toward a future field.",
+      longText: "Three stepping stones lead forward. Evidence anchors the claim in a source. Response fits the action to the documented mechanism. Commitment states what the student will notice or do differently in future work. The final doorway represents the student's field, where the course lens becomes an ongoing practice rather than a final answer."
     }
   ]
 };

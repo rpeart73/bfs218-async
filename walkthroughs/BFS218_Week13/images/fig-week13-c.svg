@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" role="img" aria-labelledby="title desc">
+  <title id="title">Turn the evidence into a final route</title>
+  <desc id="desc">An illuminated route moves through Notice, Trace, Verify, and Respond toward the final cartography plan.</desc>
+  <defs><linearGradient id="bg" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#131d32"/><stop offset="1" stop-color="#273a57"/></linearGradient><linearGradient id="route" x1="0" x2="1"><stop stop-color="#00aeb3"/><stop offset=".48" stop-color="#ffcc66"/><stop offset="1" stop-color="#da291c"/></linearGradient><filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter></defs>
+  <rect width="1600" height="900" fill="url(#bg)"/>
+  <g fill="none" stroke="#6f819a" stroke-width="2" opacity=".28"><path d="M0 690C270 510 390 780 680 560S1120 420 1600 560"/><path d="M0 760C260 580 430 840 715 625S1140 500 1600 625"/></g>
+  <text x="92" y="104" fill="#f2aaa2" font-family="Segoe UI,Arial,sans-serif" font-size="24" font-weight="800" letter-spacing="5">FINAL CARTOGRAPHY ROUTE</text>
+  <text x="92" y="170" fill="#fff" font-family="Segoe UI,Arial,sans-serif" font-size="56" font-weight="800">Do not jump from concern to solution</text>
+  <text x="92" y="220" fill="#cfd8e5" font-family="Segoe UI,Arial,sans-serif" font-size="26">A strong response earns each move along the way</text>
+  <path d="M180 600C350 330 545 650 760 430S1160 330 1410 520" fill="none" stroke="#0a1222" stroke-width="40" stroke-linecap="round"/>
+  <path d="M180 600C350 330 545 650 760 430S1160 330 1410 520" fill="none" stroke="url(#route)" stroke-width="15" stroke-linecap="round" filter="url(#glow)"/>
+  <g font-family="Segoe UI,Arial,sans-serif">
+    <g transform="translate(150 520)"><circle r="66" fill="#fff" stroke="#00aeb3" stroke-width="8"/><text y="11" text-anchor="middle" fill="#17243b" font-size="34" font-weight="900">1</text><text x="0" y="108" text-anchor="middle" fill="#fff" font-size="31" font-weight="800">NOTICE</text><text x="0" y="142" text-anchor="middle" fill="#cfd8e5" font-size="20">Name one system</text></g>
+    <g transform="translate(535 500)"><circle r="66" fill="#fff" stroke="#45c8c6" stroke-width="8"/><text y="11" text-anchor="middle" fill="#17243b" font-size="34" font-weight="900">2</text><text x="0" y="108" text-anchor="middle" fill="#fff" font-size="31" font-weight="800">TRACE</text><text x="0" y="142" text-anchor="middle" fill="#cfd8e5" font-size="20">Follow the mechanism</text></g>
+    <g transform="translate(930 355)"><circle r="66" fill="#fff" stroke="#ffcc66" stroke-width="8"/><text y="11" text-anchor="middle" fill="#17243b" font-size="34" font-weight="900">3</text><text x="0" y="108" text-anchor="middle" fill="#fff" font-size="31" font-weight="800">VERIFY</text><text x="0" y="142" text-anchor="middle" fill="#cfd8e5" font-size="20">Test source and limit</text></g>
+    <g transform="translate(1330 470)"><circle r="66" fill="#fff" stroke="#da291c" stroke-width="8"/><text y="11" text-anchor="middle" fill="#17243b" font-size="34" font-weight="900">4</text><text x="0" y="108" text-anchor="middle" fill="#fff" font-size="31" font-weight="800">RESPOND</text><text x="0" y="142" text-anchor="middle" fill="#cfd8e5" font-size="20">Fit repair to evidence</text></g>
+  </g>
+  <rect x="320" y="755" width="960" height="86" rx="22" fill="#fff" opacity=".96"/><text x="800" y="808" text-anchor="middle" fill="#17243b" font-family="Segoe UI,Arial,sans-serif" font-size="27" font-weight="800">Your final route should let another person follow your reasoning</text>
+</svg>

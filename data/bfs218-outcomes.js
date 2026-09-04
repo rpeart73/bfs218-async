@@ -19,9 +19,9 @@ window.BFS218_OUTCOMES = {
     14
    ],
    "assessments": [
-    "Map Exchange",
-    "Compass Check: Scenario Decisions and Your Mirror",
-    "Canadian Case File",
+    "Digital Systems Field Notes Portfolio",
+    "Digital Decision Scenarios",
+    "Canadian Technology Investigation",
     "Personal Cartography final project"
    ]
   },
@@ -45,9 +45,9 @@ window.BFS218_OUTCOMES = {
     14
    ],
    "assessments": [
-    "Map Exchange",
-    "Compass Check: Scenario Decisions and Your Mirror",
-    "Canadian Case File",
+    "Digital Systems Field Notes Portfolio",
+    "Digital Decision Scenarios",
+    "Canadian Technology Investigation",
     "Design the Repair",
     "Personal Cartography final project"
    ]
@@ -66,7 +66,7 @@ window.BFS218_OUTCOMES = {
     14
    ],
    "assessments": [
-    "Canadian Case File",
+    "Canadian Technology Investigation",
     "Design the Repair"
    ]
   },
@@ -104,8 +104,8 @@ window.BFS218_OUTCOMES = {
     14
    ],
    "assessments": [
-    "Map Exchange",
-    "Compass Check: Scenario Decisions and Your Mirror",
+    "Digital Systems Field Notes Portfolio",
+    "Digital Decision Scenarios",
     "Personal Cartography final project"
    ]
   }
