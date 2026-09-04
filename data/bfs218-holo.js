@@ -198,11 +198,12 @@
           'uniform vec3 uColor; uniform float uTime; uniform float uOpacity;',
           'varying vec3 vN; varying vec3 vV; varying vec2 vUv;',
           'void main(){',
-          ' float fres=pow(1.0-abs(dot(normalize(vN),normalize(vV))),2.0);',
-          ' float scan=0.5+0.5*sin(vUv.y*72.0+uTime*1.8);',
-          ' float band=smoothstep(0.985,1.0,fract(vUv.y*1.0-uTime*0.06));',
-          ' float a=uOpacity*(0.28+0.42*fres+0.08*scan+0.24*band);',
-          ' gl_FragColor=vec4(uColor*(0.78+0.35*fres),a); }'
+          ' float fres=pow(1.0-clamp(abs(dot(normalize(vN),normalize(vV))),0.0,1.0),2.4);',
+          ' float scan=0.82+0.18*sin(vUv.y*110.0+uTime*2.0);',
+          ' float band=smoothstep(0.98,1.0,fract(vUv.y*1.0-uTime*0.07));',
+          ' float a=uOpacity*(0.24+0.52*fres+0.06*scan+0.26*band);',
+          ' vec3 glow=mix(uColor,vec3(1.0,0.98,0.92),fres*0.35);',
+          ' gl_FragColor=vec4(glow*(0.85+0.4*fres),a); }'
         ].join('\n')
       });
       K.own(mat);

@@ -124,3 +124,37 @@
 .walk-immersive.walk-contrast .walk-story-interactive>header h2,.walk-immersive.walk-contrast .walk-story-interactive>header p,.walk-immersive.walk-contrast .walk-story-panel>h3,.walk-immersive.walk-contrast .walk-story-panel>p,.walk-immersive.walk-contrast .walk-story-question>b{color:#fff!important}.walk-immersive.walk-contrast .walk-story-panel,.walk-immersive.walk-contrast .walk-story-tabs button,.walk-immersive.walk-contrast .walk-story-question{background:#000!important;color:#fff!important;border-color:#fff!important}.walk-immersive.walk-contrast .walk-story-tabs button[aria-selected="true"],.walk-immersive.walk-contrast .walk-hotspot-tabs button[aria-selected="true"]>span{background:#FFEA00!important;color:#000!important;border-color:#FFEA00!important}
 @media(max-width:940px){.walk-immersive .walk-story-workspace{grid-template-columns:1fr}.walk-immersive .walk-story-panels{min-height:0}}
 @media(max-width:760px){.walk-immersive .walk-story-interactive>header h2{font-size:clamp(1.9rem,9vw,2.8rem)}.walk-immersive .walk-story-image>img{height:300px}.walk-immersive .walk-story-tabs-lens,.walk-immersive .walk-story-tabs-layers{grid-template-columns:1fr}.walk-immersive .walk-hotspot-tabs button>b{display:none!important}.walk-immersive .walk-hotspot-tabs button>span{width:42px;height:42px}.walk-immersive .walk-story-panel{padding:15px}}
+
+
+/* Tactile micro-interactions and focus rings for walkthrough activities */
+.walk-immersive .walk-preview-choices button:active,
+.walk-immersive .walk-preview-parts button:active,
+.walk-immersive .walk-preview-switches button:active,
+.walk-immersive .walk-story-tabs button:active,
+.walk-immersive .walk-check-options button:active,
+.walk-immersive .walk-diagram-tabs button:active,
+.walk-immersive .walk-audit-trays button:active,
+.walk-immersive .walk-decision>button:active {
+  transform: scale(0.985);
+  transition: transform .08s ease;
+}
+.walk-immersive .walk-preview-choices button:focus-visible,
+.walk-immersive .walk-preview-parts button:focus-visible,
+.walk-immersive .walk-preview-switches button:focus-visible,
+.walk-immersive .walk-story-tabs button:focus-visible,
+.walk-immersive .walk-check-options button:focus-visible,
+.walk-immersive .walk-diagram-tabs button:focus-visible,
+.walk-immersive .walk-audit-trays button:focus-visible,
+.walk-immersive .walk-open-activity:focus-visible {
+  outline: 2.5px solid var(--walk-red) !important;
+  outline-offset: 2px !important;
+}
+.walk-immersive .walk-check-options button:hover {
+  border-color: #14213B;
+  transform: translateY(-1.5px);
+  box-shadow: 0 10px 24px rgba(20,33,59,.11);
+}
+.walk-immersive .walk-check-feedback,
+.walk-immersive .walk-preview-feedback {
+  animation: walkfade .2s ease;
+}
