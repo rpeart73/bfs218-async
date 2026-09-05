@@ -3958,7 +3958,7 @@
       : spec.kind === 'decisionpath'
       ? [[20.5, 70.2], [50.5, 72.5], [70.5, 43.2]]
       : spec.kind === 'thresholdaudit'
-      ? [[18.2, 74.0], [39.0, 65.0], [78.8, 64.0]]
+      ? [[18.2, 74.0], [39.0, 68.0], [78.8, 64.0]]
       : [];
     var dragModes = ['predict', 'try', 'explain'];
     var dragIndex = Math.max(0, dragModes.indexOf(view));
@@ -5315,6 +5315,68 @@
           gateTag.style.color = '#FFE082';
           gateTag.style.borderColor = 'rgba(212,175,55,.65)';
         }
+        var gateLine = button.querySelector('.wk-gate-line');
+        if (gateLine) {
+          gateLine.style.background = '';
+          gateLine.style.boxShadow = '';
+        }
+      }
+      function syncThresholdPolicy(polIdx) {
+        if (kind !== 'thresholdaudit') return;
+        state.act = state.act || {};
+        state.actResult = state.actResult || {};
+        state.act['a|10|threshold|policy'] = polIdx;
+        state.actResult['a|10|threshold|policy'] = polIdx;
+        var policySection = document.querySelector('.wk-threshold-policy');
+        if (policySection) {
+          var pButtons = policySection.querySelectorAll('button');
+          for (var bi = 0; bi < pButtons.length; bi++) {
+            var isTarget = bi === polIdx;
+            pButtons[bi].classList.toggle('on', isTarget);
+            pButtons[bi].setAttribute('aria-pressed', String(isTarget));
+          }
+          var thresholds = [
+            { label: 'Broader support', consequence: 'More students receive support, so less depends on a single cutoff. The institution still has to audit whether need and access differ across groups.' },
+            { label: 'Targeted support', consequence: 'The cutoff carries more weight. Students near it can receive different treatment because of small prediction differences.' },
+            { label: 'Narrow support', consequence: 'Fewer students are served and the threshold becomes a stronger gate. This course control illustrates institutional discretion; it does not reproduce a numerical result from the paper.' }
+          ];
+          var consNode = policySection.querySelector('.wk-threshold-consequence');
+          if (!consNode) {
+            consNode = document.createElement('div');
+            consNode.className = 'wk-threshold-consequence';
+            consNode.setAttribute('role', 'status');
+            policySection.appendChild(consNode);
+          }
+          if (thresholds[polIdx]) {
+            consNode.innerHTML = '<b>What this institutional choice changes</b><p>' + esc(thresholds[polIdx].consequence) + '</p>';
+          }
+        }
+      }
+      if (kind === 'thresholdaudit' && typeof thPol === 'number' && nativeHandles[1]) {
+        var initGate = nativeHandles[1];
+        var initY = thPol === 0 ? -16 : (thPol === 2 ? 16 : 0);
+        if (initY !== 0) {
+          initGate.setAttribute('data-drag-y', String(initY));
+          initGate.style.setProperty('--drag-y', initY + 'px');
+          initGate.style.transform = 'translate(-50%, calc(-50% + ' + initY + 'px))';
+          var iTag = initGate.querySelector('.wk-gate-tag');
+          var iLine = initGate.querySelector('.wk-gate-line');
+          if (iTag && iLine) {
+            if (thPol === 0) {
+              iTag.textContent = '▲ CUTOFF: 0.50 (BROADER SUPPORT)';
+              iTag.style.color = '#86efac';
+              iTag.style.borderColor = '#22c55e';
+              iLine.style.background = 'linear-gradient(90deg, rgba(34,197,94,0) 0%, #22c55e 15%, #86efac 50%, #22c55e 85%, rgba(34,197,94,0) 100%)';
+              iLine.style.boxShadow = '0 0 14px rgba(34,197,94,.95), 0 2px 6px rgba(0,0,0,.7)';
+            } else if (thPol === 2) {
+              iTag.textContent = '▼ CUTOFF: 0.80 (NARROW SUPPORT)';
+              iTag.style.color = '#fca5a5';
+              iTag.style.borderColor = '#ef4444';
+              iLine.style.background = 'linear-gradient(90deg, rgba(239,68,68,0) 0%, #ef4444 15%, #fca5a5 50%, #ef4444 85%, rgba(239,68,68,0) 100%)';
+              iLine.style.boxShadow = '0 0 14px rgba(239,68,68,.95), 0 2px 6px rgba(0,0,0,.7)';
+            }
+          }
+        }
       }
       nativeHandles.forEach(function (button) {
         var dragState = null, ignoreClick = false;
@@ -5335,14 +5397,20 @@
           var x = Number(button.getAttribute('data-drag-x')) || 0;
           var y = Number(button.getAttribute('data-drag-y')) || 0;
           var rotation = Number(button.getAttribute('data-drag-rotation')) || 0;
+          var dragIndex = button.getAttribute('data-drag-index');
           if (dragType === 'forward') {
             x = clampDrag(x + dx * 0.58, 0, 72);
             y = clampDrag(y + dy * 0.24, -14, 14);
           } else if (dragType === 'turn') {
             rotation = clampDrag(rotation + dx * 1.2, -80, 80);
           } else if (dragType === 'vertical') {
-            x = clampDrag(x + dx * 0.15, -10, 10);
-            y = clampDrag(y + dy * 0.85, -40, 40);
+            if (kind === 'thresholdaudit' && dragIndex === '1') {
+              x = 0;
+              y = clampDrag(y + dy * 0.75, -20, 20);
+            } else {
+              x = clampDrag(x + dx * 0.15, -10, 10);
+              y = clampDrag(y + dy * 0.75, -20, 20);
+            }
           } else {
             x = clampDrag(x + dx * 0.58, -58, 72);
             y = clampDrag(y + dy * 0.22, -16, 16);
@@ -5355,24 +5423,48 @@
           button.style.setProperty('--drag-rotation', rotation.toFixed(1) + 'deg');
           button.style.transform = 'translate(calc(-50% + ' + x.toFixed(1) + 'px), calc(-50% + ' + y.toFixed(1) + 'px)) rotate(' + rotation.toFixed(1) + 'deg)';
           var gateTag = button.querySelector('.wk-gate-tag');
-          if (gateTag) {
-            if (y < -12) {
-              gateTag.textContent = 'CUTOFF RAISED: EXPANDED SUPPORT';
+          var gateLine = button.querySelector('.wk-gate-line');
+          if (gateTag && gateLine) {
+            if (y < -6) {
+              gateTag.textContent = '▲ CUTOFF: 0.50 (BROADER SUPPORT)';
               gateTag.style.color = '#86efac';
               gateTag.style.borderColor = '#22c55e';
-            } else if (y > 12) {
-              gateTag.textContent = 'CUTOFF LOWERED: HIGHER ATTRITION';
+              gateLine.style.background = 'linear-gradient(90deg, rgba(34,197,94,0) 0%, #22c55e 15%, #86efac 50%, #22c55e 85%, rgba(34,197,94,0) 100%)';
+              gateLine.style.boxShadow = '0 0 14px rgba(34,197,94,.95), 0 2px 6px rgba(0,0,0,.7)';
+              syncThresholdPolicy(0);
+            } else if (y > 6) {
+              gateTag.textContent = '▼ CUTOFF: 0.80 (NARROW SUPPORT)';
               gateTag.style.color = '#fca5a5';
               gateTag.style.borderColor = '#ef4444';
+              gateLine.style.background = 'linear-gradient(90deg, rgba(239,68,68,0) 0%, #ef4444 15%, #fca5a5 50%, #ef4444 85%, rgba(239,68,68,0) 100%)';
+              gateLine.style.boxShadow = '0 0 14px rgba(239,68,68,.95), 0 2px 6px rgba(0,0,0,.7)';
+              syncThresholdPolicy(2);
             } else {
               gateTag.textContent = 'CUTOFF: 0.65 BASELINE';
               gateTag.style.color = '#FFE082';
               gateTag.style.borderColor = 'rgba(212,175,55,.65)';
+              gateLine.style.background = 'linear-gradient(90deg, rgba(212,175,55,0) 0%, #D4AF37 15%, #FFE082 50%, #D4AF37 85%, rgba(212,175,55,0) 100%)';
+              gateLine.style.boxShadow = '0 0 12px rgba(212,175,55,.85), 0 2px 6px rgba(0,0,0,.7)';
+              syncThresholdPolicy(1);
             }
           }
           var status = shell.querySelector('[data-gesture-status]');
           if (status && !button.hasAttribute('data-complete')) {
-            if (dragType === 'vertical' && button.getAttribute('data-drag-index') === '1') {
+            if (kind === 'thresholdaudit') {
+              if (dragIndex === '0') {
+                status.innerHTML = '<b>Station 1: Feature Compression Hopper</b><small>Crushing 14 multidimensional life factors (work, health, caregiving) into a single scalar score cylinder (0.64).</small>';
+              } else if (dragIndex === '1') {
+                if (y < -6) {
+                  status.innerHTML = '<b>Station 2: Cutoff Raised (-' + Math.abs(Math.round(y)) + 'px) &rarr; Broader Support</b><small>Threshold 0.50: institutional resources expand to support marginal students before they drop out.</small>';
+                } else if (y > 6) {
+                  status.innerHTML = '<b>Station 2: Cutoff Lowered (+' + Math.round(y) + 'px) &rarr; Narrow Support</b><small>Threshold 0.80: struggling students denied aid and routed to EXCLUDED ATTRITION.</small>';
+                } else {
+                  status.innerHTML = '<b>Station 2: Cutoff Baseline (0.65) &rarr; Targeted Support</b><small>Threshold 0.65: standard administrative cutoff where small prediction errors decide who receives aid.</small>';
+                }
+              } else if (dragIndex === '2') {
+                status.innerHTML = '<b>Station 3: Equity Balance Scale</b><small>Weighing qualitative appeals and contextual evidence against automated scores to provide human recourse.</small>';
+              }
+            } else if (dragType === 'vertical' && dragIndex === '1') {
               if (y < -12) {
                 status.innerHTML = '<b>Cutoff Gate Raised (-' + Math.abs(Math.round(y)) + 'px)</b><small>Threshold widened: institutional resources deployed to support marginal students.</small>';
               } else if (y > 12) {
@@ -5388,12 +5480,36 @@
           button.setAttribute('data-complete', 'true');
           var status = shell.querySelector('[data-gesture-status]');
           var result = button.getAttribute('data-drag-result') || 'The model changed. Read the explanation below.';
+          var header = 'Object explored';
+          var dragIndex = button.getAttribute('data-drag-index');
+          if (kind === 'thresholdaudit') {
+            var y = Number(button.getAttribute('data-drag-y')) || 0;
+            if (dragIndex === '0') {
+              header = 'Station 1: Feature Compression Hopper';
+              result = '14 multidimensional student realities (work, caregiving, health) flattened into a single scalar score. The model cannot see why a student needs flexibility; it only sees a number.';
+            } else if (dragIndex === '1') {
+              if (y < -6) {
+                header = 'Policy Selected: Broader Support (Cutoff 0.50)';
+                result = 'By raising the gate, the institution prioritizes student retention and support over score purity, deploying resources to marginal students. See the Institutional Decision below.';
+              } else if (y > 6) {
+                header = 'Policy Selected: Narrow Support (Cutoff 0.80)';
+                result = 'By lowering the gate, the institution restricts support resources, increasing attrition among racialized and non-traditional students. See the Institutional Decision below.';
+              } else {
+                header = 'Policy Selected: Targeted Support (Cutoff 0.65)';
+                result = 'Standard administrative threshold calibrated. As Bird, Castleman, and Song (2023) show, racial disparities peak near this cutoff line. See the Institutional Decision below.';
+              }
+              persist();
+            } else if (dragIndex === '2') {
+              header = 'Recourse Activated: Human Context Restored';
+              result = 'Devlin (2023) notes that inequality without the algorithm requires human oversight, appeal pathways, and administrative accountability to correct automated sorting errors.';
+            }
+          }
           if (status) {
             status.classList.add('is-complete');
-            status.innerHTML = '<b>Object explored</b><small>' + esc(result) + '</small>';
+            status.innerHTML = '<b>' + esc(header) + '</b><small>' + esc(result) + '</small>';
           }
           updateGestureProgress();
-          announce('Object explored. ' + result);
+          announce(header + '. ' + result);
         }
         function applyGesture(dx, dy) {
           var amount = moveHandleVisual(dx, dy);
@@ -5527,6 +5643,10 @@
       function resetGestures(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
         nativeHandles.forEach(resetHandlePosition);
+        if (kind === 'thresholdaudit') {
+          syncThresholdPolicy(1);
+          persist();
+        }
         if (holo && holo.resetManipulation) holo.resetManipulation();
         canvas.removeAttribute('data-dragged');
         canvas.removeAttribute('data-drag-target');
