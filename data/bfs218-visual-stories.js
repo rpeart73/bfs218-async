@@ -384,7 +384,7 @@
             image: "images/story/odeyto-first-peoples.jpg",
             imageAlt: "Odeyto, Seneca Polytechnic's First Peoples gathering space, illuminated at dusk with its curved wooden structure visible.",
             body: "We begin on lands stewarded by Anishinaabe, Haudenosaunee, and Wendat Nations. Seneca recognizes Treaty 13, signed with the Mississaugas of the Credit First Nation, and the Williams Treaties, signed with several Mississauga and Chippewa First Nations. First Nations, Métis, and Inuit people continue to live, learn, work, and sustain community here.",
-            responsibility: "For this course, acknowledgement must change the question we ask. As we study Indigenous data sovereignty, consider land, knowledge, and data as relationships carrying authority and responsibility—not resources that an institution can simply collect, rename, own, or extract.",
+            responsibility: "For this course, acknowledgement must change the question we ask. As we study Indigenous data sovereignty, consider land, knowledge, and data as relationships carrying authority and responsibility, not resources that an institution can simply collect, rename, own, or extract.",
             prompt: "What would you need to change if the community described by the data also governed its collection, meaning, access, and future use?",
             source: "https://www.senecapolytechnic.ca/student-services-and-support/first-peoples.html"
           },
