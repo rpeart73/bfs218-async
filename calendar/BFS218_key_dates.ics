@@ -1,108 +1,103 @@
 BEGIN:VCALENDAR
 VERSION:2.0
-PRODID:-//BFS218 Companion//Key Dates//EN
+PRODID:-//Seneca//BFS218 Fall 2026//EN
 CALSCALE:GREGORIAN
-METHOD:PUBLISH
-X-WR-CALNAME:BFS218 Asynchronous Key Dates (Fall 2026)
-X-WR-TIMEZONE:America/Toronto
 BEGIN:VEVENT
-UID:bfs218-async-term-start@rpeart73.github.io
-DTSTART;VALUE=DATE:20260908
-DTEND;VALUE=DATE:20260909
-SUMMARY:BFS218: course opens
-DESCRIPTION:All fourteen asynchronous weeks are available.
+UID:bfs218-async-_27270750_1-release@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20260921T040112Z
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 1 opens (10%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/journal/_27270750_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-field-notes-1-open@rpeart73.github.io
-DTSTART;VALUE=DATE:20260921
-DTEND;VALUE=DATE:20260922
-SUMMARY:BFS218: Field Notes Portfolio 1 opens
-DESCRIPTION:The private Blackboard Journal opens.
+UID:bfs218-async-_27270750_1-due@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261019T035905Z
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 1 due (10%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/journal/_27270750_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-decisions-open@rpeart73.github.io
-DTSTART;VALUE=DATE:20261013
-DTEND;VALUE=DATE:20261014
-SUMMARY:BFS218: Digital Decision Scenarios opens
+UID:bfs218-async-_27271109_1-release@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261013T040100Z
+SUMMARY:BFS218: Digital Decision Scenarios opens (20%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27271109_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-investigation-open@rpeart73.github.io
-DTSTART;VALUE=DATE:20261013
-DTEND;VALUE=DATE:20261014
-SUMMARY:BFS218: Canadian Technology Investigation opens
+UID:bfs218-async-_27271109_1-due@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261024T035900Z
+SUMMARY:BFS218: Digital Decision Scenarios due (20%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27271109_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-field-notes-1-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261018
-DTEND;VALUE=DATE:20261019
-SUMMARY:BFS218: Field Notes Portfolio 1 due (10 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern in Blackboard.
+UID:bfs218-async-_27270958_1-release@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261013T040113Z
+SUMMARY:BFS218: Canadian Technology Investigation opens (20%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27270958_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-decisions-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261023
-DTEND;VALUE=DATE:20261024
-SUMMARY:BFS218: Digital Decision Scenarios due (20 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern in Blackboard.
+UID:bfs218-async-_27270958_1-due@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261026T035900Z
+SUMMARY:BFS218: Canadian Technology Investigation due (20%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27270958_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-investigation-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261025
-DTEND;VALUE=DATE:20261026
-SUMMARY:BFS218: Canadian Technology Investigation due (20 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern in Blackboard.
+UID:bfs218-async-_27270957_1-release@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261102T050119Z
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 2 opens (10%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/journal/_27270957_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-field-notes-2-open@rpeart73.github.io
-DTSTART;VALUE=DATE:20261102
-DTEND;VALUE=DATE:20261103
-SUMMARY:BFS218: Field Notes Portfolio 2 opens
-DESCRIPTION:The private Blackboard Journal opens.
+UID:bfs218-async-_27270957_1-due@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261130T045902Z
+SUMMARY:BFS218: Digital Systems Field Notes Portfolio 2 due (10%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/journal/_27270957_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-repair-open@rpeart73.github.io
-DTSTART;VALUE=DATE:20261123
-DTEND;VALUE=DATE:20261124
-SUMMARY:BFS218: Design the Repair opens
+UID:bfs218-async-_27271033_1-release@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261123T050121Z
+SUMMARY:BFS218: Design the Repair opens (20%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27271033_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-field-notes-2-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261129
-DTEND;VALUE=DATE:20261130
-SUMMARY:BFS218: Field Notes Portfolio 2 due (10 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern in Blackboard.
+UID:bfs218-async-_27271033_1-due@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261207T045900Z
+SUMMARY:BFS218: Design the Repair due (20%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27271033_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-cartography-open@rpeart73.github.io
-DTSTART;VALUE=DATE:20261130
-DTEND;VALUE=DATE:20261201
-SUMMARY:BFS218: Personal Cartography opens
+UID:bfs218-async-_27271035_1-release@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261130T050121Z
+SUMMARY:BFS218: Personal Cartography opens (15%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27271035_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-reflection-open@rpeart73.github.io
-DTSTART;VALUE=DATE:20261130
-DTEND;VALUE=DATE:20261201
-SUMMARY:BFS218: Final Learning Reflection opens
+UID:bfs218-async-_27271035_1-due@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261212T045900Z
+SUMMARY:BFS218: Personal Cartography due (15%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27271035_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-repair-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261206
-DTEND;VALUE=DATE:20261207
-SUMMARY:BFS218: Design the Repair due (20 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern in Blackboard.
+UID:bfs218-async-_27359429_1-release@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261130T050000Z
+SUMMARY:BFS218: Final Learning Reflection opens (5%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27359429_1
 END:VEVENT
 BEGIN:VEVENT
-UID:bfs218-async-cartography-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261211
-DTEND;VALUE=DATE:20261212
-SUMMARY:BFS218: Personal Cartography due (15 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern in Blackboard.
-END:VEVENT
-BEGIN:VEVENT
-UID:bfs218-async-reflection-due@rpeart73.github.io
-DTSTART;VALUE=DATE:20261213
-DTEND;VALUE=DATE:20261214
-SUMMARY:BFS218: Final Learning Reflection due (5 percent)
-DESCRIPTION:Due by 11:59 p.m. Eastern in Blackboard.
+UID:bfs218-async-_27359429_1-due@seneca-assessments
+DTSTAMP:20260905T030000Z
+DTSTART:20261214T045900Z
+SUMMARY:BFS218: Final Learning Reflection due (5%)
+DESCRIPTION:Complete this assessment in Blackboard. https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/assessment/test/_27359429_1
 END:VEVENT
 END:VCALENDAR
