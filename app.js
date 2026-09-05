@@ -2934,10 +2934,13 @@
       }
       return value;
     }
-    [3, 4, 5, 6, 7, 8, 9, 10, 11].forEach(function (week) {
-      if (weeks[week]) weeks[week] = replaceLabel(weeks[week], 'Personal Cartography', 'Live Systems Notebook');
+    [3, 4, 5, 6, 7].forEach(function (week) {
+      if (weeks[week]) weeks[week] = replaceLabel(weeks[week], 'Personal Cartography', 'Digital Systems Field Notes Portfolio 1');
     });
-    weeks[1].purpose = 'Week 1 answers one question: why would a course about racism spend an entire term on technology? It introduces techno-racism as a specific form of racial inequity that can operate through the design of digital systems, not only through individual attitudes. This week is about learning to look and beginning a privacy-safe record that can support the Live Systems Notebook after it opens.';
+    [8, 9, 10, 11, 12].forEach(function (week) {
+      if (weeks[week]) weeks[week] = replaceLabel(weeks[week], 'Personal Cartography', 'Digital Systems Field Notes Portfolio 2');
+    });
+    weeks[1].purpose = 'Week 1 answers one question: why would a course about racism spend an entire term on technology? It introduces techno-racism as a specific form of racial inequity that can operate through the design of digital systems, not only through individual attitudes. This week is about learning to look and beginning a privacy-safe record that can support your Field Notes after Portfolio 1 opens.';
     weeks[1].outcomes[weeks[1].outcomes.length - 1] = 'By the end of this week you can notice one privacy-safe moment or class artefact that may become course evidence later.';
     weeks[1].checks[weeks[1].checks.length - 1].look = 'the activity and your ungraded course-evidence note';
     weeks[1].terms = weeks[1].terms.map(function (term) {
@@ -2945,12 +2948,12 @@
     });
     weeks[1].youcan[weeks[1].youcan.length - 1] = 'You can now notice one privacy-safe digital moment or class artefact that may become course evidence later.';
     weeks[1].reflectPrompt = 'Notice one ordinary technology or class moment from this week. What did it sort, score, watch, recommend, approve, or refuse? Keep classmates, names, account details, messages, and precise locations out of your note.';
-    weeks[2].overview = 'This week gives you the theory underneath the New Jim Code vocabulary. Critical race theory, or CRT, makes one hard claim: racism is ordinary and structural, built into laws, institutions, and everyday systems, and it can produce racially unequal outcomes even when a system looks neutral. Ruha Benjamin takes that lens to technology and calls the result the New Jim Code: old inequities carried forward by tools that look new, objective, and fair. By the end of the week you can connect CRT to the New Jim Code and use both to prepare your first Live Systems Notebook note. Set 1 opens September 15 and is due October 18.';
-    weeks[2].purpose = 'Week 2 gives you the body of thought that techno-racism and the New Jim Code rest on. The point is to help you stop asking only whether a person behind a system is racist and start asking what the system does, to whom, and who pays. You will use that shift in a dated Live Systems Notebook note based on a class artefact, public example, or low-risk encounter.';
-    weeks[2].outcomes[weeks[2].outcomes.length - 1] = 'By the end of this week you can use an outcomes-focused, intersectional lens in a dated Live Systems Notebook note.';
-    weeks[2].checks[weeks[2].checks.length - 1].look = 'the activity and your Live Systems Notebook';
-    weeks[2].activity.why = 'so you practise reading technology through outcomes, not intentions, before writing your own dated Notebook note.';
-    weeks[2].reflectPrompt = 'Prepare a Week 2 Live Systems Notebook note from a specific class artefact, public example, or low-risk digital encounter. Name what the system did, use the CRT or New Jim Code lens, trace who benefited or carried the cost, and keep classmates and private information out of the note.';
+    weeks[2].overview = 'This week gives you the theory underneath the New Jim Code vocabulary. By the end of the week you can connect critical race theory to the New Jim Code and prepare a privacy-safe example for Digital Systems Field Notes Portfolio 1, which opens September 21 and is due October 18.';
+    weeks[2].purpose = 'Use an outcomes-focused, intersectional lens to prepare one specific digital-life example for Portfolio 1.';
+    weeks[2].outcomes[weeks[2].outcomes.length - 1] = 'By the end of this week you can use an outcomes-focused, intersectional lens in a dated Field Note.';
+    weeks[2].checks[weeks[2].checks.length - 1].look = 'the activity and your Digital Systems Field Notes Portfolio 1';
+    weeks[2].activity.why = 'so you practise reading technology through outcomes before writing your own dated Field Note.';
+    weeks[2].reflectPrompt = 'Prepare a Week 2 Field Note from a specific, privacy-safe digital encounter. Name what the system did, use the CRT or New Jim Code lens, and trace who benefited or carried the cost.';
     weeks[13].overview = 'This week is a return, but not to a weekly map. Build Personal Cartography from at least four dated course artefacts drawn from both halves of the term. Use five route points to show how your explanation of techno-racism changed, keep one unresolved tension visible, and end with a realistic future practice. The final submission is due Friday, December 11.';
     weeks[13].purpose = 'The point of this week is to make a supported change in your thinking visible. Arrange dated Notebook notes, class artefacts, scenario reasoning, case evidence, and repair work into a five-point route. The evidence, not a general claim that you learned a lot, carries the final project.';
     weeks[13].outcomes = ['Build five connected route points from at least four dated course artefacts across both halves of the term.', 'Show one specific then-and-now change using dated evidence.', 'Integrate course concepts, evidence, limits, and an unresolved tension.', 'Complete and submit Personal Cartography with a realistic future practice.'];
@@ -6415,7 +6418,7 @@
       {
         week: 7,
         id: 'compass-check',
-        focus: 'Complete Weeks 2 to 6 before you begin. Review the concept trail, then take the timed Decision Lab: Scenario Choices and Reflection in Blackboard and examine your own choices.'
+        focus: 'Complete Weeks 2 to 6 before you begin. Review the concept trail, then take the timed Digital Decision Scenarios in Blackboard and examine your own choices.'
       },
       {
         week: 6,
@@ -7053,6 +7056,9 @@
   var WEEK_DATES = { 1: 'Week of Sept 8', 2: 'Week of Sept 14', 3: 'Week of Sept 21', 4: 'Week of Sept 28', 5: 'Week of Oct 5', 6: 'Week of Oct 13', 7: 'Week of Oct 19', 8: 'Week of Nov 2', 9: 'Week of Nov 9', 10: 'Week of Nov 16', 11: 'Week of Nov 23', 12: 'Week of Nov 30', 13: 'Week of Dec 7', 14: 'Week of Dec 14' };
   var WEEK_START = { 1: '2026-09-08', 2: '2026-09-14', 3: '2026-09-21', 4: '2026-09-28', 5: '2026-10-05', 6: '2026-10-13', 7: '2026-10-19', 8: '2026-11-02', 9: '2026-11-09', 10: '2026-11-16', 11: '2026-11-23', 12: '2026-11-30', 13: '2026-12-07', 14: '2026-12-13' };
   function deliveryMode(w) {
+    if (w === 1) return { kind: 'async', label: 'ASYNCHRONOUS COURSE ORIENTATION', short: 'Asynchronous learning', reason: 'This course is fully asynchronous. Begin with the orientation, then work through the weekly learning path at times that fit your schedule.' };
+    if (w === 14) return { kind: 'async', label: 'ASYNCHRONOUS COURSE CLOSURE', short: 'Asynchronous learning', reason: 'There is no live lecture. Complete the Final Learning Reflection by Sunday, December 13, and use the remaining materials for review and closure.' };
+    return { kind: 'async', label: 'ASYNCHRONOUS INDEPENDENT LEARNING', short: 'Asynchronous learning', reason: 'There is no live lecture. Work through this week\'s learning path at your own pace and use Blackboard for graded submissions, feedback, and course records.' };
     if (w === 6) return { kind: 'async', label: 'ASYNCHRONOUS INDEPENDENT LEARNING', short: 'Asynchronous learning; no lecture', reason: 'There is no lecture this week. Use the flexible class time to work through the documented Canadian cases at your own pace, applying the three dimensions you already have and holding each claim to what its source actually supports.' };
     if (w === 10) return { kind: 'async', label: 'ASYNCHRONOUS INDEPENDENT LEARNING', short: 'Asynchronous learning; no lecture', reason: 'There is no lecture this week. Use the flexible class time to follow one automated gate on your own and name, in writing, who is accountable when it closes on someone.' };
     if (w === 13) return { kind: 'async', label: 'OFFICE HOURS + SUPPORTED ASYNCHRONOUS COMPLETION', short: 'Office hours; no lecture', reason: 'There is no lecture this week. The usual class window becomes office hours for focused final-work support and consultation. Office hours are not recorded by default.' };
@@ -7120,7 +7126,7 @@
       + (d.overview ? '<p style="font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0 0 4px;">' + esc(d.overview) + '</p>' : '')
       + '</div></section>';
     var how = '<section id="wk-how" class="node"><h2 class="wk-sec">How this course works</h2>'
-      + '<p style="margin:0 0 10px;font-size:1rem;line-height:1.6">This is a blended synchronous course. Weeks 1 to 5, 7 to 9, 11, and 12 meet live. Weeks 6 and 10 are independent asynchronous learning weeks. Weeks 13 and 14 have no lecture; the usual class window becomes office hours for supported completion and course closure. Every week page names its mode and purpose. Live weeks include a class-recording space; asynchronous weeks may carry a short instructor update. Study Week, October 26 to 30, has no class and no new module. Blackboard remains the official Seneca course platform.</p>'
+      + '<p style="margin:0 0 10px;font-size:1rem;line-height:1.6">This is a fully asynchronous course. All fourteen weeks are available from the beginning of the term so you can plan ahead and work flexibly. Follow the weekly learning path in order, use this companion site for lessons and practice, and use Blackboard for announcements, graded assignments, submissions, feedback, and grades. Study Week, October 26 to 30, has no new graded deadline.</p>'
       + '<p style="margin:0;font-size:1rem;line-height:1.6">This week is your orientation. There are no readings and nothing to submit. When you are ready, begin with Week ' + (next != null ? next : 2) + '.</p></section>';
     var audioPk = audioPackSection(w);
     var visual = visualOverviewSection(w, d);
@@ -8210,30 +8216,47 @@
   }
   function keyDatesList() {
     return [
+      { d:'2026-09-08', it:[['Course opens','All fourteen weeks are available','support']] },
+      { d:'2026-09-21', it:[['Digital Systems Field Notes Portfolio 1 opens','private Blackboard Journal','open','map-exchange']] },
+      { d:'2026-10-13', it:[['Digital Decision Scenarios opens','reflective decision exercise','open','compass-check'],['Canadian Technology Investigation opens','exploratory Canadian case inquiry','open','case-file']] },
+      { d:'2026-10-18', it:[['Digital Systems Field Notes Portfolio 1','due; 10 percent','due','map-exchange']] },
+      { d:'2026-10-23', it:[['Digital Decision Scenarios','due; 20 percent','due','compass-check']] },
+      { d:'2026-10-25', it:[['Canadian Technology Investigation','due; 20 percent','due','case-file']] },
+      { d:'2026-10-26', it:[['Study Week','October 26 to 30; no new graded deadline','study']] },
+      { d:'2026-11-02', it:[['Digital Systems Field Notes Portfolio 2 opens','private Blackboard Journal','open','map-exchange']] },
+      { d:'2026-11-23', it:[['Design the Repair opens','redesign one documented system','open','repair']] },
+      { d:'2026-11-29', it:[['Digital Systems Field Notes Portfolio 2','due; 10 percent','due','map-exchange']] },
+      { d:'2026-11-30', it:[['Personal Cartography opens','five-point learning route','open','cartography'],['Final Learning Reflection opens','closing reflection','open','final-reflection']] },
+      { d:'2026-12-06', it:[['Design the Repair','due; 20 percent','due','repair']] },
+      { d:'2026-12-11', it:[['Personal Cartography','due; 15 percent','due','cartography']] },
+      { d:'2026-12-13', it:[['Final Learning Reflection','due; 5 percent','due','final-reflection']] },
+      { d:'2026-12-16', it:[['Last day of the term','Course work is complete','support']] }
+    ];
+    return [
       { d: '2026-09-08', it: [['Week 1 live class', 'Course orientation and shared start', 'class']] },
-      { d: '2026-09-15', it: [['Week 2 live class', '', 'class'], ['Live Systems Notebook Set 1 opens', 'three private notes', 'open', 'map-exchange']] },
-      { d: '2026-09-21', it: [['Canadian Technology Hearing case pathways open', 'choose one documented Canadian case', 'open', 'case-file']] },
+      { d: '2026-09-15', it: [['Week 2 live class', '', 'class'], ['Digital Systems Field Notes Set 1 opens', 'three private notes', 'open', 'map-exchange']] },
+      { d: '2026-09-21', it: [['Canadian Technology Investigation case pathways open', 'choose one documented Canadian case', 'open', 'case-file']] },
       { d: '2026-09-22', it: [['Week 3 live class', '', 'class']] },
       { d: '2026-09-29', it: [['Week 4 live class', '', 'class']] },
       { d: '2026-10-06', it: [['Week 5 live class', '', 'class']] },
-      { d: '2026-10-13', it: [['Week 6 asynchronous learning', 'Independent work through the documented Canadian cases', 'async'], ['Canadian Technology Hearing full room opens', 'complete evidence board and hearing preparation', 'open', 'case-file']] },
-      { d: '2026-10-18', it: [['Live Systems Notebook Set 1', 'three-note journal due; 10 percent', 'due', 'map-exchange']] },
-      { d: '2026-10-19', it: [['Decision Lab: Scenario Choices and Reflection opens', 'first-half synthesis', 'open', 'compass-check']] },
+      { d: '2026-10-13', it: [['Week 6 asynchronous learning', 'Independent work through the documented Canadian cases', 'async'], ['Canadian Technology Investigation full room opens', 'complete evidence board and hearing preparation', 'open', 'case-file']] },
+      { d: '2026-10-18', it: [['Digital Systems Field Notes Set 1', 'three-note journal due; 10 percent', 'due', 'map-exchange']] },
+      { d: '2026-10-19', it: [['Digital Decision Scenarios opens', 'first-half synthesis', 'open', 'compass-check']] },
       { d: '2026-10-20', it: [['Week 7 live class', '', 'class']] },
-      { d: '2026-10-23', it: [['Decision Lab: Scenario Choices and Reflection', 'due; 20 percent', 'due', 'compass-check']] },
+      { d: '2026-10-23', it: [['Digital Decision Scenarios', 'due; 20 percent', 'due', 'compass-check']] },
       { d: '2026-10-26', it: [['Study Week', 'October 26 to 30. No class, new module, or graded deadline.', 'support']] },
-      { d: '2026-11-02', it: [['Design the Repair Studio anchor choice opens', 'select one diagnosed harm', 'open', 'repair'], ['Personal Cartography Milestone 1 opens', 'begin the five-point route', 'open', 'cartography']] },
-      { d: '2026-11-03', it: [['Week 8 live class', '', 'class'], ['Live Systems Notebook Set 2 opens', 'three new private notes', 'open', 'map-exchange']] },
-      { d: '2026-11-06', it: [['Canadian Technology Hearing', 'due; 20 percent', 'due', 'case-file']] },
+      { d: '2026-11-02', it: [['Design the Repair anchor choice opens', 'select one diagnosed harm', 'open', 'repair'], ['Personal Cartography Milestone 1 opens', 'begin the five-point route', 'open', 'cartography']] },
+      { d: '2026-11-03', it: [['Week 8 live class', '', 'class'], ['Digital Systems Field Notes Set 2 opens', 'three new private notes', 'open', 'map-exchange']] },
+      { d: '2026-11-06', it: [['Canadian Technology Investigation', 'due; 20 percent', 'due', 'case-file']] },
       { d: '2026-11-10', it: [['Week 9 live class', '', 'class']] },
       { d: '2026-11-16', it: [['Personal Cartography Milestone 2 opens', 'develop the route across both halves', 'open', 'cartography']] },
       { d: '2026-11-17', it: [['Week 10 asynchronous learning', 'Independent analysis of one automated gate', 'async']] },
-      { d: '2026-11-23', it: [['Design the Repair Studio opens', 'individual prototype and feedback cycle', 'open', 'repair']] },
+      { d: '2026-11-23', it: [['Design the Repair opens', 'individual prototype and feedback cycle', 'open', 'repair']] },
       { d: '2026-11-24', it: [['Week 11 live class', '', 'class']] },
-      { d: '2026-11-29', it: [['Live Systems Notebook Set 2', 'three-note journal due; 10 percent', 'due', 'map-exchange']] },
+      { d: '2026-11-29', it: [['Digital Systems Field Notes Set 2', 'three-note journal due; 10 percent', 'due', 'map-exchange']] },
       { d: '2026-11-30', it: [['Personal Cartography Milestone 3 and final area open', 'complete the five-point route', 'open', 'cartography']] },
       { d: '2026-12-01', it: [['Week 12 live class', 'Final substantive class meeting', 'class']] },
-      { d: '2026-12-04', it: [['Design the Repair Studio', 'due; 20 percent', 'due', 'repair']] },
+      { d: '2026-12-04', it: [['Design the Repair', 'due; 20 percent', 'due', 'repair']] },
       { d: '2026-12-08', it: [['Week 13 asynchronous office hours and supported completion', 'No lecture; focused work and consultation', 'async']] },
       { d: '2026-12-11', it: [['Personal Cartography', 'final project due; 15 percent', 'due', 'cartography']] },
       { d: '2026-11-30', it: [['Final Learning Reflection opens', 'five short closing responses', 'open', 'final-reflection']] },
@@ -8394,7 +8417,7 @@
     return '<section class="node kd-cal" aria-label="Key dates for this course">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">DUE DATES</div>'
       + '<h2 class="wk-sec" style="margin:0 0 4px">What you hand in, and when</h2>'
-      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">Deadlines follow the course rhythm: Live Systems Notebook Set 1 is due October 18; Decision Lab is due October 23; the Canadian Technology Hearing is due November 6; Notebook Set 2 is due November 29; Design the Repair Studio is due December 4; Personal Cartography is due December 11; and the Final Learning Reflection is due December 13. Nothing is due in Study Week. Blackboard remains the official source.</p>'
+      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">Portfolio 1 is due October 18; Digital Decision Scenarios is due October 23; Canadian Technology Investigation is due October 25; Portfolio 2 is due November 29; Design the Repair is due December 6; Personal Cartography is due December 11; and the Final Learning Reflection is due December 13. Nothing is due in Study Week. Blackboard remains the official source.</p>'
       + '<div class="kd-list">' + keyDatesRows(['due']) + '</div>'
       + '<h2 class="wk-sec" style="margin:24px 0 4px">Published Blackboard access dates</h2>'
       + '<p style="font-size:.85rem;line-height:1.5;color:var(--ink-faint);margin:0 0 10px">Only access dates stated in the course package appear here. Blackboard confirms all others.</p>'
@@ -8468,7 +8491,7 @@
     return '<div class="rise cal-page">' + (D.course.scheduleDetail ? '<div style="border:1px solid var(--border);border-left:4px solid var(--red);border-radius:10px;background:#fff;padding:12px 16px;margin:0 0 16px"><div class="mono" style="font-size:.66rem;letter-spacing:.07em;color:var(--red);font-weight:700;margin-bottom:5px">CLASS TIME</div><p style="margin:0;font-size:.92rem;line-height:1.55;color:var(--ink)">' + esc(D.course.scheduleDetail) + '</p></div>' : '') + ''
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">CALENDAR</div>'
       + '<h1 style="font-size:1.9rem;line-height:1.15;font-weight:600;margin:0 0 8px;color:var(--ink)">Every date that matters</h1>'
-      + '<p style="font-size:1rem;line-height:1.6;color:var(--ink-dim);margin:0 0 20px">This calendar keeps assessment timing and delivery modes clearly apart. Seneca red marks published due dates and clearly labelled planning anchors where the active brief gives only a due week. Black marks live classes. Neutral grey marks every asynchronous week with no lecture, including the office-hour weeks. A light grey outline marks Study Week. Weeks 6 and 10 are independent asynchronous learning weeks. Week 11 returns to live class for synthesis before the final live class in Week 12. Weeks 13 and 14 use the usual class window for office hours, focused completion, feedback, and closure. Blackboard remains the official word on exact dates.</p>'
+      + '<p style="font-size:1rem;line-height:1.6;color:var(--ink-dim);margin:0 0 20px">This calendar shows when graded assessments open and when they are due. Every teaching week is asynchronous, and all fourteen weekly learning modules are available from the beginning of the term. A light grey outline marks Study Week. Blackboard remains the official source for assessment access, submissions, and exact dates.</p>'
       + deadlineRule()
       + mobileCalendarSubscription()
       + calendarBody()
@@ -8479,9 +8502,17 @@
   function assignmentsData() { return assignmentsAll(); }
   function assignmentsAll() {
     return [
+      {id:'map-exchange',title:'Digital Systems Field Notes Portfolios 1 and 2',short:'Six dated notes in two private Blackboard Journals',weight:'20 marks (20%): two journals worth 10% each',timing:'Portfolio 1 opens September 21 and is due October 18. Portfolio 2 opens November 2 and is due November 29.',opens:'Portfolio 1: Week 3. Portfolio 2: Week 8.',release:'2026-09-21',due:'Portfolio 1 due Sunday, October 18, 2026. Portfolio 2 due Sunday, November 29, 2026.',purpose:'Study six moments when a digital system shaped what you could see, choose, access, or do.',role:'These private journals create course evidence you will later use in Personal Cartography.',really:['Complete three dated entries in each journal.','Use privacy-safe examples from your own ordinary digital life.','State what you did, how the system responded, and who gained an advantage or carried a burden.','Connect every entry to a course concept and explain what you now notice.'],submit:['Write each entry directly in the correct Blackboard Journal.','Select Post when the entry is ready. You may edit it before the final due date.','Remove names, account details, addresses, faces, and other identifying information.'],criteria:[['Specific personal evidence',5,'Uses precise, privacy-safe examples.'],['Course connections',5,'Uses course ideas accurately.'],['System, consequence, and power',6,'Explains what the system did and who carried its effects.'],['Reflection and communication',4,'Communicates clearly and shows development.']],strong:['Uses six distinct, dated examples.','Moves from description to analysis.','Shows development without sensitive disclosure.'],misses:['Using invented or generic examples.','Exposing private information.','Naming a course term without explaining it.'],checks:['I posted three entries in the correct journal.','Every entry is dated and specific.','I used a course idea in each entry.','I protected privacy.']},
+      {id:'compass-check',title:'Digital Decision Scenarios',short:'Make fifteen unscored choices and explain four parts of your reasoning',weight:'20 marks (20%)',timing:'Opens October 13. Due October 23, 2026, at 11:59 p.m. Eastern.',opens:'Week 6',release:'2026-10-13',due:'Due Friday, October 23, 2026, at 11:59 p.m. Eastern.',purpose:'Notice where your judgement begins and reconsider it using course ideas.',role:'The scenario choices have no right or wrong answer and are worth zero points. Only four written responses are graded.',really:['Choose the one option that most closely matches where you would genuinely begin in each scenario.','Complete four focused written responses using scenario titles and your option numbers.','Complete the assessment independently in one 90-minute attempt. No outside research is needed.'],submit:['Answer directly in Blackboard.','Complete all fifteen choices and all four written responses.','Each written response should be three to five clear sentences.'],criteria:[['Written response 1',5,'Explains a pattern across three choices.'],['Written response 2',5,'Explains one difficult choice.'],['Written response 3',5,'Uses a Week 2 to 6 course idea.'],['Written response 4',5,'Compares responsibility across two settings.']],strong:['Names scenarios and option numbers.','Explains reasoning honestly.','Uses course ideas specifically.'],misses:['Leaving a written response blank.','Describing choices without explaining them.','Using outside research or shared answers.'],checks:['I answered all fifteen scenarios.','I completed all four written responses.','I named the requested scenarios and option numbers.','I am ready to submit my one attempt.']},
+      {id:'case-file',title:'Canadian Technology Investigation',short:'Follow a question through one documented Canadian technology system',weight:'20 marks (20%)',timing:'Opens October 13. Due October 25, 2026, at 11:59 p.m. Eastern.',opens:'Week 6',release:'2026-10-13',due:'Due Sunday, October 25, 2026, at 11:59 p.m. Eastern.',purpose:'Explore how one Canadian system works and explain how evidence changed or complicated your understanding.',role:'This is an exploratory inquiry, not a task that asks you to prove a predetermined conclusion.',really:['Begin with a genuine question about one documented Canadian technology system.','Trace its people, data, defaults, decisions, consequences, and review or appeal route.','Use at least three credible source types and identify what each clarified, complicated, or left unanswered.','Apply at least two course lenses, compare the case with Portfolio 1, and show how your understanding changed.'],submit:['Upload one accessible main exploration file in Blackboard.','Upload a captioned three-to-five-minute screen recording, transcript, or equivalent asynchronous format.','Blackboard allows two attempts. The most recent attempt is graded.'],criteria:[['Curiosity, inquiry, and change',4,'Shows a genuine inquiry trail.'],['Verified evidence and uncertainty',5,'Uses accurate source locations and states limits.'],['System pathway',3,'Explains people, data, design, and institutions.'],['Course synthesis',5,'Uses course lenses and a Field Note comparison.'],['Process and communication',3,'Includes process evidence and an accessible walkthrough.']],strong:['Shows where evidence changed the starting question.','Separates findings from overclaims.','Makes the source trail verifiable.'],misses:['Submitting a generic case summary.','Using invented evidence.','Using generative AI to create the investigation.'],checks:['My inquiry and change in understanding are clear.','My sources have working links and exact locations.','My main file and walkthrough are attached.','I checked my final receipt.']},
+      {id:'repair',title:'Design the Repair',short:'Redesign one part of a documented digital system problem',weight:'20 marks (20%)',timing:'Opens November 23. Due December 6, 2026, at 11:59 p.m. Eastern.',opens:'Week 11',release:'2026-11-23',due:'Due Sunday, December 6, 2026, at 11:59 p.m. Eastern.',purpose:'Change the decision process behind a real system problem, not only the wording around it.',role:'Use a problem documented in a Field Note or the Canadian Technology Investigation.',really:['Show the current pathway beside the repaired pathway.','Submit a narrated walkthrough or written rationale.','Keep a decision log with three choices and one rejected alternative.','Stress-test the repair and name measures, warning signs, and an unintended consequence.'],submit:['Submit the model, rationale, and decision log together in Blackboard.','Use a two-to-three-minute walkthrough or a 500-to-700-word rationale.','Make visuals and recordings accessible.'],criteria:[['Problem and mechanism',5,'Explains the documented problem.'],['Repair specificity and feasibility',6,'Makes a concrete change.'],['Stakeholder stress test and equity',4,'Tests the required perspectives.'],['Measures and unintended effects',3,'Names success, warning signs, and possible harm.'],['Communication and decision trace',2,'Communicates and documents choices clearly.']],strong:['Changes a concrete decision point.','Tests who benefits and what could fail.','Names evidence needed before adoption.'],misses:['Offering awareness alone.','Using an unsupported harm.','Leaving the decision log incomplete.'],checks:['My pathways are clear.','I completed the stress tests.','I named success, failure, and unintended effects.','My submission is accessible.']},
+      {id:'cartography',title:'Personal Cartography',short:'Create a five-point route through your course learning',weight:'15 marks (15%)',timing:'Opens November 30. Due December 11, 2026, at 11:59 p.m. Eastern.',opens:'Week 12',release:'2026-11-30',due:'Due Friday, December 11, 2026, at 11:59 p.m. Eastern.',purpose:'Map how digital systems shaped your choices, access, visibility, or sense of what is normal and show how your interpretation changed.',role:'Use all six Field Notes and other course evidence without requiring private or painful disclosure.',really:['Build five connected map points.','Use one example from each Field Note, at least two other course pieces, and a then-and-now comparison.','Include three milestone records, two dated drafts or planning notes, and a short source list.'],submit:['Upload an accessible map, photo sequence, zine, slide story, audio map, or equivalent.','Add a three-to-four-minute walkthrough or a 600-to-900-word guided narrative.','Submit the complete project in Blackboard.'],criteria:[['Personal anchors and specificity',4,'Uses specific personal evidence.'],['Course synthesis',4,'Connects Field Notes and course pieces.'],['Map argument and change',4,'Builds a route and supported comparison.'],['Communication and accessibility',2,'Uses an accessible form.'],['Process, privacy, and sources',1,'Includes process evidence and protects privacy.']],strong:['Creates a route rather than a list.','Shows change with dated evidence.','Connects each point to a course idea.'],misses:['Giving only a course summary.','Using disclosure as proof.','Leaving out process or accessibility supports.'],checks:['I built five connected points.','I used all six Field Notes and two other pieces.','I included process evidence.','My form is accessible.']},
+      {id:'final-reflection',title:'Final Learning Reflection',short:'Return to the opening question and explain what changed',weight:'5 marks (5%)',timing:'Opens November 30. Due December 13, 2026, at 11:59 p.m. Eastern.',opens:'Week 12',release:'2026-11-30',due:'Due Sunday, December 13, 2026, at 11:59 p.m. Eastern.',purpose:'Answer whether a machine can be racist and explain how your thinking developed.',role:'Use one dated Personal Cartography item. Personal disclosure is not required.',really:['Choose one dated item.','Explain what you noticed then and what you understand differently now.','Use at least one course concept.','Name one question, tension, or practice you will carry forward.'],submit:['Write 300 to 500 words directly in Blackboard, or submit an equivalent accessible audio response.'],criteria:[['Course learning and change',2,'Explains a specific change.'],['Course concept',1,'Uses a concept accurately.'],['Future connection',1,'Names a meaningful idea to carry forward.'],['Communication',1,'Communicates clearly and accessibly.']],strong:['Answers the opening question directly.','Uses specific dated evidence.','Names a realistic future practice.'],misses:['Giving only a general summary.','Using no specific evidence.','Leaving the future connection vague.'],checks:['I used one dated item.','I explained what changed.','I used a course concept.','I am ready to submit by December 13.']}
+    ];
+    return [
       {
         id: 'map-exchange',
-        title: 'Live Systems Notebook',
+        title: 'Digital Systems Field Notes',
         short: 'Build six dated notes from class artefacts and real systems',
         weight: '20 marks (20%): two private journal sets worth 10% each',
         timing: 'Set 1 opens September 15 and is due October 18. Set 2 opens November 3 and is due November 29.',
@@ -8521,7 +8552,7 @@
       },
       {
         id: 'compass-check',
-        title: 'Decision Lab: Scenario Choices and Reflection',
+        title: 'Digital Decision Scenarios',
         short: 'Explain three decisions and revise one',
         weight: '15 marks (15%)',
         timing: 'Opens Monday, October 19. Due Friday, October 23, 2026, at 11:59 p.m. Eastern.',
@@ -8561,7 +8592,7 @@
       },
       {
         id: 'case-file',
-        title: 'Canadian Technology Hearing',
+        title: 'Canadian Technology Investigation',
         short: 'Brief a public accountability hearing on a real Canadian case',
         weight: '20 marks (20%)',
         timing: 'Case pathways open September 21. The full room opens October 13. Due Friday, November 6, 2026, at 11:59 p.m. Eastern.',
@@ -8601,7 +8632,7 @@
       },
       {
         id: 'repair',
-        title: 'Design the Repair Studio',
+        title: 'Design the Repair',
         short: 'Build, test, and revise a practical repair',
         weight: '20 marks (20%)',
         timing: 'Anchor choice opens November 2. The full studio opens November 23. Due Friday, December 4, 2026, at 11:59 p.m. Eastern.',
@@ -8719,7 +8750,7 @@
       ['Can I email my assignment or send a link?', 'No. The assessment briefs say Blackboard submission only. Email submissions or email-only links are not accepted.'],
       ['Are all seven graded components separate?', 'Yes. The two Notebook sets and five other assessments are graded separately, while the work builds toward and then reflects on your Personal Cartography.'],
       ['What if I miss a deadline?', 'The course assessment documents describe firm deadlines. Check Blackboard for the exact date and time, and ask the instructor early if you are unsure.'],
-      ['Can I use generative AI?', 'Only as study support. You may use it to brainstorm, check clarity, or organize your own notes, but you must disclose the tool, date, and purpose. Do not submit AI-written or AI-rewritten work as your own. Use How to Use AI Properly for examples.'],
+      ['Can I use generative AI?', 'Follow the rule written inside each Blackboard assessment. The permitted use is not the same for every task. For example, the Canadian Technology Investigation prohibits generative AI for choosing or researching the case, planning, writing, rewriting, visuals, narration, and the walkthrough. Ask me before using a tool if you are unsure.'],
       ['What happens if AI writes my paper?', 'Submitting AI-written or AI-rewritten work as your own can be treated as academic misconduct. That can lead to a zero on the assignment, a formal academic-integrity process, and further course or institutional penalties. If you are unsure, do not submit the AI text. Ask first and disclose.'],
       ['What happens if there is an academic-integrity concern?', 'The instructor will contact you first and identify the concern so you can respond before any formal report. The review focuses on the suspected issue, your explanation, assignment evidence, and Blackboard process records where relevant.'],
       ['Can AI fix my grammar?', 'A grammar or clarity check is different from having AI write the assignment. If a tool changes wording, structure, claims, sources, or analysis, disclose it. Your final ideas, course connections, examples, and evidence must be yours.'],
@@ -8819,8 +8850,8 @@
       ['AI cannot write the work', 'If a tool writes or rewrites the assignment, that can become an academic-integrity issue. Use How to Use AI Properly before submitting.'],
       ['Late and wrong-channel work', 'Blackboard is the official submission space. Late work and email submissions follow the course rules posted in Blackboard.']
     ];
-    return '<section id="asg-quality" class="asg-qualitypath" aria-label="How I Grade"><div><div class="mono">HOW I GRADE</div><h2>What I read for</h2><p>The assessment weights total 100 percent. The two Notebook sets are worth 10 percent each, four major assessments are worth 20 percent each, Personal Cartography is worth 15 percent, and the Final Learning Reflection is worth 5 percent. The exact criteria change by assignment, but the standard stays consistent: accurate course thinking, specific evidence where the task calls for it, your own voice, and a clear connection to why the system matters.</p></div>'
-      + '<div class="asg-grade-note"><b>How Decision Lab: Scenario Choices and Reflection is different</b><p>All 25 Part A choices are required but carry zero points. They have no right or wrong answer. The four written mirror responses earn 5 marks each and carry all 20 marks. Your choices are evidence for reflection; their content is not graded as a preferred attitude. Every cited scenario title and selected option is checked against the recorded Blackboard attempt.</p></div>'
+    return '<section id="asg-quality" class="asg-qualitypath" aria-label="How I Grade"><div><div class="mono">HOW I GRADE</div><h2>What I read for</h2><p>The assessment weights total 100 percent. The two Field Notes portfolios are worth 10 percent each; Digital Decision Scenarios, Canadian Technology Investigation, and Design the Repair are worth 20 percent each; Personal Cartography is worth 15 percent; and the Final Learning Reflection is worth 5 percent.</p></div>'
+      + '<div class="asg-grade-note"><b>How Digital Decision Scenarios is different</b><p>All 15 scenario choices are required but carry zero points. They have no right or wrong answer. The four written responses earn 5 marks each and carry all 20 marks. Your choices are evidence for reflection; the option selected is not graded as a preferred attitude.</p></div>'
       + '<div class="asg-grade-note"><b>The short version</b><p>I am looking for the part of the work that could only have come from you: the example you noticed, the evidence you chose, the course idea you used, and the connection you made. Feedback is help, not punishment.</p></div>'
       + '<div class="asg-qualitypath-grid">' + levels.map(function (l) {
       return '<article><b>' + esc(l[0]) + '</b><p>' + esc(l[1]) + '</p></article>';
@@ -8942,8 +8973,8 @@
     profile = profile || assignmentLensProfile(L);
     var t = profile.topics || [], a = profile.artifacts || [];
     return [
-            ['Decision Lab: Scenario Choices and Reflection', 'Connect the first-half concept trail', 'Use your program setting to rehearse how a rule, default, data choice, visibility pattern, or Canadian system can shape an outcome. The graded scenarios remain in Blackboard.'],
-      ['Canadian Technology Hearing', 'Move from example to system', 'Find a Canadian system connected to ' + (t[1] || ctx.setting) + '. Use sources to explain what the system does before you make the argument about harm.'],
+            ['Digital Decision Scenarios', 'Connect the first-half concept trail', 'Use your program setting to rehearse how a rule, default, data choice, visibility pattern, or Canadian system can shape an outcome. The graded scenarios remain in Blackboard.'],
+      ['Canadian Technology Investigation', 'Move from example to system', 'Find a Canadian system connected to ' + (t[1] || ctx.setting) + '. Use sources to explain what the system does before you make the argument about harm.'],
             ['Cartography', 'Connect the term', 'Choose earlier pieces that show how your thinking about ' + ctx.label + ' changed. The goal is not to list work. It is to tell the story of how your analysis grew.']
     ];
   }
@@ -9007,7 +9038,7 @@
     };
     var byId = {
       'map-exchange': {
-        intro: 'For Live Systems Notebook, your program gives you a place to notice one small moment each week. Do not solve it yet. Learn to see it clearly.',
+        intro: 'For Digital Systems Field Notes, your program gives you a place to notice one small moment each week. Do not solve it yet. Learn to see it clearly.',
         cards: [
           ['Where to look', 'Watch for ' + topic + ', ' + topic2 + ', or another routine system in ' + ctx.setting + '.'],
           ['What to capture', 'Record the screen, rule, wording, score, form field, checklist, or decision point that shaped what happened.'],
@@ -9021,7 +9052,7 @@
         starter: 'This week, I noticed ' + topic + ' in ' + field + '. The system mattered because it shaped what happened to ' + ctx.people + '.'
       },
       'compass-check': {
-        intro: 'For Decision Lab: Scenario Choices and Reflection, your program lens gives you a familiar setting for practice. The graded scenarios stay in Blackboard and are not stored on this site.',
+        intro: 'For Digital Decision Scenarios, your program lens gives you a familiar setting for practice. The graded scenarios stay in Blackboard and are not stored on this site.',
         cards: [
           ['Review the concept trail', 'Connect New Jim Code, engineered inequity, default discrimination, coded exposure, and Canadian algorithmic systems.'],
           ['Use your field as rehearsal', 'Ask how ' + topic + ', ' + artifact + ', or another routine system in ' + ctx.place + ' might sort, expose, delay, or protect people.'],
@@ -9035,7 +9066,7 @@
         starter: 'In ' + field + ', I will watch for the rule, data, default, or visibility pattern that shapes what happens to ' + ctx.people + '.'
       },
       'case-file': {
-        intro: 'For Canadian Technology Hearing, your program helps you choose a public system that has documents, reports, policy, or news coverage you can verify.',
+        intro: 'For Canadian Technology Investigation, your program helps you choose a public system that has documents, reports, policy, or news coverage you can verify.',
         cards: [
           ['Find the Canadian system', 'Look for a Canadian example connected to ' + topic + ', ' + topic2 + ', or a public system your field depends on.'],
           ['Use source evidence', 'Bring in a report, policy page, public notice, article, legal document, dataset note, or institutional statement.'],
@@ -9049,7 +9080,7 @@
         starter: 'This Canadian case matters to ' + field + ' because a technical or administrative rule creates a real consequence for ' + ctx.people + '.'
       },
       'repair': {
-        intro: 'For Design the Repair Studio, your program helps you imagine a response that could actually change a process, not just name a problem.',
+        intro: 'For Design the Repair, your program helps you imagine a response that could actually change a process, not just name a problem.',
         cards: [
           ['Return to a proved harm', 'Use an example from ' + topic + ', ' + topic2 + ', or an earlier artifact you already explained.'],
           ['Change something concrete', 'Change a rule, review step, design default, appeal path, documentation habit, or accountability process.'],
@@ -9100,7 +9131,7 @@
     };
     var byId = {
       'map-exchange': {
-        intro: 'For Live Systems Notebook, the framework helps you notice one specific class artefact, public example, or low-risk system encounter. It does not tell you what to submit. You still choose the evidence, explain what the system did, apply a course concept, trace power and effect, and protect privacy in your private Blackboard Journal.',
+        intro: 'For Digital Systems Field Notes, the framework helps you notice one specific class artefact, public example, or low-risk system encounter. It does not tell you what to submit. You still choose the evidence, explain what the system did, apply a course concept, trace power and effect, and protect privacy in your private Blackboard Journal.',
         rows: [
           ['Use the guide to find', 'A small moment involving ' + topic + ', a screen, a rule, a setting, or a decision that actually appeared in your week.'],
           ['You still have to write', 'What happened, who was affected, which weekly idea helps explain it, and why the example is more than a personal opinion.'],
@@ -9108,7 +9139,7 @@
         ]
       },
       'compass-check': {
-        intro: 'For Decision Lab: Scenario Choices and Reflection, this page can help you review where course mechanisms might appear in your field. It does not preview the graded scenarios or choose your responses. After your own Blackboard attempt, use your recorded decisions to explain three trade-offs and revise one decision with evidence.',
+        intro: 'For Digital Decision Scenarios, this page can help you review where course mechanisms might appear in your field. It does not preview the graded scenarios or choose your responses. After your own Blackboard attempt, use your recorded decisions to explain three trade-offs and revise one decision with evidence.',
         rows: [
           ['Use the guide to rehearse', 'How ' + topic + ', ' + artifact + ', a rule, a default, a data choice, or a visibility pattern could affect people in ' + field + '.'],
           ['You still have to do', 'The Blackboard scenario choices, three explanations using course concepts, one evidence-based revision, and the short follow-up in your own words.'],
@@ -9116,7 +9147,7 @@
         ]
       },
       'case-file': {
-        intro: 'For Canadian Technology Hearing, the framework helps you move from an example to a documented Canadian system. It does not choose the case or sources for you. You must verify the case, use different source types, and explain the system before making the argument.',
+        intro: 'For Canadian Technology Investigation, the framework helps you move from an example to a documented Canadian system. It does not choose the case or sources for you. You must verify the case, use different source types, and explain the system before making the argument.',
         rows: [
           ['Use the guide to find', 'A Canadian system connected to ' + topic + ', a public institution, an oversight report, a court case, a policy document, or a documented media report.'],
           ['You still have to verify', 'The source trail, what the system actually does, who is affected, and how the course concept changes the reading of the case.'],
@@ -9124,7 +9155,7 @@
         ]
       },
       'repair': {
-        intro: 'For Design the Repair Studio, the framework helps you turn critique into a concrete response. It does not let you invent an easy fix. You must start from a harm you can prove and design a repair that changes a rule, process, design choice, review step, or accountability path.',
+        intro: 'For Design the Repair, the framework helps you turn critique into a concrete response. It does not let you invent an easy fix. You must start from a harm you can prove and design a repair that changes a rule, process, design choice, review step, or accountability path.',
         rows: [
           ['Use the guide to return to', 'A harm involving ' + topic + ', a source, an artifact, or an earlier case where the mechanism is already clear.'],
           ['You still have to design', 'Who must act, what changes, who gains voice or protection, what trade-off remains, and why the repair fits the harm.'],
@@ -9232,15 +9263,15 @@
       ['Clarity check', 'I used Grammarly or Microsoft Editor on [date] to check grammar and sentence clarity. I did not use it to add course concepts, sources, claims, or analysis.']
     ];
     var assignmentExamples = [
-      ['Live Systems Notebook', 'I used ChatGPT on [date] to list possible digital systems I might notice in my program area. I chose the example myself, connected it to my own life, and wrote the entry in my own words.'],
-      ['Decision Lab: Scenario Choices and Reflection', 'I used ChatGPT on [date] only before the timed assessment to check my understanding of one course concept. I did not use generative AI or second-device help during the assessment.'],
-      ['Canadian Technology Hearing', 'I used Perplexity on [date] to find search terms for Canadian oversight reports. I read the reports myself, checked the facts, and wrote the case file in my own words.'],
-      ['Design the Repair Studio', 'I used ChatGPT on [date] to brainstorm general accountability mechanisms. I chose the response, verified it against the Week 11 and 12 readings, and wrote the proposal myself.'],
+      ['Digital Systems Field Notes', 'I used ChatGPT on [date] to list possible digital systems I might notice in my program area. I chose the example myself, connected it to my own life, and wrote the entry in my own words.'],
+      ['Digital Decision Scenarios', 'I used ChatGPT on [date] only before the timed assessment to check my understanding of one course concept. I did not use generative AI or second-device help during the assessment.'],
+      ['Canadian Technology Investigation', 'Generative AI is not permitted for selecting or researching the case, finding or summarizing sources, planning, writing, rewriting, visuals, narration, or the walkthrough. Ordinary non-generative accessibility and proofreading tools remain available.'],
+      ['Design the Repair', 'I used ChatGPT on [date] to brainstorm general accountability mechanisms. I chose the response, verified it against the Week 11 and 12 readings, and wrote the proposal myself.'],
       ['Personal Cartography', 'I used Microsoft Editor on [date] for grammar and sentence clarity only. The map, reflection, examples, and recorded walkthrough are my own work.']
     ];
     var promptPairs = [
       ['Safer prompt', 'Give me five questions I could ask about passenger screening. Do not write my assignment.'],
-      ['Risky prompt', 'Write my Canadian Technology Hearing on passenger screening with sources.'],
+      ['Risky prompt', 'Write my Canadian Technology Investigation on passenger screening with sources.'],
       ['Safer prompt', 'Turn these notes I wrote into a checklist. Do not add new claims or examples.'],
       ['Risky prompt', 'Rewrite my draft so it sounds academic and stronger.'],
       ['Safer prompt', 'Explain intersectionality clearly, then tell me what I should verify in Crenshaw before using it.'],
@@ -9253,7 +9284,8 @@
       ['Missing boundary', 'I used ChatGPT for research.'],
       ['Missing ownership', 'AI helped with my wording.']
     ];
-    return '<section id="asg-ai" class="asg-ai asg-ai-page" aria-label="How to Use AI Properly"><div class="asg-ai-head"><span>HOW TO USE AI PROPERLY</span><b>Use AI only as support</b><small>Name the tool, date, purpose, and boundary.</small></div>'
+    return '<section id="asg-ai" class="asg-ai asg-ai-page" aria-label="How to Use AI Properly"><div class="asg-ai-head"><span>HOW TO USE AI PROPERLY</span><b>Check the rule for the specific assessment</b><small>Blackboard gives the controlling rule. Some assessments prohibit generative AI entirely.</small></div>'
+      + '<div class="asg-ai-warning"><b>Assessment rules differ.</b><p>Do not assume a use described as study support on this general page is allowed for every graded task. The Canadian Technology Investigation prohibits generative AI for its research and production process. Ask me before using a tool if you are unsure.</p></div>'
       + '<div class="asg-ai-warning"><b>Penalty risk: do not use AI to write your papers.</b><p>Submitting AI-written or AI-rewritten work as your own can be treated as academic misconduct. Penalties can include a zero on the assignment, a formal academic-integrity process, and further course or institutional consequences. When unsure, do not submit the AI text. Ask first and disclose.</p></div>'
       + assignmentIntegrityProcessNote()
       + '<div class="asg-ai-rule"><b>The simple rule</b><p>AI can help you prepare to think. It cannot do the thinking, reading, evidence selection, course analysis, reflection, script, or final writing for you.</p></div>'
@@ -9556,7 +9588,7 @@
     return assignmentPolicyPanel()
       + assignmentIntegrityProcessNote()
       + summary
-      + '<section id="asg-story" class="asg-story"><div><div class="mono">ASSIGNMENT OVERVIEW</div><h2>You are building one map across the term</h2><p>The assignments are not random separate tasks. You begin by noticing real digital life, use Decision Lab: Scenario Choices and Reflection to examine your own decisions through the first-half concepts, investigate one Canadian system, design a repair, and finally walk someone through how your thinking changed.</p></div><ol><li>Notice</li><li>Interpret</li><li>Investigate</li><li>Repair</li><li>Integrate</li></ol></section>';
+      + '<section id="asg-story" class="asg-story"><div><div class="mono">ASSIGNMENT OVERVIEW</div><h2>You are building one map across the term</h2><p>The assignments are not random separate tasks. You begin by noticing real digital life, use Digital Decision Scenarios to examine your own decisions through the first-half concepts, investigate one Canadian system, design a repair, and finally walk someone through how your thinking changed.</p></div><ol><li>Notice</li><li>Interpret</li><li>Investigate</li><li>Repair</li><li>Integrate</li></ol></section>';
   }
   function assignmentActivePage() {
     if (state.screen === 'assignment-program') return 'program';
