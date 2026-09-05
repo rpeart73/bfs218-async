@@ -753,7 +753,7 @@ window.BFS218_PROGRAM_CASES = {
   ]
  },
  "Computer Programming and Analysis": {
-  "s": "You analyze usage for a city-service portal redesign. Your funnel shows huge drop-off at identity verification, and the session replays reveal why: the SIN-format prompt confuses newcomers with temporary numbers beginning with nine, whom the validator silently rejects as typos. Analysis-ready dashboards had aggregated them into abandonment.",
+  "s": "You analyse usage for a city-service portal redesign. Your funnel shows huge drop-off at identity verification, and the session replays reveal why: the SIN-format prompt confuses newcomers with temporary numbers beginning with nine, whom the validator silently rejects as typos. Analysis-ready dashboards had aggregated them into abandonment.",
   "q": [
    "Aggregation buried the nine-series rejections inside abandonment. Rebuild the funnel with failure-reason granularity: what events must the front end emit?",
    "Silent rejection taught users the system was broken for them. What copy, validation, and fallback flow serves temporary-SIN holders correctly?",

@@ -27,7 +27,7 @@ window.BFS218_OUTCOMES = {
   },
   {
    "id": "CLO 2",
-   "text": "Examine and critically analyze the impacts of techno-racism on racialized communities, considering both those who benefit from and those disadvantaged by such systems.",
+   "text": "Examine and critically analyse the impacts of techno-racism on racialized communities, considering both those who benefit from and those disadvantaged by such systems.",
    "weeks": [
     1,
     2,
