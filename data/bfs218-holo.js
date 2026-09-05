@@ -2175,6 +2175,9 @@
 
   /* W6 activity: surveillanceflow - follow the flag, find the appeal gap */
   SCENES.surveillanceflow = function (K, ctx) {
+    if (REAL_ASSETS[ctx.kind] && (ctx.context === 'activity' || ctx.root.userData.renderAsset)) {
+      return renderedActivityEnvironment(K, ctx);
+    }
     K.stage();
     var hot = ctx.riskOn;
     /* checkpoint */
@@ -2671,6 +2674,9 @@
      evidence bench, inspected through an optical lens, then compared with four
      different mechanisms represented by distinct working objects. */
   REAL_SCENES.mechanismatch = function (K, ctx) {
+    if (REAL_ASSETS[ctx.kind] && (ctx.context === 'activity' || ctx.root.userData.renderAsset)) {
+      return renderedActivityEnvironment(K, ctx);
+    }
     K.stage({ style: 'realist' });
     var hot = ctx.riskOn, path = ctx.pathOn;
     var steel = K.real.surface('darkSteel'), brushed = K.real.surface('steel');
@@ -2743,11 +2749,15 @@
       color: hot ? K.color(PAL.red) : K.color(path ? PAL.teal : PAL.line), pulseColor: hot ? K.color(PAL.red) : K.color(PAL.amber), pulses: 3, speed: 0.09, radius: 0.018
     });
   };
+  REAL_SIGNATURES.mechanismatch = 'bfs218-w02-outcome-lens-real-v1';
 
   /* Week 3: an institutional switchyard. A real intake terminal feeds a
      mechanical points lever and two built exits, making the rule that changes
      a person's route physically visible. */
   REAL_SCENES.decisionpath = function (K, ctx) {
+    if (REAL_ASSETS[ctx.kind] && (ctx.context === 'activity' || ctx.root.userData.renderAsset)) {
+      return renderedActivityEnvironment(K, ctx);
+    }
     K.stage({ style: 'realist' });
     var hot = ctx.riskOn, path = ctx.pathOn;
     var steel = K.real.surface('darkSteel'), brushed = K.real.surface('steel');
@@ -2819,11 +2829,15 @@
     K.cyl(0.055, 0.055, 0.055, K.real.surface('darkSteel'), [-0.15, 0.04, -0.12], [Math.PI / 2, 0, 0], { parent: carrier, seg: 24 });
     K.cyl(0.055, 0.055, 0.055, K.real.surface('darkSteel'), [0.15, 0.04, -0.12], [Math.PI / 2, 0, 0], { parent: carrier, seg: 24 });
   };
+  REAL_SIGNATURES.decisionpath = 'bfs218-w03-decision-path-real-v1';
 
   /* Week 4: a realistic institutional control room. Four standing presets
      feed a repeated output monitor and a physical burden queue. The scene
      avoids decorative people and makes the institutional mechanism primary. */
   REAL_SCENES.defaultboard = function (K, ctx) {
+    if (REAL_ASSETS[ctx.kind] && (ctx.context === 'activity' || ctx.root.userData.renderAsset)) {
+      return renderedActivityEnvironment(K, ctx);
+    }
     K.stage({ style: 'realist' });
     var hot = ctx.riskOn, path = ctx.pathOn;
     var steel = K.real.surface('darkSteel'), brushed = K.real.surface('steel');
@@ -2883,6 +2897,9 @@
      represent the five system roles, connected by a visible signal path and
      an honest open connector when feedback evidence is not established. */
   REAL_SCENES.toolkit = function (K, ctx) {
+    if (REAL_ASSETS[ctx.kind] && (ctx.context === 'activity' || ctx.root.userData.renderAsset)) {
+      return renderedActivityEnvironment(K, ctx);
+    }
     K.stage({ style: 'realist' });
     var hot = ctx.riskOn, path = ctx.pathOn;
     var steel = K.real.surface('darkSteel'), brushed = K.real.surface('steel');
@@ -3441,6 +3458,11 @@
   REAL_SIGNATURES.policydeck = 'bfs218-w12-aida-evidence-docket-real-v1';
 
   var REAL_ASSETS = {
+    mechanismatch: 'images/story/bfs218-w02-outcome-lens.jpg',
+    decisionpath: 'images/story/engineered-inequity-pipeline-original.png',
+    defaultboard: 'images/story/default-discrimination-system-original.png',
+    surveillanceflow: 'images/story/canadian-case-files-original.png',
+    toolkit: 'images/story/system-anatomy-synthesis-original.png',
     thresholdaudit: 'images/story/bfs218-w10-policy-sieve.jpg'
   };
   function renderedActivityEnvironment(K, ctx) {
@@ -3461,13 +3483,23 @@
     var picks = [], nodes = [];
     var modes = ['predict', 'try', 'explain'];
     var positions = ctx.kind === 'mechanismatch'
-      ? [[-1.38, -0.62, -4], [-0.72, -0.16, -4], [0.9, 0.08, -4]]
-      : (ctx.kind === 'thresholdaudit'
-        ? [[-1.32, -0.28, -3.8], [-0.08, -0.20, -3.8], [1.18, -0.26, -3.8]]
-        : [[-1.24, -0.48, -4], [0.02, -0.54, -4], [0.86, 0.16, -4]]);
+      ? [[-1.38, -0.62, -4], [0.0, -0.16, -4], [1.38, -0.22, -4]]
+      : (ctx.kind === 'decisionpath'
+        ? [[-1.35, -0.48, -4], [0.02, -0.42, -4], [1.30, 0.16, -4]]
+        : (ctx.kind === 'thresholdaudit'
+          ? [[-1.32, -0.28, -3.8], [-0.08, -0.20, -3.8], [1.18, -0.26, -3.8]]
+          : (ctx.kind === 'surveillanceflow'
+            ? [[-1.35, -0.48, -4], [0.0, -0.44, -4], [1.32, -0.48, -4]]
+            : [[-1.30, -0.48, -4], [0.0, -0.44, -4], [1.30, -0.48, -4]])));
     var colours = ctx.kind === 'thresholdaudit'
       ? [0x2dd4bf, 0xd4af37, 0x10b981]
-      : [0xa67a42, 0x4f7977, 0x6f2824];
+      : (ctx.kind === 'mechanismatch'
+        ? [0xd4af37, 0x0284c7, 0x10b981]
+        : (ctx.kind === 'decisionpath'
+          ? [0x38bdf8, 0xf59e0b, 0xef4444]
+          : (ctx.kind === 'surveillanceflow'
+            ? [0x38bdf8, 0xf59e0b, 0x10b981]
+            : [0xa67a42, 0x4f7977, 0x6f2824])));
     function material(colour, active, glass) {
       return new THREE.MeshPhysicalMaterial({
         color: colour,
@@ -3569,24 +3601,23 @@
       var active = modes[index] === (ctx.view || 'predict');
       var mat = material(colours[index], active, false);
       var halo = null;
-      if (ctx.kind === 'thresholdaudit') {
+      if (asset) {
         halo = { material: { opacity: 0, set emissiveIntensity(v) {}, color: { getHex: function () { return 0; } }, emissive: { setHex: function () {} } } };
       } else {
         halo = addMesh(group, new THREE.TorusGeometry(0.31, 0.014, 14, 72), material(colours[index], active, false), [0, 0, -0.035]);
         halo.material.transparent = true; halo.material.opacity = active ? 0.88 : 0.5;
       }
       var visual = new THREE.Group(); group.add(visual);
-      if (ctx.kind === 'mechanismatch') {
-        if (index === 0) documentShape(visual, mat);
-        else if (index === 1) lensShape(visual, mat);
-        else gearShape(visual, mat);
-      } else if (ctx.kind === 'thresholdaudit') {
-        /* Option 1 artwork cleanly depicts the intake hopper, vernier cutoff gate, and equity balance scale.
-           Do not superimpose crude 3D primitives over the photorealistic artwork. */
-      } else {
-        if (index === 0) documentShape(visual, mat);
-        else if (index === 1) leverShape(visual, mat);
-        else forkShape(visual, mat);
+      if (!asset) {
+        if (ctx.kind === 'mechanismatch') {
+          if (index === 0) documentShape(visual, mat);
+          else if (index === 1) lensShape(visual, mat);
+          else gearShape(visual, mat);
+        } else {
+          if (index === 0) documentShape(visual, mat);
+          else if (index === 1) leverShape(visual, mat);
+          else forkShape(visual, mat);
+        }
       }
       var hit = addMesh(group, new THREE.SphereGeometry(0.37, 24, 18), new THREE.MeshBasicMaterial({ transparent: true, opacity: 0, depthWrite: false }));
       hit.userData.storyView = modes[index];
@@ -3594,7 +3625,27 @@
         ? (index === 0 ? 'Station 1: Feature compression hopper selected. Multidimensional context flattened into scalar scores.'
           : (index === 1 ? 'Station 2: Vernier cutoff gate selected. Institutional discretion sets the support threshold.'
           : 'Station 3: Equity balance selected. Human review weighs cold prediction against lived context.'))
-        : (index === 0 ? 'Input or outcome selected.' : index === 1 ? 'System mechanism selected.' : 'Consequence selected.');
+        : (ctx.kind === 'mechanismatch'
+          ? (index === 0 ? 'Station 1: Evidence dossier selected. Oakwood tenancy records inspected for historical redlining.'
+            : (index === 1 ? 'Station 2: Optical inspection lens selected. Tracing credit scoring proxy substitutions.'
+            : 'Station 3: Mechanism diagnostics gear selected. Matching outcome to New Jim Code reproduction.'))
+          : (ctx.kind === 'decisionpath'
+            ? (index === 0 ? 'Station 1: Matched application intake selected. Qualifications held identical.'
+              : (index === 1 ? 'Station 2: Name-derived proxy filter selected. Testing phonemic scoring rules.'
+              : 'Station 3: Divergent track fork selected. Comparing approval versus administrative burden.'))
+            : (ctx.kind === 'defaultboard'
+              ? (index === 0 ? 'Station 1: Speech dialect preset selected. Testing midwestern standard versus AAVE.'
+                : (index === 1 ? 'Station 2: Credit scoring baseline selected. Comparing wealth against rent history.'
+                : 'Station 3: Sensor dynamic range selected. Testing facial recognition exposure on dark skin.'))
+              : (ctx.kind === 'toolkit'
+                ? (index === 0 ? 'Station 1: Training data and extraction rules selected. Deconstructing historical corpora.'
+                  : (index === 1 ? 'Station 2: Deployment engine and cutoff gate selected. Analysing automated triage.'
+                  : 'Station 3: Feedback return loop selected. Verifying appeal pathways and recourse.'))
+                : (ctx.kind === 'surveillanceflow'
+                  ? (index === 0 ? 'Station 1: Border checkpoint selected. Watchlist screening and traveler flag creation inspected.'
+                    : (index === 1 ? 'Station 2: Flag propagation network selected. Database replication traced.'
+                    : 'Station 3: Administrative redress bottleneck selected. Defensible Canadian case boundaries held.'))
+                  : (index === 0 ? 'Input or outcome selected.' : index === 1 ? 'System mechanism selected.' : 'Consequence selected.'))))));
       picks.push({ mesh: hit, view: modes[index], announcement: announcement });
       nodes.push({ group: group, visual: visual, halo: halo, hit: hit, mat: mat, mode: modes[index], index: index, turnX: 0, turnY: 0, spinZ: 0, leverShift: 0, dragX: 0, dragY: 0 });
     });
@@ -3792,7 +3843,7 @@
       var documentary = ['outcomelens', 'benevolence', 'repair'].indexOf(kind) >= 0;
       return { scale: wide.scale * (documentary ? 0.92 : (typeof f.narrowScale === 'number' ? f.narrowScale : 0.78)), cam: [wide.cam[0] * 1.32, wide.cam[1] * 1.18, wide.cam[2] * 1.32], look: wide.look, swingRisk: wide.swingRisk, views: wide.views };
     },
-    supports: function (kind) { return !!SCENES[kind]; },
+    supports: function (kind) { return !!(REAL_SCENES[kind] || SCENES[kind]); },
     build: function (THREE, ctx) {
       var realScene = REAL_SCENES[ctx.kind] || null;
       var scene = realScene || SCENES[ctx.kind];
