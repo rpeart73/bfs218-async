@@ -3958,7 +3958,7 @@
       : spec.kind === 'decisionpath'
       ? [[20.5, 70.2], [50.5, 72.5], [70.5, 43.2]]
       : spec.kind === 'thresholdaudit'
-      ? [[18.2, 74.0], [48.5, 52.0], [78.8, 64.0]]
+      ? [[18.2, 74.0], [39.0, 65.0], [78.8, 64.0]]
       : [];
     var dragModes = ['predict', 'try', 'explain'];
     var dragIndex = Math.max(0, dragModes.indexOf(view));
@@ -3998,7 +3998,7 @@
       var step = (spec.steps || [])[i] || [];
       var keyboard = ' Press Enter, Space, or Arrow keys for the same action with a keyboard.';
       var isCutoffGate = spec.kind === 'thresholdaudit' && i === 1;
-      var bladeHtml = isCutoffGate ? '<span class="wk-cutoff-gate-blade" aria-hidden="true"><span class="wk-gate-line"></span><span class="wk-gate-tag">CUTOFF GATE: 0.65 BASELINE</span></span>' : '';
+      var bladeHtml = isCutoffGate ? '<span class="wk-cutoff-gate-blade" aria-hidden="true"><span class="wk-gate-line"></span><span class="wk-gate-tag">CUTOFF: 0.65 BASELINE</span></span>' : '';
       return '<button type="button" class="wk-native-drag-handle" data-drag-view="' + dragModes[i] + '" data-drag-index="' + i + '" data-drag-type="' + dragTypes[i] + '" data-drag-cue="' + esc(dragCues[i]) + '" data-drag-result="' + esc(dragResults[i]) + '" aria-label="Step ' + (i + 1) + '. ' + esc(dragCues[i]) + '. ' + esc(step[1] || '') + esc(keyboard) + '" aria-pressed="' + (dragModes[i] === view) + '" style="left:' + pos[0] + '%;top:' + pos[1] + '%"><span class="wk-handle-num">' + (i + 1) + '</span>' + bladeHtml + '</button>';
     }).join('') + '</div><span class="wk-gesture-status" data-gesture-status><b>Step ' + (dragIndex + 1) + ': ' + esc(dragCues[dragIndex] || dragStep[0] || spec.title) + '</b><small>' + esc(dragStep[1] || 'Use this object to inspect the process.') + '</small></span>' : '';
     var renderMarkup = renderAsset ? '<img class="wk-model-render" src="' + esc(renderAsset) + '" alt="" aria-hidden="true" decoding="async"><span class="wk-render-cue" aria-hidden="true"></span>' + dragLayer + '<div class="wk-shape-instruction"><span data-gesture-progress>Drag is optional</span><button type="button" class="wk-gesture-reset">Reset</button></div>' : '';
@@ -5203,9 +5203,11 @@
     function move(x, y) {
       if (!dragging || !last) return;
       var dx = x - last.x, dy = y - last.y;
-      if (holo && holo.manipulate && root.userData.renderAsset) {
+      if (holo && holo.manipulate && (root.userData.renderAsset || hasRenderAsset)) {
         holo.manipulate(dx, dy);
-        var activeHandle = (shell && shell.querySelector('.wk-native-drag-handle[aria-pressed="true"]')) || (nativeHandles && nativeHandles[0]);
+        var activeHandle = (shell && shell.querySelector('.wk-native-drag-handle[aria-pressed="true"]'))
+          || (kind === 'thresholdaudit' && nativeHandles && (nativeHandles[1] || nativeHandles[0]))
+          || (nativeHandles && nativeHandles[0]);
         if (activeHandle && activeHandle.__moveVisual) {
           activeHandle.__moveVisual(dx, dy);
         }
@@ -5223,8 +5225,10 @@
       schedule();
     }
     function up() {
-      if (holo && holo.manipulate && root.userData.renderAsset) {
-        var activeHandle = (shell && shell.querySelector('.wk-native-drag-handle[aria-pressed="true"]')) || (nativeHandles && nativeHandles[0]);
+      if (holo && holo.manipulate && (root.userData.renderAsset || hasRenderAsset)) {
+        var activeHandle = (shell && shell.querySelector('.wk-native-drag-handle[aria-pressed="true"]'))
+          || (kind === 'thresholdaudit' && nativeHandles && (nativeHandles[1] || nativeHandles[0]))
+          || (nativeHandles && nativeHandles[0]);
         if (activeHandle && activeHandle.__finishDrag) {
           activeHandle.__finishDrag();
         }
@@ -5280,7 +5284,7 @@
     }
     var nativeDragCleanups = [];
     var nativeHandles = shell ? Array.prototype.slice.call(shell.querySelectorAll('.wk-native-drag-handle[data-drag-view]')) : [];
-    if (holo && holo.manipulate && nativeHandles.length) {
+    if (nativeHandles.length) {
       canvas.setAttribute('data-native-drag-handles', String(nativeHandles.length));
       var resetButton = shell.querySelector('.wk-gesture-reset');
       var progressNode = shell.querySelector('[data-gesture-progress]');
@@ -5304,9 +5308,10 @@
         button.style.removeProperty('--drag-x');
         button.style.removeProperty('--drag-y');
         button.style.removeProperty('--drag-rotation');
+        button.style.removeProperty('transform');
         var gateTag = button.querySelector('.wk-gate-tag');
         if (gateTag) {
-          gateTag.textContent = 'CUTOFF GATE: 0.65 BASELINE';
+          gateTag.textContent = 'CUTOFF: 0.65 BASELINE';
           gateTag.style.color = '#FFE082';
           gateTag.style.borderColor = 'rgba(212,175,55,.65)';
         }
@@ -5337,7 +5342,7 @@
             rotation = clampDrag(rotation + dx * 1.2, -80, 80);
           } else if (dragType === 'vertical') {
             x = clampDrag(x + dx * 0.15, -10, 10);
-            y = clampDrag(y + dy * 0.85, -68, 68);
+            y = clampDrag(y + dy * 0.85, -40, 40);
           } else {
             x = clampDrag(x + dx * 0.58, -58, 72);
             y = clampDrag(y + dy * 0.22, -16, 16);
@@ -5348,18 +5353,19 @@
           button.style.setProperty('--drag-x', x.toFixed(1) + 'px');
           button.style.setProperty('--drag-y', y.toFixed(1) + 'px');
           button.style.setProperty('--drag-rotation', rotation.toFixed(1) + 'deg');
+          button.style.transform = 'translate(calc(-50% + ' + x.toFixed(1) + 'px), calc(-50% + ' + y.toFixed(1) + 'px)) rotate(' + rotation.toFixed(1) + 'deg)';
           var gateTag = button.querySelector('.wk-gate-tag');
           if (gateTag) {
-            if (y < -14) {
+            if (y < -12) {
               gateTag.textContent = 'CUTOFF RAISED: EXPANDED SUPPORT';
               gateTag.style.color = '#86efac';
               gateTag.style.borderColor = '#22c55e';
-            } else if (y > 14) {
+            } else if (y > 12) {
               gateTag.textContent = 'CUTOFF LOWERED: HIGHER ATTRITION';
               gateTag.style.color = '#fca5a5';
               gateTag.style.borderColor = '#ef4444';
             } else {
-              gateTag.textContent = 'CUTOFF GATE: 0.65 BASELINE';
+              gateTag.textContent = 'CUTOFF: 0.65 BASELINE';
               gateTag.style.color = '#FFE082';
               gateTag.style.borderColor = 'rgba(212,175,55,.65)';
             }
@@ -5367,9 +5373,9 @@
           var status = shell.querySelector('[data-gesture-status]');
           if (status && !button.hasAttribute('data-complete')) {
             if (dragType === 'vertical' && button.getAttribute('data-drag-index') === '1') {
-              if (y < -14) {
+              if (y < -12) {
                 status.innerHTML = '<b>Cutoff Gate Raised (-' + Math.abs(Math.round(y)) + 'px)</b><small>Threshold widened: institutional resources deployed to support marginal students.</small>';
-              } else if (y > 14) {
+              } else if (y > 12) {
                 status.innerHTML = '<b>Cutoff Gate Lowered (+' + Math.round(y) + 'px)</b><small>Threshold restricted: struggling students excluded to attrition without assistance.</small>';
               } else {
                 status.innerHTML = '<b>Cutoff Gate Baseline (0.65)</b><small>Drag vertically up or down to calibrate institutional retention policy.</small>';
@@ -5391,7 +5397,7 @@
         }
         function applyGesture(dx, dy) {
           var amount = moveHandleVisual(dx, dy);
-          holo.manipulate(dx, dy);
+          if (holo && holo.manipulate) holo.manipulate(dx, dy);
           canvas.setAttribute('data-dragged', '1');
           canvas.setAttribute('data-shape-manipulated', dragView);
           wakeMotion();
@@ -5399,6 +5405,7 @@
         }
         function handleDown(e) {
           if (e.button != null && e.button !== 0) return;
+          if (dragState) return;
           if (e.cancelable && e.preventDefault) e.preventDefault();
           if (e.stopPropagation) e.stopPropagation();
           showDragInstruction();
@@ -5407,7 +5414,9 @@
             clientX = e.touches[0].clientX;
             clientY = e.touches[0].clientY;
           }
+          var pid = e.pointerId != null ? e.pointerId : null;
           dragState = {
+            pointerId: pid,
             startX: clientX,
             startY: clientY,
             x: clientX,
@@ -5417,12 +5426,15 @@
           };
           button.classList.add('is-dragging');
           canvas.setAttribute('data-drag-target', dragView);
+          if (pid != null && button.setPointerCapture) {
+            try { button.setPointerCapture(pid); } catch (err) {}
+          }
           window.addEventListener('pointermove', handleMove, { passive: false });
           window.addEventListener('pointerup', handleUp);
-          window.addEventListener('pointercancel', handleUp);
+          window.addEventListener('mousemove', handleMove, { passive: false });
+          window.addEventListener('mouseup', handleUp);
           window.addEventListener('touchmove', handleMove, { passive: false });
           window.addEventListener('touchend', handleUp);
-          window.addEventListener('touchcancel', handleUp);
         }
         function handleMove(e) {
           if (!dragState) return;
@@ -5433,23 +5445,27 @@
             clientX = e.touches[0].clientX;
             clientY = e.touches[0].clientY;
           }
+          if (clientX == null || clientY == null) return;
           var dx = clientX - dragState.x, dy = clientY - dragState.y;
           dragState.x = clientX; dragState.y = clientY;
-          if (Math.abs(clientX - dragState.startX) > 3 || Math.abs(clientY - dragState.startY) > 3) {
+          if (Math.abs(clientX - dragState.startX) > 2 || Math.abs(clientY - dragState.startY) > 2) {
             dragState.moved = true;
           }
           dragState.amount = applyGesture(dx, dy);
         }
         function handleUp(e) {
           if (!dragState) return;
+          if (dragState.pointerId != null && button.releasePointerCapture) {
+            try { button.releasePointerCapture(dragState.pointerId); } catch (err) {}
+          }
           window.removeEventListener('pointermove', handleMove);
           window.removeEventListener('pointerup', handleUp);
-          window.removeEventListener('pointercancel', handleUp);
+          window.removeEventListener('mousemove', handleMove);
+          window.removeEventListener('mouseup', handleUp);
           window.removeEventListener('touchmove', handleMove);
           window.removeEventListener('touchend', handleUp);
-          window.removeEventListener('touchcancel', handleUp);
           var wasMoved = dragState.moved;
-          var completed = dragState.amount >= 14;
+          var completed = dragState.amount >= 12;
           dragState = null;
           button.classList.remove('is-dragging');
           if (wasMoved) {
@@ -5467,14 +5483,14 @@
           showDragInstruction();
           var kx = 0, ky = 0;
           if (dragType === 'vertical') {
-            ky = (e.key === 'ArrowUp') ? -48 : 48;
+            ky = (e.key === 'ArrowUp') ? -28 : (e.key === 'ArrowDown' ? 28 : (e.key === 'Enter' || e.key === ' ' ? -28 : 0));
           } else if (dragType === 'forward') {
-            kx = (e.key === 'ArrowLeft') ? -48 : 48;
+            kx = (e.key === 'ArrowLeft') ? -36 : 36;
           } else if (dragType === 'turn') {
-            kx = (e.key === 'ArrowLeft') ? -48 : 48;
+            kx = (e.key === 'ArrowLeft') ? -36 : 36;
           } else {
-            kx = (e.key === 'ArrowLeft') ? -48 : (e.key === 'ArrowUp' ? 0 : 48);
-            ky = (e.key === 'ArrowUp') ? -48 : (e.key === 'ArrowDown' ? 48 : 0);
+            kx = (e.key === 'ArrowLeft') ? -36 : (e.key === 'ArrowUp' ? 0 : 36);
+            ky = (e.key === 'ArrowUp') ? -28 : (e.key === 'ArrowDown' ? 28 : 0);
           }
           applyGesture(kx, ky);
           completeGesture();
@@ -5487,17 +5503,22 @@
         button.__moveVisual = function (dx, dy) { return applyGesture(dx, dy); };
         button.__finishDrag = function () { completeGesture(); };
         button.addEventListener('pointerdown', handleDown);
+        button.addEventListener('mousedown', handleDown);
         button.addEventListener('touchstart', handleDown, { passive: false });
         button.addEventListener('keydown', handleKey);
         button.addEventListener('click', handleClick);
         nativeDragCleanups.push(function () {
+          if (button.releasePointerCapture && dragState && dragState.pointerId != null) {
+            try { button.releasePointerCapture(dragState.pointerId); } catch (err) {}
+          }
           window.removeEventListener('pointermove', handleMove);
           window.removeEventListener('pointerup', handleUp);
-          window.removeEventListener('pointercancel', handleUp);
+          window.removeEventListener('mousemove', handleMove);
+          window.removeEventListener('mouseup', handleUp);
           window.removeEventListener('touchmove', handleMove);
           window.removeEventListener('touchend', handleUp);
-          window.removeEventListener('touchcancel', handleUp);
           button.removeEventListener('pointerdown', handleDown);
+          button.removeEventListener('mousedown', handleDown);
           button.removeEventListener('touchstart', handleDown);
           button.removeEventListener('keydown', handleKey);
           button.removeEventListener('click', handleClick);
@@ -5506,7 +5527,7 @@
       function resetGestures(e) {
         if (e) { e.preventDefault(); e.stopPropagation(); }
         nativeHandles.forEach(resetHandlePosition);
-        if (holo.resetManipulation) holo.resetManipulation();
+        if (holo && holo.resetManipulation) holo.resetManipulation();
         canvas.removeAttribute('data-dragged');
         canvas.removeAttribute('data-drag-target');
         canvas.removeAttribute('data-shape-manipulated');
@@ -5722,7 +5743,6 @@
         var entry = pickEntryAt(e);
         if (entry && entry.view) {
           canvas.setAttribute('data-drag-target', entry.view);
-          activatePick(entry, false);
         }
       }, true);
       canvas.addEventListener('click', function (e) {
