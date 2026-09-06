@@ -7031,7 +7031,7 @@
     if (a.archetype === 'capstone') { var citems = data.items || [], cn = 0; citems.forEach(function (it, i) { if (actMap['a|' + w + '|cap|' + i]) cn++; }); return cn ? ('You revisited ' + cn + ' of ' + citems.length + ' dimensions of your cartography across the term.') : '(revisit not started yet)'; }
     return '(activity not started yet)';
   }
-  var WEEK_DATES = { 1: 'Week of Sept 8', 2: 'Week of Sept 14', 3: 'Week of Sept 21', 4: 'Week of Sept 28', 5: 'Week of Oct 5', 6: 'Week of Oct 13', 7: 'Week of Oct 19', 8: 'Week of Nov 2', 9: 'Week of Nov 9', 10: 'Week of Nov 16', 11: 'Week of Nov 23', 12: 'Week of Nov 30', 13: 'Week of Dec 7', 14: 'Week of Dec 14' };
+  var WEEK_DATES = { 1: 'Week of Sept 8', 2: 'Week of Sept 14', 3: 'Week of Sept 21', 4: 'Week of Sept 28', 5: 'Week of Oct 5', 6: 'Week of Oct 13', 7: 'Week of Oct 19', 8: 'Week of Nov 2', 9: 'Week of Nov 9', 10: 'Week of Nov 16', 11: 'Week of Nov 23', 12: 'Week of Nov 30', 13: 'Week of Dec 7', 14: 'Final week: Dec 13 to 16' };
   var WEEK_START = { 1: '2026-09-08', 2: '2026-09-14', 3: '2026-09-21', 4: '2026-09-28', 5: '2026-10-05', 6: '2026-10-13', 7: '2026-10-19', 8: '2026-11-02', 9: '2026-11-09', 10: '2026-11-16', 11: '2026-11-23', 12: '2026-11-30', 13: '2026-12-07', 14: '2026-12-13' };
   function deliveryMode(w) {
     if (w === 1) return { kind: 'async', label: 'ASYNCHRONOUS COURSE ORIENTATION', short: 'Asynchronous learning', reason: 'This course is fully asynchronous. Begin with the orientation, then work through the weekly learning path at times that fit your schedule.' };
@@ -8588,8 +8588,8 @@
     return '<section class="node kd-cal" aria-label="Key dates for this course">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">DUE DATES</div>'
       + '<h2 class="wk-sec" style="margin:0 0 4px">What you hand in, and when</h2>'
-      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">Portfolio 1 is due October 18; Digital Decision Scenarios is due October 23; Canadian Technology Investigation is due October 25; Portfolio 2 is due November 29; Design the Repair is due December 6; Personal Cartography is due December 11; and the Final Learning Reflection is due December 13. Nothing is due in Study Week. Blackboard remains the official source.</p>'
-      + '<div class="kd-list">' + keyDatesRows(['due']) + '</div>'
+      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">Use the dated entries below for each assessment deadline and its separate no-penalty submission-window closing time. All times are Eastern. Final projects and final reflections have no automatic 48-hour window. Nothing is due in Study Week. Read the Deadlines and Extensions policy for extension requests and exceptions.</p>'
+      + '<div class="kd-list">' + keyDatesRows(['due', 'window-end']) + '</div>'
       + '<h2 class="wk-sec" style="margin:24px 0 4px">Published Blackboard access dates</h2>'
       + '<p style="font-size:.85rem;line-height:1.5;color:var(--ink-faint);margin:0 0 10px">Only access dates stated in the course package appear here. Blackboard confirms all others.</p>'
       + '<div class="kd-list">' + keyDatesRows(['open']) + '</div>'
@@ -8617,7 +8617,7 @@
       else if (cls.length) map[row.d] = { kind: 'class', label: cls[0][0], idx: null };
       else if (ops.length) map[row.d] = { kind: 'open', label: ops[0][0], idx: idx };
     });
-    ['2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30'].forEach(function (d) { map[d] = { kind: 'study', label: 'Study Week' }; });
+    keyDatesList().forEach(function (row) { var windows = row.it.filter(function (x) { return x[2] === 'window-end'; }); if (!windows.length) return; var prior = map[row.d], label = windows.length > 1 ? windows.length + ' submission windows close' : windows[0][0]; map[row.d] = { kind: 'due', label: (prior && prior.kind === 'due' ? prior.label + '; ' : '') + label, assignmentId: prior ? prior.assignmentId : (windows.length === 1 ? windows[0][3] : null) }; }); ['2026-10-26', '2026-10-27', '2026-10-28', '2026-10-29', '2026-10-30'].forEach(function (d) { map[d] = { kind: 'study', label: 'Study Week' }; });
     return map;
   }
   function calMonthGrid(year, m) {
