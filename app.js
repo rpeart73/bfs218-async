@@ -829,7 +829,7 @@
     });
     var wkActive = s.screen === 'walkthroughs';
     var walk = '<button onclick="SOC.go(\'walkthroughs\')" aria-current="' + (wkActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (wkActive ? '600' : '500') + ';background:' + (wkActive ? '#EEF1F5' : 'transparent') + ';color:' + (wkActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (wkActive ? 'var(--red)' : '#6B7280') + '">' + ic('layers', 19) + '</span><span style="flex:1;text-align:left">Interactive Lessons</span></button>';
-    var guide = '<div style="border-radius:10px;padding:10px 12px;color:#474C57"><div style="display:flex;align-items:flex-start;gap:11px;font-size:.9375rem;font-weight:500;line-height:1.25"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:#6B7280">' + ic('file', 19) + '</span><span style="flex:1;min-width:0">Course Website Instructions</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0 33px"><a href="./guide/" target="_blank" rel="noopener" style="font-size:.75rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;border-radius:999px;padding:4px 9px;text-decoration:none">Online guide <span aria-hidden="true">&#8599;</span></a><a href="./guide/BFS218-Companion-Guide.pdf?v=20260905-035707" download style="font-size:.75rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;border-radius:999px;padding:4px 9px;text-decoration:none">PDF <span aria-hidden="true">&#8595;</span></a></div></div>';
+    var guide = '<div style="border-radius:10px;padding:10px 12px;color:#474C57"><div style="display:flex;align-items:flex-start;gap:11px;font-size:.9375rem;font-weight:500;line-height:1.25"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:#6B7280">' + ic('file', 19) + '</span><span style="flex:1;min-width:0">Course Website Instructions</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0 33px"><a href="./guide/" target="_blank" rel="noopener" style="font-size:.75rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;border-radius:999px;padding:4px 9px;text-decoration:none">Online guide <span aria-hidden="true">&#8599;</span></a><a href="./guide/BFS218-Companion-Guide.pdf?v=deadline-policy-20260906" download style="font-size:.75rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;border-radius:999px;padding:4px 9px;text-decoration:none">PDF <span aria-hidden="true">&#8595;</span></a></div></div>';
     var repActive = s.screen === 'report';
     var report = '<button onclick="SOC.reportProblem()" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:500;background:transparent;color:#474C57;text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:#6B7280">' + ic('help', 19) + '</span><span style="flex:1;text-align:left">Report a problem</span></button>';
     var calActive = s.screen === 'calendar';
@@ -1446,7 +1446,7 @@
     ];
     return '<section class="node site-howto" aria-labelledby="how-site-title"><h2 id="how-site-title" class="wk-sec">How to use this site</h2>'
       + '<p class="wk-desc">These are your Course Website Instructions, in five steps. Read the interactive version here, or take a copy with you.</p>'
-      + '<div class="site-howto-links"><a href="./guide/" target="_blank" rel="noopener">Open the full online guide <span aria-hidden="true">&#8599;</span></a><a href="./guide/BFS218-Companion-Guide.pdf?v=20260905-035707" download>Download the PDF <span aria-hidden="true">&#8595;</span></a></div>'
+      + '<div class="site-howto-links"><a href="./guide/" target="_blank" rel="noopener">Open the full online guide <span aria-hidden="true">&#8599;</span></a><a href="./guide/BFS218-Companion-Guide.pdf?v=deadline-policy-20260906" download>Download the PDF <span aria-hidden="true">&#8595;</span></a></div>'
       + '<ol class="site-howto-steps">' + steps.map(function (s, i) { return '<li class="site-howto-step"><span class="n">' + (i + 1) + '</span><div><b>' + esc(s[0]) + '</b><p>' + esc(s[1]) + '</p></div></li>'; }).join('') + '</ol>'
       + '</section>';
   }
@@ -8205,7 +8205,7 @@
     ]
   },
   {
-    "d": "2026-09-21",
+    "d": "2026-09-08",
     "it": [
       [
         "Digital Systems Field Notes Portfolio 1 opens",
@@ -8216,29 +8216,7 @@
     ]
   },
   {
-    "d": "2026-10-13",
-    "it": [
-      [
-        "Digital Decision Scenarios opens",
-        "20%; submit in Blackboard",
-        "open",
-        "compass-check"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-13",
-    "it": [
-      [
-        "Canadian Technology Investigation opens",
-        "20%; submit in Blackboard",
-        "open",
-        "case-file"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-18",
+    "d": "2026-09-18",
     "it": [
       [
         "Digital Systems Field Notes Portfolio 1",
@@ -8249,7 +8227,40 @@
     ]
   },
   {
-    "d": "2026-10-23",
+    "d": "2026-09-20",
+    "it": [
+      [
+        "Digital Systems Field Notes Portfolio 1: 48-hour window ends",
+        "11:59 p.m. Eastern Time (ET); no penalty within this window",
+        "window-end",
+        "map-exchange"
+      ]
+    ]
+  },
+  {
+    "d": "2026-10-01",
+    "it": [
+      [
+        "Digital Decision Scenarios opens",
+        "20%; submit in Blackboard",
+        "open",
+        "compass-check"
+      ]
+    ]
+  },
+  {
+    "d": "2026-10-01",
+    "it": [
+      [
+        "Canadian Technology Investigation opens",
+        "20%; submit in Blackboard",
+        "open",
+        "case-file"
+      ]
+    ]
+  },
+  {
+    "d": "2026-10-13",
     "it": [
       [
         "Digital Decision Scenarios",
@@ -8260,12 +8271,34 @@
     ]
   },
   {
-    "d": "2026-10-25",
+    "d": "2026-10-15",
+    "it": [
+      [
+        "Digital Decision Scenarios: 48-hour window ends",
+        "11:59 p.m. Eastern Time (ET); no penalty within this window",
+        "window-end",
+        "compass-check"
+      ]
+    ]
+  },
+  {
+    "d": "2026-10-20",
     "it": [
       [
         "Canadian Technology Investigation",
         "due; 20%",
         "due",
+        "case-file"
+      ]
+    ]
+  },
+  {
+    "d": "2026-10-22",
+    "it": [
+      [
+        "Canadian Technology Investigation: 48-hour window ends",
+        "11:59 p.m. Eastern Time (ET); no penalty within this window",
+        "window-end",
         "case-file"
       ]
     ]
@@ -8292,18 +8325,7 @@
     ]
   },
   {
-    "d": "2026-11-23",
-    "it": [
-      [
-        "Design the Repair opens",
-        "20%; submit in Blackboard",
-        "open",
-        "repair"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-29",
+    "d": "2026-11-13",
     "it": [
       [
         "Digital Systems Field Notes Portfolio 2",
@@ -8314,7 +8336,29 @@
     ]
   },
   {
-    "d": "2026-11-30",
+    "d": "2026-11-15",
+    "it": [
+      [
+        "Digital Systems Field Notes Portfolio 2: 48-hour window ends",
+        "11:59 p.m. Eastern Time (ET); no penalty within this window",
+        "window-end",
+        "field-notes-2"
+      ]
+    ]
+  },
+  {
+    "d": "2026-11-16",
+    "it": [
+      [
+        "Design the Repair opens",
+        "20%; submit in Blackboard",
+        "open",
+        "repair"
+      ]
+    ]
+  },
+  {
+    "d": "2026-11-26",
     "it": [
       [
         "Personal Cartography opens",
@@ -8325,24 +8369,35 @@
     ]
   },
   {
-    "d": "2026-11-30",
-    "it": [
-      [
-        "Final Learning Reflection opens",
-        "5%; submit in Blackboard",
-        "open",
-        "final-reflection"
-      ]
-    ]
-  },
-  {
-    "d": "2026-12-06",
+    "d": "2026-11-27",
     "it": [
       [
         "Design the Repair",
         "due; 20%",
         "due",
         "repair"
+      ]
+    ]
+  },
+  {
+    "d": "2026-11-29",
+    "it": [
+      [
+        "Design the Repair: 48-hour window ends",
+        "11:59 p.m. Eastern Time (ET); no penalty within this window",
+        "window-end",
+        "repair"
+      ]
+    ]
+  },
+  {
+    "d": "2026-12-07",
+    "it": [
+      [
+        "Final Learning Reflection opens",
+        "5%; submit in Blackboard",
+        "open",
+        "final-reflection"
       ]
     ]
   },
