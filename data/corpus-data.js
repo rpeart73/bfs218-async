@@ -299,41 +299,45 @@ window.BFS218 = {
    "fulltext": true
   },
   {
-   "id": "noble2018",
-   "assigned": "Introduction (open author excerpt) and Chapter 1 (posted on Blackboard), as specified in the weekly reading list",
-   "video": {
-    "yt": "murg3Roch64",
-    "title": "HTNM Lecture: Safiya Umoja Noble's \"Algorithms of Oppression: How Search Engines Reinforce Racism\"",
-    "channel": "Berkeley Center for New Media",
-    "scholar": "Safiya Umoja Noble"
-   },
-   "eye": "western",
-   "type": "Book",
-   "access": "open",
-   "title": "Algorithms of Oppression: How Search Engines Reinforce Racism",
-   "authors": "Safiya Umoja Noble",
-   "year": 2018,
-   "themes": [
-    "bias",
-    "policing"
-   ],
-   "origin": "United States",
-   "len": "~45 min read",
-   "diff": 2,
-   "week": 2,
-   "abstract": "Safiya Umoja Noble shows how search engines, presented as neutral information tools, returned demeaning and stereotyped results for Black women and girls, treating racism as built into ranking and data rather than as a one-off glitch. Her work pairs with Benjamin's to argue that the problem is structural, sitting in the design of systems that profit from how they sort and surface information. The course previews her in Week 1 and engages her argument directly in the algorithmic-bias and gatekeeping weeks.",
-   "coreIdea": "Search and ranking systems presented as neutral can reproduce racism and sexism at scale.",
-   "evidenceType": "Critical media and algorithm-studies book chapter",
-   "sample": "Documented commercial-search examples and analysis of ranking, advertising, representation, and political economy; no experimental sample.",
-   "evidenceLimit": "The chapter analyses historically situated search results and structures. It is not a current audit of every query, search engine, user, or ranking system.",
-   "related": [
-    "benjamin2019",
-    "devlin2023"
-   ],
-   "url": "https://safiyaunoble.com/wp-content/uploads/2020/09/Algorithms_Oppression_Introduction_Intro.pdf",
-   "fulltext": false,
-   "senecaLib": true
-  },
+ "id": "noble2018",
+ "assigned": "Introduction (open author excerpt) and Chapter 1 (posted on Blackboard), as specified in the weekly reading list",
+ "video": {
+  "yt": "murg3Roch64",
+  "title": "HTNM Lecture: Safiya Umoja Noble's \"Algorithms of Oppression: How Search Engines Reinforce Racism\"",
+  "channel": "Berkeley Center for New Media",
+  "scholar": "Safiya Umoja Noble"
+ },
+ "eye": "western",
+ "type": "Book",
+ "access": "course",
+ "title": "Algorithms of Oppression: How Search Engines Reinforce Racism",
+ "authors": "Safiya Umoja Noble",
+ "year": 2018,
+ "themes": [
+  "bias",
+  "policing"
+ ],
+ "origin": "United States",
+ "len": "~45 min read",
+ "diff": 2,
+ "week": 2,
+ "abstract": "Safiya Umoja Noble shows how search engines, presented as neutral information tools, returned demeaning and stereotyped results for Black women and girls, treating racism as built into ranking and data rather than as a one-off glitch. Her work pairs with Benjamin's to argue that the problem is structural, sitting in the design of systems that profit from how they sort and surface information. The course previews her in Week 1 and engages her argument directly in the algorithmic-bias and gatekeeping weeks.",
+ "coreIdea": "Search and ranking systems presented as neutral can reproduce racism and sexism at scale.",
+ "evidenceType": "Critical media and algorithm-studies book chapter",
+ "sample": "Documented commercial-search examples and analysis of ranking, advertising, representation, and political economy; no experimental sample.",
+ "evidenceLimit": "The chapter analyses historically situated search results and structures. It is not a current audit of every query, search engine, user, or ranking system.",
+ "related": [
+  "benjamin2019",
+  "devlin2023"
+ ],
+ "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414728-dt-content-rid-223984885_2/xid-223984885_2",
+ "fulltext": true,
+ "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414728-dt-content-rid-223984885_2/xid-223984885_2",
+ "primaryLabel": "Open Chapter 1 in Blackboard",
+ "blackboardFullText": true,
+ "sourceUrl": "https://safiyaunoble.com/wp-content/uploads/2020/09/Algorithms_Oppression_Introduction_Intro.pdf",
+ "sourceLabel": "Open the author's introduction"
+},
   {
    "id": "buolamwini2018",
    "video": {
@@ -498,41 +502,45 @@ window.BFS218 = {
    "fulltext": true
   },
   {
-   "id": "molnar2023",
-   "video": {
-    "yt": "_G5nwaJuWlM",
-    "title": "New Border Tech: Interview with Petra Molnar",
-    "channel": "Centre for Refugee Studies",
-    "scholar": "Petra Molnar"
-   },
-   "eye": "western",
-   "type": "Article",
-   "access": "open",
-   "title": "Digital Border Technologies, Techno-Racism and Logics of Exclusion",
-   "authors": "Petra Molnar",
-   "year": 2023,
-   "themes": [
-    "surveillance",
-    "policing",
-    "policy"
-   ],
-   "origin": "Canada",
-   "len": "~20 min read",
-   "diff": 2,
-   "week": 6,
-   "abstract": "Petra Molnar, of the Refugee Law Lab at York University, analyses surveillance, biometrics, and automated decision systems at borders through logics of exclusion. Her commentary documents experimental tools such as drones, AI lie detectors, and robotic dogs operating under weak oversight in settings where people on the move may have limited ability to refuse or seek redress. It does not establish a universal first-then-spread sequence for every technology.",
-   "coreIdea": "Molnar documents experimental border technologies operating under weak oversight where people on the move may have limited ability to refuse or seek redress.",
-   "evidenceType": "Critical migration-and-technology commentary",
-   "sample": "Illustrative border-technology cases and research on surveillance, biometrics, and automated systems; no systematic prevalence sample.",
-   "evidenceLimit": "The commentary documents and analyses experimental tools and weak-oversight conditions. It does not establish how common every tool is, that every border uses them, or a universal test-first-then-spread sequence.",
-   "doi": "10.1111/imig.13187",
-   "related": [
-    "robertson2020",
-    "opc2021"
-   ],
-   "url": "https://doi.org/10.1111/imig.13187",
-   "fulltext": true
-  },
+ "id": "molnar2023",
+ "video": {
+  "yt": "_G5nwaJuWlM",
+  "title": "New Border Tech: Interview with Petra Molnar",
+  "channel": "Centre for Refugee Studies",
+  "scholar": "Petra Molnar"
+ },
+ "eye": "western",
+ "type": "Article",
+ "access": "course",
+ "title": "Digital Border Technologies, Techno-Racism and Logics of Exclusion",
+ "authors": "Petra Molnar",
+ "year": 2023,
+ "themes": [
+  "surveillance",
+  "policing",
+  "policy"
+ ],
+ "origin": "Canada",
+ "len": "~20 min read",
+ "diff": 2,
+ "week": 6,
+ "abstract": "Petra Molnar, of the Refugee Law Lab at York University, analyses surveillance, biometrics, and automated decision systems at borders through logics of exclusion. Her commentary documents experimental tools such as drones, AI lie detectors, and robotic dogs operating under weak oversight in settings where people on the move may have limited ability to refuse or seek redress. It does not establish a universal first-then-spread sequence for every technology.",
+ "coreIdea": "Molnar documents experimental border technologies operating under weak oversight where people on the move may have limited ability to refuse or seek redress.",
+ "evidenceType": "Critical migration-and-technology commentary",
+ "sample": "Illustrative border-technology cases and research on surveillance, biometrics, and automated systems; no systematic prevalence sample.",
+ "evidenceLimit": "The commentary documents and analyses experimental tools and weak-oversight conditions. It does not establish how common every tool is, that every border uses them, or a universal test-first-then-spread sequence.",
+ "doi": "10.1111/imig.13187",
+ "related": [
+  "robertson2020",
+  "opc2021"
+ ],
+ "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414726-dt-content-rid-223984877_2/xid-223984877_2",
+ "fulltext": true,
+ "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414726-dt-content-rid-223984877_2/xid-223984877_2",
+ "primaryLabel": "Open full article in Blackboard",
+ "blackboardFullText": true,
+ "sourceUrl": "https://onlinelibrary.wiley.com/doi/10.1111/imig.13187"
+},
   {
    "id": "nagra2016",
    "eye": "western",
@@ -726,43 +734,45 @@ window.BFS218 = {
    "fulltext": true
   },
   {
-   "id": "costanza2020",
-   "assigned": "Design Justice, Introduction (pp.1-30)",
-   "video": {
-    "yt": "SuVBJbyKrI4",
-    "title": "Sasha Costanza-Chock - Community-Led Practices to Build the Worlds We Need | The Conference 2023",
-    "channel": "The Conference / Media Evolution",
-    "scholar": "Sasha Costanza-Chock"
-   },
-   "eye": "western",
-   "type": "Book",
-   "access": "open",
-   "title": "Design Justice: Community-Led Practices to Build the Worlds We Need",
-   "authors": "Sasha Costanza-Chock",
-   "year": 2020,
-   "themes": [
-    "resistance",
-    "policy"
-   ],
-   "origin": "United States",
-   "len": "~Introduction and Network Principles, ~40 min read",
-   "diff": 2,
-   "week": 11,
-   "abstract": "Sasha Costanza-Chock draws together the Design Justice Network principles into a framework that rethinks design to centre the people normally marginalized by it. Its commitments include centring the voices of those directly impacted, prioritizing impact over the designer's intentions, and treating community-led practice as the way to build technology. The course reads the Introduction and the Network Principles for a concrete model of what an alternative to the New Jim Code looks like, and returns to it in the closing cartography weeks.",
-   "coreIdea": "Design justice centres the people most affected and judges a design by its impact, not by its makers' good intentions.",
-   "evidenceType": "Open-access scholarly book and community-led design framework",
-   "sample": "Design Justice Network principles and multiple community-led design cases grounded in particular social movements; no single standardized intervention sample.",
-   "evidenceLimit": "The book offers principles and situated cases, not proof that one design process guarantees justice. Community authority, context, impacts, and power still require case-specific evidence.",
-   "url": "https://designjustice.mitpress.mit.edu/",
-   "pdfUrl": "https://archive.org/download/mit_press_book_9780262356862/mit_press_book_9780262356862.pdf",
-   "related": [
-    "tanksley2023",
-    "benjamin2019"
-   ],
-   "fulltext": true,
-   "sourceUrl": "https://mitpress.mit.edu/9780262043458/design-justice/",
-   "doi": "10.7551/mitpress/12255.001.0001"
-  },
+ "id": "costanza2020",
+ "assigned": "Design Justice, Introduction (pp.1-30)",
+ "video": {
+  "yt": "SuVBJbyKrI4",
+  "title": "Sasha Costanza-Chock - Community-Led Practices to Build the Worlds We Need | The Conference 2023",
+  "channel": "The Conference / Media Evolution",
+  "scholar": "Sasha Costanza-Chock"
+ },
+ "eye": "western",
+ "type": "Book",
+ "access": "course",
+ "title": "Design Justice: Community-Led Practices to Build the Worlds We Need",
+ "authors": "Sasha Costanza-Chock",
+ "year": 2020,
+ "themes": [
+  "resistance",
+  "policy"
+ ],
+ "origin": "United States",
+ "len": "~Introduction and Network Principles, ~40 min read",
+ "diff": 2,
+ "week": 11,
+ "abstract": "Sasha Costanza-Chock draws together the Design Justice Network principles into a framework that rethinks design to centre the people normally marginalized by it. Its commitments include centring the voices of those directly impacted, prioritizing impact over the designer's intentions, and treating community-led practice as the way to build technology. The course reads the Introduction and the Network Principles for a concrete model of what an alternative to the New Jim Code looks like, and returns to it in the closing cartography weeks.",
+ "coreIdea": "Design justice centres the people most affected and judges a design by its impact, not by its makers' good intentions.",
+ "evidenceType": "Open-access scholarly book and community-led design framework",
+ "sample": "Design Justice Network principles and multiple community-led design cases grounded in particular social movements; no single standardized intervention sample.",
+ "evidenceLimit": "The book offers principles and situated cases, not proof that one design process guarantees justice. Community authority, context, impacts, and power still require case-specific evidence.",
+ "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414727-dt-content-rid-223984881_2/xid-223984881_2",
+ "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414727-dt-content-rid-223984881_2/xid-223984881_2",
+ "related": [
+  "tanksley2023",
+  "benjamin2019"
+ ],
+ "fulltext": true,
+ "sourceUrl": "https://direct.mit.edu/books/oa-monograph/4605/Design-JusticeCommunity-Led-Practices-to-Build-the",
+ "doi": "10.7551/mitpress/12255.001.0001",
+ "primaryLabel": "Open full book in Blackboard",
+ "blackboardFullText": true
+},
   {
    "id": "attard2023",
    "eye": "western",
