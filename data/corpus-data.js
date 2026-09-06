@@ -375,34 +375,38 @@ window.BFS218 = {
    "fulltext": true
   },
   {
-   "id": "koenecke2020",
-   "eye": "western",
-   "type": "Article",
-   "access": "open",
-   "title": "Racial Disparities in Automated Speech Recognition",
-   "authors": "Allison Koenecke, Andrew Nam, Emily Lake, Joe Nudell, Minnie Quartey, Zion Mengesha, Connor Toups, John R. Rickford, Dan Jurafsky and Sharad Goel",
-   "year": 2020,
-   "themes": [
-    "bias",
-    "facial"
-   ],
-   "origin": "United States",
-   "len": "~20 min read",
-   "diff": 2,
-   "week": 5,
-   "abstract": "Koenecke and colleagues tested five commercial automated speech-recognition systems with recordings from Black and white speakers. Across the matched samples, the average word error rate was 0.35 for Black speakers and 0.19 for white speakers. The disparity remained in a subset of 206 identical short phrases. The error analysis pointed to poorer acoustic-model performance for Black speech, and the authors proposed more diverse training data as one strategy; they could not directly inspect the proprietary training data.",
-   "coreIdea": "In five commercial systems, automated speech recognition produced substantially higher word error rates for Black speakers than for white speakers, including on matched phrases.",
-   "evidenceType": "Matched observational performance audit of five commercial automated-speech-recognition systems",
-   "sample": "2,141 Black-speaker and 2,141 white-speaker audio snippets from 73 Black and 42 white speakers across five United States cities, matched on age, gender, and clip duration; 19.8 hours total.",
-   "evidenceLimit": "The findings apply to the systems, English-language interview corpora, speaker groups, and product versions tested. They do not establish performance for every dialect or current system, and the paper does not directly inspect the proprietary training data.",
-   "doi": "10.1073/pnas.1915768117",
-   "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC7149386/",
-   "related": [
-    "buolamwini2018",
-    "benjamin2019"
-   ],
-   "fulltext": true
-  },
+ "id": "koenecke2020",
+ "eye": "western",
+ "type": "Article",
+ "access": "course",
+ "title": "Racial Disparities in Automated Speech Recognition",
+ "authors": "Allison Koenecke, Andrew Nam, Emily Lake, Joe Nudell, Minnie Quartey, Zion Mengesha, Connor Toups, John R. Rickford, Dan Jurafsky and Sharad Goel",
+ "year": 2020,
+ "themes": [
+  "bias",
+  "facial"
+ ],
+ "origin": "United States",
+ "len": "~20 min read",
+ "diff": 2,
+ "week": 5,
+ "abstract": "Koenecke and colleagues tested five commercial automated speech-recognition systems with recordings from Black and white speakers. Across the matched samples, the average word error rate was 0.35 for Black speakers and 0.19 for white speakers. The disparity remained in a subset of 206 identical short phrases. The error analysis pointed to poorer acoustic-model performance for Black speech, and the authors proposed more diverse training data as one strategy; they could not directly inspect the proprietary training data. Reading focus for this week: Start with the opening summary and Significance box on PDF page 1. Look at Figure 1 on page 2, then read the Discussion section beginning on page 4. Focus on whose speech was represented, what the study found and what could improve access. You do not need to work through the equations. These findings describe the systems tested for this 2020 study, not every current speech-recognition system.",
+ "coreIdea": "In five commercial systems, automated speech recognition produced substantially higher word error rates for Black speakers than for white speakers, including on matched phrases.",
+ "evidenceType": "Matched observational performance audit of five commercial automated-speech-recognition systems",
+ "sample": "2,141 Black-speaker and 2,141 white-speaker audio snippets from 73 Black and 42 white speakers across five United States cities, matched on age, gender, and clip duration; 19.8 hours total.",
+ "evidenceLimit": "The findings apply to the systems, English-language interview corpora, speaker groups, and product versions tested. They do not establish performance for every dialect or current system, and the paper does not directly inspect the proprietary training data.",
+ "doi": "10.1073/pnas.1915768117",
+ "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27417270-dt-content-rid-223995627_2/xid-223995627_2",
+ "related": [
+  "buolamwini2018",
+  "benjamin2019"
+ ],
+ "fulltext": true,
+ "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27417270-dt-content-rid-223995627_2/xid-223995627_2",
+ "primaryLabel": "Open full article in Blackboard",
+ "blackboardFullText": true,
+ "sourceUrl": "https://5harad.com/papers/asr-disparities.pdf"
+},
   {
    "id": "opc2021",
    "assigned": "Findings summary",
