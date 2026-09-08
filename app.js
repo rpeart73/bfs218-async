@@ -8589,7 +8589,7 @@
     return '<section class="node kd-cal" aria-label="Key dates for this course">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">DUE DATES</div>'
       + '<h2 class="wk-sec" style="margin:0 0 4px">What you hand in, and when</h2>'
-      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">Use the dated entries below for each assessment deadline and its separate no-penalty submission-window closing time. All times are Eastern. Final projects and final reflections have no automatic 48-hour window. Nothing is due in Study Week. Read the Deadlines and Extensions policy for extension requests and exceptions.</p>'
+      + '<p style="font-size:.9rem;line-height:1.55;color:var(--ink-dim);margin:0 0 12px">Use the dated entries below for each assignment deadline and its separate no-penalty submission-window closing time. All times are Eastern. Final projects and final reflections have no automatic 48-hour window. Nothing is due in Study Week. Read the Deadlines and Extensions policy for extension requests and exceptions.</p>'
       + '<div class="kd-list">' + keyDatesRows(['due', 'window-end']) + '</div>'
       + '<h2 class="wk-sec" style="margin:24px 0 4px">Published Blackboard access dates</h2>'
       + '<p style="font-size:.85rem;line-height:1.5;color:var(--ink-faint);margin:0 0 10px">Only access dates stated in the course package appear here. Blackboard confirms all others.</p>'
@@ -8680,7 +8680,7 @@
       ['Where do I submit?', 'Submit in Blackboard. This companion site helps you understand, practise, and prepare; it is not the submission system and it does not record grades.'],
       ['Where can I access the complete assignments?', 'The complete assignments will be opened on Blackboard. This page explains the assignment arc and helps you prepare, but Blackboard is the official place for the full instructions, files, dropboxes, due dates, feedback, and grades.'],
       ['Can I email my assignment or send a link?', 'No. The assessment briefs say Blackboard submission only. Email submissions or email-only links are not accepted.'],
-      ['Are all seven graded components separate?', 'Yes. The two Notebook sets and five other assessments are graded separately, while the work builds toward and then reflects on your Personal Cartography.'],
+      ['Are all seven graded components separate?', 'Yes. The two Field Notes portfolios and five other assignments are graded separately, while the work builds toward and then reflects on your Personal Cartography.'],
       ['What if I miss a deadline?', 'The course assessment documents describe firm deadlines. Check Blackboard for the exact date and time, and ask the instructor early if you are unsure.'],
       ['Can I use generative AI?', 'Follow the rule written inside each Blackboard assessment. The permitted use is not the same for every task. For example, the Canadian Technology Investigation prohibits generative AI for choosing or researching the case, planning, writing, rewriting, visuals, narration, and the walkthrough. Ask me before using a tool if you are unsure.'],
       ['What happens if AI writes my paper?', 'Submitting AI-written or AI-rewritten work as your own can be treated as academic misconduct. That can lead to a zero on the assignment, a formal academic-integrity process, and further course or institutional penalties. If you are unsure, do not submit the AI text. Ask first and disclose.'],
@@ -8993,7 +8993,7 @@
         steps: [
           'Finish the Weeks 2 to 6 learning before opening the assessment.',
           'Use the Knowledge Checks and flashcards to rehearse the concepts, not the assessment items.',
-          'Complete the timed assessment independently in Blackboard.'
+          'Complete the untimed assignment independently in Blackboard. Save and Close lets you return to the same draft before submitting.'
         ],
         starter: 'In ' + field + ', I will watch for the rule, data, default, or visibility pattern that shapes what happens to ' + ctx.people + '.'
       },
@@ -9196,7 +9196,7 @@
     ];
     var assignmentExamples = [
       ['Digital Systems Field Notes', 'I used ChatGPT on [date] to list possible digital systems I might notice in my program area. I chose the example myself, connected it to my own life, and wrote the entry in my own words.'],
-      ['Digital Decision Scenarios', 'I used ChatGPT on [date] only before the timed assessment to check my understanding of one course concept. I did not use generative AI or second-device help during the assessment.'],
+      ['Digital Decision Scenarios', 'I used ChatGPT on [date] before starting this assignment to check my understanding of one course concept. I did not use generative AI to answer the scenarios or write the responses.'],
       ['Canadian Technology Investigation', 'Generative AI is not permitted for selecting or researching the case, finding or summarizing sources, planning, writing, rewriting, visuals, narration, or the walkthrough. Ordinary non-generative accessibility and proofreading tools remain available.'],
       ['Design the Repair', 'I used ChatGPT on [date] to brainstorm general accountability mechanisms. I chose the response, verified it against the Week 11 and 12 readings, and wrote the proposal myself.'],
       ['Personal Cartography', 'I used Microsoft Editor on [date] for grammar and sentence clarity only. The map, reflection, examples, and recorded walkthrough are my own work.']
@@ -9243,7 +9243,7 @@
       }).join('') + '</div></div><p class="asg-ai-bottom">The standard is simple: a reader should know what tool touched the work, what it was used for, and what parts are still fully yours.</p></section>';
   }
   function assignmentReleaseSchedule(items) {
-    return '<section id="asg-release" class="asg-release" aria-label="Assignment access and due date schedule"><div><div class="mono">BLACKBOARD ACCESS & DUE DATES</div><h2>When each assignment is due</h2><p>All six assessment guides are visible here from day one. Published access dates appear below; otherwise Blackboard confirms when the complete brief, assessment, and submission link can be opened. Blackboard remains the official source.</p></div><div class="asg-release-grid">' + items.map(function (a) {
+    return '<section id="asg-release" class="asg-release" aria-label="Assignment access and due date schedule"><div><div class="mono">BLACKBOARD ACCESS & DUE DATES</div><h2>When each assignment is due</h2><p>All six assignment guides are visible here from day one. Published access dates appear below; otherwise Blackboard confirms when the complete brief, assessment, and submission link can be opened. Blackboard remains the official source.</p></div><div class="asg-release-grid">' + items.map(function (a) {
       if (!a.release) return '<article><div class="asg-release-head"><div class="asg-date"><span>ACCESS</span><b>&ndash;</b><small>BLACKBOARD</small></div><div><b>' + esc(a.title) + '</b><p>The guide is visible here now. Blackboard confirms when the complete assignment and submission link can be opened.</p></div></div>' + assignmentDueHtml(a) + '</article>';
       var dp = assignmentDateParts(a.release);
       return '<article><div class="asg-release-head"><div class="asg-date"><span>' + esc(dp.month) + '</span><b>' + esc(dp.day) + '</b><small>' + esc(dp.year) + '</small></div><div><b>' + esc(a.title) + '</b><p>Released on Blackboard: ' + esc(assignmentDateLabel(a.release)) + '.</p></div></div>' + assignmentDueHtml(a) + '</article>';
