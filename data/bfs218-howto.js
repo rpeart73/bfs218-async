@@ -69,7 +69,7 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Check off the four steps in You drive this week.",
-     "detail": "No one paces you here. Ticking the four steps as you finish them keeps you honest, and it is what marks the week as driven on your home page."
+     "detail": "You choose when to work within each available Blackboard learning block. New blocks open progressively through the term. The companion website is open for preview, and these check-offs are optional planning aids."
     },
     {
      "do": "Play the weekly lecture in Listen to this week.",
@@ -88,8 +88,8 @@ window.BFS218_HOWTO = {
      "detail": "Every week uses a different sequence. You may begin with a 3D scene, a decision, an experiment, a design comparison, or an assembly bench. Follow the numbered route and use the feedback to test what each move changes."
     },
     {
-     "do": "Close with the checks, your reflection, and Generate Your Weekly Notes.",
-     "detail": "Rate the same ideas you rated at the start, use the Study Guide before the Knowledge Check, write your reflection, then generate the Word file that collects your week on Seneca letterhead."
+     "do": "Review the checks and carry the reflection question forward.",
+     "detail": "Carry the week's reflection question forward. A separate written response is not required. You may keep private notes and download them if useful."
     }
    ],
    "saves": "When browser storage is available, a temporary copy of your ratings, notes, step check-offs, reflections, and practice results may remain on this device. Browser settings, private browsing, clearing site data, shared-device use, or changing devices can prevent or remove it. Generate Your Weekly Notes downloads a separate file; protect that file according to where you save it.",
@@ -120,7 +120,7 @@ window.BFS218_HOWTO = {
     {
      "do": "scroll",
      "to": 0.9,
-     "say": "Finish with your reflection and generate your weekly notes to keep."
+     "say": "Carry the week's reflection question forward. A separate written response is not required. You may keep private notes and download them if useful."
     }
    ]
   },
@@ -586,15 +586,15 @@ window.BFS218_HOWTO = {
   },
   "assignments": {
    "title": "How to use Starting Your Assignment",
-   "intro": "The seven graded components build one map across the term. These pages explain the arc, the rooms, the dates, and the rules, so the blank page never wins.",
+   "intro": "This page explains the seven graded assignments and helps you plan a starting point. Preview the guides here; use Blackboard for the full instructions, release conditions and submission.",
    "steps": [
     {
      "do": "Start with the overview.",
-     "detail": "The graded work includes two 10 percent Field Notes portfolios, three 20 percent assessments, Personal Cartography at 15 percent, and a 5 percent Final Learning Reflection. Together they build and close your learning map."
+     "detail": "Your seven assignments total 100%: two Field Notes portfolios worth 10% each, three assignments worth 20% each, Personal Cartography worth 15%, and the Final Learning Reflection worth 5%."
     },
     {
      "do": "Note every release and due date.",
-     "detail": "The first graded deadline is October 18 and the final deadline is December 13. Use the calendar for every release, milestone, and due date. Deadlines are 11:59 p.m. Eastern."
+     "detail": "Check the calendar for each assignment's release date, due date and any no-penalty submission window. Blackboard controls when you can open and submit the assignment. The companion website remains available for preview."
     },
     {
      "do": "Open one assignment room at a time.",
@@ -606,7 +606,7 @@ window.BFS218_HOWTO = {
     },
     {
      "do": "Open the Assignment Start Lab when you want a working session.",
-     "detail": "Fixed course rules, no AI, build a personal start plan you can print or save. For Digital Decision Scenarios, the lab gives readiness steps only; that assessment is a closed, timed Blackboard sitting."
+     "detail": "The lab uses fixed course rules to help you plan. Digital Decision Scenarios has no time limit: use Save and Close to pause your draft, then Continue attempt to return before submitting. You have one final submitted attempt unless I approve another."
     },
     {
      "do": "Build a first-draft plan, then submit on Blackboard, always.",
@@ -630,7 +630,7 @@ window.BFS218_HOWTO = {
     {
      "do": "click",
      "text": "Release",
-     "say": "Assessment deadlines run from October 18 to December 13, all by 11:59 p.m. Eastern. Nothing is due in Study Week; the 5 percent Final Learning Reflection is due in Week 14."
+     "say": "Check the calendar for each assignment's release date, due date and any no-penalty submission window. Blackboard controls when you can open and submit the assignment. The companion website remains available for preview."
     },
     {
      "do": "click",

@@ -1441,7 +1441,7 @@
     var steps = [
       ['Start with this week', 'Open the current week from Home or the left rail. Everything the week asks of you lives on one page, in order.'],
       ['Read the week, in order', 'Move down the page: the purpose and guiding questions, then the key concepts and terms, then the readings and media.'],
-      ['Try it, then reflect', 'Run the weekly activity and the interactive lesson, then write your reflection and generate your weekly notes.'],
+      ['Try it, then reflect', "Use the weekly practice and interactive lesson, then carry the reflection question forward. No separate reflection response is required. Download your private notes if useful."],
       ['Check what landed', 'Use the ungraded companion-site Knowledge Check and the flashcards to see what stuck, as often as you like. Results are not submitted to the instructor.'],
       ['Submit and get grades on Blackboard', 'This site is for learning and preparing. Blackboard stays the official place for submissions, grades, and announcements.']
     ];
