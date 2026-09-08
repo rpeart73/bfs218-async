@@ -1,0 +1,52 @@
+/* Text-first argument map. Scoped to the Week 2 pilot, not the site's graphics. */
+#wk-test-idea > .wk-coll-btn { display:block !important; min-width:44px; min-height:44px; }
+#wk-test-idea.wk-collapsed > .wk-desc { display:block !important; margin-top:1rem; }
+.bfs-test-idea .ti-content { font-size:1rem; line-height:1.65; color:#253247; }
+.bfs-test-idea .ti-content p { margin:0 0 1rem; }
+.bfs-test-idea .ti-content p:last-child { margin-bottom:0; }
+.bfs-test-idea .ti-label { display:block; font-size:.82rem; font-weight:700; letter-spacing:.035em; color:#4a4656; margin-bottom:.5rem; }
+.bfs-test-idea .ti-question { position:relative; background:#f3f0f7; border:1px solid #c2b7d0; border-top:4px solid #644977; border-radius:12px; padding:1.5rem; }
+.bfs-test-idea .ti-question h3 { font-size:1.5rem; line-height:1.3; margin:0 0 1rem; color:#30233d; }
+.bfs-test-idea .ti-boundary { padding-top:1rem; border-top:1px solid #c2b7d0; color:#4a4656; }
+.bfs-test-idea .ti-invitation { padding:1.25rem 0 .25rem; }
+.bfs-test-idea .ti-map { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:1rem; position:relative; padding-top:1.25rem; margin-bottom:1.5rem; align-items:start; }
+.bfs-test-idea .ti-map::before { content:""; position:absolute; left:16.66%; right:16.66%; top:0; border-top:2px solid #9b90a7; }
+.bfs-test-idea .ti-card { position:relative; min-width:0; border:1px solid #aab5c1; border-radius:12px; background:#fff; }
+.bfs-test-idea .ti-card::before { content:""; position:absolute; left:50%; top:calc(-1.25rem - 1px); height:1.25rem; border-left:2px solid #9b90a7; }
+.bfs-test-idea .ti-card summary { display:list-item; cursor:pointer; padding:1.1rem 1rem; list-style-position:inside; border-radius:11px; min-height:110px; color:#30233d; }
+.bfs-test-idea .ti-card summary::marker { color:#644977; }
+.bfs-test-idea .ti-card summary .ti-label { display:inline; margin-left:.3rem; }
+.bfs-test-idea .ti-card-title { display:block; margin-top:.6rem; font-size:1.1rem; line-height:1.45; font-weight:700; }
+.bfs-test-idea .ti-card summary:hover { background:#f3f0f7; }
+.bfs-test-idea .ti-card summary:focus-visible,
+.bfs-test-idea a:focus-visible { outline:3px solid #263f69; outline-offset:4px; }
+.bfs-test-idea .ti-card[open] summary { background:#f3f0f7; border-radius:11px 11px 0 0; border-bottom:1px solid #c2b7d0; }
+.bfs-test-idea .ti-card-body { padding:1.1rem 1rem; }
+.bfs-test-idea .ti-card-body ul { margin:0 0 1rem; padding-left:1.3rem; }
+.bfs-test-idea .ti-card-body li { margin:0 0 .75rem; }
+.bfs-test-idea .ti-return { border:1px solid #b8c4d2; border-left:4px solid #536c89; background:#f0f4f8; border-radius:10px; padding:1.25rem; margin-bottom:1.5rem; }
+.bfs-test-idea .ti-return .ti-label { font-size:1.05rem; color:#253247; }
+.bfs-test-idea .ti-source { border-top:1px solid #bcc3cc; padding-top:1rem; }
+.bfs-test-idea a { color:#703121; text-decoration:underline; text-underline-offset:3px; overflow-wrap:anywhere; }
+@media (max-width:1100px) {
+  .bfs-test-idea .ti-map { grid-template-columns:1fr; padding-top:0; }
+  .bfs-test-idea .ti-map::before,.bfs-test-idea .ti-card::before { display:none; }
+  .bfs-test-idea .ti-card summary { min-height:0; }
+}
+@media (max-width:500px) {
+  .bfs-test-idea .ti-question { padding:1.1rem; }
+  .bfs-test-idea .ti-question h3 { font-size:1.25rem; }
+}
+@media (forced-colors:active) {
+  .bfs-test-idea .ti-card,.bfs-test-idea .ti-question,.bfs-test-idea .ti-return { border:2px solid CanvasText; }
+  .bfs-test-idea .ti-card summary:focus-visible,.bfs-test-idea a:focus-visible { outline:3px solid Highlight; }
+}
+@media print {
+  #wk-test-idea > .wk-coll-btn { display:none !important; }
+  #wk-test-idea.wk-collapsed > .ti-content { display:block !important; }
+  .bfs-test-idea .ti-map { display:block; padding:0; }
+  .bfs-test-idea .ti-map::before,.bfs-test-idea .ti-card::before { display:none; }
+  .bfs-test-idea .ti-card { margin-bottom:1rem; break-inside:avoid; }
+  .bfs-test-idea details::details-content { content-visibility:visible; height:auto; }
+  .bfs-test-idea .ti-card-body { display:block !important; }
+}
