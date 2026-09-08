@@ -546,34 +546,38 @@ window.BFS218 = {
  "sourceUrl": "https://onlinelibrary.wiley.com/doi/10.1111/imig.13187"
 },
   {
-   "id": "nagra2016",
-   "eye": "western",
-   "type": "Article",
-   "access": "open",
-   "title": "Crossing Borders and Managing Racialized Identities: Experiences of Security and Surveillance Among Young Canadian Muslims",
-   "authors": "Baljit Nagra and Paula Maurutto",
-   "year": 2016,
-   "themes": [
-    "surveillance",
-    "policing"
-   ],
-   "origin": "Canada",
-   "len": "~40 min read",
-   "diff": 2,
-   "week": 6,
-   "abstract": "Baljit Nagra and Paula Maurutto draw on interviews with young Canadian Muslims about encounters with airports, borders, and security practices. Participants described being pulled aside, questioned, watched, and treated as possible security risks, and they explained how they managed racialized identities in response. The article documents the experiences reported by this participant group; it does not claim that every young Muslim in Canada has the same experience.",
-   "coreIdea": "Participants described security and surveillance practices that racialized them as potential risks and shaped how they presented themselves at borders and checkpoints.",
-   "evidenceType": "Qualitative semi-structured interview study",
-   "sample": "50 self-identified Muslim participants aged 18 to 31 in Toronto or Vancouver, interviewed from 2005 to 2010; 24 men and 26 women, recruited through networks, snowball sampling, and student organizations.",
-   "evidenceLimit": "The study documents this participant group's reported border and surveillance experiences. It does not estimate national prevalence, represent every young Canadian Muslim, or establish that every border encounter follows the same pattern.",
-   "doi": "10.29173/cjs23031",
-   "url": "https://journals.library.ualberta.ca/cjs/index.php/CJS/article/view/23031",
-   "related": [
-    "robertson2020",
-    "molnar2023"
-   ],
-   "fulltext": true
-  },
+ "id": "nagra2016",
+ "eye": "western",
+ "type": "Article",
+ "access": "course",
+ "title": "Crossing Borders and Managing Racialized Identities: Experiences of Security and Surveillance Among Young Canadian Muslims",
+ "authors": "Baljit Nagra and Paula Maurutto",
+ "year": 2016,
+ "themes": [
+  "surveillance",
+  "policing"
+ ],
+ "origin": "Canada",
+ "len": "~40 min read",
+ "diff": 2,
+ "week": 6,
+ "abstract": "Baljit Nagra and Paula Maurutto draw on interviews with young Canadian Muslims about encounters with airports, borders, and security practices. Participants described being pulled aside, questioned, watched, and treated as possible security risks, and they explained how they managed racialized identities in response. The article documents the experiences reported by this participant group; it does not claim that every young Muslim in Canada has the same experience. Reading focus for this week: Start with the summary on PDF page 1 and the explanation of the interviews on pages 3 to 4. Read one participant account in the findings beginning on page 9. Notice how the person describes surveillance, belonging and choices. The study is historical: its references to laws and policies describe the period discussed, not necessarily current law. The complete article is available for context.",
+ "coreIdea": "Participants described security and surveillance practices that racialized them as potential risks and shaped how they presented themselves at borders and checkpoints.",
+ "evidenceType": "Qualitative semi-structured interview study",
+ "sample": "50 self-identified Muslim participants aged 18 to 31 in Toronto or Vancouver, interviewed from 2005 to 2010; 24 men and 26 women, recruited through networks, snowball sampling, and student organizations.",
+ "evidenceLimit": "The study documents this participant group's reported border and surveillance experiences. It does not estimate national prevalence, represent every young Canadian Muslim, or establish that every border encounter follows the same pattern.",
+ "doi": "10.29173/cjs23031",
+ "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482988-dt-content-rid-224232309_2/xid-224232309_2",
+ "related": [
+  "robertson2020",
+  "molnar2023"
+ ],
+ "fulltext": true,
+ "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482988-dt-content-rid-224232309_2/xid-224232309_2",
+ "primaryLabel": "Open full article in Blackboard",
+ "blackboardFullText": true,
+ "sourceUrl": "https://journals.library.ualberta.ca/cjs/index.php/CJS/article/view/23031"
+},
   {
    "id": "mohamed2020",
    "video": {
@@ -702,41 +706,44 @@ window.BFS218 = {
    "fulltext": true
   },
   {
-   "id": "tanksley2023",
-   "video": {
-    "yt": "L1k5UwgTvdU",
-    "title": "The Power and Potentiality of Abolitionist Tech | Dr. Tiera Tanksley | Black Study in Education Lab",
-    "channel": "Black Study in Education Lab @ PSU",
-    "scholar": "Tiera Tanksley"
-   },
-   "eye": "western",
-   "type": "Article",
-   "access": "open",
-   "title": "Employing an Abolitionist, Critical Race Pedagogy in CS: Centering the Voices, Experiences and Technological Innovations of Black Youth",
-   "authors": "Tiera Tanksley",
-   "year": 2023,
-   "themes": [
-    "resistance",
-    "intersectionality"
-   ],
-   "origin": "United States",
-   "len": "~40 min read",
-   "diff": 3,
-   "week": 11,
-   "abstract": "Tiera Tanksley sets out an abolitionist, critical race pedagogy for computer science that centres the voices, experiences, and technological innovations of Black youth and treats them as technology creators. This is a pedagogical framework and critical argument, not an empirical test showing that one course design changes institutional power.",
-   "coreIdea": "Tanksley proposes an abolitionist, critical race pedagogy that centres Black youth's voices, experiences, and technological innovations; the article offers a framework, not causal evidence of institutional change.",
-   "evidenceType": "Critical race pedagogy framework article",
-   "sample": "No evaluated intervention sample; the article develops an abolitionist computer-science pedagogy through Black studies, critical race theory, and educational scholarship.",
-   "evidenceLimit": "The framework centres Black youth and proposes pedagogical commitments. It does not causally test whether one course design changes student outcomes or institutional power.",
-   "doi": "10.26716/jcsi.2023.12.27.49",
-   "url": "https://digitalcommons.chapman.edu/jcsi/vol6/iss1/9/",
-   "pdfUrl": "https://digitalcommons.chapman.edu/cgi/viewcontent.cgi?article=1020&context=jcsi",
-   "related": [
-    "costanza2020",
-    "benjamin2019"
-   ],
-   "fulltext": true
-  },
+ "id": "tanksley2023",
+ "video": {
+  "yt": "L1k5UwgTvdU",
+  "title": "The Power and Potentiality of Abolitionist Tech | Dr. Tiera Tanksley | Black Study in Education Lab",
+  "channel": "Black Study in Education Lab @ PSU",
+  "scholar": "Tiera Tanksley"
+ },
+ "eye": "western",
+ "type": "Article",
+ "access": "course",
+ "title": "Employing an Abolitionist, Critical Race Pedagogy in CS: Centering the Voices, Experiences and Technological Innovations of Black Youth",
+ "authors": "Tiera Tanksley",
+ "year": 2023,
+ "themes": [
+  "resistance",
+  "intersectionality"
+ ],
+ "origin": "United States",
+ "len": "~40 min read",
+ "diff": 3,
+ "week": 11,
+ "abstract": "Tiera Tanksley sets out an abolitionist, critical race pedagogy for computer science that centres the voices, experiences, and technological innovations of Black youth and treats them as technology creators. This is a pedagogical framework and critical argument, not an empirical test showing that one course design changes institutional power. Reading focus for this week: Start with the summary on PDF page 2. Read one of the student design examples on PDF pages 12 to 14. Focus on whose experiences shaped the idea, what harm it addresses and what its limits might be. These are student proposals, not proof that the proposed technologies work. You do not need to build software. The complete article is available for context.",
+ "coreIdea": "Tanksley proposes an abolitionist, critical race pedagogy that centres Black youth's voices, experiences, and technological innovations; the article offers a framework, not causal evidence of institutional change.",
+ "evidenceType": "Critical race pedagogy framework article",
+ "sample": "No evaluated intervention sample; the article develops an abolitionist computer-science pedagogy through Black studies, critical race theory, and educational scholarship.",
+ "evidenceLimit": "The framework centres Black youth and proposes pedagogical commitments. It does not causally test whether one course design changes student outcomes or institutional power.",
+ "doi": "10.26716/jcsi.2023.12.27.49",
+ "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482989-dt-content-rid-224232312_2/xid-224232312_2",
+ "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482989-dt-content-rid-224232312_2/xid-224232312_2",
+ "related": [
+  "costanza2020",
+  "benjamin2019"
+ ],
+ "fulltext": true,
+ "primaryLabel": "Open full article in Blackboard",
+ "blackboardFullText": true,
+ "sourceUrl": "https://digitalcommons.chapman.edu/jcsi/vol6/iss1/9/"
+},
   {
  "id": "costanza2020",
  "assigned": "Design Justice, Introduction (pp.1-30)",
