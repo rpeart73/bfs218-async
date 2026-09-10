@@ -26,3 +26,7 @@ python3 -m http.server 8200
 ```
 
 IBM Plex Sans and Mono are self-hosted from `./fonts/` (OFL 1.1, license in `fonts/OFL.txt`); the site loads no CDN scripts and no Google Fonts. The only external requests are user-facing scholar media embeds or source links. Embeddable videos use official YouTube no-cookie players; podcasts or restricted media link to the official source site and are not downloaded or rehosted.
+
+## Public assignment boundary, September 10, 2026
+
+Assignment instructions, rubrics and assignment downloads are available only in Blackboard. The public website provides learning content and navigation tools. Updated site-use guides may be downloaded from `guide/`; each approved download is recorded in `public-content-policy.json`. Do not restore public assignment content without an explicit new request from Raymond. The deployment check is `node tests/public-assignment-boundary.cjs`.
