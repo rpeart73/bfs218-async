@@ -25,6 +25,8 @@
     return !!(v && v.screen);
   }
   function cleanScreen(s) {
+    if (/^(assignments?|assessment|starter)/.test(String(s || ''))) return 'journey';
+
     return ['journey', 'site', 'library', 'station', 'detail', 'assignments', 'assignment-program', 'assignment-details', 'assignment-rubric', 'assignment-release', 'assignment-ai', 'assignment-faq', 'starter', 'videos', 'readings', 'compare', 'reading', 'glossary', 'career', 'cards', 'walkthroughs', 'sandbox', 'activity', 'calendar', 'lectures', 'review', 'outcomes'].indexOf(s) >= 0 ? s : 'journey';
   }
   function cleanWeek(w) {
@@ -818,7 +820,7 @@
   }
   function sidebar() {
     var s = state;
-    var navDefs = [['journey', 'Home', 'gauge'], ['site', 'How This Site Works', 'file'], ['readings', 'Readings and Media', 'gallery'], ['compare', 'Compare Sources', 'columns'], ['reading', 'Source Practice', 'book'], ['videos', 'Videos and Podcasts', 'play'], ['glossary', 'Glossary', 'book'], ['cards', 'Concept Flashcards', 'clipboard'], ['review', 'Term Review', 'check'], ['outcomes', 'What This Course Builds', 'columns'], ['assignments', 'Starting Your Assignment', 'clipboard'], ['career', 'Career Choices', 'globe']];
+    var navDefs = [["journey","Home","gauge"],["site","How This Site Works","file"],["readings","Readings and Media","gallery"],["compare","Compare Sources","columns"],["reading","Source Practice","book"],["videos","Videos and Podcasts","play"],["glossary","Glossary","book"],["cards","Concept Flashcards","clipboard"],["review","Term Review","check"],["outcomes","What This Course Builds","columns"],["career","Career Choices","globe"]];
     var btns = {};
     navDefs.forEach(function (d) {
       var key = d[0], active = (key === 'journey' && (s.screen === 'journey' || s.screen === 'library' || s.screen === 'station' || s.screen === 'detail')) || s.screen === key;
@@ -830,11 +832,11 @@
     });
     var wkActive = s.screen === 'walkthroughs';
     var walk = '<button onclick="SOC.go(\'walkthroughs\')" aria-current="' + (wkActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (wkActive ? '600' : '500') + ';background:' + (wkActive ? '#EEF1F5' : 'transparent') + ';color:' + (wkActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (wkActive ? 'var(--red)' : '#6B7280') + '">' + ic('layers', 19) + '</span><span style="flex:1;text-align:left">Interactive Lessons</span></button>';
-    var guide = '<div style="border-radius:10px;padding:10px 12px;color:#474C57"><div style="display:flex;align-items:flex-start;gap:11px;font-size:.9375rem;font-weight:500;line-height:1.25"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:#6B7280">' + ic('file', 19) + '</span><span style="flex:1;min-width:0">Course Website Instructions</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0 33px"><a href="./guide/" target="_blank" rel="noopener" style="font-size:.75rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;border-radius:999px;padding:4px 9px;text-decoration:none">Online guide <span aria-hidden="true">&#8599;</span></a><a href="./guide/BFS218-Companion-Guide.pdf?v=deadline-policy-20260906" download style="font-size:.75rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;border-radius:999px;padding:4px 9px;text-decoration:none">PDF <span aria-hidden="true">&#8595;</span></a></div></div>';
+    var guide = '<div style="border-radius:10px;padding:10px 12px;color:#474C57"><div style="display:flex;align-items:flex-start;gap:11px;font-size:.9375rem;font-weight:500;line-height:1.25"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:#6B7280">' + ic('file', 19) + '</span><span style="flex:1;min-width:0">Course Website Instructions</span></div><div style="display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 0 33px"><a href="./guide/" target="_blank" rel="noopener" style="font-size:.75rem;font-weight:600;color:#1B2A4A;background:#EEF1F5;border:1px solid #DEE3EA;border-radius:999px;padding:4px 9px;text-decoration:none">Online guide <span aria-hidden="true">&#8599;</span></a></div></div>';
     var repActive = s.screen === 'report';
     var report = '<button onclick="SOC.reportProblem()" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:500;background:transparent;color:#474C57;text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:#6B7280">' + ic('help', 19) + '</span><span style="flex:1;text-align:left">Report a problem</span></button>';
     var calActive = s.screen === 'calendar';
-    var cal = '<button onclick="SOC.go(\'calendar\')" aria-current="' + (calActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (calActive ? '600' : '500') + ';background:' + (calActive ? '#EEF1F5' : 'transparent') + ';color:' + (calActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (calActive ? 'var(--red)' : '#6B7280') + '">' + ic('calendar', 19) + '</span><span style="flex:1;text-align:left">Calendar and Due Dates</span></button>';
+    var cal = '<button onclick="SOC.go(\'calendar\')" aria-current="' + (calActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (calActive ? '600' : '500') + ';background:' + (calActive ? '#EEF1F5' : 'transparent') + ';color:' + (calActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (calActive ? 'var(--red)' : '#6B7280') + '">' + ic('calendar', 19) + '</span><span style="flex:1;text-align:left">Course Calendar</span></button>';
     var lbl = function (t) { return '<div class="mono" style="font-size:.6875rem;letter-spacing:.06em;color:#6B7280;padding:16px 12px 6px">' + t + '</div>'; };
     var lecActive = s.screen === 'lectures';
     var lec = '<button onclick="SOC.go(\'lectures\')" aria-current="' + (lecActive ? 'page' : 'false') + '" style="display:flex;align-items:center;gap:11px;width:100%;border:none;border-radius:10px;padding:10px 12px;font-size:.9375rem;font-weight:' + (lecActive ? '600' : '500') + ';background:' + (lecActive ? '#EEF1F5' : 'transparent') + ';color:' + (lecActive ? '#15171C' : '#474C57') + ';text-align:left"><span style="display:flex;align-items:center;justify-content:center;width:22px;height:22px;flex:none;color:' + (lecActive ? 'var(--red)' : '#6B7280') + '">' + ic('play', 19) + '</span><span style="flex:1;text-align:left">Lectures</span></button>';
@@ -1447,7 +1449,7 @@
     ];
     return '<section class="node site-howto" aria-labelledby="how-site-title"><h2 id="how-site-title" class="wk-sec">How to use this site</h2>'
       + '<p class="wk-desc">These are your Course Website Instructions, in five steps. Read the interactive version here, or take a copy with you.</p>'
-      + '<div class="site-howto-links"><a href="./guide/" target="_blank" rel="noopener">Open the full online guide <span aria-hidden="true">&#8599;</span></a><a href="./guide/BFS218-Companion-Guide.pdf?v=deadline-policy-20260906" download>Download the PDF <span aria-hidden="true">&#8595;</span></a></div>'
+      + '<div class="site-howto-links"><a href="./guide/" target="_blank" rel="noopener">Open the full online guide <span aria-hidden="true">&#8599;</span></a></div>'
       + '<ol class="site-howto-steps">' + steps.map(function (s, i) { return '<li class="site-howto-step"><span class="n">' + (i + 1) + '</span><div><b>' + esc(s[0]) + '</b><p>' + esc(s[1]) + '</p></div></li>'; }).join('') + '</ol>'
       + '</section>';
   }
@@ -1554,7 +1556,7 @@
     if (state.screen === 'cards') return 'Concept Flashcards';
     if (state.screen === 'review') return 'Term Review';
     if (state.screen === 'outcomes') return 'What This Course Builds';
-    if (state.screen === 'calendar') return 'Calendar and Due Dates';
+    if (state.screen === 'calendar') return 'Course Calendar';
     if (state.screen === 'assignments' || state.screen === 'starter') return 'Understanding Your Assignment';
     if (state.screen === 'career') return 'Career Choices';
     if (state.screen === 'sandbox') return 'Bias Audit';
@@ -2513,32 +2515,7 @@
     }
     return '<section id="wk-rec" class="node wk-rec"><div class="wk-rec-inner"><div class="mono wk-rec-kick">' + esc(live ? 'AFTER CLASS' : 'THIS WEEK') + ' &middot; WEEK ' + w + '</div><h2>' + esc(heading) + '</h2>' + (body || '<p>' + esc(empty) + '</p>') + '</div></section>';
   }
-  function homeNextDue() {
-    var due = [];
-    try {
-      keyDatesList().forEach(function (row) {
-        var n = kdDaysUntil(row.d);
-        if (n < 0) return;
-        (row.it || []).forEach(function (it) {
-          if (it[2] === 'due') due.push({ d: row.d, name: String(it[0]).replace(/\s+(?:due|close|closes)$/i, ''), idx: it[3], days: n });
-        });
-      });
-    } catch (e) {}
-    due.sort(function (a, b) { return a.d < b.d ? -1 : (a.d > b.d ? 1 : 0); });
-    var nd = due.slice(0, 2);
-    var body;
-    if (!nd.length) {
-      body = '<p class="home-due-empty">No graded work is left to submit. You are caught up.</p>';
-    } else {
-      body = nd.map(function (x) {
-        var when = kdMonthDay(x.d) + ' · ' + (x.days === 0 ? 'due today' : (x.days === 1 ? 'in 1 day' : 'in ' + x.days + ' days'));
-        var inner = '<span class="home-due-name">' + esc(x.name) + '</span><span class="home-due-when">' + esc(when) + '</span>';
-        if (x.idx != null) return '<a class="home-due-item" href="?screen=assignment-details&asg=' + encodeURIComponent(x.idx) + '" target="_blank" rel="noopener" aria-label="Open the ' + esc(x.name) + ' assignment in a new tab">' + inner + '<span class="home-due-go" aria-hidden="true">&#8599;</span></a>';
-        return '<div class="home-due-item">' + inner + '</div>';
-      }).join('');
-    }
-    return '<div class="home-due"><div class="mono home-due-h">NEXT DUE</div>' + body + '<button type="button" class="home-due-all" onclick="SOC.go(\'calendar\')">All dates and deadlines <span aria-hidden="true">&rarr;</span></button></div>';
-  }
+  function homeNextDue() { return ''; }
   function homeHero() {
     return '<section class="home-hero-masthead jfade" aria-label="' + esc(courseTitle()) + '">'
       + '<img src="images/hero.jpg" alt="" aria-hidden="true" loading="eager" onerror="this.remove()" class="hhm-img">'
@@ -6435,9 +6412,7 @@
     }).filter(function (event) { return event.title; });
   }
 
-  function weekAssignmentNotice(w) {
-    return CourseAssessmentGuides.week(w);
-  }
+  function weekAssignmentNotice(w) { return ''; }
 
   function weekPage(w, d) {
     var ws = journeyWeeks(), idx = ws.indexOf(w), prev = idx > 0 ? ws[idx - 1] : null, next = idx < ws.length - 1 ? ws[idx + 1] : null;
@@ -8194,255 +8169,13 @@
       + '<div style="margin-top:9px;font-size:.76rem;line-height:1.45;color:var(--ink-dim)">' + esc(lensChangeLine()) + '</div>'
       + '</div>';
   }
-  function keyDatesList() {
-    return [
-  {
-    "d": "2026-09-08",
-    "it": [
-      [
-        "Course opens",
-        "All fourteen weeks are available",
-        "support"
-      ]
-    ]
-  },
-  {
-    "d": "2026-09-08",
-    "it": [
-      [
-        "Digital Systems Field Notes Portfolio 1 opens",
-        "10%; submit in Blackboard",
-        "open",
-        "map-exchange"
-      ]
-    ]
-  },
-  {
-    "d": "2026-09-18",
-    "it": [
-      [
-        "Digital Systems Field Notes Portfolio 1",
-        "due; 10%",
-        "due",
-        "map-exchange"
-      ]
-    ]
-  },
-  {
-    "d": "2026-09-20",
-    "it": [
-      [
-        "Digital Systems Field Notes Portfolio 1: 48-hour window ends",
-        "11:59 p.m. Eastern Time (ET); no penalty within this window",
-        "window-end",
-        "map-exchange"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-01",
-    "it": [
-      [
-        "Digital Decision Scenarios opens",
-        "20%; submit in Blackboard",
-        "open",
-        "compass-check"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-01",
-    "it": [
-      [
-        "Canadian Technology Investigation opens",
-        "20%; submit in Blackboard",
-        "open",
-        "case-file"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-13",
-    "it": [
-      [
-        "Digital Decision Scenarios",
-        "due; 20%",
-        "due",
-        "compass-check"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-15",
-    "it": [
-      [
-        "Digital Decision Scenarios: 48-hour window ends",
-        "11:59 p.m. Eastern Time (ET); no penalty within this window",
-        "window-end",
-        "compass-check"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-20",
-    "it": [
-      [
-        "Canadian Technology Investigation",
-        "due; 20%",
-        "due",
-        "case-file"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-22",
-    "it": [
-      [
-        "Canadian Technology Investigation: 48-hour window ends",
-        "11:59 p.m. Eastern Time (ET); no penalty within this window",
-        "window-end",
-        "case-file"
-      ]
-    ]
-  },
-  {
-    "d": "2026-10-26",
-    "it": [
-      [
-        "Study Week",
-        "October 26 to 30; no new graded deadline",
-        "study"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-02",
-    "it": [
-      [
-        "Digital Systems Field Notes Portfolio 2 opens",
-        "10%; submit in Blackboard",
-        "open",
-        "field-notes-2"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-13",
-    "it": [
-      [
-        "Digital Systems Field Notes Portfolio 2",
-        "due; 10%",
-        "due",
-        "field-notes-2"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-15",
-    "it": [
-      [
-        "Digital Systems Field Notes Portfolio 2: 48-hour window ends",
-        "11:59 p.m. Eastern Time (ET); no penalty within this window",
-        "window-end",
-        "field-notes-2"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-16",
-    "it": [
-      [
-        "Design the Repair opens",
-        "20%; submit in Blackboard",
-        "open",
-        "repair"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-26",
-    "it": [
-      [
-        "Personal Cartography opens",
-        "15%; submit in Blackboard",
-        "open",
-        "cartography"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-27",
-    "it": [
-      [
-        "Design the Repair",
-        "due; 20%",
-        "due",
-        "repair"
-      ]
-    ]
-  },
-  {
-    "d": "2026-11-29",
-    "it": [
-      [
-        "Design the Repair: 48-hour window ends",
-        "11:59 p.m. Eastern Time (ET); no penalty within this window",
-        "window-end",
-        "repair"
-      ]
-    ]
-  },
-  {
-    "d": "2026-12-07",
-    "it": [
-      [
-        "Final Learning Reflection opens",
-        "5%; submit in Blackboard",
-        "open",
-        "final-reflection"
-      ]
-    ]
-  },
-  {
-    "d": "2026-12-11",
-    "it": [
-      [
-        "Personal Cartography",
-        "due; 15%",
-        "due",
-        "cartography"
-      ]
-    ]
-  },
-  {
-    "d": "2026-12-13",
-    "it": [
-      [
-        "Final Learning Reflection",
-        "due; 5%",
-        "due",
-        "final-reflection"
-      ]
-    ]
-  },
-  {
-    "d": "2026-12-16",
-    "it": [
-      [
-        "Last day of the term",
-        "Course work is complete",
-        "support"
-      ]
-    ]
-  }
-];
-  }
+  function keyDatesList() { return [{"d":"2026-09-08","it":[["Course opens","All fourteen weeks are available","support"]]},{"d":"2026-10-26","it":[["Study Week","","study"]]},{"d":"2026-12-16","it":[["Last day of the term","Course work is complete","support"]]}]; }
   var KD_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function kdDaysUntil(iso) {
     try { var t = new Date(); var a0 = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()); var p = iso.split('-'); var b0 = Date.UTC(+p[0], +p[1] - 1, +p[2]); return Math.round((b0 - a0) / 86400000); } catch (e) { return 999; }
   }
   function kdMonthDay(iso) { var p = iso.split('-'); return KD_MON[+p[1] - 1] + ' ' + (+p[2]); }
-  function deadlineRule() { return '<aside class="deadline-rule" role="note" style="border:1px solid #E7C3BF;border-left:5px solid #DA291C;border-radius:0 11px 11px 0;background:#fff;padding:12px 14px;margin:0 0 16px;color:#15171C"><strong style="color:#961A13">Submission time:</strong> All assignments are due by 11:59 p.m. Eastern Time, EDT or EST as applicable, on the date shown. Blackboard remains the official submission record.</aside>'; }
+  function deadlineRule() { return ''; }
   function mobileCalendarSubscription() { var code = courseCode(), base = location.protocol + '//' + location.host + location.pathname.replace(/[^\/]*$/, ''), feed = (base + 'calendar/' + code + '_key_dates.ics').replace(/^https?:/i, 'webcal:'); return '<section class="mobile-cal-sub" aria-labelledby="mobile-cal-title"><div class="mono">MOBILE CALENDAR</div><h2 id="mobile-cal-title">Keep these dates on your phone</h2><p>This is a live calendar subscription, not a downloaded copy. Your calendar app can refresh it when the course schedule changes. Blackboard remains the official source.</p><a href="' + esc(feed) + '">Subscribe on this phone <span aria-hidden="true">&#8594;</span></a></section>'; }
   function mobileAccessPanel() { var url = (location.origin + location.pathname).replace(/index\.html$/i, ''); return '<section class="mobile-access-panel" aria-labelledby="mobile-access-title"><div class="mono">PHONE OR TABLET</div><h2 id="mobile-access-title">Use the same site on any device</h2><p>There is no separate app. This responsive site is the mobile version too. Share or copy the link, then open it on your phone or tablet.</p><div><a href="' + esc(url) + '">Open the site link</a><button type="button" onclick="SOC.shareMobileSite()">Share or copy the link</button></div><small>When browser storage is available, notes may remain only on the device and browser where you typed them.</small></section>'; }
   function upcomingParts(e) {
@@ -8660,16 +8393,7 @@
     var grids = [8, 9, 10, 11].map(function (m) { return calMonthGrid(2026, m); }).join('');
     return calendarLegend() + '<div class="cal-grids">' + grids + '</div>' + keyDatesCalendar();
   }
-  function calendarPage() {
-    return '<div class="rise cal-page">' + (D.course.scheduleDetail ? '<div style="border:1px solid var(--border);border-left:4px solid var(--red);border-radius:10px;background:#fff;padding:12px 16px;margin:0 0 16px"><div class="mono" style="font-size:.66rem;letter-spacing:.07em;color:var(--red);font-weight:700;margin-bottom:5px">CLASS TIME</div><p style="margin:0;font-size:.92rem;line-height:1.55;color:var(--ink)">' + esc(D.course.scheduleDetail) + '</p></div>' : '') + ''
-      + '<div class="mono" style="font-size:.7rem;letter-spacing:.08em;color:var(--red);font-weight:700;margin-bottom:4px">CALENDAR</div>'
-      + '<h1 style="font-size:1.9rem;line-height:1.15;font-weight:600;margin:0 0 8px;color:var(--ink)">Every date that matters</h1>'
-      + '<p style="font-size:1rem;line-height:1.6;color:var(--ink-dim);margin:0 0 20px">This calendar shows when graded assessments open and when they are due. Every teaching week is asynchronous, and all fourteen weekly learning modules are available from the beginning of the term. A light grey outline marks Study Week. Blackboard remains the official source for assessment access, submissions, and exact dates.</p>'
-      + deadlineRule()
-      + mobileCalendarSubscription()
-      + calendarBody()
-      + '</div>';
-  }
+  function calendarPage() { return '<div class="rise cal-page"><h1>Course schedule</h1><p>Class dates and delivery modes are listed below. Open Blackboard for assignment information.</p>' + mobileCalendarSubscription() + '<section class="node">' + keyDatesRows(['class','async','support']) + '</section></div>'; }
   /* Every approved assessment is visible here from day one. Blackboard controls when the complete
      brief, assessment, and submission link can actually be opened. Public deep links use stable ids. */
   function assignmentsData() { return assignmentsAll(); }
@@ -9122,7 +8846,7 @@
     var intro = '<div><div class="mono">VIEW PROGRAMS</div><h2>Understand your program\'s connection to the course</h2><p>Use this page when you want help seeing how the course can connect to a program area. It is optional. It does not choose your assignment lens, generate assignment work, or change your saved assignment setup.</p><small>When you are ready to plan an assignment, go to Starting Your Assignment.</small></div>';
     var picker = '<div class="asg-program-picker"><h3>Choose a program to understand the connection</h3>' + programViewPicker() + '<p>The explanation below changes when you select a field or a specific program. Use it to see possible systems, artifacts, people affected, and course questions.</p></div>';
     var guard = '<div class="asg-program-alert"><b>Understanding page only.</b><span>This page helps you see possible connections. Starting Your Assignment is where the program choice updates assignment examples, starter questions, tables, diagrams, and the Word starter pack.</span></div>';
-    var route = '<div class="asg-program-route-card"><div><span>Ready to start planning?</span><b>Go to Starting Your Assignment.</b><p>Use that page when you want to choose an assignment, select a program lens for that assignment, answer preparation questions, and generate a starter pack.</p></div><button type="button" onclick="SOC.assignmentPage(\'assignments\')">Starting Your Assignment</button></div>';
+    var route = '<div class="asg-program-route-card"><div><span>Ready to start planning?</span><b>Go to Starting Your Assignment.</b><p>Use that page when you want to choose an assignment, select a program lens for that assignment, answer preparation questions, and generate a starter pack.</p></div></div>';
     var preview = '';
     if (L) {
       var profile = assignmentLensProfile(L);
@@ -9442,7 +9166,7 @@
     return '<section id="asg-starter-chooser" class="asg-starter-chooser" aria-label="Selected assignment for the starter studio"><div><div class="mono">STEP 1</div><h2>Confirm the assignment you selected</h2><p>This preparation page uses the assignment you chose on Starting Your Assignment. To change assignments, return there first.</p></div><div>' + items.map(function (a, i) {
       var on = i === idx;
       return '<button type="button" ' + (on ? '' : 'aria-disabled="true" tabindex="-1" ') + 'class="' + (on ? 'current' : 'locked') + '" aria-pressed="' + (on ? 'true' : 'false') + '"><span>' + esc(a.release ? assignmentDateLabel(a.release) : 'Blackboard confirms access') + '</span><b>' + esc(a.title) + '</b><small>' + esc(a.short) + '</small></button>';
-    }).join('') + '</div><button type="button" class="asg-starter-change" onclick="SOC.assignmentPage(\'assignments\')">Return to Starting Your Assignment to change</button></section>';
+    }).join('') + '</div></section>';
   }
   function assignmentProgramBrief(a, L) {
     var activeL = L || generalStreamLens();
@@ -9457,7 +9181,7 @@
   }
   function assignmentPrepPrompt(a, L) {
     var label = L ? (L.program || L.area) : 'General Stream';
-    return '<section class="asg-prep-prompt" aria-label="Outline and preparation choice"><div><div class="mono">OUTLINE AND PREPARATION</div><h3>Would a quick start plan or detailed outline help?</h3><p>The Assignment Start Lab uses your assignment, progress, exact sticking point, and available time to create a personal plan without AI. The Starter Studio uses <b>' + esc(a.title) + '</b> with <b>' + esc(label) + '</b> to build a more detailed Word preparation pack.</p></div><div><button type="button" onclick="location.href=\'assignment-start-lab.html?assignment=' + encodeURIComponent(a.id) + '\'">Create a quick PDF plan</button><button type="button" onclick="SOC.openStarter()">Build a detailed Word outline</button><button type="button" onclick="SOC.skipStarter()">Stay with the brief</button></div></section>';
+    return '<section class="asg-prep-prompt" aria-label="Outline and preparation choice"><div><div class="mono">OUTLINE AND PREPARATION</div><h3>Would a quick start plan or detailed outline help?</h3><p>The Assignment Start Lab uses your assignment, progress, exact sticking point, and available time to create a personal plan without AI. The Starter Studio uses <b>' + esc(a.title) + '</b> with <b>' + esc(label) + '</b> to build a more detailed Word preparation pack.</p></div><div><button type="button" onclick="SOC.openStarter()">Build a detailed Word outline</button><button type="button" onclick="SOC.skipStarter()">Stay with the brief</button></div></section>';
   }
   function assignmentStarterStudio(a, L) {
     var data = starterData(a), answers = data.answers || {}, fmt = cleanStarterFormat(data.format);
@@ -9481,17 +9205,7 @@
       + '<div class="asg-starter-actions"><button type="button" onclick="SOC.saveStarter()">Generate Organized Notes Pack</button><button type="button" onclick="SOC.clearStarter(\'' + esc(a.id) + '\')">Clear answers</button></div>'
       + '</section>';
   }
-  function starterPage() {
-    var items = assignmentsData();
-    var L = lensParse();
-    var idx = Math.max(0, Math.min(items.length - 1, Number(state.assignmentIndex) || 0));
-    var selected = items[idx] || items[0];
-    return '<div class="rise asg-starter-page">'
-      + '<section class="asg-hero asg-starter-hero"><div class="mono">OUTLINE AND PREPARATION</div><h1>Build your first draft plan</h1><p>This page uses the assignment and program lens you already selected. Read the tailored guidance, answer the starter questions, and generate a Word document you can use before writing your final submission.</p></section>'
-      + assignmentStarterAssignmentChooser(items)
-      + assignmentStarterStudio(selected, L)
-      + '</div>';
-  }
+  function starterPage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
   function assignmentRoom(a, L) {
     var body = '<div class="asg-detail-grid"><div>'
       + (a.role ? '<p class="asg-role">' + esc(a.role) + '</p>' : '')
@@ -9523,15 +9237,7 @@
       + summary
       + '<section id="asg-story" class="asg-story"><div><div class="mono">ASSIGNMENT OVERVIEW</div><h2>You are building one map across the term</h2><p>The assignments are not random separate tasks. You begin by noticing real digital life, use Digital Decision Scenarios to examine your own decisions through the first-half concepts, investigate one Canadian system, design a repair, and finally walk someone through how your thinking changed.</p></div><ol><li>Notice</li><li>Interpret</li><li>Investigate</li><li>Repair</li><li>Integrate</li></ol></section>';
   }
-  function assignmentActivePage() {
-    if (state.screen === 'assignment-program') return 'program';
-    if (state.screen === 'assignment-details') return 'assignments';
-    if (state.screen === 'assignment-rubric') return 'quality';
-    if (state.screen === 'assignment-release') return 'release';
-    if (state.screen === 'assignment-ai') return 'ai';
-    if (state.screen === 'assignment-faq') return 'faq';
-    return 'story';
-  }
+  function assignmentActivePage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
   function assignmentScreenFor(tab) {
     tab = cleanAssignmentTab(tab);
     if (tab === 'program') return 'assignment-program';
@@ -9548,7 +9254,7 @@
   function assignmentSummaryPanel() {
   }
   function assignmentStartLabIntro() {
-    return '<section class="asg-prep-prompt" aria-label="Assignment Start Lab"><div><div class="mono">PERSONAL PLANNING SUPPORT</div><h3>Need a smaller first step?</h3><p>Add your assignment, progress, exact sticking point, and available time. Fixed course rules create a personal start plan you can print or save as PDF without using AI. For Decision Lab, the support helps you organize your own recorded choices, concepts, trade-offs, revision, and follow-up preparation without reproducing the graded scenarios.</p></div><div><button type="button" onclick="location.href=\'assignment-start-lab.html\'">Open Assignment Start Lab</button><button type="button" onclick="SOC.assignmentPage(\'assignments\')">Open the assignment rooms</button></div></section>';
+    return '<section class="asg-prep-prompt" aria-label="Assignment Start Lab"><div><div class="mono">PERSONAL PLANNING SUPPORT</div><h3>Need a smaller first step?</h3><p>Add your assignment, progress, exact sticking point, and available time. Fixed course rules create a personal start plan you can print or save as PDF without using AI. For Decision Lab, the support helps you organize your own recorded choices, concepts, trade-offs, revision, and follow-up preparation without reproducing the graded scenarios.</p></div><div></div></section>';
   }
   function assignmentSelectedContext() {
     var items = assignmentsData();
@@ -9557,31 +9263,13 @@
     var selected = items[idx] || items[0];
     return { items: items, L: L, selected: selected };
   }
-  function assignmentsPage() {
-    return assignmentJumpNav() + CourseAssessmentGuides.directory();
-  }
-  function assignmentProgramPage() {
-    return '<div class="rise asg-page asg-program-route">'
-      + assignmentJumpNav()
-      + assignmentPageHero('VIEW PROGRAMS', 'Understand Your Program\'s Connection to the Course', 'Preview how different program areas can supply concrete examples for the course. This page is exploratory; the assignment workflow starts on Starting Your Assignment.')
-      + '<div class="asg-tabpanel">' + assignmentProgramGuide() + '</div>'
-      + '</div>';
-  }
-  function assignmentDetailsPage() {
-    return assignmentJumpNav() + CourseAssessmentGuides.detail(Number(state.assignmentIndex) || 0);
-  }
-  function assignmentRubricPage() {
-    return assignmentJumpNav() + CourseAssessmentGuides.rubrics();
-  }
-  function assignmentReleasePage() {
-    return assignmentJumpNav() + CourseAssessmentGuides.dates();
-  }
-  function assignmentFaqPage() {
-    return assignmentJumpNav() + CourseAssessmentGuides.faq();
-  }
-  function assignmentAiPage() {
-    return assignmentJumpNav() + CourseAssessmentGuides.faq();
-  }
+  function assignmentsPage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
+  function assignmentProgramPage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
+  function assignmentDetailsPage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
+  function assignmentRubricPage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
+  function assignmentReleasePage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
+  function assignmentFaqPage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
+  function assignmentAiPage() { return '<section class="node"><h1>Course assignments</h1><p>Open Blackboard for course assignments.</p></section>'; }
   function scholarMedia() {
     var meta = {
       benjamin2019: {
