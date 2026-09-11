@@ -258,9 +258,14 @@ window.BFS218 = {
     "tanksley2023",
     "costanza2020"
    ],
-   "url": "https://seneca.primo.exlibrisgroup.com/discovery/search?vid=01SENC_INST:01SENC_NDE&tab=Everything&offset=0&lang=en&query=any%2Ccontains%2CRace%20After%20Technology%20Abolitionist%20Tools%20Benjamin",
-   "fulltext": false,
-   "senecaLib": true
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544174-dt-content-rid-224550968_2/xid-224550968_2",
+   "fulltext": true,
+   "senecaLib": false,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544174-dt-content-rid-224550968_2/xid-224550968_2",
+   "sourceUrl": "https://www.ruhabenjamin.com/race-after-technology",
+   "sourceLabel": "About the book",
+   "primaryLabel": "Open complete PDF in Blackboard",
+   "blackboardFullText": true
   },
   {
    "id": "crenshaw1991",
