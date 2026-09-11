@@ -2919,7 +2919,7 @@
     });
     weeks[1].youcan[weeks[1].youcan.length - 1] = 'You can now notice one privacy-safe digital moment or class artefact that may become course evidence later.';
     weeks[1].reflectPrompt = 'Notice one ordinary technology or class moment from this week. What did it sort, score, watch, recommend, approve, or refuse? Keep classmates, names, account details, messages, and precise locations out of your note.';
-    weeks[2].overview = 'This week gives you the theory underneath the New Jim Code vocabulary. By the end of the week you can connect critical race theory to the New Jim Code and prepare a privacy-safe example for Digital Systems Field Notes Portfolio 1, which opens September 21 and is due October 18.';
+    weeks[2].overview = 'This week gives you the theory underneath the New Jim Code vocabulary. By the end of the week you can connect critical race theory to the New Jim Code and use both ideas to examine a privacy-safe digital-life example. Check Blackboard for assignment release dates and deadlines.';
     weeks[2].purpose = 'Use an outcomes-focused, intersectional lens to prepare one specific digital-life example for Portfolio 1.';
     weeks[2].outcomes[weeks[2].outcomes.length - 1] = 'By the end of this week you can use an outcomes-focused, intersectional lens in a dated Field Note.';
     weeks[2].checks[weeks[2].checks.length - 1].look = 'the activity and your Digital Systems Field Notes Portfolio 1';
