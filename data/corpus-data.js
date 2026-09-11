@@ -278,7 +278,7 @@ window.BFS218 = {
    },
    "eye": "western",
    "type": "Article",
-   "access": "verified",
+   "access": "course",
    "title": "Mapping the Margins: Intersectionality, Identity Politics, and Violence Against Women of Color",
    "authors": "Kimberlé Crenshaw",
    "year": 1991,
@@ -296,53 +296,59 @@ window.BFS218 = {
    "sample": "No statistical sample; the article analyses legal cases, policy responses, and documented experiences concerning violence against women of colour.",
    "evidenceLimit": "The article develops intersectionality in a specific legal and political context. It is not an empirical technology study or a claim that every identity intersection works in the same way.",
    "doi": "10.2307/1229039",
-   "url": "https://blogs.law.columbia.edu/critique1313/files/2020/02/1229039.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544214-dt-content-rid-224551170_2/xid-224551170_2",
    "related": [
     "benjamin2019",
     "buolamwini2018"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544214-dt-content-rid-224551170_2/xid-224551170_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://doi.org/10.2307/1229039"
   },
   {
- "id": "noble2018",
- "assigned": "Introduction (open author excerpt) and Chapter 1 (posted on Blackboard), as specified in the weekly reading list",
- "video": {
-  "yt": "murg3Roch64",
-  "title": "HTNM Lecture: Safiya Umoja Noble's \"Algorithms of Oppression: How Search Engines Reinforce Racism\"",
-  "channel": "Berkeley Center for New Media",
-  "scholar": "Safiya Umoja Noble"
- },
- "eye": "western",
- "type": "Book",
- "access": "course",
- "title": "Algorithms of Oppression: How Search Engines Reinforce Racism",
- "authors": "Safiya Umoja Noble",
- "year": 2018,
- "themes": [
-  "bias",
-  "policing"
- ],
- "origin": "United States",
- "len": "~45 min read",
- "diff": 2,
- "week": 2,
- "abstract": "Safiya Umoja Noble shows how search engines, presented as neutral information tools, returned demeaning and stereotyped results for Black women and girls, treating racism as built into ranking and data rather than as a one-off glitch. Her work pairs with Benjamin's to argue that the problem is structural, sitting in the design of systems that profit from how they sort and surface information. The course previews her in Week 1 and engages her argument directly in the algorithmic-bias and gatekeeping weeks.",
- "coreIdea": "Search and ranking systems presented as neutral can reproduce racism and sexism at scale.",
- "evidenceType": "Critical media and algorithm-studies book chapter",
- "sample": "Documented commercial-search examples and analysis of ranking, advertising, representation, and political economy; no experimental sample.",
- "evidenceLimit": "The chapter analyses historically situated search results and structures. It is not a current audit of every query, search engine, user, or ranking system.",
- "related": [
-  "benjamin2019",
-  "devlin2023"
- ],
- "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414728-dt-content-rid-223984885_2/xid-223984885_2",
- "fulltext": true,
- "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414728-dt-content-rid-223984885_2/xid-223984885_2",
- "primaryLabel": "Open Chapter 1 in Blackboard",
- "blackboardFullText": true,
- "sourceUrl": "https://safiyaunoble.com/wp-content/uploads/2020/09/Algorithms_Oppression_Introduction_Intro.pdf",
- "sourceLabel": "Open the author's introduction"
-},
+   "id": "noble2018",
+   "assigned": "Introduction (open author excerpt) and Chapter 1 (posted on Blackboard), as specified in the weekly reading list",
+   "video": {
+    "yt": "murg3Roch64",
+    "title": "HTNM Lecture: Safiya Umoja Noble's \"Algorithms of Oppression: How Search Engines Reinforce Racism\"",
+    "channel": "Berkeley Center for New Media",
+    "scholar": "Safiya Umoja Noble"
+   },
+   "eye": "western",
+   "type": "Book",
+   "access": "course",
+   "title": "Algorithms of Oppression: How Search Engines Reinforce Racism",
+   "authors": "Safiya Umoja Noble",
+   "year": 2018,
+   "themes": [
+    "bias",
+    "policing"
+   ],
+   "origin": "United States",
+   "len": "~45 min read",
+   "diff": 2,
+   "week": 2,
+   "abstract": "Safiya Umoja Noble shows how search engines, presented as neutral information tools, returned demeaning and stereotyped results for Black women and girls, treating racism as built into ranking and data rather than as a one-off glitch. Her work pairs with Benjamin's to argue that the problem is structural, sitting in the design of systems that profit from how they sort and surface information. The course previews her in Week 1 and engages her argument directly in the algorithmic-bias and gatekeeping weeks.",
+   "coreIdea": "Search and ranking systems presented as neutral can reproduce racism and sexism at scale.",
+   "evidenceType": "Critical media and algorithm-studies book chapter",
+   "sample": "Documented commercial-search examples and analysis of ranking, advertising, representation, and political economy; no experimental sample.",
+   "evidenceLimit": "The chapter analyses historically situated search results and structures. It is not a current audit of every query, search engine, user, or ranking system.",
+   "related": [
+    "benjamin2019",
+    "devlin2023"
+   ],
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414728-dt-content-rid-223984885_2/xid-223984885_2",
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414728-dt-content-rid-223984885_2/xid-223984885_2",
+   "primaryLabel": "Open PDF in Blackboard",
+   "blackboardFullText": true,
+   "sourceUrl": "https://safiyaunoble.com/wp-content/uploads/2020/09/Algorithms_Oppression_Introduction_Intro.pdf",
+   "sourceLabel": "Open the author's introduction",
+   "senecaLib": false
+  },
   {
    "id": "buolamwini2018",
    "video": {
@@ -353,7 +359,7 @@ window.BFS218 = {
    },
    "eye": "western",
    "type": "Article",
-   "access": "open",
+   "access": "course",
    "title": "Gender Shades: Intersectional Accuracy Disparities in Commercial Gender Classification",
    "authors": "Joy Buolamwini and Timnit Gebru",
    "year": 2018,
@@ -371,47 +377,52 @@ window.BFS218 = {
    "evidenceType": "Quantitative benchmark audit of three commercial gender-classification systems",
    "sample": "1,270 unique faces of parliamentarians from three African and three European countries, balanced across the study's gender and skin-type categories.",
    "evidenceLimit": "The study measures intersectional error disparities in three products and one benchmark. It does not audit identity recognition, every demographic group, later product versions, or the training process, and it does not prove one cause for all disparities.",
-   "url": "https://proceedings.mlr.press/v81/buolamwini18a/buolamwini18a.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544215-dt-content-rid-224551174_2/xid-224551174_2",
    "sourceUrl": "https://proceedings.mlr.press/v81/buolamwini18a.html",
    "related": [
     "benjamin2019",
     "crenshaw1991"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544215-dt-content-rid-224551174_2/xid-224551174_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard"
   },
   {
- "id": "koenecke2020",
- "eye": "western",
- "type": "Article",
- "access": "course",
- "title": "Racial Disparities in Automated Speech Recognition",
- "authors": "Allison Koenecke, Andrew Nam, Emily Lake, Joe Nudell, Minnie Quartey, Zion Mengesha, Connor Toups, John R. Rickford, Dan Jurafsky and Sharad Goel",
- "year": 2020,
- "themes": [
-  "bias",
-  "facial"
- ],
- "origin": "United States",
- "len": "~20 min read",
- "diff": 2,
- "week": 5,
- "abstract": "Koenecke and colleagues tested five commercial automated speech-recognition systems with recordings from Black and white speakers. Across the matched samples, the average word error rate was 0.35 for Black speakers and 0.19 for white speakers. The disparity remained in a subset of 206 identical short phrases. The error analysis pointed to poorer acoustic-model performance for Black speech, and the authors proposed more diverse training data as one strategy; they could not directly inspect the proprietary training data. Reading focus for this week: Start with the opening summary and Significance box on PDF page 1. Look at Figure 1 on page 2, then read the Discussion section beginning on page 4. Focus on whose speech was represented, what the study found and what could improve access. You do not need to work through the equations. These findings describe the systems tested for this 2020 study, not every current speech-recognition system.",
- "coreIdea": "In five commercial systems, automated speech recognition produced substantially higher word error rates for Black speakers than for white speakers, including on matched phrases.",
- "evidenceType": "Matched observational performance audit of five commercial automated-speech-recognition systems",
- "sample": "2,141 Black-speaker and 2,141 white-speaker audio snippets from 73 Black and 42 white speakers across five United States cities, matched on age, gender, and clip duration; 19.8 hours total.",
- "evidenceLimit": "The findings apply to the systems, English-language interview corpora, speaker groups, and product versions tested. They do not establish performance for every dialect or current system, and the paper does not directly inspect the proprietary training data.",
- "doi": "10.1073/pnas.1915768117",
- "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27417270-dt-content-rid-223995627_2/xid-223995627_2",
- "related": [
-  "buolamwini2018",
-  "benjamin2019"
- ],
- "fulltext": true,
- "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27417270-dt-content-rid-223995627_2/xid-223995627_2",
- "primaryLabel": "Open full article in Blackboard",
- "blackboardFullText": true,
- "sourceUrl": "https://5harad.com/papers/asr-disparities.pdf"
-},
+   "id": "koenecke2020",
+   "eye": "western",
+   "type": "Article",
+   "access": "course",
+   "title": "Racial Disparities in Automated Speech Recognition",
+   "authors": "Allison Koenecke, Andrew Nam, Emily Lake, Joe Nudell, Minnie Quartey, Zion Mengesha, Connor Toups, John R. Rickford, Dan Jurafsky and Sharad Goel",
+   "year": 2020,
+   "themes": [
+    "bias",
+    "facial"
+   ],
+   "origin": "United States",
+   "len": "~20 min read",
+   "diff": 2,
+   "week": 5,
+   "abstract": "Koenecke and colleagues tested five commercial automated speech-recognition systems with recordings from Black and white speakers. Across the matched samples, the average word error rate was 0.35 for Black speakers and 0.19 for white speakers. The disparity remained in a subset of 206 identical short phrases. The error analysis pointed to poorer acoustic-model performance for Black speech, and the authors proposed more diverse training data as one strategy; they could not directly inspect the proprietary training data. Reading focus for this week: Start with the opening summary and Significance box on PDF page 1. Look at Figure 1 on page 2, then read the Discussion section beginning on page 4. Focus on whose speech was represented, what the study found and what could improve access. You do not need to work through the equations. These findings describe the systems tested for this 2020 study, not every current speech-recognition system.",
+   "coreIdea": "In five commercial systems, automated speech recognition produced substantially higher word error rates for Black speakers than for white speakers, including on matched phrases.",
+   "evidenceType": "Matched observational performance audit of five commercial automated-speech-recognition systems",
+   "sample": "2,141 Black-speaker and 2,141 white-speaker audio snippets from 73 Black and 42 white speakers across five United States cities, matched on age, gender, and clip duration; 19.8 hours total.",
+   "evidenceLimit": "The findings apply to the systems, English-language interview corpora, speaker groups, and product versions tested. They do not establish performance for every dialect or current system, and the paper does not directly inspect the proprietary training data.",
+   "doi": "10.1073/pnas.1915768117",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27417270-dt-content-rid-223995627_2/xid-223995627_2",
+   "related": [
+    "buolamwini2018",
+    "benjamin2019"
+   ],
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27417270-dt-content-rid-223995627_2/xid-223995627_2",
+   "primaryLabel": "Open PDF in Blackboard",
+   "blackboardFullText": true,
+   "sourceUrl": "https://5harad.com/papers/asr-disparities.pdf",
+   "senecaLib": false
+  },
   {
    "id": "opc2021",
    "assigned": "Findings summary",
@@ -448,7 +459,7 @@ window.BFS218 = {
    "assigned": "executive summary",
    "eye": "western",
    "type": "Article",
-   "access": "open",
+   "access": "course",
    "title": "Algorithmic Policing Technologies in Canada",
    "authors": "Shawn Singh",
    "year": 2021,
@@ -465,12 +476,17 @@ window.BFS218 = {
    "evidenceType": "Doctrinal legal and policy analysis",
    "sample": "Canadian legal authorities, reported technologies, and public policy sources; no original empirical participant sample.",
    "evidenceLimit": "The article advances a legal argument about authorization, Charter exposure, and legislative gaps. It is not a court holding, a parliamentary finding, or a complete inventory of Canadian police deployments.",
-   "url": "https://themanitobalawjournal.com/wp-content/uploads/articles/MLJ_44.6/446_Singh.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544216-dt-content-rid-224551177_2/xid-224551177_2",
    "related": [
     "robertson2020",
     "opc2021"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544216-dt-content-rid-224551177_2/xid-224551177_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://themanitobalawjournal.com/wp-content/uploads/articles/MLJ_44.6/446_Singh.pdf"
   },
   {
    "id": "robertson2020",
@@ -484,7 +500,7 @@ window.BFS218 = {
    },
    "eye": "western",
    "type": "Report",
-   "access": "open",
+   "access": "course",
    "title": "To Surveil and Predict: A Human Rights Analysis of Algorithmic Policing in Canada",
    "authors": "Kate Robertson, Cynthia Khoo and Yolanda Song",
    "year": 2020,
@@ -502,87 +518,94 @@ window.BFS218 = {
    "evidenceType": "Human-rights legal and policy report",
    "sample": "Publicly documented Canadian examples and possible uses of predictive policing, facial recognition, and algorithmic social-media surveillance available to the authors in 2020.",
    "evidenceLimit": "The authors explicitly describe an incomplete factual record and do not establish widespread use at the time. The report analyses potential Charter and human-rights risks; it does not prove that every discussed tool was deployed or unconstitutional.",
-   "url": "https://citizenlab.ca/wp-content/uploads/2020/09/To-Surveil-and-Predict.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544217-dt-content-rid-224551180_2/xid-224551180_2",
    "related": [
     "molnar2023",
     "singh2021",
     "opc2021"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544217-dt-content-rid-224551180_2/xid-224551180_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://citizenlab.ca/wp-content/uploads/2020/09/To-Surveil-and-Predict.pdf"
   },
   {
- "id": "molnar2023",
- "video": {
-  "yt": "_G5nwaJuWlM",
-  "title": "New Border Tech: Interview with Petra Molnar",
-  "channel": "Centre for Refugee Studies",
-  "scholar": "Petra Molnar"
- },
- "eye": "western",
- "type": "Article",
- "access": "course",
- "title": "Digital Border Technologies, Techno-Racism and Logics of Exclusion",
- "authors": "Petra Molnar",
- "year": 2023,
- "themes": [
-  "surveillance",
-  "policing",
-  "policy"
- ],
- "origin": "Canada",
- "len": "~20 min read",
- "diff": 2,
- "week": 6,
- "abstract": "Petra Molnar, of the Refugee Law Lab at York University, analyses surveillance, biometrics, and automated decision systems at borders through logics of exclusion. Her commentary documents experimental tools such as drones, AI lie detectors, and robotic dogs operating under weak oversight in settings where people on the move may have limited ability to refuse or seek redress. It does not establish a universal first-then-spread sequence for every technology.",
- "coreIdea": "Molnar documents experimental border technologies operating under weak oversight where people on the move may have limited ability to refuse or seek redress.",
- "evidenceType": "Critical migration-and-technology commentary",
- "sample": "Illustrative border-technology cases and research on surveillance, biometrics, and automated systems; no systematic prevalence sample.",
- "evidenceLimit": "The commentary documents and analyses experimental tools and weak-oversight conditions. It does not establish how common every tool is, that every border uses them, or a universal test-first-then-spread sequence.",
- "doi": "10.1111/imig.13187",
- "related": [
-  "robertson2020",
-  "opc2021"
- ],
- "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414726-dt-content-rid-223984877_2/xid-223984877_2",
- "fulltext": true,
- "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414726-dt-content-rid-223984877_2/xid-223984877_2",
- "primaryLabel": "Open full article in Blackboard",
- "blackboardFullText": true,
- "sourceUrl": "https://onlinelibrary.wiley.com/doi/10.1111/imig.13187"
-},
+   "id": "molnar2023",
+   "video": {
+    "yt": "_G5nwaJuWlM",
+    "title": "New Border Tech: Interview with Petra Molnar",
+    "channel": "Centre for Refugee Studies",
+    "scholar": "Petra Molnar"
+   },
+   "eye": "western",
+   "type": "Article",
+   "access": "course",
+   "title": "Digital Border Technologies, Techno-Racism and Logics of Exclusion",
+   "authors": "Petra Molnar",
+   "year": 2023,
+   "themes": [
+    "surveillance",
+    "policing",
+    "policy"
+   ],
+   "origin": "Canada",
+   "len": "~20 min read",
+   "diff": 2,
+   "week": 6,
+   "abstract": "Petra Molnar, of the Refugee Law Lab at York University, analyses surveillance, biometrics, and automated decision systems at borders through logics of exclusion. Her commentary documents experimental tools such as drones, AI lie detectors, and robotic dogs operating under weak oversight in settings where people on the move may have limited ability to refuse or seek redress. It does not establish a universal first-then-spread sequence for every technology.",
+   "coreIdea": "Molnar documents experimental border technologies operating under weak oversight where people on the move may have limited ability to refuse or seek redress.",
+   "evidenceType": "Critical migration-and-technology commentary",
+   "sample": "Illustrative border-technology cases and research on surveillance, biometrics, and automated systems; no systematic prevalence sample.",
+   "evidenceLimit": "The commentary documents and analyses experimental tools and weak-oversight conditions. It does not establish how common every tool is, that every border uses them, or a universal test-first-then-spread sequence.",
+   "doi": "10.1111/imig.13187",
+   "related": [
+    "robertson2020",
+    "opc2021"
+   ],
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414726-dt-content-rid-223984877_2/xid-223984877_2",
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414726-dt-content-rid-223984877_2/xid-223984877_2",
+   "primaryLabel": "Open PDF in Blackboard",
+   "blackboardFullText": true,
+   "sourceUrl": "https://onlinelibrary.wiley.com/doi/10.1111/imig.13187",
+   "senecaLib": false
+  },
   {
- "id": "nagra2016",
- "eye": "western",
- "type": "Article",
- "access": "course",
- "title": "Crossing Borders and Managing Racialized Identities: Experiences of Security and Surveillance Among Young Canadian Muslims",
- "authors": "Baljit Nagra and Paula Maurutto",
- "year": 2016,
- "themes": [
-  "surveillance",
-  "policing"
- ],
- "origin": "Canada",
- "len": "~40 min read",
- "diff": 2,
- "week": 6,
- "abstract": "Baljit Nagra and Paula Maurutto draw on interviews with young Canadian Muslims about encounters with airports, borders, and security practices. Participants described being pulled aside, questioned, watched, and treated as possible security risks, and they explained how they managed racialized identities in response. The article documents the experiences reported by this participant group; it does not claim that every young Muslim in Canada has the same experience. Reading focus for this week: Start with the summary on PDF page 1 and the explanation of the interviews on pages 3 to 4. Read one participant account in the findings beginning on page 9. Notice how the person describes surveillance, belonging and choices. The study is historical: its references to laws and policies describe the period discussed, not necessarily current law. The complete article is available for context.",
- "coreIdea": "Participants described security and surveillance practices that racialized them as potential risks and shaped how they presented themselves at borders and checkpoints.",
- "evidenceType": "Qualitative semi-structured interview study",
- "sample": "50 self-identified Muslim participants aged 18 to 31 in Toronto or Vancouver, interviewed from 2005 to 2010; 24 men and 26 women, recruited through networks, snowball sampling, and student organizations.",
- "evidenceLimit": "The study documents this participant group's reported border and surveillance experiences. It does not estimate national prevalence, represent every young Canadian Muslim, or establish that every border encounter follows the same pattern.",
- "doi": "10.29173/cjs23031",
- "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482988-dt-content-rid-224232309_2/xid-224232309_2",
- "related": [
-  "robertson2020",
-  "molnar2023"
- ],
- "fulltext": true,
- "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482988-dt-content-rid-224232309_2/xid-224232309_2",
- "primaryLabel": "Open full article in Blackboard",
- "blackboardFullText": true,
- "sourceUrl": "https://journals.library.ualberta.ca/cjs/index.php/CJS/article/view/23031"
-},
+   "id": "nagra2016",
+   "eye": "western",
+   "type": "Article",
+   "access": "course",
+   "title": "Crossing Borders and Managing Racialized Identities: Experiences of Security and Surveillance Among Young Canadian Muslims",
+   "authors": "Baljit Nagra and Paula Maurutto",
+   "year": 2016,
+   "themes": [
+    "surveillance",
+    "policing"
+   ],
+   "origin": "Canada",
+   "len": "~40 min read",
+   "diff": 2,
+   "week": 6,
+   "abstract": "Baljit Nagra and Paula Maurutto draw on interviews with young Canadian Muslims about encounters with airports, borders, and security practices. Participants described being pulled aside, questioned, watched, and treated as possible security risks, and they explained how they managed racialized identities in response. The article documents the experiences reported by this participant group; it does not claim that every young Muslim in Canada has the same experience. Reading focus for this week: Start with the summary on PDF page 1 and the explanation of the interviews on pages 3 to 4. Read one participant account in the findings beginning on page 9. Notice how the person describes surveillance, belonging and choices. The study is historical: its references to laws and policies describe the period discussed, not necessarily current law. The complete article is available for context.",
+   "coreIdea": "Participants described security and surveillance practices that racialized them as potential risks and shaped how they presented themselves at borders and checkpoints.",
+   "evidenceType": "Qualitative semi-structured interview study",
+   "sample": "50 self-identified Muslim participants aged 18 to 31 in Toronto or Vancouver, interviewed from 2005 to 2010; 24 men and 26 women, recruited through networks, snowball sampling, and student organizations.",
+   "evidenceLimit": "The study documents this participant group's reported border and surveillance experiences. It does not estimate national prevalence, represent every young Canadian Muslim, or establish that every border encounter follows the same pattern.",
+   "doi": "10.29173/cjs23031",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482988-dt-content-rid-224232309_2/xid-224232309_2",
+   "related": [
+    "robertson2020",
+    "molnar2023"
+   ],
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482988-dt-content-rid-224232309_2/xid-224232309_2",
+   "primaryLabel": "Open PDF in Blackboard",
+   "blackboardFullText": true,
+   "sourceUrl": "https://journals.library.ualberta.ca/cjs/index.php/CJS/article/view/23031",
+   "senecaLib": false
+  },
   {
    "id": "mohamed2020",
    "video": {
@@ -593,7 +616,7 @@ window.BFS218 = {
    },
    "eye": "western",
    "type": "Article",
-   "access": "open",
+   "access": "course",
    "title": "Decolonial AI: Decolonial Theory as Sociotechnical Foresight in Artificial Intelligence",
    "authors": "Shakir Mohamed, Marie-Therese Png and William Isaac",
    "year": 2020,
@@ -612,17 +635,22 @@ window.BFS218 = {
    "sample": "No single empirical sample; the article develops an analytical framework through postcolonial and decolonial scholarship and technology cases.",
    "evidenceLimit": "The proposed tactics are analytical and normative, not an evaluated intervention. The article is not an Indigenous data-governance framework and does not make distinct peoples or colonial contexts interchangeable.",
    "doi": "10.1007/s13347-020-00405-8",
-   "url": "https://arxiv.org/pdf/2007.04068",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544218-dt-content-rid-224551183_2/xid-224551183_2",
    "related": [
     "smillie2005"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544218-dt-content-rid-224551183_2/xid-224551183_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://doi.org/10.1007/s13347-020-00405-8"
   },
   {
    "id": "smillie2005",
    "eye": "western",
    "type": "Report",
-   "access": "open",
+   "access": "course",
    "title": "Is the Internet a Useful Resource for Indigenous Women Living in Remote Communities in Canada, Australia and New Zealand to Access Health Resources?",
    "authors": "Christine Smillie-Adjarkwa",
    "year": 2005,
@@ -638,11 +666,16 @@ window.BFS218 = {
    "evidenceType": "Historical internship literature and policy report",
    "sample": "Connectivity, remote-access, and health-information evidence available in 2005 concerning settings in Canada, Australia, and New Zealand; no new participant study.",
    "evidenceLimit": "The report is historical. Its statistics and some terminology are dated, it does not provide current access estimates, and it cannot be generalized across distinct Indigenous peoples or communities.",
-   "url": "https://www.yorku.ca/anthna/DigitalDivide.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544219-dt-content-rid-224551186_2/xid-224551186_2",
    "related": [
     "mohamed2020"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544219-dt-content-rid-224551186_2/xid-224551186_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://www.yorku.ca/anthna/DigitalDivide.pdf"
   },
   {
    "id": "devlin2023",
@@ -654,7 +687,7 @@ window.BFS218 = {
    },
    "eye": "western",
    "type": "Chapter",
-   "access": "open",
+   "access": "course",
    "title": "Power in AI: Inequality Within and Without the Algorithm",
    "authors": "Kate Devlin",
    "year": 2023,
@@ -673,19 +706,24 @@ window.BFS218 = {
    "sample": "Technology examples and scholarship concerning inequality within algorithms and within the institutions that build and deploy them; no new empirical sample.",
    "evidenceLimit": "The chapter offers a power-centred analysis. It does not measure the prevalence of a specific system, test one intervention, or establish a single cause for every AI inequality.",
    "doi": "10.1002/9781119800729.ch8",
-   "url": "https://kclpure.kcl.ac.uk/ws/portalfiles/portal/243355629/Devlin_AI_Power_prepublishedversion.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544220-dt-content-rid-224551189_2/xid-224551189_2",
    "related": [
     "noble2018",
     "bird2023"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544220-dt-content-rid-224551189_2/xid-224551189_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://doi.org/10.1002/9781119800729.ch8"
   },
   {
    "id": "bird2023",
    "assigned": "results and discussion excerpt",
    "eye": "western",
    "type": "Report",
-   "access": "open",
+   "access": "course",
    "title": "Are Algorithms Biased in Education? Exploring Racial Bias in Predicting Community College Student Success",
    "authors": "Kelli A. Bird, Benjamin L. Castleman and Yifeng Song",
    "year": 2023,
@@ -703,97 +741,104 @@ window.BFS218 = {
    "sample": "Virginia Community College System administrative data: 5,168,903 student-course observations for the course-completion model and 385,800 students across the degree-completion training and validation samples.",
    "evidenceLimit": "The results concern one United States community-college system and simulated allocations. Disparities vary by model, outcome, threshold, and available data; the study does not show the effect of an implemented support program or every educational algorithm.",
    "doi": "10.26300/yd7z-6e20",
-   "url": "https://edworkingpapers.com/sites/default/files/ai23-717.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544221-dt-content-rid-224551192_2/xid-224551192_2",
    "related": [
     "devlin2023",
     "noble2018"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544221-dt-content-rid-224551192_2/xid-224551192_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://doi.org/10.26300/yd7z-6e20"
   },
   {
- "id": "tanksley2023",
- "video": {
-  "yt": "L1k5UwgTvdU",
-  "title": "The Power and Potentiality of Abolitionist Tech | Dr. Tiera Tanksley | Black Study in Education Lab",
-  "channel": "Black Study in Education Lab @ PSU",
-  "scholar": "Tiera Tanksley"
- },
- "eye": "western",
- "type": "Article",
- "access": "course",
- "title": "Employing an Abolitionist, Critical Race Pedagogy in CS: Centering the Voices, Experiences and Technological Innovations of Black Youth",
- "authors": "Tiera Tanksley",
- "year": 2023,
- "themes": [
-  "resistance",
-  "intersectionality"
- ],
- "origin": "United States",
- "len": "~40 min read",
- "diff": 3,
- "week": 11,
- "abstract": "Tiera Tanksley sets out an abolitionist, critical race pedagogy for computer science that centres the voices, experiences, and technological innovations of Black youth and treats them as technology creators. This is a pedagogical framework and critical argument, not an empirical test showing that one course design changes institutional power. Reading focus for this week: Start with the summary on PDF page 2. Read one of the student design examples on PDF pages 12 to 14. Focus on whose experiences shaped the idea, what harm it addresses and what its limits might be. These are student proposals, not proof that the proposed technologies work. You do not need to build software. The complete article is available for context.",
- "coreIdea": "Tanksley proposes an abolitionist, critical race pedagogy that centres Black youth's voices, experiences, and technological innovations; the article offers a framework, not causal evidence of institutional change.",
- "evidenceType": "Critical race pedagogy framework article",
- "sample": "No evaluated intervention sample; the article develops an abolitionist computer-science pedagogy through Black studies, critical race theory, and educational scholarship.",
- "evidenceLimit": "The framework centres Black youth and proposes pedagogical commitments. It does not causally test whether one course design changes student outcomes or institutional power.",
- "doi": "10.26716/jcsi.2023.12.27.49",
- "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482989-dt-content-rid-224232312_2/xid-224232312_2",
- "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482989-dt-content-rid-224232312_2/xid-224232312_2",
- "related": [
-  "costanza2020",
-  "benjamin2019"
- ],
- "fulltext": true,
- "primaryLabel": "Open full article in Blackboard",
- "blackboardFullText": true,
- "sourceUrl": "https://digitalcommons.chapman.edu/jcsi/vol6/iss1/9/"
-},
+   "id": "tanksley2023",
+   "video": {
+    "yt": "L1k5UwgTvdU",
+    "title": "The Power and Potentiality of Abolitionist Tech | Dr. Tiera Tanksley | Black Study in Education Lab",
+    "channel": "Black Study in Education Lab @ PSU",
+    "scholar": "Tiera Tanksley"
+   },
+   "eye": "western",
+   "type": "Article",
+   "access": "course",
+   "title": "Employing an Abolitionist, Critical Race Pedagogy in CS: Centering the Voices, Experiences and Technological Innovations of Black Youth",
+   "authors": "Tiera Tanksley",
+   "year": 2023,
+   "themes": [
+    "resistance",
+    "intersectionality"
+   ],
+   "origin": "United States",
+   "len": "~40 min read",
+   "diff": 3,
+   "week": 11,
+   "abstract": "Tiera Tanksley sets out an abolitionist, critical race pedagogy for computer science that centres the voices, experiences, and technological innovations of Black youth and treats them as technology creators. This is a pedagogical framework and critical argument, not an empirical test showing that one course design changes institutional power. Reading focus for this week: Start with the summary on PDF page 2. Read one of the student design examples on PDF pages 12 to 14. Focus on whose experiences shaped the idea, what harm it addresses and what its limits might be. These are student proposals, not proof that the proposed technologies work. You do not need to build software. The complete article is available for context.",
+   "coreIdea": "Tanksley proposes an abolitionist, critical race pedagogy that centres Black youth's voices, experiences, and technological innovations; the article offers a framework, not causal evidence of institutional change.",
+   "evidenceType": "Critical race pedagogy framework article",
+   "sample": "No evaluated intervention sample; the article develops an abolitionist computer-science pedagogy through Black studies, critical race theory, and educational scholarship.",
+   "evidenceLimit": "The framework centres Black youth and proposes pedagogical commitments. It does not causally test whether one course design changes student outcomes or institutional power.",
+   "doi": "10.26716/jcsi.2023.12.27.49",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482989-dt-content-rid-224232312_2/xid-224232312_2",
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27482989-dt-content-rid-224232312_2/xid-224232312_2",
+   "related": [
+    "costanza2020",
+    "benjamin2019"
+   ],
+   "fulltext": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "blackboardFullText": true,
+   "sourceUrl": "https://digitalcommons.chapman.edu/jcsi/vol6/iss1/9/",
+   "senecaLib": false
+  },
   {
- "id": "costanza2020",
- "assigned": "Design Justice, Introduction (pp.1-30)",
- "video": {
-  "yt": "SuVBJbyKrI4",
-  "title": "Sasha Costanza-Chock - Community-Led Practices to Build the Worlds We Need | The Conference 2023",
-  "channel": "The Conference / Media Evolution",
-  "scholar": "Sasha Costanza-Chock"
- },
- "eye": "western",
- "type": "Book",
- "access": "course",
- "title": "Design Justice: Community-Led Practices to Build the Worlds We Need",
- "authors": "Sasha Costanza-Chock",
- "year": 2020,
- "themes": [
-  "resistance",
-  "policy"
- ],
- "origin": "United States",
- "len": "~Introduction and Network Principles, ~40 min read",
- "diff": 2,
- "week": 11,
- "abstract": "Sasha Costanza-Chock draws together the Design Justice Network principles into a framework that rethinks design to centre the people normally marginalized by it. Its commitments include centring the voices of those directly impacted, prioritizing impact over the designer's intentions, and treating community-led practice as the way to build technology. The course reads the Introduction and the Network Principles for a concrete model of what an alternative to the New Jim Code looks like, and returns to it in the closing cartography weeks.",
- "coreIdea": "Design justice centres the people most affected and judges a design by its impact, not by its makers' good intentions.",
- "evidenceType": "Open-access scholarly book and community-led design framework",
- "sample": "Design Justice Network principles and multiple community-led design cases grounded in particular social movements; no single standardized intervention sample.",
- "evidenceLimit": "The book offers principles and situated cases, not proof that one design process guarantees justice. Community authority, context, impacts, and power still require case-specific evidence.",
- "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414727-dt-content-rid-223984881_2/xid-223984881_2",
- "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414727-dt-content-rid-223984881_2/xid-223984881_2",
- "related": [
-  "tanksley2023",
-  "benjamin2019"
- ],
- "fulltext": true,
- "sourceUrl": "https://direct.mit.edu/books/oa-monograph/4605/Design-JusticeCommunity-Led-Practices-to-Build-the",
- "doi": "10.7551/mitpress/12255.001.0001",
- "primaryLabel": "Open full book in Blackboard",
- "blackboardFullText": true
-},
+   "id": "costanza2020",
+   "assigned": "Design Justice, Introduction (pp.1-30)",
+   "video": {
+    "yt": "SuVBJbyKrI4",
+    "title": "Sasha Costanza-Chock - Community-Led Practices to Build the Worlds We Need | The Conference 2023",
+    "channel": "The Conference / Media Evolution",
+    "scholar": "Sasha Costanza-Chock"
+   },
+   "eye": "western",
+   "type": "Book",
+   "access": "course",
+   "title": "Design Justice: Community-Led Practices to Build the Worlds We Need",
+   "authors": "Sasha Costanza-Chock",
+   "year": 2020,
+   "themes": [
+    "resistance",
+    "policy"
+   ],
+   "origin": "United States",
+   "len": "~Introduction and Network Principles, ~40 min read",
+   "diff": 2,
+   "week": 11,
+   "abstract": "Sasha Costanza-Chock draws together the Design Justice Network principles into a framework that rethinks design to centre the people normally marginalized by it. Its commitments include centring the voices of those directly impacted, prioritizing impact over the designer's intentions, and treating community-led practice as the way to build technology. The course reads the Introduction and the Network Principles for a concrete model of what an alternative to the New Jim Code looks like, and returns to it in the closing cartography weeks.",
+   "coreIdea": "Design justice centres the people most affected and judges a design by its impact, not by its makers' good intentions.",
+   "evidenceType": "Open-access scholarly book and community-led design framework",
+   "sample": "Design Justice Network principles and multiple community-led design cases grounded in particular social movements; no single standardized intervention sample.",
+   "evidenceLimit": "The book offers principles and situated cases, not proof that one design process guarantees justice. Community authority, context, impacts, and power still require case-specific evidence.",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414727-dt-content-rid-223984881_2/xid-223984881_2",
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27414727-dt-content-rid-223984881_2/xid-223984881_2",
+   "related": [
+    "tanksley2023",
+    "benjamin2019"
+   ],
+   "fulltext": true,
+   "sourceUrl": "https://direct.mit.edu/books/oa-monograph/4605/Design-JusticeCommunity-Led-Practices-to-Build-the",
+   "doi": "10.7551/mitpress/12255.001.0001",
+   "primaryLabel": "Open PDF in Blackboard",
+   "blackboardFullText": true,
+   "senecaLib": false
+  },
   {
    "id": "attard2023",
    "eye": "western",
    "type": "Report",
-   "access": "open",
+   "access": "course",
    "title": "Generative AI Systems: Impacts on Artists and Creators and Related Gaps in the Artificial Intelligence and Data Act",
    "authors": "Blair Attard-Frost",
    "year": 2023,
@@ -810,12 +855,17 @@ window.BFS218 = {
    "evidenceType": "Parliamentary policy brief and author analysis",
    "sample": "Policy, legal, labour, and technology sources applied to generative AI and Canadian artists and creators; no original empirical participant sample.",
    "evidenceLimit": "The five gap categories and recommendations are the author's 2023 analysis, not a court or committee finding. AIDA was a proposal within Bill C-27 and did not become law.",
-   "url": "https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12541028/br-external/AttardFrostBlair-e.pdf",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544222-dt-content-rid-224551195_2/xid-224551195_2",
    "related": [
     "benjamin2019",
     "costanza2020"
    ],
-   "fulltext": true
+   "fulltext": true,
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544222-dt-content-rid-224551195_2/xid-224551195_2",
+   "senecaLib": false,
+   "blackboardFullText": true,
+   "primaryLabel": "Open PDF in Blackboard",
+   "sourceUrl": "https://www.ourcommons.ca/Content/Committee/441/INDU/Brief/BR12541028/br-external/AttardFrostBlair-e.pdf"
   }
  ],
  "glossary": [
