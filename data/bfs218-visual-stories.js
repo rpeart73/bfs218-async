@@ -205,7 +205,7 @@
                 prompt: "Which testing rule, procurement decision, or reporting practice would have to change for the default to change?"
               }
             ],
-            boundary: "This photograph shows NHTSA's advanced THOR-05F research dummy and staff. It illustrates representation in safety testing; it does not by itself establish the causes or size of any injury disparity.",
+            boundary: "The IIHS photograph places a crash-test dummy beside women of different body types. It illustrates representation in safety testing; it does not by itself establish the causes or size of any injury disparity.",
             credit: "Insurance Institute for Highway Safety, 2022.",
             source: "https://www.iihs.org/news/detail/improving-safety-for-women-requires-more-than-a-female-crash-test-dummy"
           },
@@ -585,28 +585,17 @@
     }
   };
 
-  /* Only locally redistributable media may ship in this public repository.
-     Source-linked publisher and portrait candidates remain outside the public
-     build unless a reusable licence or written permission is documented. */
-  var redistributable = {
-    'jim-crow-water-cooler.jpg': true,
-    'jim-crow-bus-station.jpg': true,
-    'jim-crow-cinema-entrance.jpg': true,
-    'komagata-maru.jpg': true,
-    'new-jim-code-bridge-original.png': true,
-    'engineered-inequity-pipeline-original.png': true,
-    'default-discrimination-system-original.png': true,
-    'coded-exposure-visibility-trap-original.png': true,
-    'canadian-case-files-original.png': true,
-    'system-anatomy-synthesis-original.png': true
-  };
+  /* Keep authored lessons and note prompts independent of image availability.
+     Source credits remain with each record. The image inventory is checked at publication. */
   Object.keys(window.BFS218_VISUAL_STORIES.weeks).forEach(function (week) {
     var item = window.BFS218_VISUAL_STORIES.weeks[week];
-    if (!item.stories) return;
-    item.stories = item.stories.filter(function (story) {
-      if (story.kind === 'video') return true;
-      if (!story.image) return false;
-      return !!redistributable[String(story.image).split('/').pop()];
+    (item.stories || []).forEach(function (story) {
+      (story.items || []).forEach(function (entry) {
+        if (entry.image === 'images/story/no-fly-list-kids.jpg') {
+          entry.image = '';
+          entry.credit = 'Read the linked documented case.';
+        }
+      });
     });
   });
 }());
