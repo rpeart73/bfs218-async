@@ -323,7 +323,7 @@
             boundary: "This original illustration is a conceptual comparison, not a photograph of any deployment. The three cases involve different institutions, sources, laws, people, and findings. It does not claim that one technology caused all three cases, that every border system operates this way, or that the Supreme Court used Benjamin's terminology.",
             credit: "Original conceptual illustration created for BFS218, 2026. Not documentary evidence.",
             sources: [
-              { label: "Read the border research", url: "https://doi.org/10.1111/imig.13187" },
+              { label: "Read the border research (PDF in Blackboard)", url: "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544551-dt-content-rid-223984877_2/xid-223984877_2" },
               { label: "Read the Privacy Commissioner finding", url: "https://www.priv.gc.ca/en/opc-actions-and-decisions/ar_index/202021/sr_rcmp/" },
               { label: "Read the Supreme Court case brief", url: "https://www.scc-csc.ca/judgments-jugements/cb/2018/37233/" }
             ]

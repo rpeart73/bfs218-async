@@ -277,8 +277,12 @@
   function sourceTrail(ids) {
     var items = (ids || []).map(function (id) {
       var source = SOURCES[id] || { label: id };
-      if (!source.url) return '<span>' + esc(source.label) + '</span>';
-      return '<a href="' + esc(source.url) + '" target="_blank" rel="noopener noreferrer">' + esc(source.label) + '</a>';
+      var records = global.BFS218 && Array.isArray(global.BFS218.records) ? global.BFS218.records : [];
+      var reading = records.filter(function (item) { return item.id === id; })[0];
+      var pdf = reading && reading.blackboardFullText && (reading.pdfUrl || reading.url);
+      var url = pdf || source.url, label = source.label + (pdf ? ' (PDF in Blackboard)' : '');
+      if (!url) return '<span>' + esc(label) + '</span>';
+      return '<a href="' + esc(url) + '" target="_blank" rel="noopener noreferrer">' + esc(label) + '</a>';
     });
     if (!items.length) return '';
     return '<footer class="bev-sources"><b>Source trail</b><div>' + items.join('<span aria-hidden="true"> | </span>') + '</div></footer>';
