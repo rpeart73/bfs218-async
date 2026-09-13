@@ -110,7 +110,7 @@
     return null;
   }
   /* Term shell URL: replace with the exact Blackboard course link once the Fall shell is published. */
-  var BB_URL = 'https://learn.senecapolytechnic.ca/ultra/courses/_789991_1/outline'; /* BFS218 SYNCHRONOUS course shell (SYB). Section-specific: do NOT cascade this id to the async site or other courses. */
+  var BB_URL = 'https://learn.senecapolytechnic.ca/ultra/courses/_789699_1/outline'; /* BFS218 asynchronous section SYA. */
   var saved0 = load();
   var view0 = loadView();
   var route0 = initialRoute();
@@ -717,8 +717,8 @@
   function listenOverlay() {
     if (!state.listenOpen) return '';
     var r = rlState();
-    return '<div class="rl-panel listen-pop" role="dialog" aria-label="Listen to this page">'
-      + '<div class="rl-head"><strong>Listen</strong><button type="button" class="rl-btn rl-close" onclick="SOC.listenMenu()" aria-label="Close listen controls">' + ic('x', 16, 2) + '</button></div>'
+    return '<div class="rl-panel listen-pop" role="dialog" aria-label="Listen to this page" onkeydown="SOC.listenKey(event)">'
+      + '<div class="rl-head"><strong>Listen</strong><button type="button" class="rl-btn rl-close" onclick="SOC.listenClose()" aria-label="Close listen controls">' + ic('x', 16, 2) + '</button></div>'
       + '<div class="rl-row"><b>Voice and language</b>' + rlVoiceSelect(r) + '</div>'
       + '<div class="rl-row"><b>Speed</b>' + [50, 75, 100, 125, 150, 200].map(function (v) { return rlBtn('', v === 100 ? '1x' : (v / 100) + 'x', r.rate === v, 'SOC.rlRate(' + v + ')'); }).join('') + '</div>'
       + '<button type="button" id="listen-play" class="wk-cta" style="margin:12px 0 0;width:100%" onclick="SOC.listenGo()">Read this page aloud</button>'
@@ -2545,7 +2545,7 @@
       + '<img src="images/hero.jpg" alt="" aria-hidden="true" loading="eager" onerror="this.remove()" class="hhm-img">'
       + '<div class="hhm-scrim"></div>'
       + '<div class="hhm-body">'
-      + '<div class="mono hhm-kick"><span class="hhm-code">' + esc(courseCode()) + '</span> &middot; BLENDED SYNCHRONOUS COURSE &middot; FALL 2026</div>'
+      + '<div class="mono hhm-kick"><span class="hhm-code">' + esc(courseCode()) + '</span> &middot; FULLY ASYNCHRONOUS COURSE &middot; FALL 2026</div>'
       + '<h1 class="hhm-title">' + esc(courseTitle()) + '</h1>'
       + '<p class="hhm-sub">Learning to see techno-racism: how racial bias hides inside the technologies we use every day, and how to read it clearly.</p>'
       + '</div></section>';
@@ -7031,7 +7031,7 @@
   var WEEK_DATES = { 1: 'Week of Sept 8', 2: 'Week of Sept 14', 3: 'Week of Sept 21', 4: 'Week of Sept 28', 5: 'Week of Oct 5', 6: 'Week of Oct 13', 7: 'Week of Oct 19', 8: 'Week of Nov 2', 9: 'Week of Nov 9', 10: 'Week of Nov 16', 11: 'Week of Nov 23', 12: 'Week of Nov 30', 13: 'Week of Dec 7', 14: 'Final week: Dec 13 to 16' };
   var WEEK_START = { 1: '2026-09-08', 2: '2026-09-14', 3: '2026-09-21', 4: '2026-09-28', 5: '2026-10-05', 6: '2026-10-13', 7: '2026-10-19', 8: '2026-11-02', 9: '2026-11-09', 10: '2026-11-16', 11: '2026-11-23', 12: '2026-11-30', 13: '2026-12-07', 14: '2026-12-13' };
   function deliveryMode(w) {
-    if (w === 1) return { kind: 'async', label: 'ASYNCHRONOUS COURSE ORIENTATION', short: 'Asynchronous learning', reason: 'This course is fully asynchronous. Begin with the orientation, then work through the weekly learning path at times that fit your schedule.' };
+    if (w === 1) return { kind: 'async', label: 'ASYNCHRONOUS COURSE ORIENTATION', short: 'Asynchronous learning', reason: 'This course is fully asynchronous. The companion website is open for preview. Blackboard learning blocks open progressively through the term. Begin with the orientation, then work within the available blocks at times that fit your schedule.' };
     if (w === 14) return { kind: 'async', label: 'ASYNCHRONOUS COURSE CLOSURE', short: 'Asynchronous learning', reason: 'There is no live lecture. Complete the Final Learning Reflection by Sunday, December 13, and use the remaining materials for review and closure.' };
     return { kind: 'async', label: 'ASYNCHRONOUS INDEPENDENT LEARNING', short: 'Asynchronous learning', reason: 'There is no live lecture. Work through this week\'s learning path at your own pace and use Blackboard for graded submissions, feedback, and course records.' };
     if (w === 6) return { kind: 'async', label: 'ASYNCHRONOUS INDEPENDENT LEARNING', short: 'Asynchronous learning; no lecture', reason: 'There is no lecture this week. Use the flexible class time to work through the documented Canadian cases at your own pace, applying the three dimensions you already have and holding each claim to what its source actually supports.' };
@@ -7101,7 +7101,7 @@
       + (d.overview ? '<p style="font-size:1.04rem;line-height:1.6;color:var(--ink);margin:0 0 4px;">' + esc(d.overview) + '</p>' : '')
       + '</div></section>';
     var how = '<section id="wk-how" class="node"><h2 class="wk-sec">How this course works</h2>'
-      + '<p style="margin:0 0 10px;font-size:1rem;line-height:1.6">This is a fully asynchronous course. All fourteen weeks are available from the beginning of the term so you can plan ahead and work flexibly. Follow the weekly learning path in order, use this companion site for lessons and practice, and use Blackboard for announcements, graded assignments, submissions, feedback, and grades. Study Week, October 26 to 30, has no new graded deadline.</p>'
+      + '<p style="margin:0 0 10px;font-size:1rem;line-height:1.6">This is a fully asynchronous course. All fourteen weeks on this companion website are open for preview. Blackboard learning blocks open progressively through the term; work within the blocks available to you. Follow the weekly learning path in order, use this companion site for lessons and practice, and use Blackboard for announcements, graded assignments, submissions, feedback, and grades. Study Week, October 26 to 30, has no new graded deadline.</p>'
       + '<p style="margin:0;font-size:1rem;line-height:1.6">This week is your orientation. There are no readings and nothing to submit. When you are ready, begin with Week ' + (next != null ? next : 2) + '.</p></section>';
     var audioPk = audioPackSection(w);
     var visual = visualOverviewSection(w, d);
@@ -8189,14 +8189,14 @@
       + '<div style="margin-top:9px;font-size:.76rem;line-height:1.45;color:var(--ink-dim)">' + esc(lensChangeLine()) + '</div>'
       + '</div>';
   }
-  function keyDatesList() { return [{"d":"2026-09-08","it":[["Course opens","All fourteen weeks are available","support"]]},{"d":"2026-10-26","it":[["Study Week","","study"]]},{"d":"2026-12-16","it":[["Last day of the term","Course work is complete","support"]]}]; }
+  function keyDatesList() { return [{"d":"2026-09-08","it":[["Course opens","Website open for preview; Blackboard blocks open progressively","support"]]},{"d":"2026-10-26","it":[["Study Week","","study"]]},{"d":"2026-12-16","it":[["Last day of the term","Course work is complete","support"]]}]; }
   var KD_MON = ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'August', 'September', 'October', 'November', 'December'];
   function kdDaysUntil(iso) {
     try { var t = new Date(); var a0 = Date.UTC(t.getFullYear(), t.getMonth(), t.getDate()); var p = iso.split('-'); var b0 = Date.UTC(+p[0], +p[1] - 1, +p[2]); return Math.round((b0 - a0) / 86400000); } catch (e) { return 999; }
   }
   function kdMonthDay(iso) { var p = iso.split('-'); return KD_MON[+p[1] - 1] + ' ' + (+p[2]); }
   function deadlineRule() { return ''; }
-  function mobileCalendarSubscription() { var code = courseCode(), base = location.protocol + '//' + location.host + location.pathname.replace(/[^\/]*$/, ''), feed = (base + 'calendar/' + code + '_key_dates.ics').replace(/^https?:/i, 'webcal:'); return '<section class="mobile-cal-sub" aria-labelledby="mobile-cal-title"><div class="mono">MOBILE CALENDAR</div><h2 id="mobile-cal-title">Keep these dates on your phone</h2><p>This is a live calendar subscription, not a downloaded copy. Your calendar app can refresh it when the course schedule changes. Blackboard remains the official source.</p><a href="' + esc(feed) + '">Subscribe on this phone <span aria-hidden="true">&#8594;</span></a></section>'; }
+  function mobileCalendarSubscription() { return ''; } /* SYA has no public calendar events to subscribe to. */
   function mobileAccessPanel() { var url = (location.origin + location.pathname).replace(/index\.html$/i, ''); return '<section class="mobile-access-panel" aria-labelledby="mobile-access-title"><div class="mono">PHONE OR TABLET</div><h2 id="mobile-access-title">Use the same site on any device</h2><p>There is no separate app. This responsive site is the mobile version too. Share or copy the link, then open it on your phone or tablet.</p><div><a href="' + esc(url) + '">Open the site link</a><button type="button" onclick="SOC.shareMobileSite()">Share or copy the link</button></div><small>When browser storage is available, notes may remain only on the device and browser where you typed them.</small></section>'; }
   function upcomingParts(e) {
     var title = String(e.title || ''), note = String(e.note || ''), label = 'Course date', name = title, m;
@@ -11768,15 +11768,37 @@
     return changed;
   }
 
+  function setCourseNav(open) {
+    state.navOpen = !!open;
+    if (state.navOpen) { state.rlPanelOpen = false; state.listenOpen = false; }
+    renderKeepScroll();
+    var toggle = document.querySelector('.soc-mobile-menu');
+    if (!toggle || !toggle.getClientRects().length) return;
+    var target = state.navOpen ? document.querySelector('.soc-sidebar button, .soc-sidebar a[href]') : toggle;
+    if (target) target.focus();
+  }
+  document.addEventListener('keydown', function (e) {
+    var toggle = document.querySelector('.soc-mobile-menu');
+    if (!state.navOpen || !toggle || !toggle.getClientRects().length || e.defaultPrevented) return;
+    if (e.key === 'Escape') { e.preventDefault(); SOC.closeNav(); return; }
+    if (e.key !== 'Tab') return;
+    var nav = document.querySelector('.soc-sidebar-open');
+    if (!nav) return;
+    var items = [toggle].concat(Array.prototype.slice.call(nav.querySelectorAll('button:not([disabled]), a[href], input:not([disabled]), select:not([disabled]), [tabindex="0"]')).filter(function (el) { return el.getClientRects().length; }));
+    var index = items.indexOf(document.activeElement);
+    e.preventDefault();
+    items[(index + (e.shiftKey ? -1 : 1) + items.length) % items.length].focus();
+  });
+
   window.SOC = {
     notebookWeek: function (w) { state.notebookWeek = cleanWeek(w) || 1; renderKeepScroll(); },
     notebookNote: function (w, value) { w = cleanWeek(w); if (!w) return; state.notebookNotes = state.notebookNotes || {}; state.notebookNotes[w] = String(value == null ? '' : value); studentNotesChanged(); },
     notebookFilter: function (value) { var query = String(value || '').toLocaleLowerCase(), count = 0; document.querySelectorAll('[data-note-group]').forEach(function (el) { var match = el.textContent.toLocaleLowerCase().indexOf(query) >= 0; el.hidden = !match; if (query && match) el.open = true; if (match) count++; }); var result = document.getElementById('notebook-filter-result'); if (result) result.textContent = query ? count + ' note groups match.' : ''; },
     knowledgeJump: function (id) { var el = document.getElementById('kcq-' + id); if (el) { el.tabIndex = -1; el.focus(); el.scrollIntoView({ block: 'center' }); } },
 
-    toggleNav: function () { state.navOpen = !state.navOpen; renderKeepScroll(); },
-    openNav: function () { state.navOpen = true; renderKeepScroll(); },
-    closeNav: function () { state.navOpen = false; renderKeepScroll(); },
+    toggleNav: function () { setCourseNav(!state.navOpen); },
+    openNav: function () { setCourseNav(true); },
+    closeNav: function () { setCourseNav(false); },
     toggleReaderLens: function () {
       state.readerLensOpen = !state.readerLensOpen;
       if (state.readerLensOpen) state.rlPanelOpen = false;
@@ -11804,6 +11826,14 @@
     rlRulerPin: function () { var r = rlState(); r.rulerPin = !r.rulerPin; persist(); rlRulerPosition(); renderKeepScroll(); rlRefocus(); announce(r.rulerPin ? 'Ruler pinned. Drag the band by hand, or use Alt with the arrow keys.' : 'Ruler released. It follows your pointer again.'); },
     rlRuler: function () { var r = rlState(); r.ruler = !r.ruler; persist(); rlApply(); renderKeepScroll(); rlRefocus(); announce(r.ruler ? 'Reading ruler on. Move your pointer, or hold Alt and press the up or down arrows.' : 'Reading ruler off.'); },
     rlSpeak: function () { rlSpeakToggle(); },
+    listenClose: function () {
+      state.listenOpen = false;
+      renderKeepScroll();
+      var button = document.querySelector('.listen-btn');
+      if (button) button.focus();
+      announce('Listen controls closed.');
+    },
+    listenKey: function (e) { if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); SOC.listenClose(); } },
     listenMenu: function () {
       if (rlSpeaking) { rlSpeakToggle(); return; }
       state.listenOpen = !state.listenOpen;
@@ -11811,7 +11841,7 @@
       if (state.listenOpen) {
         setTimeout(function () { var b = document.getElementById('listen-play'); if (b) b.focus(); }, 60);
         announce('Listen controls open. Pick a voice and speed if you like, then press Read this page aloud.');
-      } else { announce('Listen controls closed.'); }
+      } else { SOC.listenClose(); }
     },
     listenGo: function () {
       state.listenOpen = false;
