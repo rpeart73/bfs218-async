@@ -329,11 +329,12 @@
     return !!r.pdfUrl || /\.pdf($|[?#])/i.test(u) || /\/article\/download\/|\/servlets\/purl\/|arxiv\.org\/pdf|EIMJ20241604_09|\/jonus\/index\.php\/jonus\/article\/download\//.test(u);
   }
   function readLabel(r) {
-    if (r.fulltext === false) return 'Find it in the Seneca Library';
     if (r.primaryLabel) return r.primaryLabel;
+    if (r.fulltext === false) return 'Find it in the Seneca Library';
     return isPdfReading(r) ? 'Open the PDF' : 'Open the reading';
   }
   function accessNote(r) {
+    if (r.accessMessage) return r.accessMessage;
     if (r.blackboardFullText) return "Full reading PDF in Blackboard. Sign in with your Seneca account; no library search is needed.";
     if (r.access === 'openstax') return 'Free and open on OpenStax. Opens in a new tab.';
     if (r.access === 'open') return 'Open access. Opens in a new tab.';
@@ -368,6 +369,7 @@
   }
   function weeksWithReadings() { var set = {}; D.records.forEach(function (r) { set[r.week] = (set[r.week] || 0) + 1; }); return Object.keys(set).map(Number).sort(function (a, b) { return a - b; }); }
   function templatedSynthesis(recs) {
+    if (recs.some(function (r) { return r.fullTextPending; })) return ['A complete source in this selection is currently unavailable. Choose available readings for your comparison; a publisher abstract cannot establish a full reading comparison.'];
     function who(r) { return r.authors.indexOf('OpenStax') >= 0 ? 'OpenStax' : r.authors; }
     function lower(s) { return s.charAt(0).toLowerCase() + s.slice(1); }
     function trim(s) { return s.replace(/\.\s*$/, ''); }
@@ -393,6 +395,7 @@
     return [lead + ' ' + ideas + ' ' + rel + ' ' + close];
   }
   function pairText(a, b) {
+    if (a.fullTextPending || b.fullTextPending) return templatedSynthesis([a, b])[0];
     var k = [a.id, b.id].sort().join('|');
     return (D.syntheses && D.syntheses[k]) ? D.syntheses[k] : templatedSynthesis([a, b])[0];
   }
@@ -1280,6 +1283,7 @@
       }).join('');
       return '<div class="rise"><h1 style="font-size:1.75rem;margin:0 0 6px">Build Your Source Comprehension</h1><p class="lede" style="margin:0 0 18px">Pick one course source, including a reading, video, or audio item. Work through questions that build your understanding of it. Switch the lens to change the kind of questions you answer. When browser storage is available, your answers may remain here and can be included in your generated notes.</p>' + practiceNote + picks + '</div>';
     }
+    if (r.fullTextPending) return '<div class="rise"><h1>' + esc(r.title) + '</h1><p>' + esc(accessNote(r)) + '</p><p>Source practice is paused until the complete article is available.</p><button onclick="SOC.rcPick(null)">Choose another source</button></div>';
     var lens = LENSES[state.lens] || LENSES.thematic;
     var qs = RC_QUESTIONS[state.lens] || RC_QUESTIONS.thematic;
     var guide = RC_GUIDANCE[state.lens] || RC_GUIDANCE.thematic;
@@ -4146,12 +4150,12 @@
     if (!ep || !ep.file) {
       var source = (window.BFS218_FEATURED_SOURCES || []).filter(function (r) { return Number(r.week) === Number(w) && r.audio && r.audio.url; })[0];
       if (!source) return '';
-      return '<section id="wk-audio" class="node"><h2 class="wk-sec">Listen to this week</h2><p class="wk-desc">A short audio lecture for the week that you can play while you read or on the move. Your professor wrote it, and it walks through the core idea of the week. Use it to get oriented or to catch up, then come back to the readings for the detail.</p>'
+      return '<section id="wk-audio" class="node"><h2 class="wk-sec">Optional source audio</h2><p class="wk-desc">Listen to the original program from the publisher named below. Use it to explore the weekly question, then return to the assigned readings for evidence.</p>'
         + '<p class="wk-hint">An optional official-source audio route into this week. Listen while travelling if that works for you, then return to the reading for the evidence and citation.</p>'
         + '<div class="wk-read"><div class="ref"><b>' + esc(source.audio.title || source.title) + '</b><br>' + esc(source.audio.source || source.publisher || source.authors) + '</div>'
         + '<p style="margin:8px 0 0;font-size:.86rem;line-height:1.55;color:var(--ink-dim)">' + esc(source.audio.synopsis || source.abstract || '') + '</p></div>'
         + '<div style="display:flex;gap:10px;flex-wrap:wrap"><a href="' + esc(source.audio.url) + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none">Listen on the official site</a>'
-        + '<a href="' + esc(source.transcriptUrl || source.url) + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none;background:#fff;color:#15171C;border:1px solid #15171C">Read the text version</a></div>'
+        + '<a href="' + esc(source.transcriptUrl || source.url) + '" target="_blank" rel="noopener" class="wk-cta" style="text-decoration:none;background:#fff;color:#15171C;border:1px solid #15171C">' + esc(source.transcriptUrl ? 'Read the full transcript' : 'Read the accompanying article') + '</a></div>'
         + '<p style="margin:10px 0 0;font-size:.78rem;color:var(--ink-faint)">Playback stays with the publisher. This site does not track what you play, and the audio does not replace the assigned reading.</p></section>';
     }
     var aid = String(w);
@@ -10788,7 +10792,7 @@
     var head = '<div class="rise">'
       + '<div class="mono" style="font-size:.7rem;letter-spacing:.09em;color:var(--amode);font-weight:700;margin:0 0 8px">THE WEEKLY LECTURES</div>'
       + '<h1 style="font-size:1.9rem;line-height:1.15;margin:0 0 10px">Lectures</h1>'
-      + '<p style="font-size:1.02rem;color:var(--ink-dim);line-height:1.6;margin:0 0 22px">The lectures currently posted are listed below. Your professor wrote each one; they are read by the Eleven Labs Narrator, an AI-generated voice, for clarity and accessibility. Press play and it keeps going while you move around the site. Use a posted lecture to catch up if you missed that live class; the readings on each week page still carry the citations and evidence your graded work needs.</p>';
+      + '<p style="font-size:1.02rem;color:var(--ink-dim);line-height:1.6;margin:0 0 22px">The lectures currently posted are listed below. Your professor wrote each one; they are read by the Eleven Labs Narrator, an AI-generated voice, for clarity and accessibility. Press play and it keeps going while you move around the site. Use a posted lecture as part of your self-paced study; the readings on each week page still carry the citations and evidence your graded work needs.</p>';
     if (!weeks.length) return head + '<p style="color:var(--ink-faint)">No lectures are posted yet. Check back soon.</p></div>';
     var rows = weeks.map(function (w) {
       var ep = AU[w], playing = (state.auW === w);

@@ -24,7 +24,7 @@
             title: "The rule followed people into movement",
             kicker: "ARCHIVE · DURHAM, NORTH CAROLINA, 1940",
             image: "images/story/jim-crow-bus-station.jpg",
-            alt: "A Black woman and child sit beneath a sign marking the colored waiting room at a segregated bus station in Durham, North Carolina, in 1940.",
+            alt: "A man stands beside a bus beneath a sign reading Colored Waiting Room at a segregated bus station in Durham, North Carolina, in 1940.",
             body: "Jim Crow laws and local rules restricted more than a single room or service. Segregation shaped how Black people entered public buildings, where they waited, and how they travelled. Architecture and signs made the racial rule part of an ordinary trip.",
             notice: "Follow the route a traveller would take. Which door, room, and sign decide where that person is allowed to go?",
             bridge: "A system does not need to announce a personal prejudice. It can place the rule in the route itself. Modern digital systems can do something similar when access is shaped by a form, score, queue, or automated decision.",
@@ -42,7 +42,7 @@
             notice: "Notice how little direct interaction is needed. Once the entrance and rule are in place, the building carries out the sorting again and again.",
             bridge: "This is the structural question students will carry into technology: where has an institution placed the sorting rule, and how does the system repeat it at scale?",
             boundary: "This image records one theatre in the Mississippi Delta in 1939. It is evidence of that documented setting, not a complete picture of every Black person's experience under Jim Crow.",
-            credit: "Marion Post Wolcott, Farm Security Administration/Office of War Information Collection, Library of Congress, October 1939. Public domain.",
+            credit: "Marion Post Wolcott, Farm Security Administration/Office of War Information Collection, Library of Congress, 1939 (October is uncertain in the catalogue). Public domain.",
             source: "https://www.loc.gov/item/2017754826/"
           },
           {

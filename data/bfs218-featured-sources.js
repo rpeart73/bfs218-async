@@ -7,18 +7,14 @@
   if (!D || !Array.isArray(D.records)) return;
   var sources = [
     {
-      id: 'cbcrobot2017', assigned: 'Optional historical case for Week 2', eye: 'western', type: 'Radio segment', access: 'open',
-      title: 'How not to create a racist, sexist robot', authors: 'CBC Radio, The Current', publisher: 'CBC Radio', year: 2017, week: 2, primaryLabel: 'Open the audio and article',
-      themes: ['bias','design','representation'], origin: 'Canada', len: 'Short listen and article', diff: 1,
-      abstract: 'This 2017 Current segment asks how the people and assumptions inside technology shape what robots learn and reproduce. It works as an early historical checkpoint: the warning that technical systems can carry racism and sexism predates the current generative-AI cycle.',
+      id: 'cbcrobot2017', assigned: 'Optional historical case for Week 2', eye: 'western', type: 'Radio program article', access: 'open',
+      title: 'How not to create a racist, sexist robot', authors: 'CBC Radio, The Current', publisher: 'CBC Radio', year: 2017, week: 2, primaryLabel: 'Read the complete written article', accessMessage: 'The written CBC article is available. The original 2017 audio and transcript are currently unavailable from these CBC pages. This article is not a transcript of the full broadcast.',
+      themes: ['bias','design','representation'], origin: 'Canada', len: 'Short written article', diff: 1,
+      abstract: 'The written article accompanying this 2017 Current segment asks how the people and assumptions inside technology shape what robots learn and reproduce. It works as an early historical checkpoint: the warning that technical systems can carry racism and sexism predates the current generative-AI cycle.',
       coreIdea: 'A machine does not need personal intent to reproduce the assumptions and exclusions built into its design and learning environment.',
       url: 'https://www.cbc.ca/radio/thecurrent/the-current-for-may-4-2017-1.4097748/how-not-to-create-a-racist-sexist-robot-1.4097853',
-      transcriptUrl: 'https://www.cbc.ca/radio/thecurrent/the-current-for-may-4-2017-1.4097748/may-4-2017-full-episode-transcript-1.4099897', fulltext: true,
-      related: ['benjamin2019','noble2018'],
-      audio: { kind: 'Podcast', platform: 'source', source: 'CBC Radio, The Current', scholar: 'CBC Radio, The Current', title: 'How not to create a racist, sexist robot', url: 'https://www.cbc.ca/radio/thecurrent/the-current-for-may-4-2017-1.4097748/how-not-to-create-a-racist-sexist-robot-1.4097853', embed: false,
-        synopsis: 'A 2017 discussion of how human assumptions can enter the design and learning of robots. Use it to test the Week 2 claim that technical systems are social systems.',
-        watchFor: ['Where the bias enters the design process', 'Why intent is not the only question', 'What responsibility belongs to designers and institutions'],
-        readNext: 'Read Benjamin and Noble. Compare the segment\'s language of bias with the course language of structure, power, and the New Jim Code.' }
+      fulltext: true,
+      related: ['benjamin2019','noble2018']
     },
     {
       id: 'guardianrobots2017', assigned: 'Optional historical case for Week 3', eye: 'western', type: 'News feature', access: 'open',
@@ -65,8 +61,8 @@
         readNext: 'Return to Gender Shades. Identify one measured disparity, then distinguish the evidence in the study from the remedies proposed in the lecture.' }
     },
     {
-      id: 'rcigpt4o2024', assigned: 'Optional current-model case for Week 9', eye: 'western', type: 'Investigative news article', access: 'open',
-      title: 'How the new version of ChatGPT generates hate and disinformation on command', authors: 'Radio-Canada International', publisher: 'Radio-Canada International', year: 2024, week: 9,
+      id: 'rcigpt4o2024', assigned: 'Optional historical model case for Week 9', eye: 'western', type: 'Investigative news article', access: 'open',
+      title: 'How the new version of ChatGPT generates hate and disinformation on command', authors: 'Nicholas De Rosa', publisher: 'Radio-Canada International', year: 2024, week: 9,
       themes: ['generative AI','hate','safeguards'], origin: 'Canada', len: 'Investigative article', diff: 2,
       abstract: 'A Radio-Canada investigation reported that the then-new GPT-4o model could be pushed to produce offensive content, hate, and disinformation. The page is explicitly dated and model-specific: students use it as a snapshot of safeguards at one point in time, not as a permanent claim about every later system.',
       coreIdea: 'A system marketed as helpful can still expose people to predictable harm when its safeguards bend under pressure; the exact behaviour must be tied to the model and date tested.',
@@ -79,7 +75,7 @@
       themes: ['techno-racism','historical data','facial recognition','accountability'], origin: 'United States', len: '26 minutes, 46 seconds', diff: 1,
       abstract: 'This captioned public-television episode introduces techno-racism through historical data, photography, facial recognition, policing, housing, and technology work. Its interviews and cases give students a course-wide map that they can test against the assigned scholarship rather than treating the episode as proof on its own.',
       coreIdea: 'Historical data carries earlier discrimination into technical systems, so accountability requires attention to data, design, deployment, governance, and who has a voice in each decision.',
-      url: 'https://www.pbs.org/video/techno-racism-the-bias-built-in-mutually-inclusive-18aiyz/', transcriptUrl: 'https://www.pbs.org/video/techno-racism-the-bias-built-in-mutually-inclusive-18aiyz/', fulltext: true,
+      url: 'https://www.pbs.org/video/techno-racism-the-bias-built-in-mutually-inclusive-18aiyz/', transcriptUrl: 'https://www.pbs.org/video/techno-racism-the-bias-built-in-mutually-inclusive-18aiyz/#section2', fulltext: true,
       related: ['benjamin2019','buolamwini2018','robertson2020'],
       video: { kind: 'Video', platform: 'source', source: 'PBS and WGVU Public Media', scholar: 'Mutually Inclusive', title: 'Techno Racism: The Bias Built In', url: 'https://www.pbs.org/video/techno-racism-the-bias-built-in-mutually-inclusive-18aiyz/', embed: false,
         synopsis: 'A captioned overview of how historical racism can be encoded into data and technical systems, with cases spanning photography, facial recognition, policing, housing, and technology work.',
@@ -87,12 +83,12 @@
         readNext: 'Compare the episode with Benjamin for the New Jim Code, Buolamwini and Gebru for measured evidence, and Robertson and colleagues for the Canadian human-rights frame.' }
     },
     {
-      id: 'wadhawan2022', assigned: 'Optional Canadian legal reading for Week 6', eye: 'western', type: 'Law journal article', access: 'open',
+      id: 'wadhawan2022', assigned: 'Optional Canadian legal reference for Week 6, full text pending', eye: 'western', type: 'Law journal article', access: 'open',
       title: 'Let the Machines Do the Dirty Work: Social Media, Machine Learning Technology and the Iteration of Racialized Surveillance', authors: 'Subhah Wadhawan', publisher: 'Canadian Journal of Law and Technology', year: 2022, week: 6,
-      themes: ['racialized surveillance','content moderation','Islamophobia','algorithmic opacity'], origin: 'Canada', len: '22 pages', diff: 3,
-      abstract: 'Wadhawan argues that opaque machine-learning systems used by digital platforms can reproduce racialized surveillance by disproportionately censoring speech related to Islam, including content without a meaningful link to violence. The article uses critical race theory and Simone Browne\'s concept of racialized surveillance, then proposes stronger algorithmic hygiene.',
+      themes: ['racialized surveillance','content moderation','Islamophobia','algorithmic opacity'], origin: 'Canada', len: 'Publisher record', diff: 3,
+      abstract: 'In the publisher abstract, Wadhawan argues that opaque machine-learning systems used by digital platforms can reproduce racialized surveillance by disproportionately censoring speech related to Islam, including content without a meaningful link to violence. The abstract also describes proposals for stronger algorithmic hygiene; consult the complete article before evaluating its methods and detailed recommendations.',
       coreIdea: 'Content moderation can become racialized surveillance when opaque machine-learning systems treat Islamic speech as a proxy for danger and suppress it without a meaningful connection to violence.',
-      url: 'https://digitalcommons.schulichlaw.dal.ca/cjlt/vol20/iss1/1/', pdfUrl: 'https://digitalcommons.schulichlaw.dal.ca/cgi/viewcontent.cgi?article=1296&context=cjlt', fulltext: true,
+      url: 'https://digitalcommons.schulichlaw.dal.ca/cjlt/vol20/iss1/1/', fulltext: false, fullTextPending: true, primaryLabel: 'Open the publisher record', accessMessage: 'Full article access is currently unavailable. This optional reference links to bibliographic details and an abstract, not the complete reading. Use the available Nagra and Robertson readings for Week 6.',
       sourceLabel: 'Publisher page', related: ['nagra2016','noble2018','robertson2020']
     },
     {
@@ -147,10 +143,7 @@
     { q: 'What is the strongest way to use the PBS episode in this course?', options: ['As proof that every technical system produces the same harm', 'As a course-wide map of cases and claims to test against the assigned scholarship', 'As a replacement for all Week 2 readings', 'As evidence that positive outcomes are impossible'], answer: 1, why: 'The episode is a public overview. It helps identify patterns and questions, while the assigned scholarship supplies the concepts and evidence needed to test them.', skill: 'sources', diff: 1 },
     { q: 'What does the episode mean when it says historical data does not forget?', options: ['Data has personal memory', 'Records produced under unequal systems can carry earlier discrimination into later predictions and decisions', 'Old data is always unusable', 'Every data point is intentionally racist'], answer: 1, why: 'The point is structural: data can preserve the results of earlier discrimination even when a later system is presented as new or neutral.', skill: 'mechanisms', diff: 1 }
   ];
-  MC.wadhawan2022 = [
-    { q: 'What form of racialized surveillance is central to Wadhawan\'s argument?', options: ['Only physical border searches', 'Opaque content-moderation systems disproportionately suppressing speech related to Islam', 'All social-media rules affecting every user equally', 'Human review replacing machine learning'], answer: 1, why: 'The article focuses on machine-learning content moderation that can treat Islamic speech as a proxy for danger, even without a meaningful link to violence.', skill: 'argument', diff: 2 },
-    { q: 'Why does algorithmic opacity matter in this reading?', options: ['It makes platforms easier to audit', 'It can hide how categories, data, and rules produce unequal censorship', 'It guarantees neutral decisions', 'It removes institutional responsibility'], answer: 1, why: 'Opacity makes it harder to see, challenge, and remedy the rules through which racialized surveillance is reproduced.', skill: 'mechanisms', diff: 2 }
-  ];
+  MC.wadhawan2022 = []; // Full article unavailable; no reading quiz offered.
   MC.harvey2023 = [
     { q: 'How should this short legal explainer be used with the Week 12 readings?', options: ['As a complete proof of every claim it mentions', 'As an accessible map of examples and remedies to test against deeper policy and design-justice sources', 'As a replacement for the Canadian policy brief', 'As evidence that hiring alone solves techno-racism'], answer: 1, why: 'The explainer is useful for orientation, but its examples and remedies need to be checked against more detailed evidence and governance analysis.', skill: 'sources', diff: 1 },
     { q: 'Which course question most strengthens Harvey\'s proposed remedies?', options: ['Which single developer should be blamed?', 'Do the remedies change only representation, or also the rules, incentives, oversight, and power that shape the system?', 'Can technical review remove the need for law?', 'Should intent determine whether harm matters?'], answer: 1, why: 'The course asks whether a remedy changes the structure that produces harm, not only whether it adds a well-intentioned intervention.', skill: 'evaluation', diff: 2 }
