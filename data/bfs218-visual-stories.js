@@ -134,10 +134,10 @@
             kicker: "ROBOTICS STUDY · 2022",
             image: "images/story/robot-bias-jhu.jpg",
             alt: "A white robotic arm reaches toward one face in a grid of diverse portrait photographs.",
-            body: "In a 2022 robotics experiment summarized by Johns Hopkins, a robot using a model built with CLIP made choices from face images after prompts such as doctor, homemaker, janitor, and criminal. Its selections reproduced racialized and gendered stereotypes rather than making neutral observations about the people shown.",
-            notice: "Look at the robot's arm, then at the grid of faces. The machine has no hatred, but its model still turns a social hierarchy into a physical selection.",
+            body: "In a 2022 virtual robotics experiment summarized by Johns Hopkins, a simulated robot using a model built with CLIP made choices from face images after prompts such as doctor, homemaker, janitor, and criminal. Its selections reproduced racialized and gendered stereotypes rather than making neutral observations about the people shown.",
+            notice: "Look at the robot's arm, then at the grid of faces. The machine has no hatred, but the study shows how a model can turn a social hierarchy into a simulated selection.",
             bridge: "This makes Benjamin's question concrete: the issue is not whether the robot feels racism. The issue is how data, labels, prompts, and design allow racism to travel through what the robot does.",
-            boundary: "The image is illustrative. The documented claims come from the reported 2022 experiment, not from the stock photograph itself. The study tested one model and task; it does not establish that every robot behaves this way.",
+            boundary: "The image is illustrative. The documented claims come from the reported 2022 virtual experiment, not from the stock photograph itself. The study tested one model and task; it does not establish that every robot behaves this way.",
             credit: "Getty Images via Johns Hopkins Hub, 2022.",
             source: "https://hub.jhu.edu/2022/06/21/flawed-artificial-intelligence-robot-racist-sexist/"
           },
