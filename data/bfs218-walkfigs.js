@@ -148,8 +148,8 @@ window.BFS218_WALKFIGS = {
     },
     {
       file: "fig-week10-b.svg",
-      alt: "Predictive student model branches to likely success or failure, with failure reinforcing racial inequity.",
-      longText: "Begin with the predictive model that colleges use to flag students before the term is run. It branches upward to likely to succeed, where support flows, and downward to likely to fail, where students are written off early. A red arrow from the failure branch points to the outcome that bias reinforces racial inequities. The diagram concludes that early predictions can allocate support through a biased gate before students have had the opportunity to succeed."
+      alt: "A risk model could miss students who need support when it overpredicts their success.",
+      longText: "Bird and colleagues analyse models that could target extra support to students predicted to be at risk. The higher-risk branch is eligible for support. The concern lies in the other branch: some Black students who would need support may not be flagged when their success is overpredicted. The study estimates how biased predictions could affect allocation; it does not show that a college actually withdrew support from students labelled likely to fail."
     },
     {
       file: "fig-week10-c.svg",
@@ -161,12 +161,12 @@ window.BFS218_WALKFIGS = {
     {
       file: "fig-week11.svg",
       alt: "A harmful system branches toward reform or real repair.",
-      longText: "Start with the harmful system at the top. The left branch leads to reform: patch the worst edges, keep the structure, and ease harm while power stays in place. The right branch leads to real repair: refuse the unjust system, build a just alternative, place those most affected in the lead, and change who holds power. The comparison concludes that relief is not the same as repair when the underlying structure and authority remain unchanged."
+      longText: "This course illustration compares a limited response with a response that changes power. It is a classroom test, not a claim that Benjamin rejects every reform or audit. Start with the harmful system at the top. The left branch leads to reform: patch the worst edges, keep the structure, and ease harm while power stays in place. The right branch leads to real repair: refuse the unjust system, build a just alternative, place those most affected in the lead, and change who holds power. The comparison concludes that relief is not the same as repair when the underlying structure and authority remain unchanged."
     },
     {
       file: "fig-week11-b.svg",
       alt: "Side-by-side test distinguishing reform from real repair.",
-      longText: "Read the left column first. Reform patches the worst edges, keeps the structure, eases harm, and leaves power in place. The right column describes real repair: refuse the unjust system, build a just alternative, let those most affected lead, and change who holds power and who carries the cost. The working test is whether a response merely improves the existing structure or redistributes authority and burden."
+      longText: "This course illustration asks what a response changes and who decides. Its two columns simplify a wider range of possible responses; they are not a formula named by Tanksley or Benjamin. Read the left column first. Reform patches the worst edges, keeps the structure, eases harm, and leaves power in place. The right column describes real repair: refuse the unjust system, build a just alternative, let those most affected lead, and change who holds power and who carries the cost. The working test is whether a response merely improves the existing structure or redistributes authority and burden."
     },
     {
       file: "fig-week11-c.svg",

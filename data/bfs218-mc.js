@@ -31,11 +31,11 @@ window.BFS218_MC = {
    "options": [
     "Leave the system in place but add a warning label",
     "Retrain the existing system on better data so it can keep running more fairly",
-    "Refuse the unjust system and build a just alternative, rather than reform a biased system to run more smoothly",
+    "Challenge oppressive systems and build alternatives, using refusal, solidarity, collective action, or accountable technical work as appropriate",
     "Abolish all technology and return to paper records"
    ],
    "answer": 2,
-   "why": "An abolitionist tool, in Benjamin's framing, refuses the unjust system and helps build a just alternative, as opposed to a reform that preserves the structure.",
+   "why": "Benjamin asks how tools can resist oppression and build solidarity. Her examples include refusal, Appolition, collective action, and independent equity audits. The test concerns the response's politics and effects, not a blanket rejection of technical improvements.",
    "skill": "argument",
    "diff": 2
   },
@@ -826,7 +826,7 @@ window.BFS218_MC = {
     "Between hardware and software"
    ],
    "answer": 0,
-   "why": "Her abolitionist, critical race pedagogy models the difference between a reform that smooths the edges and a repair that changes power.",
+   "why": "Tanksley examines Black high school students critically analysing anti-Black technologies and designing race-conscious, justice-oriented products. The course asks how this approach can change who participates in shaping technology.",
    "skill": "concepts",
    "diff": 2
   },
@@ -999,7 +999,7 @@ window.BFS218_MC = {
     "An executive at a generative AI company"
    ],
    "answer": 2,
-   "why": "The abstract identifies Attard-Frost as a doctoral candidate at the University of Toronto studying Canada's system of AI governance.",
+   "why": "The author note on page 1 of the 2023 brief identifies Attard-Frost as a doctoral candidate at the University of Toronto studying Canada's system of AI governance.",
    "skill": "context",
    "diff": 1
   }

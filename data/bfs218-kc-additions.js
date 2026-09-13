@@ -683,7 +683,7 @@ window.BFS218_KC_SETC_ADDITIONS = {
         "As likely a reform rather than a real repair: it eases the criticism while leaving power in place, so ask whether the structure should be preserved at all and what alternative could be built",
         "As proof that the original harm never existed" ],
       answer: 2,
-      why: "The week's working test asks whether a response is a reform or a real repair: a reform eases harm but leaves power in place, while abolitionist tools ask whether a system should end and what alternative should be built.",
+      why: "The week's working test asks whether a response is a reform or a real repair: a limited reform may ease harm while leaving power in place, while abolitionist tools ask whether a system should end and what alternative should be built.",
       whyWrong: {
         0: "The test exposes exactly this move: fixes that sound generous, like more diverse data or a fairness audit, can leave who decides and who pays unchanged.",
         1: "The frame does not forbid audits; it asks whether an audit changes the structure or preserves it.",
