@@ -493,6 +493,8 @@ window.BFS218 = {
    "assigned": "Executive Summary and Part I",
    "video": {
     "yt": "Dh7TKrVvnvM",
+    "embed": false,
+    "url": "https://www.youtube.com/watch?v=Dh7TKrVvnvM",
     "thumb": "",
     "title": "To Surveil and Predict: A Human Rights Analysis of Algorithmic Policing in Canada",
     "channel": "Centre for Ethics",
