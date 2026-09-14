@@ -2529,7 +2529,7 @@
     var reg = window.BFS218_RECORDINGS || {};
     return reg[w] || reg[String(w)] || null;
   }
-  function safeZoomRecordingUrl(raw) { try { var u = new URL(String(raw || '')); if (u.protocol !== 'https:' || !/(^|\.)zoom\.us$/i.test(u.hostname) || /(?:^|[?&])(pwd|passcode)=/i.test(u.search)) return ''; return u.href; } catch (e) { return ''; } }
+  function safeZoomRecordingUrl(raw) { try { var u = new URL(String(raw || '')); if (u.protocol !== 'https:' || u.username || u.password || !/(^|\.)zoom\.us$/i.test(u.hostname) || !/^\/rec\/(?:share|play)\//i.test(u.pathname) || Array.from(u.searchParams.keys()).some(function (key) { return /^(?:passcode|password)$/i.test(key); })) return ''; return u.href; } catch (e) { return ''; } }
   function classRecordingSection(w) {
     var m = deliveryMode(w), e = recFor(w), live = m.kind === 'live', heading = live ? 'Class recording' : 'Instructor update';
     var empty = live ? 'The full class recording appears here once it has been processed and posted after the live session. Use it to revisit anything that moved quickly, or to catch up if you missed the class. It stays available all term, so you can come back to it whenever you need.' : (w >= 13 ? 'There is no lecture or office-hours recording this week. If the instructor posts a short course update, it will appear here.' : 'There is no live class recording this week. If the instructor posts a short update, it will appear here.');
@@ -2539,7 +2539,7 @@
       if ((e.platform === 'youtube' || e.yt) && /^[A-Za-z0-9_-]{6,20}$/.test(String(e.videoId || e.yt || ''))) { var id = String(e.videoId || e.yt); body = '<div class="wk-rec-frame"><button type="button" class="wk-rec-play" onclick="SOC.playVideo(this,\'' + esc(id) + '\',\'' + esc(title) + '\')" aria-label="Load ' + esc(title) + '"><i><svg width="26" height="26" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg></i><span>PLAY ' + esc(title.toUpperCase()) + '</span></button></div>'; }
       else if (e.platform === 'zoom' && safeZoomRecordingUrl(e.url)) body = '<a class="wk-rec-link" href="' + esc(safeZoomRecordingUrl(e.url)) + '" target="_blank" rel="noopener">Open ' + esc(title) + ' on Zoom <span aria-hidden="true">&#8599;</span></a>';
       if (body) body += '<div class="wk-rec-meta">' + (e.date || e.posted ? '<span>Posted ' + esc(e.date || e.posted) + '</span>' : '') + '<span>' + esc(e.access || 'Check the player or recording page for captions and transcript options.') + '</span>' + (e.transcriptUrl ? '<a href="' + esc(e.transcriptUrl) + '" target="_blank" rel="noopener">Open transcript</a>' : '') + '</div>';
-      else empty = 'The recording entry needs attention before it can be shown safely. Use a valid YouTube video ID or a Zoom recording link without an embedded passcode.';
+      else empty = 'The recording link needs checking. Please contact me if you need access.';
     }
     return '<section id="wk-rec" class="node wk-rec"><div class="wk-rec-inner"><div class="mono wk-rec-kick">' + esc(live ? 'AFTER CLASS' : 'THIS WEEK') + ' &middot; WEEK ' + w + '</div><h2>' + esc(heading) + '</h2>' + (body || '<p>' + esc(empty) + '</p>') + '</div></section>';
   }
