@@ -722,7 +722,7 @@ window.BFS218 = {
   },
   {
    "id": "bird2023",
-   "assigned": "results and discussion excerpt",
+   "assigned": "Results and discussion: PDF pages 17 to 30 (printed pages 16 to 29), with Figures 1 and 2 on PDF pages 37 and 38. December 2023 working-paper version; complete 76-page PDF provided.",
    "eye": "western",
    "type": "Report",
    "access": "course",
@@ -743,13 +743,13 @@ window.BFS218 = {
    "sample": "Virginia Community College System administrative data: 5,168,903 student-course observations for the course-completion model and 385,800 students across the degree-completion training and validation samples.",
    "evidenceLimit": "The results concern one United States community-college system and simulated allocations. Disparities vary by model, outcome, threshold, and available data; the study does not show the effect of an implemented support program or every educational algorithm.",
    "doi": "10.26300/yd7z-6e20",
-   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544551-dt-content-rid-224551192_2/xid-224551192_2",
+   "url": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544551-dt-content-rid-224775622_2/xid-224775622_2",
    "related": [
     "devlin2023",
     "noble2018"
    ],
    "fulltext": true,
-   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544551-dt-content-rid-224551192_2/xid-224551192_2",
+   "pdfUrl": "https://learn.senecapolytechnic.ca/bbcswebdav/pid-27544551-dt-content-rid-224775622_2/xid-224775622_2",
    "senecaLib": false,
    "blackboardFullText": true,
    "primaryLabel": "Open PDF in Blackboard",
