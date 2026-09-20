@@ -1,3 +1,7 @@
+# Blackboard is the course home
+
+Weekly teaching materials are in Blackboard. GitHub Pages now publishes only transition pages and a browser-only saved-notes download. The original source files remain in this repository for maintenance and provenance; they are excluded from the Pages artifact.
+
 # BFS218 Asynchronous Course Site
 
 Instructor-created course site for the fully asynchronous section of **BFS218: Racism and the Digital Age (Understanding Techno-Racism)** at Seneca Polytechnic. There are no live classes in this section: the site carries the weekly teaching, while staged Blackboard opening dates and deadlines keep the assessment work paced across the term.
